@@ -1,0 +1,75 @@
+version: '3.8'
+
+services:
+  # Backend Django
+  backend:
+    build: 
+      context: ./backend
+      dockerfile: Dockerfile.dev
+    volumes:
+      - ./backend:/app
+      - backend_media:/app/media
+    ports:
+      - "8000:8000"
+    environment:
+      - DEBUG=1
+      - DJANGO_SETTINGS_MODULE=scouts_platform.settings.development
+      # Variables de base de datos MySQL
+      - DB_NAME=sgics_dev
+      - DB_USER=sgics_user
+      - DB_PASSWORD=sgics_pass
+      - DB_HOST=db
+      - DB_PORT=3306
+    command: python manage.py runserver 0.0.0.0:8000
+    depends_on:
+      - db      # Esperar a que MySQL esté listo
+      - redis   # Esperar a que Redis esté listo
+    
+  # Frontend Vue.js
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile.dev
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+    ports:
+      - "3000:3000"
+    environment:
+      - VITE_API_URL=http://localhost:8000
+    command: npm run dev
+    
+  # Redis for caching and Celery
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+      
+  # Database MySQL - Base de datos principal del proyecto
+  db:
+    image: mysql:8.0
+    environment:
+      MYSQL_DATABASE: sgics_dev
+      MYSQL_USER: sgics_user
+      MYSQL_PASSWORD: sgics_pass
+      MYSQL_ROOT_PASSWORD: sgics_root_pass
+      # Configuraciones MySQL para mejor rendimiento
+      MYSQL_CHARSET: utf8mb4
+      MYSQL_COLLATION: utf8mb4_unicode_ci
+    volumes:
+      - mysql_data:/var/lib/mysql
+      # Script de inicialización opcional
+      # - ./database/init.sql:/docker-entrypoint-initdb.d/init.sql
+    ports:
+      - "3306:3306"
+    command: >
+      --character-set-server=utf8mb4
+      --collation-server=utf8mb4_unicode_ci
+      --default-authentication-plugin=mysql_native_password
+
+volumes:
+  mysql_data:      # Almacenamiento persistente de MySQL
+  redis_data:      # Almacenamiento persistente de Redis
+  backend_media:   # Archivos de media subidos por usuarios

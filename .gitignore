@@ -1,0 +1,147 @@
+# SGICS - Sistema de Gestión Integral de Cursos Scout
+# Archivo .gitignore para proyecto Django + Vue.js
+
+# ===================================
+# ARCHIVOS DE SISTEMA Y EDITORES
+# ===================================
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Visual Studio Code
+.vscode/
+*.code-workspace
+
+# JetBrains IDEs
+.idea/
+*.iml
+*.ipr
+*.iws
+
+# Sublime Text
+*.sublime-project
+*.sublime-workspace
+
+# ===================================
+# PYTHON / DJANGO BACKEND
+# ===================================
+
+# Archivos de bytecode Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+
+# Distribuciones / packaging
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# Unit test / coverage reports
+htmlcov/
+.tox/
+.nox/
+.coverage
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+*.py,cover
+.hypothesis/
+.pytest_cache/
+cover/
+
+# Django stuff
+*.log
+local_settings.py
+db.sqlite3
+db.sqlite3-journal
+
+# Archivos estáticos recolectados
+staticfiles/
+static_root/
+
+# Archivos de media (uploads)
+media/
+!media/.gitkeep
+
+# Environments
+.env
+.venv
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+
+# ===================================
+# NODE.JS / VUE.JS FRONTEND
+# ===================================
+
+# Dependencias
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Coverage directory
+coverage/
+*.lcov
+
+# Build output
+dist/
+dist-ssr/
+
+# Environment variables
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# ===================================
+# BASES DE DATOS
+# ===================================
+*.sqlite3
+*.sqlite3-journal
+*.sql
+*.dump
+
+# ===================================
+# LOGS Y DEBUGGING
+# ===================================
+logs/
+*.log
+
+# ===================================
+# ARCHIVOS TEMPORALES
+# ===================================
+.tmp/
+tmp/
+temp/
+.cache/
+
+# ===================================
+# MANTENER DIRECTORIOS VACÍOS
+# ===================================
+!**/.gitkeep

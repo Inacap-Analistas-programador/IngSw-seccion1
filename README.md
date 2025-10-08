@@ -1,106 +1,241 @@
+# SGICS - Sistema de Gestión Integral de Cursos Scout
 
-#LINK para ver Formulario PREINSCRIPCION: https://forms.gle/KwnRcNmtiFcFrHK46
+Sistema web completo para la gestión de cursos, preinscripciones, pagos y archivos para la organización de Guías y Scouts de Chile, Zona Biobío.
 
-#archivo CURSO MEDIO 2025_06 es el excel donde esta la información.. RECORDAR LA CONFIDENCIALIDAD.
+## Stack Tecnológico
 
-# Proyecto Cursos Scouts
+### Backend
+- **Django 5.0** + **Django REST Framework**
+- **JWT Authentication** (SimpleJWT)
+- **MySQL 8.0** (Base de datos principal)
+- **Celery** + **Redis** (Background tasks)
 
-Este proyecto es una aplicación web desarrollada con Django para el backend y un frontend separado (probablemente en un framework JavaScript como React, Angular o Vue.js).
+### Frontend  
+- **Vue 3** + **TypeScript**
+- **Pinia** (State Management)
+- **Vite** (Build Tool)
+- **Tailwind CSS** (Styling)
+- **Vee-Validate** + **Yup** (Form Validation)
 
-## Discord Del Proyecto
-https://discord.gg/79wttQ7j
+### DevOps & Testing
+- **Docker** + **Docker Compose**
+- **GitHub Actions** (CI/CD)
+- **pytest** (Backend Testing)
+- **Vitest** (Frontend Testing)
 
-## Estructura del Proyecto
+## Funcionalidades Principales
 
-El proyecto se divide en dos directorios principales:
+### Sprint N2 (Oct 13-24, 2025)
+- **Autenticación JWT** + Control de Roles (RBAC)
+- **Preinscripciones** - Wizard paso 1 con búsqueda por RUT
+- **Gestión de Pagos** - Registro y consulta por grupo
+- **Gestión de Archivos** - Upload/download seguro
+- **Dashboard** - KPIs y semáforo por curso
+- **CI/CD Pipeline** - Tests automáticos y calidad
 
-- `backend_scout/`: Contiene la aplicación Django que actúa como el backend de la aplicación.
-- `frontend_scout/`: Contiene los archivos del frontend de la aplicación.
+## Arquitectura del Proyecto
 
-## Acerca de Django
-
-Django es un framework de desarrollo web de alto nivel y código abierto, escrito en Python, que fomenta el desarrollo rápido y el diseño limpio y pragmático. Fue creado para facilitar la construcción de aplicaciones web complejas y basadas en bases de datos, siguiendo el principio "Don't Repeat Yourself" (DRY).
-
-**¿Por qué se usa Django en este proyecto?**
-
-1.  **Desarrollo Rápido:** Django incluye muchas características "out of the box" como un ORM (Object-Relational Mapper), un sistema de administración de usuarios, un panel de administración automático y un sistema de plantillas, lo que acelera significativamente el proceso de desarrollo.
-2.  **Seguridad:** Django tiene una fuerte reputación en seguridad, ofreciendo protecciones integradas contra muchas vulnerabilidades comunes como CSRF, XSS, inyección SQL y clickjacking.
-3.  **Escalabilidad:** Es utilizado por sitios web de alto tráfico, lo que demuestra su capacidad para escalar y manejar grandes volúmenes de usuarios y datos.
-4.  **Comunidad y Ecosistema:** Cuenta con una comunidad grande y activa, así como una vasta colección de paquetes y librerías de terceros que extienden su funcionalidad.
-5.  **Python:** Al estar escrito en Python, permite aprovechar la simplicidad y legibilidad del lenguaje, lo que facilita el mantenimiento y la colaboración en el código.
-
-En este proyecto, Django se utiliza para construir el backend robusto y seguro que gestionará la lógica de negocio, la base de datos y la exposición de APIs REST para el frontend.
-
-## Backend (Django)
-
-El directorio `backend_scout/` contiene la configuración básica de un proyecto Django:
-
-- `manage.py`: Una utilidad de línea de comandos que te permite interactuar con tu proyecto Django de varias maneras (ejecutar el servidor de desarrollo, ejecutar migraciones, etc.).
-- `backend_scout/`: Este es el paquete principal de tu proyecto Django. Contiene los siguientes archivos:
-    - `__init__.py`: Un archivo vacío que indica que este directorio es un paquete Python.
-    - `settings.py`: Contiene la configuración de tu proyecto Django, como la base de datos, las aplicaciones instaladas, los middlewares, etc.
-    - `urls.py`: Define las rutas URL de tu proyecto, mapeando URLs a vistas.
-    - `wsgi.py`: Un punto de entrada para servidores web compatibles con WSGI para servir tu proyecto.
-    - `asgi.py`: Un punto de entrada para servidores web compatibles con ASGI para servir tu proyecto (útil para WebSockets y aplicaciones asíncronas).
-
-## Frontend
-
-El directorio `frontend_scout/` está vacío en este momento, el desarrollo frontend, queda pendiente.
-
-## Cómo Empezar (Backend)
-
-1.  **Clonar el repositorio:**
-    ```bash
-    git clone https://github.com/nilsonGuerraInacap/proyecto_cursos_scouts.git
-    cd proyecto_cursos_scouts/backend_scout
-    ```
-
-2.  **Crear un entorno virtual (recomendado):**
-    ```bash
-    python -m venv venv
-    source venv/bin/activate  # En Linux/macOS
-    venv\Scripts\activate     # En Windows
-    ```
-
-3.  **Instalar dependencias:**
-    ```bash
-    pip install -r requirements.txt
-    ```
-
-4.  **Realizar migraciones de la base de datos:**
-    ```bash
-    python manage.py migrate
-    ```
-
-5.  **Crear un superusuario(creado)**
-    ```bash
-    python manage.py createsuperuser
-    ```
-
-6.  **Ejecutar el servidor de desarrollo:**
-    ```bash
-    python manage.py runserver
-    ```
-    El backend estará disponible en `http://127.0.0.1:8000/`.
-
-### Frontend
-
-Actualmente, el frontend no está implementado. Las instrucciones para su configuración e inicio se añadirán una vez que se defina y desarrolle.
-
-## Dependencias del Proyecto
-
-Este proyecto utiliza las siguientes librerías clave de Python para extender su funcionalidad:
-
-*   **Django REST Framework (DRF)**: Un potente y flexible kit de herramientas para construir APIs web. Se utiliza para crear las interfaces de programación de aplicaciones (APIs) que permiten que el frontend (o cualquier otra aplicación cliente) se comunique con el backend de manera estructurada y eficiente.
-*   **Django Simple JWT**: Proporciona una forma sencilla de implementar la autenticación basada en JSON Web Tokens (JWT) para las APIs REST. Esto permite un sistema de autenticación seguro y sin estado, donde los usuarios reciben un token después de iniciar sesión, que luego usan para acceder a recursos protegidos.
-*   **Django Allauth**: Un conjunto integrado de aplicaciones de Django que maneja la autenticación, el registro de usuarios, la gestión de cuentas y la autenticación de terceros (social). Simplifica enormemente la implementación de flujos de autenticación complejos.
-
-Para asegurar que todas las dependencias estén instaladas, puedes generar o actualizar el archivo `requirements.txt` con el siguiente comando (asegúrate de estar en tu entorno virtual):
-```bash
-pip freeze > backend_scout/requirements.txt
+```
+IngSw-seccion1/
+├── backend/                    # Django Backend
+│   ├── scouts_platform/       # Configuración principal
+│   ├── apps/                  # Módulos de la aplicación
+│   │   ├── authentication/    # JWT + RBAC
+│   │   ├── preinscriptions/   # Gestión de preinscripciones
+│   │   ├── payments/          # Gestión de pagos
+│   │   ├── files/            # Upload/download archivos
+│   │   └── courses/          # Gestión de cursos
+│   ├── utils/                # Utilidades compartidas
+│   └── tests/                # Tests backend
+├── frontend/                  # Vue.js Frontend
+│   ├── src/
+│   │   ├── components/       # Componentes Vue
+│   │   ├── views/           # Páginas principales
+│   │   ├── stores/          # Pinia stores
+│   │   └── utils/           # Utilidades frontend
+│   └── tests/               # Tests frontend
+├── infrastructure/           # Docker, deployment
+├── docs/                    # Documentación y epics
+└── .github/                # GitHub Actions workflows
 ```
 
-## Próximos Pasos
+## Inicio Rápido
 
--   Desarrollar las aplicaciones de Django dentro de `backend_scout/` para manejar la lógica de negocio y los modelos de datos.
-- Decidir Si usaremos React u otro framework frontend.
+### Prerrequisitos
+- **Python 3.11+**
+- **Node.js 18+**
+- **Docker** & **Docker Compose** (opcional)
+- **Git**
+
+### 1. Clonar el repositorio
+```bash
+git clone https://github.com/Inacap-Analistas-programador/IngSw-seccion1.git
+cd IngSw-seccion1
+```
+
+### 2. Configuración Backend (Django)
+```bash
+cd backend
+
+# Crear entorno virtual
+python -m venv venv
+venv\Scripts\activate  # Windows
+# source venv/bin/activate  # Linux/Mac
+
+# Instalar dependencias
+pip install -r requirements.txt
+
+# Ejecutar migraciones
+python manage.py migrate
+
+# Crear superusuario
+python manage.py createsuperuser
+
+# Ejecutar servidor de desarrollo
+python manage.py runserver
+```
+
+### 3. Configuración Frontend (Vue)
+```bash
+cd frontend
+
+# Instalar dependencias
+npm ci
+
+# Ejecutar servidor de desarrollo
+npm run dev
+```
+
+### 4. Usando Docker (Recomendado)
+```bash
+# Ejecutar todo el stack
+docker-compose -f docker-compose.dev.yml up --build
+
+# Aplicar migraciones (primera vez)
+docker-compose -f docker-compose.dev.yml exec backend python manage.py migrate
+```
+
+## Testing
+
+### Backend (pytest)
+```bash
+cd backend
+pytest                          # Ejecutar todos los tests
+pytest --cov=.                 # Con coverage
+pytest apps/authentication/    # Tests específicos
+```
+
+### Frontend (Vitest)
+```bash
+cd frontend
+npm run test                    # Ejecutar tests
+npm run test:coverage          # Con coverage
+```
+
+### CI Pipeline
+```bash
+# El pipeline se ejecuta automáticamente en PRs
+# Incluye: linting, tests, coverage, security scan
+```
+
+## Convenciones de Desarrollo
+
+### Git Workflow
+- **Branches**: `feature/SGICS-XXX-shortDescription`
+- **Commits**: `SGICS-XXX: description`
+- **PRs**: `[SGICS-XXX] Title`
+
+### Código
+- **Backend**: `snake_case`, Black formatting
+- **Frontend**: `camelCase`, Prettier formatting
+- **Tests**: Mínimo 80% backend, 70% frontend
+
+## Scripts Útiles
+
+### Desarrollo
+```bash
+# Backend
+python manage.py makemigrations
+python manage.py migrate
+python manage.py collectstatic
+python manage.py shell
+
+# Frontend  
+npm run lint                   # Linting
+npm run format                # Formatting
+npm run build                 # Build para producción
+```
+
+### Calidad de Código
+```bash
+# Backend
+black .                       # Formatting
+isort .                       # Import sorting
+flake8                        # Linting
+
+# Frontend
+npm run lint                  # ESLint
+npm run format               # Prettier
+```
+
+## Documentación
+
+- **[Sprint Planning](docs/sprint-schedule-and-git-guide.md)** - Guía del Sprint N2
+- **[Git Workflow](docs/branching-pr-guide.md)** - Estrategia de branches y PRs
+- **[API Documentation](docs/api/)** - Documentación de endpoints
+- **[Epics & Stories](docs/epics/)** - Historias de usuario detalladas
+
+## Equipos y Responsabilidades
+
+- **Grupo A**: Login, Autenticación y Control de Roles (Nicolas I., Lucas G., Axel V.)
+- **Grupo B**: QA, Pagos, Stats y Documentación (Nicolas G., Juan H., Camilo C.)
+- **Grupo C**: Gestión Personas, Maestros y DevOps (Giovanni P., Ricardo S., Ricardo H.)
+- **Grupo H**: Preinscripciones y Archivos (Miguel C., Juan O., Leonardo L.)
+- **Grupo Z**: Perfiles de Usuario (Marisol S., Lucas B., Rodrigo J., Josue V.)
+
+## Configuración de Entornos
+
+### Desarrollo
+- Database: MySQL 8.0 / SQLite (local)
+- Debug: Enabled
+- CORS: Allow all origins
+
+### Staging/Producción  
+- Database: MySQL 8.0
+- Debug: Disabled
+- CORS: Specific origins only
+- SSL/HTTPS: Required
+
+## Roadmap
+
+- **Sprint N2** (Oct 13-24): MVP Core Features
+- **Sprint N3** (Oct 27-Nov 7): Advanced Features & UX
+- **Sprint N4** (Nov 10-21): Performance & Security
+- **Release** (Nov 24): Production Launch
+
+## Contribución
+
+1. Fork el proyecto
+2. Crear branch feature (`git checkout -b feature/SGICS-XXX-description`)
+3. Commit cambios (`git commit -m 'SGICS-XXX: add new feature'`)
+4. Push al branch (`git push origin feature/SGICS-XXX-description`)
+5. Abrir Pull Request
+
+## Licencia
+
+Este proyecto es de uso interno para Guías y Scouts de Chile, Zona Biobío.
+
+## Contacto
+
+- **Scrum Master**: Ricardo Cristóbal Sanhueza Acuña
+- **Repositorio**: [GitHub](https://github.com/Inacap-Analistas-programador/IngSw-seccion1)
+- **Jira**: [Project Board](jira-link-here)
+
+---
+
+**¿Listo para empezar a desarrollar?**
+
+1. Sigue la guía de [Inicio Rápido](#inicio-rápido)
+2. Revisa los [Epics del Sprint N2](docs/epics/)
+3. Únete al canal de desarrollo del equipo
+4. ¡Comienza a programar!
