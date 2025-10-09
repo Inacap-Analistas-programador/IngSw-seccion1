@@ -95,6 +95,21 @@ env.bak/
 venv.bak/
 
 # ===================================
+# ARCHIVOS SENSIBLES Y CREDENCIALES
+# ===================================
+
+# Configuraciones privadas (credenciales reales)
+PRIVATE_CONFIG.txt
+CREDENTIALS.txt
+*_PRIVATE.*
+hosting_config.*
+
+# Backups de base de datos
+*.sql.gz
+backup_*.sql
+*.dump
+
+# ===================================
 # NODE.JS / VUE.JS FRONTEND
 # ===================================
 
@@ -145,3 +160,4 @@ temp/
 # MANTENER DIRECTORIOS VACÍOS
 # ===================================
 !**/.gitkeep
+docs/

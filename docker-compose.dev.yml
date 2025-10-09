@@ -22,8 +22,17 @@ services:
       - DB_PORT=3306
     command: python manage.py runserver 0.0.0.0:8000
     depends_on:
-      - db      # Esperar a que MySQL esté listo
-      - redis   # Esperar a que Redis esté listo
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    # Health check usando nuestros endpoints
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/healthz/"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
     
   # Frontend Vue.js
   frontend:
@@ -46,6 +55,11 @@ services:
       - "6379:6379"
     volumes:
       - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
       
   # Database MySQL - Base de datos principal del proyecto
   db:
@@ -68,6 +82,12 @@ services:
       --character-set-server=utf8mb4
       --collation-server=utf8mb4_unicode_ci
       --default-authentication-plugin=mysql_native_password
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "sgics_user", "-psgics_pass"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 60s
 
 volumes:
   mysql_data:      # Almacenamiento persistente de MySQL

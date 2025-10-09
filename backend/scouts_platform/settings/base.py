@@ -128,38 +128,14 @@ MEDIA_ROOT = BASE_DIR / 'media'           # Directorio donde se almacenan los up
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # Django REST Framework configuration
-# Configuración global para todas las APIs del proyecto
-REST_FRAMEWORK = {
-    # Autenticación por defecto: JWT (JSON Web Tokens)
-    'DEFAULT_AUTHENTICATION_CLASSES': (
-        'rest_framework_simplejwt.authentication.JWTAuthentication',
-    ),
-    # Permisos por defecto: Solo usuarios autenticados
-    'DEFAULT_PERMISSION_CLASSES': [
-        'rest_framework.permissions.IsAuthenticated',
-    ],
-    # Renderizado por defecto: Solo JSON (API REST pura)
-    'DEFAULT_RENDERER_CLASSES': [
-        'rest_framework.renderers.JSONRenderer',
-    ],
-    # Paginación: 20 elementos por página
-    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
-    'PAGE_SIZE': 20,
-}
+# Configuración completa importada desde módulo dedicado
+from .rest_framework import REST_FRAMEWORK_CONFIG
+REST_FRAMEWORK = REST_FRAMEWORK_CONFIG
 
 # JWT Configuration - Configuración de JSON Web Tokens
-from datetime import timedelta
-
-SIMPLE_JWT = {
-    # Token de acceso válido por 15 minutos (seguridad)
-    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=15),
-    # Token de refresh válido por 7 días (comodidad)
-    'REFRESH_TOKEN_LIFETIME': timedelta(days=7),
-    # Rotar refresh tokens para mayor seguridad
-    'ROTATE_REFRESH_TOKENS': True,
-    # Invalidar tokens antiguos después de rotación
-    'BLACKLIST_AFTER_ROTATION': True,
-}
+# Configuración completa importada desde módulo dedicado
+from .jwt import JWT_CONFIG
+SIMPLE_JWT = JWT_CONFIG
 
 # CORS Configuration - Cross-Origin Resource Sharing
 # Permite que el frontend (Vue.js) se comunique con el backend (Django)

@@ -1,0 +1,347 @@
+# SGICS - Workflow de CI/CD para GitHub Actions
+# Automatiza testing, análisis de código y deployment
+
+name: SGICS CI/CD Pipeline
+
+# Triggers - cuándo se ejecuta el workflow
+on:
+  # En cada push a ramas principales y features
+  push:
+    branches: 
+      - main              # Producción
+      - develop          # Desarrollo
+      - 'SCRUM-*'        # Branches de features del proyecto
+      - 'feature/*'      # Features adicionales
+      - 'hotfix/*'       # Hotfixes de emergencia
+  # En cada pull request a main o develop
+  pull_request:
+    branches: [ main, develop ]
+  # Permitir ejecución manual
+  workflow_dispatch:
+
+# Variables de entorno globales
+env:
+  PYTHON_VERSION: "3.12"  # Python 3.14 aún no soportado por Django
+  NODE_VERSION: "18"
+  
+jobs:
+  # ==========================================
+  # JOB 1: TESTS BACKEND (Django + pytest)
+  # ==========================================
+  backend-tests:
+    name: "Backend Tests (Python ${{ env.PYTHON_VERSION }})"
+    runs-on: ubuntu-latest
+    
+    # Servicios necesarios para los tests
+    services:
+      # Base de datos MySQL para tests
+      mysql:
+        image: mysql:8.0
+        env:
+          MYSQL_DATABASE: test_sgics
+          MYSQL_USER: test_user
+          MYSQL_PASSWORD: test_pass
+          MYSQL_ROOT_PASSWORD: test_root_pass
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd="mysqladmin ping -h localhost"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=3
+      
+      # Redis para tests de cache
+      redis:
+        image: redis:7-alpine
+        ports:
+          - 6379:6379
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 3
+    
+    steps:
+    # Checkout del código
+    - name: 📥 Checkout código
+      uses: actions/checkout@v4
+    
+    # Configurar Python con caché de pip
+    - name: 🐍 Configurar Python ${{ env.PYTHON_VERSION }}
+      uses: actions/setup-python@v4
+      with:
+        python-version: ${{ env.PYTHON_VERSION }}
+        cache: 'pip'
+        cache-dependency-path: 'backend/requirements.txt'
+    
+    # Instalar dependencias del backend
+    - name: 📦 Instalar dependencias Backend
+      working-directory: ./backend
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+        pip install coverage pytest-cov
+    
+    # Ejecutar migraciones para tests
+    - name: 🗃️ Preparar base de datos de prueba
+      working-directory: ./backend
+      env:
+        DATABASE_URL: mysql://test_user:test_pass@localhost:3306/test_sgics
+        DJANGO_SETTINGS_MODULE: scouts_platform.settings.test
+      run: |
+        python manage.py migrate --noinput
+    
+    # Ejecutar tests con coverage
+    - name: 🧪 Ejecutar tests Backend (pytest)
+      working-directory: ./backend
+      env:
+        DATABASE_URL: mysql://test_user:test_pass@localhost:3306/test_sgics
+        DJANGO_SETTINGS_MODULE: scouts_platform.settings.test
+      run: |
+        coverage run -m pytest -v --tb=short
+        coverage xml
+        coverage report
+    
+    # Subir coverage como artifact
+    - name: 📊 Subir coverage Backend
+      uses: actions/upload-artifact@v3
+      with:
+        name: backend-coverage
+        path: backend/coverage.xml
+    
+    # Health check después de iniciar servidor
+    - name: 🩺 Verificar health endpoints
+      working-directory: ./backend
+      env:
+        DATABASE_URL: mysql://test_user:test_pass@localhost:3306/test_sgics
+        DJANGO_SETTINGS_MODULE: scouts_platform.settings.test
+      run: |
+        # Iniciar servidor en background
+        python manage.py runserver 8000 &
+        SERVER_PID=$!
+        
+        # Esperar que el servidor inicie
+        sleep 10
+        
+        # Verificar endpoints de salud
+        echo "🔍 Verificando /healthz/"
+        curl -f http://localhost:8000/healthz/ || exit 1
+        
+        echo "🔍 Verificando /healthz/ready/"
+        curl -f http://localhost:8000/healthz/ready/ || exit 1
+        
+        echo "✅ Health checks exitosos"
+        
+        # Terminar servidor
+        kill $SERVER_PID
+
+  # ==========================================
+  # JOB 2: TESTS FRONTEND (Vue + Vitest)
+  # ==========================================
+  frontend-tests:
+    name: "Frontend Tests (Node ${{ env.NODE_VERSION }})"
+    runs-on: ubuntu-latest
+    
+    steps:
+    # Checkout del código
+    - name: 📥 Checkout código
+      uses: actions/checkout@v4
+    
+    # Configurar Node.js con caché de npm
+    - name: 🟢 Configurar Node.js ${{ env.NODE_VERSION }}
+      uses: actions/setup-node@v4
+      with:
+        node-version: ${{ env.NODE_VERSION }}
+        cache: 'npm'
+        cache-dependency-path: 'frontend/package-lock.json'
+    
+    # Instalar dependencias del frontend
+    - name: 📦 Instalar dependencias Frontend
+      working-directory: ./frontend
+      run: |
+        npm ci --prefer-offline --no-audit
+    
+    # Ejecutar tests del frontend
+    - name: 🧪 Ejecutar tests Frontend (Vitest)
+      working-directory: ./frontend
+      run: |
+        npm run test:coverage
+    
+    # Subir coverage como artifact
+    - name: 📊 Subir coverage Frontend
+      uses: actions/upload-artifact@v3
+      with:
+        name: frontend-coverage
+        path: frontend/coverage/
+    
+    # Build para verificar que compila
+    - name: 🏗️ Build Frontend
+      working-directory: ./frontend
+      run: |
+        npm run build
+
+  # ==========================================
+  # JOB 3: ANÁLISIS DE CÓDIGO (SonarQube)
+  # ==========================================
+  sonar-analysis:
+    name: "Análisis SonarQube"
+    runs-on: ubuntu-latest
+    needs: [backend-tests, frontend-tests]
+    if: github.event_name != 'pull_request' && vars.SONAR_TOKEN != ''
+    
+    steps:
+    # Checkout del código
+    - name: 📥 Checkout código
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0  # Necesario para SonarQube
+    
+    # Descargar artifacts de coverage
+    - name: 📥 Descargar coverage Backend
+      uses: actions/download-artifact@v3
+      with:
+        name: backend-coverage
+        path: backend/
+    
+    - name: 📥 Descargar coverage Frontend  
+      uses: actions/download-artifact@v3
+      with:
+        name: frontend-coverage
+        path: frontend/coverage/
+    
+    # Ejecutar análisis SonarQube
+    - name: 🔍 Análisis SonarQube
+      uses: sonarqube-quality-gate-action@master
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+
+  # ==========================================
+  # JOB 4: DEPLOYMENT CONDICIONAL POR RAMA
+  # ==========================================
+  deploy-production:
+    name: "Deploy a Producción"
+    runs-on: ubuntu-latest
+    needs: [backend-tests, frontend-tests]
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    environment: production
+    
+    steps:
+    # Checkout del código
+    - name: 📥 Checkout código
+      uses: actions/checkout@v4
+    
+    # TODO: El equipo de DevOps debe completar el deployment
+    # Ejemplos de deployment:
+    
+    # Opción 1: Deploy via SSH/SCP
+    - name: 🚀 Deploy via SSH
+      run: |
+        echo "TODO: Configurar deployment al hosting"
+        echo "Usar credenciales desde secrets del repositorio"
+        # scp -r . user@hosting-server.com:/path/to/app/
+    
+    # Opción 2: Deploy via FTP
+    - name: 🚀 Deploy via FTP
+      run: |
+        echo "TODO: Usar FTP para subir archivos al hosting"
+        # lftp ftp://hosting-server.com -u ${{ secrets.FTP_USER }}
+    
+    # Verificar deployment con health checks
+    - name: 🩺 Verificar deployment exitoso
+      run: |
+        echo "TODO: Verificar que la aplicación desplegada responda"
+        # curl -f https://tu-dominio.com/healthz/
+        # curl -f https://tu-dominio.com/healthz/ready/
+
+  # Deploy a entorno de desarrollo (rama develop)
+  deploy-development:
+    name: "Deploy a Desarrollo"
+    runs-on: ubuntu-latest
+    needs: [backend-tests, frontend-tests]
+    if: github.ref == 'refs/heads/develop' && github.event_name == 'push'
+    environment: development
+    
+    steps:
+    - name: 📥 Checkout código
+      uses: actions/checkout@v4
+    
+    - name: 🚀 Deploy a desarrollo
+      run: |
+        echo "TODO: Configurar deployment al entorno de desarrollo"
+        echo "URL de desarrollo: https://dev-sgics.tu-dominio.com"
+        # Deployment específico para desarrollo
+    
+    - name: 🩺 Verificar deployment desarrollo
+      run: |
+        echo "TODO: Health check del entorno de desarrollo"
+        # curl -f https://dev-sgics.tu-dominio.com/healthz/
+
+  # Deploy de features para testing (ramas SCRUM-*)
+  deploy-feature:
+    name: "Deploy Feature para Testing"
+    runs-on: ubuntu-latest
+    needs: [backend-tests, frontend-tests]
+    if: startsWith(github.ref, 'refs/heads/SCRUM-') && github.event_name == 'push'
+    environment: feature-testing
+    
+    steps:
+    - name: 📥 Checkout código
+      uses: actions/checkout@v4
+    
+    - name: 🔧 Extraer nombre de la rama
+      run: |
+        BRANCH_NAME=${GITHUB_REF#refs/heads/}
+        echo "FEATURE_NAME=${BRANCH_NAME}" >> $GITHUB_ENV
+        echo "Deployando feature: $BRANCH_NAME"
+    
+    - name: 🚀 Deploy feature branch
+      run: |
+        echo "TODO: Configurar deployment de feature para testing"
+        echo "Feature URL: https://${{ env.FEATURE_NAME }}-sgics.tu-dominio.com"
+        # Deployment específico para features
+        
+    - name: 🩺 Verificar deployment feature
+      run: |
+        echo "TODO: Health check del feature deployment"
+        # curl -f https://${{ env.FEATURE_NAME }}-sgics.tu-dominio.com/healthz/
+
+  # ==========================================
+  # JOB 5: NOTIFICACIONES
+  # ==========================================
+  notify:
+    name: "Notificar Resultado del Pipeline"
+    runs-on: ubuntu-latest
+    needs: [backend-tests, frontend-tests]
+    if: always()
+    
+    steps:
+    - name: 📧 Notificar resultado de tests
+      run: |
+        if [ "${{ needs.backend-tests.result }}" = "success" ] && [ "${{ needs.frontend-tests.result }}" = "success" ]; then
+          echo "✅ Tests completados exitosamente en rama: ${{ github.ref_name }}"
+          # TODO: Enviar notificación de éxito (Slack, Discord, email, etc.)
+        else
+          echo "❌ Tests fallaron en rama: ${{ github.ref_name }}"
+          echo "Backend result: ${{ needs.backend-tests.result }}"
+          echo "Frontend result: ${{ needs.frontend-tests.result }}"
+          # TODO: Enviar notificación de fallo con detalles
+        fi
+    
+    # Notificación específica para deployment
+    - name: 📧 Notificar deployment (si aplica)
+      if: github.event_name == 'push' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/develop' || startsWith(github.ref, 'refs/heads/SCRUM-'))
+      run: |
+        echo "🚀 Deployment iniciado para rama: ${{ github.ref_name }}"
+        # TODO: Notificar inicio de deployment
+        
+        if [ "${{ github.ref }}" = "refs/heads/main" ]; then
+          echo "📈 Deployment a PRODUCCIÓN"
+          # TODO: Notificación especial para producción
+        elif [ "${{ github.ref }}" = "refs/heads/develop" ]; then
+          echo "🧪 Deployment a DESARROLLO"
+          # TODO: Notificación para desarrollo
+        else
+          echo "🔧 Deployment de FEATURE para testing"
+          # TODO: Notificación para features
+        fi
