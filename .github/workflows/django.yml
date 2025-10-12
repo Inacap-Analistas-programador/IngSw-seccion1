@@ -120,7 +120,7 @@ jobs:
         coverage report --show-missing
 
     - name: 📤 Upload coverage
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: django-coverage-${{ matrix.python-version }}-${{ github.ref_name }}
         path: backend/coverage.xml
