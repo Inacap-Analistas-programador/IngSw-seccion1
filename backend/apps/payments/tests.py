@@ -1,9 +1,10 @@
 from rest_framework.test import APITestCase
 from rest_framework import status
 from django.urls import reverse 
-from django.contrib.auth import get_user_model # se usará get_user_model para obtener el modelo de usuario aunque no se use directamente porque se usa en ForeignKey y no se puede usar settings.AUTH_USER_MODEL porque no existe
+from django.contrib.auth import get_user_model 
 from datetime import date
 from django.utils import timezone
+from unittest import mock
 
 from .models import (
     PagoPersona, PagoCambioPersona, Prepago, ComprobantePago, PagoComprobante, ConceptoContable
@@ -37,6 +38,10 @@ class PaymentsAPITests(APITestCase):
         self.user = User.objects.create_user(username='testuser', email='test@example.com', password='password123')
         # Se crea un superusuario para probar acciones que requieren privilegios de administrador (ej. eliminar).
         self.admin_user = User.objects.create_superuser(username='adminuser', email='admin@example.com', password='adminpassword')
+
+        # Mock the has_role method for test users
+        self.user.has_role = mock.Mock(return_value=False)
+        self.admin_user.has_role = mock.Mock(side_effect=lambda role_code: role_code == 'TESORERO' or self.admin_user.is_staff)
 
         # --- IDs de Marcador de Posición ---
         # Como los modelos de Persona y Curso no están en esta aplicación, usamos IDs enteros simples
@@ -145,6 +150,22 @@ class PaymentsAPITests(APITestCase):
         self.pago_comprobante_url = reverse('payments:pago-comprobante-list')
         self.pago_comprobante_detail_url = lambda pk: reverse('payments:pago-comprobante-detail', kwargs={'pk': pk})
 
+    def _test_forbidden_access(self, method, url, data=None):
+        """
+        Helper para probar que un usuario normal no puede realizar ciertas operaciones.
+        """
+        self.client.force_authenticate(user=self.user)
+        if method == 'post':
+            response = self.client.post(url, data, format='json')
+        elif method == 'put':
+            response = self.client.put(url, data, format='json')
+        elif method == 'patch':
+            response = self.client.patch(url, data, format='json')
+        elif method == 'delete':
+            response = self.client.delete(url)
+        else:
+            raise ValueError(f"Método HTTP no soportado para _test_forbidden_access: {method}")
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
     # --- Pruebas para ConceptoContable ---
     def test_list_conceptos_contables(self):
@@ -164,10 +185,8 @@ class PaymentsAPITests(APITestCase):
 
     def test_create_concepto_contable_forbidden_for_regular_user(self):
         """Prueba que un usuario normal NO pueda crear un concepto contable."""
-        self.client.force_authenticate(user=self.user)
         new_data = {'COC_DESCRIPCION': 'Donación', 'COC_VIGENTE': True}
-        response = self.client.post(self.concepto_contable_url, new_data, format='json')
-        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+        self._test_forbidden_access('post', self.concepto_contable_url, new_data)
 
     def test_retrieve_concepto_contable(self):
         """Prueba que un usuario autenticado pueda ver el detalle de un concepto contable."""
@@ -187,10 +206,8 @@ class PaymentsAPITests(APITestCase):
 
     def test_update_concepto_contable_forbidden_for_regular_user(self):
         """Prueba que un usuario normal NO pueda actualizar un concepto contable."""
-        self.client.force_authenticate(user=self.user)
         updated_data = {'COC_DESCRIPCION': 'Cuota Anual', 'COC_VIGENTE': False}
-        response = self.client.put(self.concepto_contable_detail_url(self.concepto_contable.COC_ID), updated_data, format='json')
-        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+        self._test_forbidden_access('put', self.concepto_contable_detail_url(self.concepto_contable.COC_ID), updated_data)
 
     def test_delete_concepto_contable_by_admin(self):
         """Prueba que un administrador pueda eliminar un concepto contable."""
@@ -207,10 +224,7 @@ class PaymentsAPITests(APITestCase):
 
     def test_delete_concepto_contable_forbidden_for_regular_user(self):
         """Prueba que un usuario normal NO pueda eliminar un concepto contable."""
-        self.client.force_authenticate(user=self.user)
-        response = self.client.delete(self.concepto_contable_detail_url(self.concepto_contable.COC_ID))
-        # Esperamos un 403 porque el usuario no tiene permisos, incluso antes de llegar al ProtectedError.
-        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+        self._test_forbidden_access('delete', self.concepto_contable_detail_url(self.concepto_contable.COC_ID))
 
     # --- Pruebas para PagoPersona ---
     def test_list_pagos_persona(self):
@@ -238,10 +252,8 @@ class PaymentsAPITests(APITestCase):
 
     def test_create_pago_persona_forbidden_for_regular_user(self):
         """Prueba que un usuario normal NO pueda crear un nuevo pago de persona."""
-        self.client.force_authenticate(user=self.user)
         data = { 'PER_ID': 1, 'CUR_ID': 1, 'PAP_TIPO': 1, 'PAP_VALOR': '50.00' }
-        response = self.client.post(self.pago_persona_url, data, format='json')
-        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+        self._test_forbidden_access('post', self.pago_persona_url, data)
 
     def test_retrieve_pago_persona(self):
         """Prueba que un usuario autenticado pueda ver el detalle de un pago de persona."""
@@ -261,10 +273,8 @@ class PaymentsAPITests(APITestCase):
 
     def test_update_pago_persona_forbidden_for_regular_user(self):
         """Prueba que un usuario normal NO pueda actualizar un pago de persona."""
-        self.client.force_authenticate(user=self.user)
         updated_data = {'PAP_VALOR': '120.00'}
-        response = self.client.patch(self.pago_persona_detail_url(self.pago_persona.PAP_ID), updated_data, format='json')
-        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+        self._test_forbidden_access('patch', self.pago_persona_detail_url(self.pago_persona.PAP_ID), updated_data)
 
     def test_delete_pago_persona_by_admin(self):
         """Prueba que un administrador pueda eliminar un pago de persona."""
@@ -282,9 +292,7 @@ class PaymentsAPITests(APITestCase):
 
     def test_delete_pago_persona_forbidden_for_regular_user(self):
         """Prueba que un usuario normal NO pueda eliminar un pago de persona."""
-        self.client.force_authenticate(user=self.user)
-        response = self.client.delete(self.pago_persona_detail_url(self.pago_persona.PAP_ID))
-        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+        self._test_forbidden_access('delete', self.pago_persona_detail_url(self.pago_persona.PAP_ID))
 
     def test_pago_persona_invalid_valor(self):
         """Prueba que no se pueda crear un pago con un valor inválido (cero o negativo)."""
@@ -318,10 +326,8 @@ class PaymentsAPITests(APITestCase):
 
     def test_create_pago_cambio_persona_forbidden_for_regular_user(self):
         """Prueba que un usuario normal NO pueda crear un registro de cambio de pago."""
-        self.client.force_authenticate(user=self.user)
         new_data = {'PER_ID': self.dummy_persona_id + 3, 'PAP_ID': self.pago_persona.PAP_ID}
-        response = self.client.post(self.pago_cambio_persona_url, new_data, format='json')
-        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+        self._test_forbidden_access('post', self.pago_cambio_persona_url, new_data)
         
     def test_retrieve_pago_cambio_persona(self):
         """Prueba que un usuario autenticado pueda ver el detalle de un cambio de pago."""
@@ -341,10 +347,8 @@ class PaymentsAPITests(APITestCase):
 
     def test_update_pago_cambio_persona_forbidden_for_regular_user(self):
         """Prueba que un usuario normal NO pueda actualizar un registro de cambio de pago."""
-        self.client.force_authenticate(user=self.user)
         updated_data = {'PER_ID': self.dummy_persona_id + 4}
-        response = self.client.patch(self.pago_cambio_persona_detail_url(self.pago_cambio_persona.PCP_ID), updated_data, format='json')
-        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+        self._test_forbidden_access('patch', self.pago_cambio_persona_detail_url(self.pago_cambio_persona.PCP_ID), updated_data)
 
     def test_delete_pago_cambio_persona_by_admin(self):
         """Prueba que un administrador pueda eliminar un registro de cambio de pago."""
@@ -355,9 +359,7 @@ class PaymentsAPITests(APITestCase):
 
     def test_delete_pago_cambio_persona_forbidden_for_regular_user(self):
         """Prueba que un usuario normal NO pueda eliminar un registro de cambio de pago."""
-        self.client.force_authenticate(user=self.user)
-        response = self.client.delete(self.pago_cambio_persona_detail_url(self.pago_cambio_persona.PCP_ID))
-        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+        self._test_forbidden_access('delete', self.pago_cambio_persona_detail_url(self.pago_cambio_persona.PCP_ID))
 
     # --- Pruebas para Prepago ---
     def test_list_prepagos(self):
@@ -384,9 +386,7 @@ class PaymentsAPITests(APITestCase):
 
     def test_create_prepago_forbidden_for_regular_user(self):
         """Prueba que un usuario normal NO pueda crear un prepago."""
-        self.client.force_authenticate(user=self.user)
-        response = self.client.post(self.prepago_url, self.prepago_data, format='json')
-        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+        self._test_forbidden_access('post', self.prepago_url, self.prepago_data)
 
     def test_retrieve_prepago(self):
         """Prueba que un usuario autenticado pueda ver el detalle de un prepago."""
@@ -414,9 +414,7 @@ class PaymentsAPITests(APITestCase):
 
     def test_delete_prepago_forbidden_for_regular_user(self):
         """Prueba que un usuario normal NO pueda eliminar un prepago."""
-        self.client.force_authenticate(user=self.user)
-        response = self.client.delete(self.prepago_detail_url(self.prepago.PPA_ID))
-        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+        self._test_forbidden_access('delete', self.prepago_detail_url(self.prepago.PPA_ID))
 
     # --- Pruebas para ComprobantePago ---
     def test_list_comprobantes_pago(self):
@@ -457,10 +455,8 @@ class PaymentsAPITests(APITestCase):
 
     def test_create_comprobante_pago_forbidden_for_regular_user(self):
         """Prueba que un usuario normal NO pueda crear un comprobante de pago."""
-        self.client.force_authenticate(user=self.user)
         data = { 'PEC_ID': 1, 'COC_ID': self.concepto_contable.COC_ID, 'CPA_NUMERO': 99, 'pagos_ids': [self.pago_persona.PAP_ID] }
-        response = self.client.post(self.comprobante_pago_url, data, format='json')
-        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+        self._test_forbidden_access('post', self.comprobante_pago_url, data)
 
     def test_retrieve_comprobante_pago(self):
         """Prueba que un usuario autenticado pueda ver el detalle de un comprobante de pago."""
@@ -493,9 +489,7 @@ class PaymentsAPITests(APITestCase):
 
     def test_delete_comprobante_pago_forbidden_for_regular_user(self):
         """Prueba que un usuario normal NO pueda eliminar un comprobante de pago."""
-        self.client.force_authenticate(user=self.user)
-        response = self.client.delete(self.comprobante_pago_detail_url(self.comprobante_pago.CPA_ID))
-        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+        self._test_forbidden_access('delete', self.comprobante_pago_detail_url(self.comprobante_pago.CPA_ID))
 
     # --- Pruebas para PagoComprobante ---
     def test_list_pagos_comprobante(self):
@@ -536,9 +530,7 @@ class PaymentsAPITests(APITestCase):
 
     def test_create_pago_comprobante_forbidden_for_regular_user(self):
         """Prueba que un usuario normal NO pueda crear una relación pago-comprobante."""
-        self.client.force_authenticate(user=self.user)
-        response = self.client.post(self.pago_comprobante_url, self.pago_comprobante_data, format='json')
-        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+        self._test_forbidden_access('post', self.pago_comprobante_url, self.pago_comprobante_data)
 
     def test_retrieve_pago_comprobante(self):
         """Prueba que un usuario autenticado pueda ver el detalle de una relación pago-comprobante."""
@@ -556,6 +548,4 @@ class PaymentsAPITests(APITestCase):
 
     def test_delete_pago_comprobante_forbidden_for_regular_user(self):
         """Prueba que un usuario normal NO pueda eliminar una relación pago-comprobante."""
-        self.client.force_authenticate(user=self.user)
-        response = self.client.delete(self.pago_comprobante_detail_url(self.pago_comprobante.PCO_ID))
-        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+        self._test_forbidden_access('delete', self.pago_comprobante_detail_url(self.pago_comprobante.PCO_ID))
