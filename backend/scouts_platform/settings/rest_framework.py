@@ -135,9 +135,6 @@ class IsTreasurerOrAdminOrReadOnly(BasePermission):
             return True
 
         # Si el método es de escritura, solo se permite a administradores (is_staff).
-        # TODO: Cuando se implemente el sistema de roles, cambiar por:
-        # return request.user.is_staff or request.user.has_role('TESORERO')
-        return request.user.is_staff
         # Ahora usamos el sistema de roles: se permite si es admin/staff o si tiene el rol 'TESORERO'.
-        # El método has_role() debería estar definido en tu modelo User.
+        # El método has_role() debería estar definido en el modelo User.
         return request.user.is_staff or request.user.has_role('TESORERO')
