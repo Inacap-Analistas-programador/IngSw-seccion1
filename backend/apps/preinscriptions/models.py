@@ -81,6 +81,12 @@ class Preinscripcion(models.Model):
     # TODO: El equipo debe agregar campos Scout específicos
     # origen = models.CharField(max_length=30, blank=True)  # De dónde viene el participante
     # grupo_scout = models.CharField(max_length=100, blank=True)  # Grupo de origen
+    grupo = models.CharField(
+        max_length=100,
+        blank=True,
+        default="",
+        verbose_name="Grupo Scout (texto libre)"
+    )
     
     # Timestamps de transiciones importantes
     confirmado_at = models.DateTimeField(null=True, blank=True)

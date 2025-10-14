@@ -159,6 +159,72 @@ temp/
 # ===================================
 # MANTENER DIRECTORIOS VACÍOS
 # ===================================
-!**/.gitkeep
 docs/
+!**/.gitkeep
 backend/apps/authentication/migrations/0001_initial.py
+backend/apps/preinscriptions/migrations/0001_initial.py
+backend/apps/payments/migrations/0001_initial.py
+backend/apps/courses/migrations/0001_initial.py
+backend/apps/files/migrations/0001_initial.py
+
+# ===================================
+# HOSTING / DEPLOYMENT (cPanel u otros)
+# ===================================
+# Evitar subir archivos específicos de hosting o sensibles de deploy
+public_html/
+passenger_wsgi.py
+.htaccess
+.httpd.conf
+backend/.env.production
+backend/requirements.cpanel.txt
+backend/passenger_wsgi.py
+# cPanel / Passenger / Python App artifacts
+backend/tmp/
+backend/logs/
+backend/priv/
+backend/.cpanel/
+backend/.passenger/
+backend/.python_packages/
+backend/.python-startup
+backend/.httpd.conf
+backend/.htaccess
+backend/virtualenv/
+backend/venv/
+backend/ENV/
+backend/runtime.txt
+backend/Procfile
+backend/.env.*
+# Production-only environment and settings overrides
+backend/scouts_platform/settings/production.py.local
+backend/scouts_platform/settings/*.prod.py
+backend/scouts_platform/settings/*.production.py.local
+# Deployment scripts and local secrets
+backend/scripts/deploy/**
+!backend/scripts/deploy/.gitkeep
+# Static/media build outputs for hosting
+backend/static/
+backend/staticfiles/
+backend/media/**
+!backend/media/.gitkeep
+# Paquetes o artefactos de subida
+*.zip
+*.tar
+*.tar.gz
+backend/generate_secret_key.py
+backend/scripts/
+
+backend/scouts_platform/settings/production.py
+frontend/src/test-setup.ts
+frontend/src/test-setup.ts
+backend/apps/payments/tests/test_by_group_api.py
+frontend/src/components/__tests__/CourseCard.test.ts
+frontend/src/components/__tests__/KPICards.test.ts
+frontend/src/components/__tests__/RutSearchField.test.ts
+frontend/src/services/__tests__/payments.test.ts
+frontend/src/services/__tests__/persons.test.ts
+backend/run_tests.py
+backend/tests/conftest.py
+backend/tests/test_authentication.py
+backend/tests/test_health.py
+backend/tests/test_person_search.py
+backend/apps/payments/tests/test_payments_actions.py

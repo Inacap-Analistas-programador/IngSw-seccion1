@@ -66,6 +66,42 @@ class CourseViewSet(viewsets.ModelViewSet):
         queryset = self.get_queryset().filter(status=Course.ACTIVE)
         serializer = CourseListSerializer(queryset, many=True)
         return Response(serializer.data)
+
+    @action(detail=False, methods=['get'])
+    def dashboard_metrics(self, request):
+        """Métricas globales para dashboard semáforo"""
+        # KPIs por estado
+        total_courses = Course.objects.count()
+        active_courses = Course.objects.filter(status=Course.ACTIVE).count()
+        draft_courses = Course.objects.filter(status=Course.DRAFT).count()
+        inactive_courses = Course.objects.filter(status=Course.INACTIVE).count()
+        archived_courses = Course.objects.filter(status=Course.ARCHIVED).count()
+
+        # Lógica de warning/overdue
+        from django.utils import timezone
+        from datetime import timedelta
+        today = timezone.now().date()
+        warning_date = today + timedelta(days=7)
+        warning_courses = Course.objects.filter(
+            status=Course.ACTIVE, 
+            end_date__gte=today, 
+            end_date__lte=warning_date
+        ).count()
+        overdue_courses = Course.objects.filter(
+            status=Course.ACTIVE, 
+            end_date__lt=today
+        ).count()
+
+        metrics = {
+            'total_courses': total_courses,
+            'active_courses': active_courses,
+            'draft_courses': draft_courses,
+            'inactive_courses': inactive_courses,
+            'archived_courses': archived_courses,
+            'warning_courses': warning_courses,
+            'overdue_courses': overdue_courses,
+        }
+        return Response(metrics)
     
     @action(detail=False, methods=['get'])
     def by_rama(self, request):
@@ -96,3 +132,15 @@ class CourseViewSet(viewsets.ModelViewSet):
         }
         
         return Response(metrics)
+
+
+class CourseTeamViewSet(viewsets.ModelViewSet):
+    """
+    ViewSet para gestión de equipos de curso
+    """
+    queryset = CourseTeam.objects.select_related('course', 'user').all()
+    serializer_class = CourseTeamSerializer
+    permission_classes = [permissions.AllowAny]  # Temporalmente público
+    filter_backends = [DjangoFilterBackend]
+    filterset_fields = ['course', 'user', 'role']
+    ordering = ['-assigned_at']

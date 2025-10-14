@@ -17,6 +17,8 @@ from .serializers import (
     LoginSerializer,
     CustomTokenObtainPairSerializer
 )
+from utils.rut_validator import validate_rut, clean_rut, format_rut
+from django.db.models import Q
 
 
 class UserViewSet(viewsets.ModelViewSet):
@@ -60,3 +62,41 @@ class RoleAssignmentViewSet(viewsets.ModelViewSet):
     """
     queryset = RoleAssignment.objects.all()
     serializer_class = RoleAssignmentSerializer
+
+
+class PersonSearchView(APIView):
+    """
+    GET /api/persons/search/?rut=...
+
+    Search for a person (User) by Chilean RUT and return minimal user info
+    for form auto-population.
+
+    Query params:
+    - rut: required. Accepts formatted or unformatted RUT.
+
+    Responses:
+    - 200: { results: [ {id, first_name, last_name, email, rut, rama} ] }
+    - 400: { detail: "RUT inválido" } if rut is missing or invalid
+    """
+
+    permission_classes = [permissions.AllowAny]
+
+    def get(self, request):
+        rut_param = (request.query_params.get('rut') or '').strip()
+        if not rut_param:
+            return Response({"detail": "Parámetro 'rut' es requerido"}, status=status.HTTP_400_BAD_REQUEST)
+
+        if not validate_rut(rut_param):
+            return Response({"detail": "RUT inválido"}, status=status.HTTP_400_BAD_REQUEST)
+
+        cleaned = clean_rut(rut_param)
+        formatted = format_rut(rut_param) or rut_param
+
+        qs = (
+            User.objects.filter(
+                Q(rut__iexact=formatted) | Q(rut__iexact=cleaned) | Q(rut__icontains=cleaned)
+            ).order_by('id')[:5]
+        )
+
+        serializer = UserSerializer(qs, many=True)
+        return Response({"results": serializer.data})

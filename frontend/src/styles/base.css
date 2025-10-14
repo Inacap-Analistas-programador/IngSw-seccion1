@@ -1,0 +1,30 @@
+/* Base styles: CSS variables, body, typography */
+:root {
+  --sgics-bg: #0b1020;
+  --sgics-fg: #e6e6f0;
+  --sgics-muted: #9aa3b2;
+  --sgics-primary: #7c3aed; /* violet-600 */
+  --sgics-primary-700: #6d28d9; /* violet-700 */
+  --sgics-card: rgba(255, 255, 255, 0.06);
+  --sgics-card-border: rgba(255, 255, 255, 0.15);
+}
+
+html, body, #app {
+  height: 100%;
+}
+
+body {
+  background: radial-gradient(1200px 800px at 20% 0%, #111827 0%, #0b1020 40%, #0b1020 100%);
+  color: var(--sgics-fg);
+}
+
+.container-page {
+  min-height: 100vh;
+  padding: 1rem;
+}
+
+/* Typography helpers */
+.h1, h1 { font-size: 1.875rem; font-weight: 700; }
+.h2, h2 { font-size: 1.5rem; font-weight: 700; }
+.h3, h3 { font-size: 1.25rem; font-weight: 600; }
+.text-muted { color: var(--sgics-muted); }

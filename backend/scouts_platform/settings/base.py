@@ -44,6 +44,7 @@ THIRD_PARTY_APPS = [
 # Cada app maneja un módulo específico del sistema
 LOCAL_APPS = [
     'apps.authentication',    # Autenticación y gestión de usuarios/roles
+    'apps.catalog',           # Catálogos maestros (regiones, zonas, etc.)
     'apps.preinscriptions',   # Módulo de preinscripciones de cursos
     'apps.payments',          # Módulo de gestión de pagos
     'apps.files',             # Módulo de gestión de archivos

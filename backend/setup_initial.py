@@ -10,7 +10,7 @@ import django
 from django.conf import settings
 from django.core.management import execute_from_command_line
 
-def setup_django():
+def setup_django_environment():
     """Configura Django para el script"""
     os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'scouts_platform.settings.development')
     django.setup()
@@ -23,10 +23,21 @@ def create_initial_data():
     from apps.authentication.models import Role
     from django.contrib.auth import get_user_model
     
-    User = get_user_model()
+    # get_user_model() imported but not used
     
     # Crear roles básicos
-    roles_data = []
+    
+
+
+def run_migrations():
+    """Ejecuta las migraciones de Django"""
+    print("Ejecutando migraciones...")
+    try:
+        execute_from_command_line(['manage.py', 'migrate'])
+        return True
+    except Exception as e:
+        print(f"Error al ejecutar migraciones: {e}")
+        return False
     
 
     
@@ -42,7 +53,7 @@ def main():
     
     try:
         # Configurar Django
-        setup_django()
+        setup_django_environment()
         
         # Ejecutar migraciones
         if not run_migrations():

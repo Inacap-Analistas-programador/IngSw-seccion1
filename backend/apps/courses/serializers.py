@@ -85,11 +85,12 @@ class CourseDetailSerializer(serializers.ModelSerializer):
 
     def validate(self, data):
         """Validaciones del curso"""
-        if 'start_date' in data and 'end_date' in data:
-            if data['start_date'] > data['end_date']:
-                raise serializers.ValidationError({
-                    'end_date': 'La fecha de fin debe ser posterior a la fecha de inicio'
-                })
+        start_date = data.get('start_date')
+        end_date = data.get('end_date')
+        if start_date and end_date and start_date > end_date:
+            raise serializers.ValidationError({
+                'end_date': 'La fecha de fin debe ser posterior a la fecha de inicio'
+            })
         return data
 
 
@@ -100,9 +101,28 @@ CourseSerializer = CourseDetailSerializer
 class CourseTeamSerializer(serializers.ModelSerializer):
     """
     Serializer para equipo del curso
-    TODO: Agregar información del usuario y validaciones
     """
+    user_name = serializers.CharField(source='user.get_full_name', read_only=True)
+    user_email = serializers.CharField(source='user.email', read_only=True)
+    course_title = serializers.CharField(source='course.title', read_only=True)
+    role_display = serializers.CharField(source='get_role_display', read_only=True)
     
     class Meta:
         model = CourseTeam
-        fields = ['id', 'course', 'user', 'role', 'assigned_at']
+        fields = [
+            'id', 'course', 'course_title', 'user', 'user_name', 'user_email',
+            'role', 'role_display', 'assigned_at'
+        ]
+        read_only_fields = ['id', 'assigned_at']
+
+    def validate(self, data):
+        """Validar que no exista la misma combinación curso-usuario-rol"""
+        course = data.get('course')
+        user = data.get('user')
+        role = data.get('role')
+        
+        if CourseTeam.objects.filter(course=course, user=user, role=role).exists():
+            raise serializers.ValidationError(
+                'Este usuario ya tiene este rol asignado en el curso'
+            )
+        return data

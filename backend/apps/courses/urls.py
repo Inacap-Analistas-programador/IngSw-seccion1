@@ -6,6 +6,7 @@ app_name = 'courses'
 
 router = DefaultRouter()
 router.register(r'categories', views.CategoryViewSet)
+router.register(r'teams', views.CourseTeamViewSet)
 router.register(r'', views.CourseViewSet)
 
 urlpatterns = [

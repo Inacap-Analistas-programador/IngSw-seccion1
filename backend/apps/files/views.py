@@ -53,12 +53,11 @@ class FileUploadViewSet(viewsets.ModelViewSet):
         
         try:
             # Servir el archivo
-            response = FileResponse(
+            return FileResponse(
                 file_obj.file.open('rb'),
                 as_attachment=True,
                 filename=file_obj.original_name
             )
-            return response
         except FileNotFoundError:
             raise Http404("Archivo no encontrado")
     
@@ -101,8 +100,4 @@ class FileUploadViewSet(viewsets.ModelViewSet):
     def get_client_ip(self, request):
         """Obtiene la IP del cliente"""
         x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
-        if x_forwarded_for:
-            ip = x_forwarded_for.split(',')[0]
-        else:
-            ip = request.META.get('REMOTE_ADDR')
-        return ip
+        return x_forwarded_for.split(',')[0] if x_forwarded_for else request.META.get('REMOTE_ADDR')
