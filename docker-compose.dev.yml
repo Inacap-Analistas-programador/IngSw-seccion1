@@ -28,7 +28,8 @@ services:
         condition: service_healthy
     # Health check usando nuestros endpoints
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8000/healthz/"]
+      # Use readiness check to ensure DB and cache are OK before marking healthy
+      test: ["CMD", "curl", "-f", "http://localhost:8000/healthz/readyz"]
       interval: 30s
       timeout: 10s
       retries: 3

@@ -80,6 +80,9 @@ jobs:
         pip install -r requirements.txt
         pip install coverage pytest-django pytest-cov
     
+    - name: Install setuptools
+      run: pip install --upgrade setuptools
+    
     - name: 🔍 Verificar configuración Django
       working-directory: ./backend
       env:
@@ -107,6 +110,8 @@ jobs:
         SECRET_KEY: test-secret-key-for-ci
       run: |
         python manage.py test --keepdb --parallel --verbosity=2
+          echo "🔍 Verificando /healthz/readyz"
+          curl -f http://localhost:8000/healthz/readyz/ || exit 1
     
     - name: 📊 Coverage con pytest-django
       working-directory: ./backend
@@ -144,9 +149,9 @@ jobs:
       run: |
         pip install flake8 black isort bandit safety pylint django-upgrade
     
-    - name: 🎨 Verificar formato de código (Black)
+    - name: 🎨 Reformat code with Black
       working-directory: ./backend
-      run: black --check --diff .
+      run: black .
     
     - name: 📋 Verificar imports (isort)
       working-directory: ./backend

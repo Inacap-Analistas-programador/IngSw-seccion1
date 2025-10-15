@@ -45,11 +45,12 @@ THIRD_PARTY_APPS = [
 # Aplicaciones locales del proyecto SGICS
 # Cada app maneja un módulo específico del sistema
 LOCAL_APPS = [
-    "apps.authentication",  # Autenticación y gestión de usuarios/roles
-    "apps.preinscriptions",  # Módulo de preinscripciones de cursos
-    "apps.payments",  # Módulo de gestión de pagos
-    "apps.files",  # Módulo de gestión de archivos
-    "apps.courses",  # Módulo de gestión de cursos
+    'apps.authentication',    # Autenticación y gestión de usuarios/roles
+    'apps.catalog',           # Catálogos maestros (regiones, zonas, etc.)
+    'apps.preinscriptions',   # Módulo de preinscripciones de cursos
+    'apps.payments',          # Módulo de gestión de pagos
+    'apps.files',             # Módulo de gestión de archivos
+    'apps.courses',           # Módulo de gestión de cursos
 ]
 
 # Lista completa de aplicaciones instaladas

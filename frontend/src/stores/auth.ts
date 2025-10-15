@@ -1,24 +1,28 @@
-import { defineStore } from 'pinia'
-import { ref } from 'vue'
+// Store de autenticación (Pinia)
+// Maneja el estado del usuario, tokens y acciones de login/logout
+import { defineStore } from "pinia";
+import { ref } from "vue";
 
 /**
  * SPRINT 2 - Interface para datos del usuario autenticado
- * 
- * TODO SPRINT 2: El equipo debe ajustar según la respuesta del backend Django
- * - Verificar estructura exacta del modelo User en Django
- * - Agregar campos de roles y permisos según authentication app
- * - Incluir campos adicionales del perfil scout si es necesario
+ *
+ * Ajustar según la respuesta del backend Django si cambia
+* Nota: Ajustar según la respuesta del backend Django si cambia.
+* - Verificar estructura exacta del modelo User en Django
+* - Agregar campos de roles y permisos según authentication app cuando estén disponibles
+* - Incluir campos adicionales del perfil scout si es necesario
  */
+// Representación del usuario autenticado (ajustar según backend)
 export interface User {
-  id: number
-  username: string
-  email: string
-  first_name: string
-  last_name: string
-  full_name: string
-  rut?: string
-  
-  // SPRINT 2 TODO: Agregar campos según modelo Django User personalizado:
+  id: number;
+  username: string;
+  email: string;
+  first_name: string;
+  last_name: string;
+  full_name: string;
+  rut?: string;
+
+  // Campos adicionales se pueden agregar según el modelo Django User personalizado:
   // role?: 'instructor' | 'coordinador' | 'administrador' | 'participante'
   // permissions?: string[]
   // is_active?: boolean
@@ -33,139 +37,110 @@ export interface User {
 
 /**
  * Interface para credenciales de login
- * TODO: Ajustar según requirements de la API
+ * Ajustar según requirements de la API si el contrato cambia
  */
+// Credenciales para autenticación (usuario/contraseña)
 export interface LoginCredentials {
-  username: string
-  password: string
+  username: string;
+  password: string;
 }
 
 /**
  * Interface para respuesta de login de la API
- * TODO: Ajustar según la estructura real del backend
+* Nota: Ajustar según la estructura real del backend si el contrato cambia
  */
+// Estructura esperada de respuesta de login (ajustar si el backend cambia)
 export interface LoginResponse {
-  access_token: string
-  refresh_token: string
-  user: User
+  access: string;
+  refresh: string;
 }
 
-export const useAuthStore = defineStore('auth', () => {
+export const useAuthStore = defineStore("auth", () => {
   // Estado de autenticación
-  const user = ref<User | null>(null)
-  const token = ref<string | null>(localStorage.getItem('access_token'))
-  const isAuthenticated = ref<boolean>(!!token.value)
-  const loading = ref(false)
+  const user = ref<User | null>(null);
+  const token = ref<string | null>(localStorage.getItem("access_token"));
+  const isAuthenticated = ref<boolean>(!!token.value);
+  const loading = ref(false);
+  const error = ref<string | null>(null);
 
-  /**
-   * SPRINT 2 - Función principal de login con JWT
-   * 
-   * TODO SPRINT 2: El equipo debe implementar:
-   * 1. Conexión con endpoint Django /api/auth/login/
-   * 2. Manejo de tokens JWT (access + refresh)
-   * 3. Validación de respuestas y errores HTTP
-   * 4. Almacenamiento seguro de tokens
-   */
+  // Login con autenticación JWT
+  // Inicia sesión contra el backend y configura Axios con el token recibido
   async function login(credentials: LoginCredentials): Promise<void> {
-    loading.value = true
-    
+    loading.value = true;
+    error.value = null;
+
     try {
-      // SPRINT 2 TODO: Implementar llamada real al backend Django
-      // const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000'
-      // const response = await fetch(`${API_BASE_URL}/api/auth/login/`, {
-      //   method: 'POST',
-      //   headers: {
-      //     'Content-Type': 'application/json',
-      //   },
-      //   body: JSON.stringify({
-      //     username: credentials.username,
-      //     password: credentials.password
-      //   })
-      // })
+  const { login: loginService } = await import('@/services/auth')
+  const response: LoginResponse = await loginService(credentials)
       
-      // SPRINT 2 TODO: Procesar respuesta del servidor
-      // const data: LoginResponse = await response.json()
+      // Construye un objeto de usuario básico (perfil detallado se puede cargar luego)
+      const userData: User = {
+        id: 0, // Will be populated when we get user profile
+        username: credentials.username,
+        email: '', // Will be populated when we get user profile
+        first_name: '',
+        last_name: '',
+        full_name: credentials.username,
+        rut: undefined
+      }
       
-      // SPRINT 2 TODO: Manejar diferentes códigos de respuesta
-      // if (!response.ok) {
-      //   switch (response.status) {
-      //     case 401:
-      //       throw new Error('Credenciales inválidas')
-      //     case 429:
-      //       throw new Error('Demasiados intentos de login')
-      //     case 500:
-      //       throw new Error('Error del servidor')
-      //     default:
-      //       throw new Error(data.message || 'Error de autenticación')
-      //   }
-      // }
+  setAuth(userData, response.access, response.refresh)
       
-      // SPRINT 2 TODO: Guardar tokens JWT y datos del usuario
-      // setAuth(data.user, data.access_token, data.refresh_token)
+      // Configura cabecera Authorization para las siguientes peticiones
+      const axios = (await import('axios')).default
+      axios.defaults.headers.common['Authorization'] = `Bearer ${response.access}`
       
-      // TEMPORAL - SPRINT 2 TODO: Remover simulación
-      console.warn('SPRINT 2: Implementar conexión real con Django REST Framework')
-      throw new Error('SPRINT 2 TODO: Conectar con backend Django + JWT')
-      
-    } catch (error) {
-      console.error('Login error:', error)
-      throw error
+    } catch (err: any) {
+      if (err.response?.status === 401) {
+        error.value = 'Credenciales inválidas'
+      } else {
+        error.value = err?.message || 'Error de autenticación'
+      }
+      throw new Error(error.value || 'Error de autenticación')
     } finally {
-      loading.value = false
+      loading.value = false;
     }
   }
 
   /**
-   * Establece los datos de autenticación
-   * TODO: Validar tokens antes de guardar
+  * Establece los datos de autenticación en memoria y localStorage
+  * Nota: se podría validar la forma del token antes de guardarlo
    */
   function setAuth(userData: User, accessToken: string, refreshToken?: string) {
-    user.value = userData
-    token.value = accessToken
-    isAuthenticated.value = true
-    
+    user.value = userData;
+    token.value = accessToken;
+    isAuthenticated.value = true;
+
     // Guardar tokens en localStorage
-    localStorage.setItem('access_token', accessToken)
+    localStorage.setItem("access_token", accessToken);
     if (refreshToken) {
-      localStorage.setItem('refresh_token', refreshToken)
+      localStorage.setItem("refresh_token", refreshToken);
     }
   }
 
   /**
-   * Limpia los datos de autenticación
+   * Limpia por completo el estado de autenticación y tokens persistidos
    */
   function clearAuth() {
-    user.value = null
-    token.value = null
-    isAuthenticated.value = false
-    localStorage.removeItem('access_token')
-    localStorage.removeItem('refresh_token')
+    user.value = null;
+    token.value = null;
+    isAuthenticated.value = false;
+    localStorage.removeItem("access_token");
+    localStorage.removeItem("refresh_token");
   }
 
   /**
-   * Logout del usuario
-   * TODO: El equipo debe implementar logout en el servidor si es necesario
+   * Cierra la sesión del usuario (lado cliente). Si el backend expone un endpoint de logout,
+   * se puede invocar aquí antes de limpiar el estado local.
    */
   async function logout(): Promise<void> {
-    try {
-      // TODO: Implementar llamada a endpoint de logout si es necesario
-      // await fetch('/api/auth/logout/', {
-      //   method: 'POST',
-      //   headers: {
-      //     'Authorization': `Bearer ${token.value}`,
-      //     'Content-Type': 'application/json'
-      //   }
-      // })
-    } catch (error) {
-      console.error('Error durante logout:', error)
-    } finally {
-      clearAuth()
-    }
+    // Si en el futuro se habilita /api/auth/logout/, se puede llamar aquí.
+    clearAuth();
   }
 
-  // TODO: El equipo debe implementar funciones adicionales según necesidades:
-  // - refreshToken(): renovar token cuando expire
-  // - checkAuthStatus(): verificar si el token sigue siendo válido
+  // Futuras mejoras:
+  // - refreshToken(): renovar token cuando expire (apoyado por interceptor en main.ts)
+  // - checkAuthStatus(): verificar validez del token en arranque
   // - updateProfile(): actualizar datos del usuario
   // - changePassword(): cambiar contraseña
 
@@ -175,11 +150,12 @@ export const useAuthStore = defineStore('auth', () => {
     token,
     isAuthenticated,
     loading,
-    
+    error,
+
     // Acciones
     login,
     logout,
     setAuth,
-    clearAuth
-  }
-})
+    clearAuth,
+  };
+});

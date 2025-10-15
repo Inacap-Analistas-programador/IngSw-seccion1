@@ -2,11 +2,12 @@
 Configuración de desarrollo para SGICS
 Sistema de Gestión Integral de Cursos Scout
 
-Este archivo contiene configuraciones específicas para el ambiente de desarrollo.
+Este archivo extiende la configuración base para el ambiente de desarrollo.
 Incluye configuración de debug, base de datos local, CORS permisivo, etc.
 """
 
-from .base import *
+# Importar TODA la configuración base y luego sobreescribir lo necesario
+from .base import *  # noqa: F401,F403
 
 # SECURITY WARNING: don't run with debug turned on in production!
 # Modo debug ACTIVADO para desarrollo - Muestra errores detallados
