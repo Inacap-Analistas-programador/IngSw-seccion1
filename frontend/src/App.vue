@@ -1,21 +1,23 @@
 <template>
-  <div id="app">
-    <router-view />
+  <div id="app" class="min-h-screen">
+    <AppLayout v-if="useLayout">
+      <router-view />
+    </AppLayout>
+    <router-view v-else />
   </div>
 </template>
 
 <script setup lang="ts">
-// No script logic needed for a basic App.vue acting as a router-view container
+import { computed } from 'vue'
+import { useRoute } from 'vue-router'
+import AppLayout from '@/components/layout/AppLayout.vue'
+
+const route = useRoute()
+
+// Usa el layout global solo en rutas protegidas (meta.requiresAuth)
+const useLayout = computed(() => route.meta?.requiresAuth === true)
 </script>
 
 <style scoped>
-/* Optional: Add global styles or layout styles here */
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
-}
+/* Estilos mínimos; el layout maneja el resto */
 </style>

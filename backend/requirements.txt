@@ -3,11 +3,11 @@ Django==5.0.7
 djangorestframework==3.15.1
 djangorestframework-simplejwt==5.3.0
 django-cors-headers==4.3.1
+django-filter==24.3
 
 # Database - Conectores de base de datos
-mysqlclient==2.2.0     # MySQL connector (recomendado para producción)
 PyMySQL==1.1.0         # MySQL connector alternativo (pure Python)
-mssql-django==1.4      # SQL Server support (por si se necesita en el futuro)
+# mssql-django==1.4    # SQL Server support (opcional, instalar solo si se requiere)
 
 # Development and Testing
 pytest==7.4.2
@@ -33,9 +33,11 @@ django-ratelimit==4.1.0
 python-decouple==3.8
 
 # File handling
-Pillow==10.0.0
+Pillow==11.3.0
 django-storages==1.14.2
 
 # Utilities
 celery==5.3.1
 redis==4.6.0
+
+setuptools

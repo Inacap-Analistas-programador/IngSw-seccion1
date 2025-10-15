@@ -1,29 +1,24 @@
 """
 URLs para endpoints de salud del sistema SGICS
 
-Estos endpoints son utilizados por:
-- Sistemas de monitoreo (Prometheus, Grafana)
-- Load balancers para verificar que el servicio está activo
-- Docker health checks
-- Pipeline de CI/CD para verificar deployments
+Endpoints estándar de Kubernetes health checks:
+- /healthz        -> Health check básico
+- /readyz         -> Readiness check (DB, cache)
+- /livez          -> Liveness check (app no bloqueada)
 
-Endpoints disponibles:
-- /healthz/          -> Verificación básica de que el servicio responde
-- /healthz/ready/    -> Verificación de que el servicio está listo (DB conectada)
-- /healthz/live/     -> Verificación de que el servicio está vivo
+Compatibilidad con nombres alternativos para sistemas legacy.
 """
 
 from django.urls import path
 from . import views
 
-# TODO: El equipo de DevOps debe implementar los health checks completos
 urlpatterns = [
-    # Health check básico - solo verifica que Django responde
-    path('', views.health_check, name='health_check'),
-    
-    # Readiness check - verifica DB, cache, servicios externos
-    path('ready/', views.readiness_check, name='readiness_check'),
-    
-    # Liveness check - verifica que la aplicación no está bloqueada
-    path('live/', views.liveness_check, name='liveness_check'),
+    # Endpoints estándar bajo el prefijo /healthz/
+    # Nota: este archivo se incluye con prefix 'healthz/' desde urls.py del proyecto
+    path("", views.healthz, name="healthz"),  # /healthz/
+    path("readyz/", views.readyz, name="readyz"),  # /healthz/readyz/
+    path("livez/", views.livez, name="livez"),  # /healthz/livez/
+    # Aliases de compatibilidad sin la 'z'
+    path("ready/", views.readiness_check, name="readiness_check"),  # /healthz/ready/
+    path("live/", views.liveness_check, name="liveness_check"),  # /healthz/live/
 ]
