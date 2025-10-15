@@ -355,11 +355,9 @@ class PaymentsAPITests(APITestCase):
         invalid_data = {"PER_ID": 1, "CUR_ID": 1, "PAP_TIPO": 1, "PAP_VALOR": "0.00"}
         response = self.client.post(self.pago_persona_url, invalid_data, format="json")
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
-        # Ajustamos la aserción para que funcione con un manejador de excepciones personalizado
-        # que envuelve los errores en una clave 'details'.
-        self.assertIn("details", response.data)
+        self.assertIn("PAP_VALOR", response.data)
         self.assertEqual(
-            str(response.data["details"]["PAP_VALOR"][0]),
+            str(response.data["PAP_VALOR"][0]),
             "El valor del pago debe ser mayor a 0.",
         )
 
