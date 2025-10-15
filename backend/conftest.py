@@ -3,7 +3,7 @@ from rest_framework.test import APIClient
 from django.contrib.auth import get_user_model
 
 
-from backend.apps.payments.models import (
+from apps.payments.models import (
     PagoPersona,
     ConceptoContable,
     ComprobantePago,
