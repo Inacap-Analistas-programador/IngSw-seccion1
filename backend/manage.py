@@ -18,16 +18,18 @@ Configuración por defecto: scouts_platform.settings.development
 import os
 import sys
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     """
     Ejecutar tareas administrativas de Django.
-    
+
     Configura el módulo de settings por defecto y ejecuta el comando
     pasado por línea de comandos usando el sistema de management de Django.
     """
     # Establecer configuración por defecto para desarrollo
-    os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'scouts_platform.settings.development')
-    
+    os.environ.setdefault(
+        "DJANGO_SETTINGS_MODULE", "scouts_platform.settings.development"
+    )
+
     try:
         # Importar y ejecutar el sistema de comandos de Django
         from django.core.management import execute_from_command_line
@@ -38,6 +40,6 @@ if __name__ == '__main__':
             "disponible en tu variable de entorno PYTHONPATH? ¿Olvidaste "
             "activar el entorno virtual?"
         ) from exc
-    
+
     # Ejecutar el comando especificado en sys.argv
     execute_from_command_line(sys.argv)

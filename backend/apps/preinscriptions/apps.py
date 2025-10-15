@@ -2,6 +2,6 @@ from django.apps import AppConfig
 
 
 class PreinscriptionsConfig(AppConfig):
-    default_auto_field = 'django.db.models.BigAutoField'
-    name = 'apps.preinscriptions'
-    verbose_name = 'Preinscriptions'
+    default_auto_field = "django.db.models.BigAutoField"
+    name = "apps.preinscriptions"
+    verbose_name = "Preinscriptions"

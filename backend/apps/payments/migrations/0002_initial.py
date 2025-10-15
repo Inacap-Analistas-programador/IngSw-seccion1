@@ -6,38 +6,55 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     initial = True
 
     dependencies = [
-        ('payments', '0001_initial'),
-        ('preinscriptions', '0001_initial'),
+        ("payments", "0001_initial"),
+        ("preinscriptions", "0001_initial"),
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='pago',
-            name='preinscripcion',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='pagos', to='preinscriptions.preinscripcion'),
+            model_name="pago",
+            name="preinscripcion",
+            field=models.ForeignKey(
+                on_delete=django.db.models.deletion.CASCADE,
+                related_name="pagos",
+                to="preinscriptions.preinscripcion",
+            ),
         ),
         migrations.AddField(
-            model_name='pago',
-            name='registrado_por',
-            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='pagos_registrados', to=settings.AUTH_USER_MODEL),
+            model_name="pago",
+            name="registrado_por",
+            field=models.ForeignKey(
+                blank=True,
+                null=True,
+                on_delete=django.db.models.deletion.SET_NULL,
+                related_name="pagos_registrados",
+                to=settings.AUTH_USER_MODEL,
+            ),
         ),
         migrations.AddField(
-            model_name='cuota',
-            name='pago',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='cuotas', to='payments.pago'),
+            model_name="cuota",
+            name="pago",
+            field=models.ForeignKey(
+                on_delete=django.db.models.deletion.CASCADE,
+                related_name="cuotas",
+                to="payments.pago",
+            ),
         ),
         migrations.AddField(
-            model_name='comprobantedescarga',
-            name='pago',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='descargas', to='payments.pago'),
+            model_name="comprobantedescarga",
+            name="pago",
+            field=models.ForeignKey(
+                on_delete=django.db.models.deletion.CASCADE,
+                related_name="descargas",
+                to="payments.pago",
+            ),
         ),
         migrations.AlterUniqueTogether(
-            name='cuota',
-            unique_together={('pago', 'numero')},
+            name="cuota",
+            unique_together={("pago", "numero")},
         ),
     ]

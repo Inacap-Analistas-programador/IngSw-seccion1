@@ -7,6 +7,7 @@ Permite definir metadatos y comportamientos específicos de la aplicación.
 
 from django.apps import AppConfig
 
+
 class PagosConfig(AppConfig):
     """
     Clase de configuración para la aplicación 'payments'.
@@ -20,6 +21,7 @@ class PagosConfig(AppConfig):
         verbose_name (str): Un nombre legible por humanos para esta aplicación,
             que se muestra en lugares como el panel de administración de Django.
     """
-    default_auto_field = 'django.db.models.BigAutoField'
-    name = 'apps.payments'
-    verbose_name = 'Gestión de Pagos'
+
+    default_auto_field = "django.db.models.BigAutoField"
+    name = "apps.payments"
+    verbose_name = "Gestión de Pagos"
