@@ -9,7 +9,7 @@ JSON Web Tokens (JWT) proporcionan autenticación stateless y segura:
 
 Flujo de autenticación:
 1. Usuario envía credenciales a /api/auth/login/
-2. Backend valida y retorna access_token + refresh_token  
+2. Backend valida y retorna access_token + refresh_token
 3. Frontend envía access_token en header Authorization
 4. Cuando access_token expira, usa refresh_token para obtener uno nuevo
 """

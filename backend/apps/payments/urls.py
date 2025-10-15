@@ -5,6 +5,7 @@ Este archivo define las rutas de la API para todos los recursos relacionados con
 Utiliza un `DefaultRouter` de Django REST Framework para registrar los `ViewSets`
 y generar automáticamente las URLs para las operaciones CRUD (Crear, Leer, Actualizar, Eliminar).
 """
+
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
 from .views import (

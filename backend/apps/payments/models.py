@@ -3,6 +3,7 @@
 Este módulo es el núcleo para la gestión financiera de la plataforma, permitiendo
 registrar pagos, gestionar saldos a favor, emitir comprobantes y auditar cambios.
 """
+
 from django.db import models
 from apps.authentication.models import User
 from django.utils import timezone

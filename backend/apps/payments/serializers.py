@@ -6,6 +6,7 @@ en formatos de datos como JSON para ser utilizados por la API REST.
 Cada serializer se corresponde con un modelo y define qué campos
 se deben incluir en su representación.
 """
+
 from rest_framework import serializers
 from django.db import transaction
 from rest_framework.exceptions import ValidationError
