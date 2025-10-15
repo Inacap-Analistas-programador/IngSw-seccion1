@@ -99,9 +99,11 @@ def format_error_response(exception, original_data, status_code):
         "error": True,
         "status_code": status_code,
         "message": main_message,
-        "details": original_data
-        if isinstance(original_data, dict)
-        else {"detail": original_data},
+        "details": (
+            original_data
+            if isinstance(original_data, dict)
+            else {"detail": original_data}
+        ),
         "timestamp": datetime.now().isoformat(),
     }
 
@@ -125,9 +127,11 @@ def log_api_error(exception, context, status_code):
         "status_code": status_code,
         "endpoint": request.path if request else "unknown",
         "method": request.method if request else "unknown",
-        "user": str(request.user)
-        if request and request.user.is_authenticated
-        else "anonymous",
+        "user": (
+            str(request.user)
+            if request and request.user.is_authenticated
+            else "anonymous"
+        ),
         "view": view.__class__.__name__ if view else "unknown",
     }
 

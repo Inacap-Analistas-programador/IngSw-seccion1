@@ -5,7 +5,7 @@ Este archivo define todas las rutas principales del proyecto:
 
 Estructura de URLs:
 - /admin/                    -> Panel de administración de Django
-- /api/auth/login/          -> Endpoint para login JWT  
+- /api/auth/login/          -> Endpoint para login JWT
 - /api/auth/refresh/        -> Endpoint para refresh de token JWT
 - /api/auth/                -> URLs del módulo de autenticación
 - /api/preinscriptions/     -> URLs del módulo de preinscripciones

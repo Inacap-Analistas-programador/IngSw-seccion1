@@ -46,7 +46,7 @@ REST_FRAMEWORK_CONFIG = {
         "rest_framework.filters.OrderingFilter",
     ],
     # Manejo de excepciones personalizado
-    # "EXCEPTION_HANDLER": "utils.api_exceptions.custom_exception_handler",
+    "EXCEPTION_HANDLER": "utils.api_exceptions.custom_exception_handler",
     # Formato de fecha y hora estándar ISO 8601
     "DATETIME_FORMAT": "%Y-%m-%dT%H:%M:%S.%fZ",
     "DATE_FORMAT": "%Y-%m-%d",
