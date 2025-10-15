@@ -41,3 +41,6 @@ redis==4.6.0
 
 # Added for the current task
 django-filter==25.2
+
+setuptools>=68.0.0
+

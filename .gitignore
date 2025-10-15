@@ -161,4 +161,4 @@ temp/
 # ===================================
 !**/.gitkeep
 docs/
-backend/apps/authentication/migrations/0001_initial.py
+
