@@ -38,7 +38,7 @@ class PagoPersona(models.Model):
     class Meta:
         verbose_name = "Pago de Persona"
         verbose_name_plural = "Pagos de Personas"
-        db_table = 'PAGO_PERSONA'
+        db_table = 'pago_persona'
         ordering = ['-PAP_FECHA_HORA']
 
     def __str__(self):
@@ -63,7 +63,7 @@ class PagoCambioPersona(models.Model):
     class Meta:
         verbose_name = "Historial de Cambio de Pago"
         verbose_name_plural = "Historiales de Cambios de Pago"
-        db_table = 'PAGO_CAMBIO_PERSONA'
+        db_table = 'pago_cambio_persona'
         ordering = ['-PCP_FECHA_HORA']
 
     def __str__(self):
@@ -89,7 +89,7 @@ class Prepago(models.Model):
     class Meta:
         verbose_name = "Prepago (Saldo a Favor)"
         verbose_name_plural = "Prepagos (Saldos a Favor)"
-        db_table = 'PREPAGO'
+        db_table = 'prepago'
         ordering = ['-PPA_ID']
 
     def __str__(self):
@@ -114,7 +114,7 @@ class ConceptoContable(models.Model):
     class Meta:
         verbose_name = "Concepto Contable"
         verbose_name_plural = "Conceptos Contables"
-        db_table = 'CONCEPTO_CONTABLE'
+        db_table = 'concepto_contable'
         ordering = ['COC_DESCRIPCION']
 
     def __str__(self):
@@ -140,7 +140,7 @@ class ComprobantePago(models.Model):
     class Meta:
         verbose_name = "Comprobante de Pago"
         verbose_name_plural = "Comprobantes de Pagos"
-        db_table = 'COMPROBANTE_PAGO'
+        db_table = 'comprobante_pago'
         ordering = ['-CPA_FECHA', '-CPA_NUMERO']
 
     def __str__(self):
@@ -158,8 +158,19 @@ class PagoComprobante(models.Model):
     class Meta:
         verbose_name = "Relación Pago-Comprobante"
         verbose_name_plural = "Relaciones Pago-Comprobante"
-        db_table = 'PAGO_COMPROBANTE'
+        db_table = 'pago_comprobante'
         unique_together = ('PAP_ID', 'CPA_ID') # Evita duplicados
 
     def __str__(self):
         return f"Relación {self.PCO_ID}: Pago {self.PAP_ID.PAP_ID} en Comprobante {self.CPA_ID.CPA_NUMERO}"
+
+
+# Compatibility models for newer API tests (Pago, Cuota)
+# Note: compatibility 'Pago' and 'Cuota' models removed. The canonical models come from
+# PagoPersona / ComprobantePago / PagoComprobante / Prepago as defined above (db_table names
+# match legacy schema: pago_persona, comprobante_pago, pago_comprobante, prepago).
+
+# NOTE: Legacy compatibility model `Pago` removed. The canonical payment models
+# are `PagoPersona`, `ComprobantePago`, `PagoComprobante`, `Prepago`, etc.
+# If you need to remove the old 'payments' table from the DB, a migration
+# has been added under migrations/ (delete model). Review before applying.

@@ -47,9 +47,15 @@ router.register(r'comprobantes-pago', ComprobantePagoViewSet, basename='comproba
 # Endpoint para la relación entre pagos y comprobantes.
 router.register(r'pagos-comprobante', PagoComprobanteViewSet, basename='pago-comprobante')
 
+# Note: compatibility endpoints for Pago/Cuota were removed to canonicalize the payments model.
+
 # Agrupa todas las URLs generadas por el router bajo la ruta raíz de esta aplicación.
 # Por ejemplo, si este módulo de URLs se incluye en 'api/payments/', las rutas
 # serán como '/api/payments/pagos-persona/'.
 urlpatterns = [
     path('', include(router.urls)),
+    # Backwards-compatible endpoints for legacy clients that call
+    # /api/payments/by-group/ or /api/payments/legacy/by-group/
+    # These dispatch to the PagoPersonaViewSet.by_group action.
+    # Compatibility routes removed — use canonical '/pagos-persona/by-group/' endpoint
 ]

@@ -10,14 +10,14 @@ class CourseAdmin(admin.ModelAdmin):
     list_display = (
         "code",
         "title",
-        "modality",
+        "rama",
         "status",
         "start_date",
         "end_date",
         "capacity_info",
         "course_actions",
     )
-    list_filter = ("modality", "status", "start_date", "created_at")
+    list_filter = ("rama", "status", "start_date", "created_at")
     search_fields = ("code", "title", "description")
     ordering = ("-created_at",)
     date_hierarchy = "start_date"

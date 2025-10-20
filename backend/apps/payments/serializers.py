@@ -14,6 +14,7 @@ from .models import (
     PagoComprobante, ConceptoContable
 )
 
+
 class ConceptoContableSerializer(serializers.ModelSerializer):
     """
     Serializer para el modelo `ConceptoContable`.
@@ -53,6 +54,19 @@ class PagoPersonaSerializer(serializers.ModelSerializer):
         if value <= 0:
             raise ValidationError("El valor del pago debe ser mayor a 0.")
         return value
+
+    def validate(self, attrs):
+        """Ensure there's an approved Preinscripcion for the given PER_ID and CUR_ID when creating."""
+        if self.instance is None:
+            per = attrs.get('PER_ID')
+            cur = attrs.get('CUR_ID')
+            if per is None or cur is None:
+                raise ValidationError('PER_ID and CUR_ID are required.')
+            from apps.preinscriptions.models import Preinscripcion
+            exists = Preinscripcion.objects.filter(user_id=per, course_id=cur, estado=Preinscripcion.APROBADA).exists()
+            if not exists:
+                raise ValidationError('No approved preinscripcion for given person and course.')
+        return attrs
 
 class PagoCambioPersonaSerializer(serializers.ModelSerializer):
     """
@@ -135,7 +149,9 @@ class ComprobantePagoSerializer(serializers.ModelSerializer):
 
         # 5. Creamos las relaciones en la tabla intermedia PagoComprobante.
         # Usamos bulk_create para una inserción eficiente en la base de datos.
-        PagoComprobante.objects.bulk_create([PagoComprobante(PAP_ID=pago, CPA_ID=comprobante) for pago in pagos])
+        PagoComprobante.objects.bulk_create([
+            PagoComprobante(PAP_ID=pago, CPA_ID=comprobante) for pago in pagos
+        ])
 
         return comprobante
 
@@ -148,3 +164,7 @@ class PagoComprobanteSerializer(serializers.ModelSerializer):
     class Meta:
         model = PagoComprobante
         fields = '__all__'
+
+
+# Legacy PagoCompatSerializer removed. Use canonical serializers (PagoPersona,
+# ComprobantePago, etc.) instead.

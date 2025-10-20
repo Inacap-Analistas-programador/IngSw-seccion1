@@ -222,6 +222,93 @@ export interface PaginatedResponse<T> {
   results: T[]
 }
 
+// =================== INTERFACES DE PAGOS (BACKEND CANONICAL) ===================
+
+export interface PagoPersonaItem {
+  PAP_ID: number
+  PER_ID: number
+  CUR_ID: number | null
+  USU_ID: number
+  PAP_VALOR: string | number
+  PAP_TIPO?: number
+  PAP_FECHA_HORA?: string | null
+  PAP_OBSERVACION?: string | null
+}
+
+export interface PaymentsByGroupResponse {
+  group: string
+  count: number
+  // total_amount may be provided by backend or computed by frontend
+  total_amount?: string
+  breakdown?: Record<string, number>
+  items: PagoPersonaItem[]
+}
+
+// =================== INTERFACES ADICIONALES DE PAGOS (CANONICAL) ===================
+/**
+ * Comprobante de pago principal (ComprobantePago)
+ * - Representa un documento que agrupa uno o más PagoPersona
+ * - Campos inferidos a partir del backend canónico
+ */
+export interface ComprobantePagoItem {
+  CPA_ID: number
+  CPA_NUMERO?: string
+  CPA_FECHA?: string | null
+  CPA_VALOR: string | number
+  CPA_OBSERVACION?: string | null
+  USU_ID?: number
+  // opcional: lista de pagos asociados (puede venir como ids o como objetos según endpoint)
+  pagos_ids?: number[]
+}
+
+/**
+ * Relación entre PagoPersona y ComprobantePago
+ */
+export interface PagoComprobanteItem {
+  PCP_ID?: number
+  PAP_ID: number
+  CPA_ID: number
+}
+
+/**
+ * Prepago: registro temporal de pago (por ejemplo antes de confirmación)
+ */
+export interface PrepagoItem {
+  PREP_ID: number
+  PER_ID?: number
+  CUR_ID?: number | null
+  USU_ID?: number
+  PREP_VALOR: string | number
+  PREP_FECHA_HORA?: string | null
+  PREP_OBSERVACION?: string | null
+  PREP_ESTADO?: string
+}
+
+/**
+ * Cambio de persona asociado a un pago (PagoCambioPersona)
+ * - Representa movimientos que reasignan un PagoPersona a otra persona
+ */
+export interface PagoCambioPersonaItem {
+  PCPG_ID?: number
+  PAP_ID: number
+  OLD_PER_ID?: number
+  NEW_PER_ID?: number
+  USU_ID?: number
+  MOTIVO?: string | null
+  FECHA?: string | null
+}
+
+/**
+ * Concepto contable asociado a pagos (ConceptoContable)
+ */
+export interface ConceptoContableItem {
+  CON_ID: number
+  CON_CODIGO?: string
+  CON_NOMBRE: string
+  CON_DESCRIPCION?: string | null
+  CON_PORCENTAJE?: number | null
+}
+
 export interface ApiError {
   message: string
   code?: string

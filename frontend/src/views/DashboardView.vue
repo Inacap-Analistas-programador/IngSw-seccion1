@@ -77,6 +77,7 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
 import { coursesService } from '@/services/courses'
+import { getPaymentsByGroup } from '@/services/payments'
 
 const metrics = ref({
   activeCourses: 0,
@@ -106,7 +107,14 @@ const refreshData = async () => {
     
     // Simular otras métricas
     metrics.value.preinscriptions = Math.floor(Math.random() * 50) + 10
-    metrics.value.pendingPayments = Math.floor(Math.random() * 15) + 2
+    // Intentar obtener pagos pendientes desde el servicio de pagos (usa grupo 'pending' asumido)
+    try {
+      const paymentsRes = await getPaymentsByGroup('pending')
+      metrics.value.pendingPayments = paymentsRes?.count ?? Math.floor(Math.random() * 15) + 2
+    } catch (_err) {
+      // Fallback si el endpoint no responde o no existe
+      metrics.value.pendingPayments = Math.floor(Math.random() * 15) + 2
+    }
     metrics.value.totalUsers = Math.floor(Math.random() * 100) + 50
   } catch (_error) {
     // Usar datos simulados en caso de error

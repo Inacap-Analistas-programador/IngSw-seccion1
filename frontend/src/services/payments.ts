@@ -1,24 +1,22 @@
 import axios from 'axios'
 
-export interface PaymentItem {
-  id: number
-  preinscripcion: number
-  monto: string | number
-  medio: string
-  referencia: string
-  notas: string
-  estado: string
-  fecha_pago: string | null
-  created_at: string
-  updated_at: string
+// Frontend types matching backend canonical PagoPersona DTO
+export interface PagoPersonaItem {
+  PAP_ID: number
+  PER_ID: number
+  CUR_ID: number | null
+  USU_ID: number
+  PAP_VALOR: string | number
+  PAP_TIPO?: string
+  PAP_FECHA_HORA?: string | null
+  PAP_OBSERVACION?: string
 }
 
 export interface PaymentsByGroupResponse {
   group: string
   count: number
   total_amount: string
-  breakdown: Record<string, number>
-  items: PaymentItem[]
+  items: PagoPersonaItem[]
 }
 
 export async function getPaymentsByGroup(
@@ -27,12 +25,9 @@ export async function getPaymentsByGroup(
   signal?: AbortSignal
 ): Promise<PaymentsByGroupResponse> {
   const params: Record<string, any> = { group }
-  if (courseId) {
-    params.course = courseId
-  }
-  const { data } = await axios.get<PaymentsByGroupResponse>(
-    '/api/payments/by-group/',
-    { params, signal }
-  )
+  if (courseId) params.course = courseId
+
+  // Backend provides this under pagos-persona/by-group via the payments router
+  const { data } = await axios.get<PaymentsByGroupResponse>('/api/payments/pagos-persona/by-group/', { params, signal })
   return data
 }

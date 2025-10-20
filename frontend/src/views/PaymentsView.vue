@@ -30,13 +30,11 @@
                 id="group-input"
                 v-model="searchFilters.group" 
                 class="w-full pl-4 pr-12 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all duration-200 text-gray-900 placeholder-gray-500 bg-gray-50 hover:bg-white focus:bg-white" 
-                placeholder="Ej: grupo-a"
               />
               <div class="absolute inset-y-0 right-0 flex items-center pr-3">
                 <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
-                </svg>
-              </div>
+        </svg>
             </div>
           </div>
           
@@ -108,27 +106,27 @@
             variant="primary"
           />
           <MetricCard
-            title="Monto Total"
-            :value="formatCurrency(data.total_amount)"
-            description="Suma total"
-            variant="success"
-          />
+              title="Monto Total"
+              :value="formatCurrency(totalAmount)"
+              description="Suma total"
+              variant="success"
+            />
           <MetricCard
             title="Pagos Pendientes"
-            :value="String(data.breakdown?.PENDING || 0)"
+            :value="String(pendingCount)"
             description="Requieren atención"
             variant="warning"
           />
           <MetricCard
             title="Pagos Completados"
-            :value="String(data.breakdown?.COMPLETED || 0)"
+            :value="String(completedCount)"
             description="Finalizados"
             variant="info"
           />
         </div>
 
         <!-- Breakdown Chart -->
-        <div class="bg-white rounded-2xl shadow-xl border border-gray-200 p-8" v-if="data.breakdown">
+  <div class="bg-white rounded-2xl shadow-xl border border-gray-200 p-8" v-if="Object.keys(computedBreakdown).length">
           <div class="flex items-center mb-6">
             <div class="w-10 h-10 bg-gradient-to-r from-purple-500 to-pink-500 rounded-lg flex items-center justify-center mr-4">
               <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -140,7 +138,7 @@
           
           <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
             <div 
-              v-for="(count, status) in data.breakdown" 
+              v-for="(count, status) in computedBreakdown" 
               :key="status"
               class="bg-gradient-to-br from-gray-50 to-white border border-gray-200 rounded-xl p-6 text-center hover:shadow-lg transition-all duration-200 transform hover:-translate-y-1"
             >
@@ -150,7 +148,7 @@
                 <div 
                   class="h-full rounded-full transition-all duration-300" 
                   :class="getStatusBarColor(status)"
-                  :style="{ width: `${(count / data.count * 100)}%` }"
+                  :style="{ width: `${(count / (data?.count || 1) * 100)}%` }"
                 ></div>
               </div>
             </div>
@@ -168,26 +166,16 @@
             :actions="tableActions"
             @action="handleTableAction"
           >
-            <!-- Custom status column -->
-            <template #column-estado="{ row }">
-              <span :class="getPaymentStatusBadgeClass(row.estado)">
-                {{ getPaymentStatusLabel(row.estado) }}
-              </span>
-            </template>
-
-            <!-- Custom amount column -->
-            <template #column-monto="{ row }">
+            <!-- Custom amount column (PAP_VALOR) -->
+            <template #column-PAP_VALOR="{ row }">
               <span class="font-semibold text-green-600">
-                {{ formatCurrency(row.monto) }}
+                {{ formatCurrency((row as PagoPersonaItem).PAP_VALOR) }}
               </span>
             </template>
 
-            <!-- Custom method column -->
-            <template #column-medio="{ row }">
-              <div class="flex items-center space-x-2">
-                <span class="text-sm">{{ getPaymentMethodIcon(row.medio) }}</span>
-                <span>{{ row.medio }}</span>
-              </div>
+            <!-- Custom observation column (PAP_OBSERVACION) -->
+            <template #column-PAP_OBSERVACION="{ row }">
+              <span>{{ (row as PagoPersonaItem).PAP_OBSERVACION || '-' }}</span>
             </template>
           </ModernTable>
         </div>
@@ -228,10 +216,11 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
 import ModernTable from '@/components/ui/ModernTable.vue'
 import MetricCard from '@/components/ui/MetricCard.vue'
 import { getPaymentsByGroup, type PaymentsByGroupResponse } from '@/services/payments'
+import type { PagoPersonaItem } from '@/types'
 import { useRouter } from 'vue-router'
 
 const router = useRouter()
@@ -246,12 +235,12 @@ const error = ref<string | null>(null)
 const data = ref<PaymentsByGroupResponse | null>(null)
 
 // Table configuration
+// Table columns adapted to PagoPersona DTO fields (we map PAP_ID -> id, PAP_VALOR -> monto)
 const tableColumns = [
-  { key: 'id', label: 'ID', sortable: true },
-  { key: 'estado', label: 'Estado', sortable: true },
-  { key: 'monto', label: 'Monto', sortable: true },
-  { key: 'medio', label: 'Método', sortable: true },
-  { key: 'referencia', label: 'Referencia', sortable: false }
+  { key: 'PAP_ID', label: 'ID', sortable: true },
+  { key: 'PER_ID', label: 'Persona ID', sortable: true },
+  { key: 'PAP_VALOR', label: 'Monto', sortable: true },
+  { key: 'PAP_OBSERVACION', label: 'Observación', sortable: false }
 ]
 
 const tableActions = [
@@ -284,15 +273,50 @@ const searchPayments = async () => {
 
 // Event handlers
 const handleTableAction = (action: string, row: any) => {
+  const id = (row && (row.PAP_ID ?? row.id))
   switch (action) {
     case 'view':
-      router.push(`/payments/${row.id}`)
+      router.push(`/payments/${id}`)
       break
     case 'edit':
-      router.push(`/payments/${row.id}/edit`)
+      router.push(`/payments/${id}/edit`)
       break
   }
 }
+
+// Computed / utility values
+const totalAmount = computed(() => {
+  if (!data.value) return 0
+  // Use backend-provided total_amount when available
+  if (data.value.total_amount !== undefined && data.value.total_amount !== null) {
+    const v = data.value.total_amount
+    return typeof v === 'string' ? parseFloat(v) || 0 : (v as number)
+  }
+  // Otherwise compute from items (PAP_VALOR)
+  return data.value.items.reduce((acc, it) => {
+    const val = typeof it.PAP_VALOR === 'string' ? parseFloat(it.PAP_VALOR) || 0 : (it.PAP_VALOR || 0)
+    return acc + val
+  }, 0)
+})
+
+const computedBreakdown = computed(() => {
+  if (!data.value) return {}
+  if (data.value.breakdown && Object.keys(data.value.breakdown).length > 0) {
+    return data.value.breakdown
+  }
+  // Fallback: group all items under a single TOTAL bucket
+  return { TOTAL: data.value.items.length }
+})
+
+const pendingCount = computed(() => {
+  const bd = computedBreakdown.value
+  return bd['PENDING'] ?? bd['pending'] ?? 0
+})
+
+const completedCount = computed(() => {
+  const bd = computedBreakdown.value
+  return bd['COMPLETED'] ?? bd['completed'] ?? 0
+})
 
 // Utility functions
 const formatCurrency = (amount: number | string) => {
@@ -333,31 +357,7 @@ const getStatusBarColor = (status: string) => {
   return colors[status as keyof typeof colors] || 'bg-gray-400'
 }
 
-const getPaymentStatusBadgeClass = (status: string) => {
-  const classes = {
-    'PENDING': 'inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-yellow-100 text-yellow-800 border border-yellow-200',
-    'COMPLETED': 'inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-green-100 text-green-800 border border-green-200',
-    'FAILED': 'inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-red-100 text-red-800 border border-red-200',
-    'CANCELLED': 'inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-gray-100 text-gray-800 border border-gray-200'
-  }
-  return classes[status as keyof typeof classes] || classes.PENDING
-}
-
-const getPaymentStatusLabel = (status: string) => {
-  return getStatusLabel(status)
-}
-
-const getPaymentMethodIcon = (method: string) => {
-  const icons = {
-    'CREDIT_CARD': 'CC',
-    'DEBIT_CARD': 'DC',
-    'BANK_TRANSFER': 'BT',
-    'CASH': '$',
-    'WEBPAY': 'WP',
-    'PAYPAL': 'PP'
-  }
-  return icons[method as keyof typeof icons] || 'CC'
-}
+// removed unused helpers (status badge, payment method icon) to avoid linter warnings
 </script>
 
 <style scoped>

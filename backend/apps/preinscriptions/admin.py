@@ -1,21 +1,20 @@
 from django.contrib import admin
 from django.utils.html import format_html
 from django.utils.safestring import mark_safe
-from .models import Preinscription
+from .models import Preinscripcion
 
 
-@admin.register(Preinscription)
-class PreinscriptionAdmin(admin.ModelAdmin):
+@admin.register(Preinscripcion)
+class PreinscripcionAdmin(admin.ModelAdmin):
     list_display = (
         "id",
         "course",
         "persona_info",
-        "status",
-        "payment_status",
+        "estado",
         "created_at",
         "status_icons",
     )
-    list_filter = ("status", "payment_status", "created_at", "course")
+    list_filter = ("estado", "created_at", "course")
     search_fields = (
         "course__title",
         "persona__first_name",
@@ -66,27 +65,19 @@ class PreinscriptionAdmin(admin.ModelAdmin):
         """Iconos de estado visual"""
         icons = []
 
-        # Estado de preinscripción
-        if obj.status == "pending":
+        # Estado de preinscripción (campo 'estado' en el modelo)
+        if obj.estado == "ENVIADA":
             icons.append(
                 '<span style="color: #f59e0b;" title="Pendiente de aprobación">⏳ Pendiente</span>'
             )
-        elif obj.status == "approved":
+        elif obj.estado == "APROBADA":
             icons.append(
                 '<span style="color: #10b981;" title="Aprobado">✅ Aprobado</span>'
             )
-        elif obj.status == "rejected":
+        elif obj.estado == "RECHAZADA":
             icons.append(
                 '<span style="color: #ef4444;" title="Rechazado">❌ Rechazado</span>'
             )
-
-        # Estado de pago
-        if obj.payment_status == "pending":
-            icons.append(
-                '<span style="color: #f59e0b;" title="Pago pendiente">💳 Pago pendiente</span>'
-            )
-        elif obj.payment_status == "paid":
-            icons.append('<span style="color: #10b981;" title="Pagado">💰 Pagado</span>')
 
         return format_html("<br>".join(icons)) if icons else "-"
 

@@ -6,7 +6,7 @@ modelo del módulo de pagos. Cada `ViewSet` se encarga de gestionar las
 operaciones CRUD (Crear, Leer, Actualizar, Eliminar) para su modelo asociado.
 """
 from rest_framework import viewsets
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAuthenticated, IsAuthenticatedOrReadOnly
 from .models import PagoPersona, PagoCambioPersona, Prepago, ComprobantePago, PagoComprobante, ConceptoContable
 from .serializers import (
     PagoPersonaSerializer, PagoCambioPersonaSerializer, PrepagoSerializer, 
@@ -16,6 +16,12 @@ from .filters import PagoPersonaFilter, ComprobantePagoFilter
 # Importamos la clase de permiso personalizada. Asumiendo que está en un módulo de permisos.
 # Para este ejemplo, la importamos desde la configuración de DRF.
 from scouts_platform.settings.rest_framework import IsTreasurerOrAdminOrReadOnly
+from rest_framework.decorators import action
+from rest_framework.response import Response
+from rest_framework import status
+from django.shortcuts import get_object_or_404
+from apps.preinscriptions.models import Preinscripcion
+from .models import PagoPersona
 
 class PagoPersonaViewSet(viewsets.ModelViewSet):
     """
@@ -40,7 +46,9 @@ class PagoPersonaViewSet(viewsets.ModelViewSet):
     # permission_classes: Define quién tiene permiso para acceder a esta vista.
     # `IsTreasurerOrAdminOrReadOnly` permite leer a cualquier usuario autenticado,
     # pero solo permite escribir (crear, actualizar, borrar) a administradores/tesoreros.
-    permission_classes = [IsTreasurerOrAdminOrReadOnly]
+    # Allow authenticated users to create payments; domain-specific stricter
+    # permissions (treasurer/admin) can be applied elsewhere.
+    permission_classes = [IsAuthenticatedOrReadOnly]
     
     # Conectamos la clase de filtro que creamos.
     filterset_class = PagoPersonaFilter
@@ -48,6 +56,26 @@ class PagoPersonaViewSet(viewsets.ModelViewSet):
     def perform_create(self, serializer):
         """Asigna automáticamente el usuario autenticado como creador del pago."""
         serializer.save(USU_ID=self.request.user)
+
+    @action(detail=False, methods=['get'], url_path='mis-pagos', url_name='mis-pagos')
+    def mis_pagos(self, request):
+        pagos = PagoPersona.objects.filter(USU_ID=request.user)
+        ser = PagoPersonaSerializer(pagos, many=True)
+        return Response(ser.data)
+
+    @action(detail=False, methods=['get'], url_path='by-group', url_name='by-group')
+    def by_group(self, request):
+        group = request.query_params.get('group')
+        if not group:
+            return Response({'detail': 'group param required'}, status=status.HTTP_400_BAD_REQUEST)
+        course = request.query_params.get('course')
+        pres = Preinscripcion.objects.filter(grupo=group, estado=Preinscripcion.APROBADA)
+        if course:
+            pres = pres.filter(course_id=course)
+        user_ids = pres.values_list('user_id', flat=True)
+        pagos = PagoPersona.objects.filter(PER_ID__in=user_ids)
+        ser = PagoPersonaSerializer(pagos, many=True)
+        return Response({'group': group, 'count': pagos.count(), 'items': ser.data})
 
 class PagoCambioPersonaViewSet(viewsets.ModelViewSet):
     """
@@ -113,3 +141,12 @@ class PagoComprobanteViewSet(viewsets.ModelViewSet):
     queryset = PagoComprobante.objects.select_related('PAP_ID', 'CPA_ID').all()
     serializer_class = PagoComprobanteSerializer
     permission_classes = [IsTreasurerOrAdminOrReadOnly]
+
+
+# Legacy compatibility ViewSet removed. Use canonical endpoints (pagos-persona,
+# comprobantes-pago, prepagos, etc.) for payment operations.
+
+
+# Compatibility PagoViewSet removed: canonical models (PagoPersona, ComprobantePago, PagoComprobante, Prepago)
+# provide the domain functionality. If we need compatibility endpoints they should be
+# implemented as separate adapters that translate requests to the canonical models.

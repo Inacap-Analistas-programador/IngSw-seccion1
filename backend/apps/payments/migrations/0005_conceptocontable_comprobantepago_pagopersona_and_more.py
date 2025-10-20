@@ -172,7 +172,4 @@ class Migration(migrations.Migration):
                 "db_table": "PREPAGO",
             },
         ),
-        migrations.DeleteModel(
-            name="Payment",
-        ),
     ]
