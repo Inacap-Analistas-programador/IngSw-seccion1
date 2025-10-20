@@ -3,16 +3,11 @@
 Este módulo es el núcleo para la gestión financiera de la plataforma, permitiendo
 registrar pagos, gestionar saldos a favor, emitir comprobantes y auditar cambios.
 """
-"""Módulo payments: define los modelos relacionados con pagos y comprobantes.
-
-Este módulo es el núcleo para la gestión financiera de la plataforma, permitiendo
-registrar pagos, gestionar saldos a favor, emitir comprobantes y auditar cambios.
-"""
 from django.db import models
 from apps.authentication.models import User
 from django.utils import timezone
 
-class PagoPersona(models.Model):
+
 class PagoPersona(models.Model):
     """
     Almacena un registro de pago monetario asociado a una persona y un curso.
@@ -49,6 +44,51 @@ class PagoPersona(models.Model):
 
     def __str__(self):
         return f"Pago {self.PAP_ID} - Persona ID {self.PER_ID} por ${self.PAP_VALOR}"
+    
+    # Optional foreign keys to gradually migrate from integer IDs to relations.
+    # These are nullable and non-destructive: keep the legacy integer PER_ID/CUR_ID
+    # while allowing a safe migration path to actual FK relations.
+    PER_FK = models.ForeignKey(
+        'apps.personas.models.Persona',
+        null=True,
+        blank=True,
+        on_delete=models.SET_NULL,
+        related_name='pagos_persona_per_fk',
+        help_text='(Nullable) FK to Persona when available',
+        db_column='PER_FK',
+    )
+
+    CUR_FK = models.ForeignKey(
+        'apps.courses.models.Course',
+        null=True,
+        blank=True,
+        on_delete=models.SET_NULL,
+        related_name='pagos_persona_cur_fk',
+        help_text='(Nullable) FK to Course when available',
+        db_column='CUR_FK',
+    )
+
+    def get_persona(self):
+        """Return linked Persona object if present or try best-effort lookup by PER_ID."""
+        if getattr(self, 'PER_FK', None):
+            return self.PER_FK
+        try:
+            from apps.personas.models import Persona
+
+            return Persona.objects.filter(pk=self.PER_ID).first()
+        except Exception:
+            return None
+
+    def get_course(self):
+        """Return linked Course object if present or try best-effort lookup by CUR_ID."""
+        if getattr(self, 'CUR_FK', None):
+            return self.CUR_FK
+        try:
+            from apps.courses.models import Course
+
+            return Course.objects.filter(pk=self.CUR_ID).first()
+        except Exception:
+            return None
 
 class PagoCambioPersona(models.Model):
     """
@@ -180,3 +220,28 @@ class PagoComprobante(models.Model):
 # are `PagoPersona`, `ComprobantePago`, `PagoComprobante`, `Prepago`, etc.
 # If you need to remove the old 'payments' table from the DB, a migration
 # has been added under migrations/ (delete model). Review before applying.
+
+
+# Compatibility: provide a minimal legacy `Pago` model so historical migrations
+# and tests that import migrations referencing `payments.Pago` can run. This
+# is intentionally lightweight and kept only for compatibility during the
+# migration phase. It maps to the legacy `payments` table name used previously.
+class Pago(models.Model):
+    id = models.AutoField(primary_key=True)
+    monto = models.DecimalField(max_digits=12, decimal_places=2, null=True)
+    medio = models.CharField(max_length=40, null=True)
+    referencia = models.CharField(max_length=100, blank=True, null=True)
+    notas = models.TextField(blank=True, null=True)
+    estado = models.CharField(max_length=30, default="PENDIENTE")
+    fecha_pago = models.DateField(null=True, blank=True)
+    fecha_vencimiento = models.DateField(null=True, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        db_table = "payments"
+        verbose_name = "Legacy Pago (compat)"
+        verbose_name_plural = "Legacy Pagos (compat)"
+
+    def __str__(self):
+        return f"Legacy Pago {self.id} - {self.monto}"
