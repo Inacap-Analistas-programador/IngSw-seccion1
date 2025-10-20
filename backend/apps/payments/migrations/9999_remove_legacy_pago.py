@@ -1,20 +1,21 @@
-"""Migration stub: remove legacy Pago model/table.
+"""Deferred destructive migration placeholder.
 
-IMPORTANT: Review this migration before applying. Running migrations that drop
-tables will remove data in your database. Make a DB backup before applying.
+This file used to drop the legacy `Pago` model/table. During development and
+CI we keep destructive changes out of the automatic migration chain to avoid
+accidentally removing data. Convert this to an explicit non-destructive no-op
+so test runs and CI do not remove the `payments` table.
+
+To apply the deletion in a controlled way, create a reviewed migration that
+depends on a specific release tag and run it manually with a DB backup.
 """
 from django.db import migrations
 
 
 class Migration(migrations.Migration):
-
+    # keep the linear dependency so makemigrations --merge is not triggered
     dependencies = [
-        # Adjust the dependency to the latest existing migration in this app.
-        ('payments', '0007_pago'),
+        ('payments', '0008_merge_conflicts'),
     ]
 
-    operations = [
-        migrations.DeleteModel(
-            name='Pago',
-        ),
-    ]
+    # no operations: deletion deferred until explicitly approved
+    operations = []

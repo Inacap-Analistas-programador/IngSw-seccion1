@@ -6,16 +6,11 @@ en formatos de datos como JSON para ser utilizados por la API REST.
 Cada serializer se corresponde con un modelo y define qué campos
 se deben incluir en su representación.
 """
-Módulo de Serializers para la aplicación de Pagos.
-
-Este módulo contiene los serializers que convierten los modelos de Django
-en formatos de datos como JSON para ser utilizados por la API REST.
-Cada serializer se corresponde con un modelo y define qué campos
-se deben incluir en su representación.
-"""
 from rest_framework import serializers
 from django.db import transaction
 from rest_framework.exceptions import ValidationError
+from decimal import Decimal
+from django.db.models import Max
 from .models import (
     PagoPersona, PagoCambioPersona, Prepago, ComprobantePago, 
     PagoComprobante, ConceptoContable
@@ -143,23 +138,33 @@ class ComprobantePagoSerializer(serializers.ModelSerializer):
             raise ValidationError({"pagos_ids": "Esta lista no puede estar vacía."})
 
         # 2. Buscamos los objetos PagoPersona correspondientes a los IDs.
-        pagos = PagoPersona.objects.filter(pk__in=pagos_ids)
+        pagos_qs = PagoPersona.objects.filter(pk__in=pagos_ids)
+        pagos = list(pagos_qs)
         if len(pagos) != len(set(pagos_ids)):
             raise ValidationError({"pagos_ids": "Uno o más IDs de pago no son válidos o están duplicados."})
 
-        # 3. Calculamos el valor total sumando el valor de cada pago.
-        total_valor = sum(pago.PAP_VALOR for pago in pagos)
+        # 2b. Verificamos que ninguno de los pagos ya esté asociado a un comprobante
+        assigned = PagoComprobante.objects.filter(PAP_ID__in=pagos_qs).select_related('CPA_ID')
+        if assigned.exists():
+            conflicto_ids = list(assigned.values_list('PAP_ID', flat=True))
+            msg = f"Algunos pagos ya están asignados a comprobantes: {conflicto_ids}" if conflicto_ids else "Pagos ya asignados"
+            raise ValidationError({"pagos_ids": msg})
+
+        # 3. Calculamos el valor total sumando el valor de cada pago con Decimal para precisión
+        total_valor = sum((p.PAP_VALOR or Decimal('0')) for p in pagos)
         validated_data['CPA_VALOR'] = total_valor
 
-        # 4. Creamos la instancia del ComprobantePago.
-        # El USU_ID se asigna en la vista con perform_create.
+        # 3b. Si no se proporcionó CPA_NUMERO, generar uno secuencial máximo+1
+        if not validated_data.get('CPA_NUMERO'):
+            max_num = ComprobantePago.objects.aggregate(max=Max('CPA_NUMERO'))['max'] or 0
+            validated_data['CPA_NUMERO'] = int(max_num) + 1
+
+        # 4. Creamos la instancia del ComprobantePago (USU_ID debería asignarse en la vista si aplica)
         comprobante = ComprobantePago.objects.create(**validated_data)
 
         # 5. Creamos las relaciones en la tabla intermedia PagoComprobante.
-        # Usamos bulk_create para una inserción eficiente en la base de datos.
-        PagoComprobante.objects.bulk_create([
-            PagoComprobante(PAP_ID=pago, CPA_ID=comprobante) for pago in pagos
-        ])
+        relaciones = [PagoComprobante(PAP_ID=pago, CPA_ID=comprobante) for pago in pagos]
+        PagoComprobante.objects.bulk_create(relaciones)
 
         return comprobante
 

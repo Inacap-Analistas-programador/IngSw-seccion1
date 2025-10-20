@@ -22,6 +22,7 @@ class Migration(migrations.Migration):
                 ('medio', models.CharField(default='TRANSFERENCIA', max_length=50)),
                 ('estado', models.CharField(default='PENDIENTE', max_length=30)),
                 ('fecha_pago', models.DateField(blank=True, null=True)),
+                ('fecha_vencimiento', models.DateField(blank=True, null=True)),
                 ('referencia', models.CharField(blank=True, max_length=100, null=True)),
                 ('notas', models.TextField(blank=True, null=True)),
                 ('created_at', models.DateTimeField(default=django.utils.timezone.now)),

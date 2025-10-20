@@ -3,7 +3,7 @@
  * Configuración base para todas las llamadas HTTP
  */
 
-import axios from 'axios'
+import axios, { AxiosInstance } from 'axios'
 import { useAuthStore } from '@/stores/auth'
 
 // Configuración base de Axios
@@ -21,17 +21,18 @@ const createConfig = {
 // may have it stubbed to return undefined. To avoid module-init crashes in
 // unit tests, fall back to the global axios instance when create() is not
 // available or returns a falsy value.
-let apiClient: any
+let apiClient: AxiosInstance
 try {
   if (typeof axios.create === 'function') {
     const created = axios.create(createConfig)
-    apiClient = created || axios
+    apiClient = (created || axios) as AxiosInstance
   } else {
     // If create isn't available (tests often mock axios), build a tiny
     // wrapper that preserves the behavior of prefixing requests with the
     // configured baseURL. This keeps tests stable while allowing mocks to
     // intercept calls to axios.get/post/etc.
-    apiClient = {
+    // Cast the tiny wrapper to AxiosInstance so call sites can use generics
+    apiClient = ({
       get: (url: string, opts?: any) => axios.get(`${createConfig.baseURL}${url}`, opts),
       post: (url: string, data?: any, opts?: any) => axios.post(`${createConfig.baseURL}${url}`, data, opts),
       put: (url: string, data?: any, opts?: any) => axios.put(`${createConfig.baseURL}${url}`, data, opts),
@@ -41,13 +42,13 @@ try {
         request: { use: () => {} },
         response: { use: () => {} }
       }
-    }
+    } as unknown) as AxiosInstance
   }
 } catch (err) {
   // On unexpected errors, fall back to raw axios (without create). Tests
   // that mock axios will still intercept these calls; however, we try to
   // ensure a baseURL prefix when possible.
-  apiClient = axios
+  apiClient = axios as AxiosInstance
 }
 
 // Interceptor para agregar token de autenticación

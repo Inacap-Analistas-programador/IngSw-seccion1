@@ -153,3 +153,41 @@ class Preinscripcion(models.Model):
     def __str__(self):
         user_display = self.user.get_full_name() or self.user.username
         return f"{user_display} -> {self.course.title} [{self.get_estado_display()}]"
+
+    def get_pagos(self):
+        """Return a queryset of PagoPersona related to this preinscripcion's user and course.
+
+        Uses django.apps.get_model to avoid import-time cycles. This is non-destructive
+        and works even if migrations to add FK fields are pending.
+        """
+        try:
+            from django.apps import apps as django_apps
+            pago_persona_model = django_apps.get_model('payments', 'PagoPersona')
+        except Exception:
+            return pago_persona_model.objects.none() if 'pago_persona_model' in locals() else []
+
+        # Filter by integer IDs stored on PagoPersona (PER_ID, CUR_ID)
+        try:
+            return pago_persona_model.objects.filter(PER_ID=self.user_id, CUR_ID=self.course_id).order_by('-PAP_FECHA_HORA')
+        except Exception:
+            # If for any reason the model cannot be queried, return an empty queryset
+            try:
+                return pago_persona_model.objects.none()
+            except Exception:
+                return []
+
+    @property
+    def total_paid(self):
+        """Return the sum of PAP_VALOR for related payments (Decimal). Returns 0 if none."""
+        pagos = self.get_pagos()
+        # pagos can be a queryset or list fallback
+        try:
+            from django.db.models import Sum
+            agg = pagos.aggregate(total=Sum('PAP_VALOR'))
+            return agg.get('total') or 0
+        except Exception:
+            # Fallback: sum in Python if pagos is a list
+            try:
+                return sum(p.PAP_VALOR for p in pagos) if pagos else 0
+            except Exception:
+                return 0

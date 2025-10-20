@@ -104,8 +104,44 @@ class PreinscripcionDetailSerializer(serializers.ModelSerializer):
 
     def get_pagos(self, obj):
         """Lista de pagos relacionados"""
-        # TODO: Implementar cuando tengamos el modelo de pagos conectado
-        return []
+        # Best-effort implementation: return recent payments that likely relate to
+        # this preinscription. We try multiple heuristics because legacy
+        # payments use integer PER_ID/CUR_ID fields and the full Person model
+        # mapping may not be available yet.
+        try:
+            from apps.payments.models import PagoPersona
+        except Exception:
+            # Payments app not available (tests, partial workspace); return empty
+            return []
+
+        from django.db.models import Q
+
+        user = obj.user
+        course = obj.course
+
+        # Heuristics:
+        # - PER_ID == user.id (common when users and persons share ids)
+        # - USU_ID == user (user who registered the payment)
+        # - CUR_ID == course.id AND PER_ID == user.id (course-scoped match)
+        pagos_qs = (
+            PagoPersona.objects.filter(
+                Q(PER_ID=user.id) | Q(USU_ID=user) | (Q(CUR_ID=course.id) & Q(PER_ID=user.id))
+            )
+            .order_by("-PAP_FECHA_HORA")[:50]
+        )
+
+        return [
+            {
+                "id": p.PAP_ID,
+                "valor": str(p.PAP_VALOR),
+                "fecha": p.PAP_FECHA_HORA,
+                "tipo": p.PAP_TIPO,
+                "observacion": p.PAP_OBSERVACION,
+                "registrado_por_id": getattr(p.USU_ID, "id", None),
+                "registrado_por": getattr(p.USU_ID, "username", None),
+            }
+            for p in pagos_qs
+        ]
 
     def get_archivos(self, obj):
         """Lista de archivos subidos"""

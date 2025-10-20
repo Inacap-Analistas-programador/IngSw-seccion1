@@ -6,8 +6,6 @@ from .models import FileUpload, FileDownload
 
 @admin.register(FileUpload)
 class FileUploadAdmin(admin.ModelAdmin):
-@admin.register(FileUpload)
-class FileUploadAdmin(admin.ModelAdmin):
     list_display = (
         "name",
         "tipo",
