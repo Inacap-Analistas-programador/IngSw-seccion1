@@ -76,6 +76,7 @@
 
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
+import { getPaymentsByGroup } from '@/services/payments'
 
 const stats = ref({
   activeCourses: 0,
@@ -99,11 +100,19 @@ const recentActivity = ref([
 
 const refreshData = async () => {
   // Aquí se cargarían los datos reales desde la API
+  // Basic course stats
   stats.value = {
     activeCourses: Math.floor(Math.random() * 20) + 5,
     preinscriptions: Math.floor(Math.random() * 50) + 10,
     pendingPayments: Math.floor(Math.random() * 15) + 2,
     users: Math.floor(Math.random() * 100) + 50
+  }
+  // Attempt to enrich pendingPayments from canonical payments endpoint
+  try {
+    const res = await getPaymentsByGroup('pending')
+    stats.value.pendingPayments = res?.count ?? (res?.breakdown?.PENDING ?? res?.breakdown?.pending) ?? stats.value.pendingPayments
+  } catch {
+    // keep simulated value
   }
 }
 

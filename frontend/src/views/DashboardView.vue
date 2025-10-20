@@ -110,7 +110,8 @@ const refreshData = async () => {
     // Intentar obtener pagos pendientes desde el servicio de pagos (usa grupo 'pending' asumido)
     try {
       const paymentsRes = await getPaymentsByGroup('pending')
-      metrics.value.pendingPayments = paymentsRes?.count ?? Math.floor(Math.random() * 15) + 2
+      // Prefer backend-provided count, else try breakdown pending key, else fallback
+      metrics.value.pendingPayments = paymentsRes?.count ?? (paymentsRes?.breakdown?.PENDING ?? paymentsRes?.breakdown?.pending) ?? Math.floor(Math.random() * 15) + 2
     } catch (_err) {
       // Fallback si el endpoint no responde o no existe
       metrics.value.pendingPayments = Math.floor(Math.random() * 15) + 2

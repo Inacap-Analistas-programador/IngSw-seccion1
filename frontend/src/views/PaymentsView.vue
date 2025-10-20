@@ -301,11 +301,30 @@ const totalAmount = computed(() => {
 
 const computedBreakdown = computed(() => {
   if (!data.value) return {}
-  if (data.value.breakdown && Object.keys(data.value.breakdown).length > 0) {
-    return data.value.breakdown
+
+  // If backend provided breakdown, normalize keys to uppercase and ensure numeric values
+  const response = data.value as PaymentsByGroupResponse
+  if (response?.breakdown && Object.keys(response.breakdown).length > 0) {
+    const normalized: Record<string, number> = {}
+    Object.entries(response.breakdown).forEach(([k, v]) => {
+      const key = String(k).toUpperCase()
+      normalized[key] = Number(v) || 0
+    })
+    return normalized
   }
-  // Fallback: group all items under a single TOTAL bucket
-  return { TOTAL: data.value.items.length }
+
+  // Fallback: try to derive breakdown from item status fields (flexible names)
+  const items = response?.items || []
+  if (items.length === 0) return {}
+
+  const derived: Record<string, number> = {}
+  items.forEach(it => {
+    // possible status fields: PAP_ESTADO, estado, status
+    const rawStatus = (it as any).PAP_ESTADO ?? (it as any).estado ?? (it as any).status ?? 'TOTAL'
+    const key = String(rawStatus).toUpperCase()
+    derived[key] = (derived[key] || 0) + 1
+  })
+  return derived
 })
 
 const pendingCount = computed(() => {

@@ -34,7 +34,7 @@
 
       <div class="text-center">
         <div class="text-2xl font-bold text-green-400">
-          {{ course.payments_received || 0 }}
+          {{ pendingPayments === null ? (course.payments_received || 0) : pendingPayments }}
         </div>
         <div class="text-xs text-slate-400">Pagos</div>
       </div>
@@ -93,8 +93,9 @@
 </template>
 
 <script setup lang="ts">
-import { computed } from "vue";
+import { computed, ref, onMounted } from "vue";
 import { useRouter } from "vue-router";
+import { getPaymentsByGroup } from '@/services/payments'
 
 // Types
 interface Course {
@@ -157,8 +158,8 @@ const formatDate = (dateString: string) => {
   if (!dateString) return "Sin fecha";
 
   try {
-    // Parse YYYY-MM-DD safely as local date to avoid timezone shifts
-    const [y, m, d] = dateString.split("-").map((v) => parseInt(v, 10));
+  // Parse YYYY-MM-DD safely as local date to avoid timezone shifts
+  const [y, m, d] = dateString.split("-").map((v) => Number.parseInt(v, 10));
     const date = new Date(y, (m || 1) - 1, d || 1);
     return date.toLocaleDateString("es-ES", {
       day: "2-digit",
@@ -179,6 +180,19 @@ const managePayments = () => {
   // Navigate to course payments
   router.push(`/courses/${props.course.id}/payments`);
 };
+
+// Pending payments for this course (fetched from canonical payments API)
+const pendingPayments = ref<number | null>(null)
+
+onMounted(async () => {
+  try {
+    const res = await getPaymentsByGroup('course', props.course.id)
+    pendingPayments.value = res?.count ?? 0
+  } catch {
+    // In case of error, default to 0 (non-blocking)
+    pendingPayments.value = 0
+  }
+})
 </script>
 
 <style scoped>

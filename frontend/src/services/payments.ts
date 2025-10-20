@@ -15,7 +15,10 @@ export interface PagoPersonaItem {
 export interface PaymentsByGroupResponse {
   group: string
   count: number
-  total_amount: string
+  // total_amount may be provided by backend or computed by frontend
+  total_amount?: string
+  // Optional breakdown: e.g. { PENDING: 3, COMPLETED: 10 }
+  breakdown?: Record<string, number>
   items: PagoPersonaItem[]
 }
 
