@@ -228,22 +228,35 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
 import ModernTable from '@/components/ui/ModernTable.vue'
 import MetricCard from '@/components/ui/MetricCard.vue'
-import { getPaymentsByGroup, type PaymentsByGroupResponse } from '@/services/payments'
+import { usePaymentsStore } from '@/stores/payments'
 import { useRouter } from 'vue-router'
 
 const router = useRouter()
+const paymentsStore = usePaymentsStore()
 
-// Reactive state
+// Reactive state from store
+const loading = computed(() => paymentsStore.loading)
+const error = computed(() => paymentsStore.error)
+const data = computed(() => {
+  if (paymentsStore.list.length === 0 && paymentsStore.meta.count === 0) {
+    return null
+  }
+  return {
+    items: paymentsStore.list,
+    count: paymentsStore.meta.count,
+    total_amount: paymentsStore.meta.total_amount,
+    breakdown: paymentsStore.meta.breakdown,
+    group: searchFilters.value.group,
+  }
+})
+
 const searchFilters = ref({
   group: '',
   courseId: undefined as number | undefined
 })
-const loading = ref(false)
-const error = ref<string | null>(null)
-const data = ref<PaymentsByGroupResponse | null>(null)
 
 // Table configuration
 const tableColumns = [
@@ -261,25 +274,15 @@ const tableActions = [
 
 // Main search function
 const searchPayments = async () => {
-  error.value = null
-  data.value = null
-  
   if (!searchFilters.value.group) {
-    error.value = 'Debe ingresar un grupo para buscar pagos'
+    paymentsStore.error = 'Debe ingresar un grupo para buscar pagos'
     return
   }
   
-  loading.value = true
-  try {
-    data.value = await getPaymentsByGroup(
-      searchFilters.value.group, 
-      searchFilters.value.courseId
-    )
-  } catch (e: any) {
-    error.value = e?.message || 'Error al cargar pagos'
-  } finally {
-    loading.value = false
-  }
+  await paymentsStore.fetchByGroup(
+    searchFilters.value.group,
+    searchFilters.value.courseId
+  )
 }
 
 // Event handlers
