@@ -11,14 +11,12 @@
 import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
 import { resolve } from 'path'
-import tailwindcss from '@tailwindcss/vite'
 // Configuración principal de Vite
 // Documentación: https://vitejs.dev/config/
 export default defineConfig({
   // Plugins de Vite - Vue.js plugin para soporte de SFC (Single File Components)
   plugins: [
     vue(),
-    tailwindcss(),
   ],
   
   // Resolución de módulos
