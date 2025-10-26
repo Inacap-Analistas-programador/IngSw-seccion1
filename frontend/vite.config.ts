@@ -10,49 +10,36 @@
 
 import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
-import { resolve } from 'path'
+// import { resolve } from 'path' // No usar en ESM
 import tailwindcss from '@tailwindcss/vite'
 // Configuración principal de Vite
 // Documentación: https://vitejs.dev/config/
-export default defineConfig({
-  // Plugins de Vite - Vue.js plugin para soporte de SFC (Single File Components)
+export default defineConfig(({ mode }) => ({
   plugins: [
     vue(),
     tailwindcss(),
   ],
-  
-  // Resolución de módulos
-  resolve: {
-    alias: {
-      // Alias '@' apunta a la carpeta src/ para imports más limpios
-      // Uso: import Component from '@/components/Component.vue'
-      '@': resolve(__dirname, 'src'),
+  css: {
+    modules: {
+      generateScopedName: '[name]__[local]___[hash:base64:5]',
     },
   },
-  
-  // Configuración del servidor de desarrollo
+  resolve: {
+    alias: {
+      '@': new URL('./src', import.meta.url).pathname,
+    },
+  },
   server: {
-    port: 3000,  // Puerto del frontend (debe coincidir con Docker Compose)
-    
-    // Proxy para redirigir llamadas API al backend Django
+    port: 3000,
     proxy: {
       '/api': {
-        target: 'http://localhost:8000',  // Backend Django
-        changeOrigin: true,               // Cambiar el header Origin
-        // Ejemplo: http://localhost:3000/api/auth -> http://localhost:8000/api/auth
+        target: 'http://localhost:8000',
+        changeOrigin: true,
       },
     },
   },
-  
-  // Configuración de build para producción
   build: {
-    outDir: 'dist',      // Directorio de salida para archivos compilados
-    sourcemap: true,     // Generar sourcemaps para debugging en producción
+    outDir: 'dist',
+    sourcemap: true,
   },
-  
-  // Configuración para testing con Vitest
-  test: {
-    globals: true,           // Variables globales de testing (describe, it, expect)
-    environment: 'jsdom',    // Simular DOM del navegador para tests
-  },
-})
+}))

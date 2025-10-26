@@ -50,7 +50,7 @@ class PagoPersona(models.Model):
     # These are nullable and non-destructive: keep the legacy integer PER_ID/CUR_ID
     # while allowing a safe migration path to actual FK relations.
     PER_FK = models.ForeignKey(
-        'apps.personas.models.Persona',
+        'personas.Persona',
         null=True,
         blank=True,
         on_delete=models.SET_NULL,
@@ -60,7 +60,7 @@ class PagoPersona(models.Model):
     )
 
     CUR_FK = models.ForeignKey(
-        'apps.courses.models.Course',
+        'courses.Course',
         null=True,
         blank=True,
         on_delete=models.SET_NULL,

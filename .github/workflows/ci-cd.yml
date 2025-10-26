@@ -187,7 +187,7 @@ jobs:
     name: "Análisis SonarQube"
     runs-on: ubuntu-latest
     needs: [backend-tests, frontend-tests]
-    if: github.event_name != 'pull_request' && vars.SONAR_TOKEN != ''
+    if: github.event_name != 'pull_request'  # Fixed: secrets cannot be used in if conditions
     
     steps:
     # Checkout del código
@@ -231,28 +231,29 @@ jobs:
     - name: Checkout código
       uses: actions/checkout@v4
     
-    # TODO: El equipo de DevOps debe completar el deployment
-    # Ejemplos de deployment:
-    
-    # Opción 1: Deploy via SSH/SCP
+    # Deploy via SSH/SCP (example implementation)
     - name: Deploy via SSH
       run: |
-        echo "TODO: Configurar deployment al hosting"
-        echo "Usar credenciales desde secrets del repositorio"
-        # scp -r . user@hosting-server.com:/path/to/app/
+        # Configure SSH key and known hosts in repository secrets/settings
+        mkdir -p ~/.ssh
+        echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
+        chmod 600 ~/.ssh/id_rsa
+        ssh-keyscan -H hosting-server.com >> ~/.ssh/known_hosts
+        scp -r . user@hosting-server.com:/path/to/app/
     
-    # Opción 2: Deploy via FTP
-    - name: Deploy via FTP
-      run: |
-        echo "TODO: Usar FTP para subir archivos al hosting"
-        # lftp ftp://hosting-server.com -u ${{ secrets.FTP_USER }}
+    # Alternative: Deploy via FTP (uncomment and configure if needed)
+    # - name: Deploy via FTP
+    #   run: |
+    #     # Install lftp if not available
+    #     sudo apt-get update && sudo apt-get install -y lftp
+    #     lftp -c "open ftp://hosting-server.com; user ${{ secrets.FTP_USER }} ${{ secrets.FTP_PASSWORD }}; mirror -R . /path/to/app/"
     
     # Verificar deployment con health checks
     - name: Verificar deployment exitoso
       run: |
-        echo "TODO: Verificar que la aplicación desplegada responda"
-        # curl -f https://tu-dominio.com/healthz/
-        # curl -f https://tu-dominio.com/healthz/ready/
+        sleep 30  # Wait for deployment to propagate
+        curl -f https://tu-dominio.com/healthz/healthz || exit 1
+        curl -f https://tu-dominio.com/healthz/readyz || exit 1
 
   # Deploy a entorno de desarrollo (rama develop)
   deploy-development:
@@ -268,14 +269,15 @@ jobs:
     
     - name: Deploy a desarrollo
       run: |
-        echo "TODO: Configurar deployment al entorno de desarrollo"
-        echo "URL de desarrollo: https://dev-sgics.tu-dominio.com"
-        # Deployment específico para desarrollo
+        # Example: Use rsync over SSH for development deployment
+        rsync -avz --delete . user@dev-server.com:/path/to/dev/app/
+        # Or use a deployment script/tool specific to your setup
     
     - name: Verificar deployment desarrollo
       run: |
-        echo "TODO: Health check del entorno de desarrollo"
-        # curl -f https://dev-sgics.tu-dominio.com/healthz/
+        sleep 30
+        curl -f https://dev-sgics.tu-dominio.com/healthz/healthz || exit 1
+        curl -f https://dev-sgics.tu-dominio.com/healthz/readyz || exit 1
 
   # Deploy de features para testing (ramas SCRUM-*)
   deploy-feature:
@@ -297,14 +299,15 @@ jobs:
     
     - name: Deploy feature branch
       run: |
-        echo "TODO: Configurar deployment de feature para testing"
-        echo "Feature URL: https://${{ env.FEATURE_NAME }}-sgics.tu-dominio.com"
-        # Deployment específico para features
-        
+        # Example: Deploy to a feature-specific directory or subdomain
+        scp -r . user@feature-server.com:/path/to/features/${{ env.FEATURE_NAME }}/
+        # Or use a tool like Surge, Netlify, etc. for feature previews
+    
     - name: Verificar deployment feature
       run: |
-        echo "TODO: Health check del feature deployment"
-        # curl -f https://${{ env.FEATURE_NAME }}-sgics.tu-dominio.com/healthz/
+        sleep 30
+        curl -f https://${{ env.FEATURE_NAME }}-sgics.tu-dominio.com/healthz/healthz || exit 1
+        curl -f https://${{ env.FEATURE_NAME }}-sgics.tu-dominio.com/healthz/readyz || exit 1
 
   # ==========================================
   # JOB 5: NOTIFICACIONES
@@ -320,12 +323,14 @@ jobs:
       run: |
         if [ "${{ needs.backend-tests.result }}" = "success" ] && [ "${{ needs.frontend-tests.result }}" = "success" ]; then
           echo "Tests completados exitosamente en rama: ${{ github.ref_name }}"
-          # TODO: Enviar notificación de éxito (Slack, Discord, email, etc.)
+          # Example: Send Slack notification
+          # curl -X POST -H 'Content-type: application/json' --data '{"text":"Tests passed on ${{ github.ref_name }}"}' ${{ secrets.SLACK_WEBHOOK_URL }}
         else
           echo "Tests fallaron en rama: ${{ github.ref_name }}"
           echo "Backend result: ${{ needs.backend-tests.result }}"
           echo "Frontend result: ${{ needs.frontend-tests.result }}"
-          # TODO: Enviar notificación de fallo con detalles
+          # Example: Send failure notification
+          # curl -X POST -H 'Content-type: application/json' --data '{"text":"Tests failed on ${{ github.ref_name }}: Backend ${{ needs.backend-tests.result }}, Frontend ${{ needs.frontend-tests.result }}"}' ${{ secrets.SLACK_WEBHOOK_URL }}
         fi
     
     # Notificación específica para deployment
@@ -333,14 +338,14 @@ jobs:
       if: github.event_name == 'push' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/develop' || startsWith(github.ref, 'refs/heads/SCRUM-'))
       run: |
         echo "Deployment iniciado para rama: ${{ github.ref_name }}"
-        # TODO: Notificar inicio de deployment
+        # Example notification
+        # curl -X POST -H 'Content-type: application/json' --data '{"text":"Deployment started for ${{ github.ref_name }}"}' ${{ secrets.SLACK_WEBHOOK_URL }}
         
         if [ "${{ github.ref }}" = "refs/heads/main" ]; then
           echo "Deployment a PRODUCCIÓN"
-          # TODO: Notificación especial para producción
+          # Special notification for production
         elif [ "${{ github.ref }}" = "refs/heads/develop" ]; then
           echo "Deployment a DESARROLLO"
-          # TODO: Notificación para desarrollo
         else
           echo "Deployment de FEATURE para testing"
-          # TODO: Notificación para features
+        fi

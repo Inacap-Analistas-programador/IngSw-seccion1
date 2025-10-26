@@ -48,6 +48,7 @@ urlpatterns = [
     path("api/files/", include("apps.files.urls")),  # Subida y gestión de archivos
     path("api/courses/", include("apps.courses.urls")),  # Gestión de cursos
     path("api/persons/search/", PersonSearchView.as_view(), name="persons-search"),
+    path("api/personas/", include("apps.personas.urls")),  # Endpoints CRUD de personas
     # Endpoints de salud del sistema (para monitoreo)
     path("healthz/", include("utils.health.urls")),
 ]
