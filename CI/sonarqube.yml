@@ -1,0 +1,86 @@
+name: Análisis de SonarQube
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+  pull-requests: read
+
+jobs:
+  analyze:
+    name: Analizar Backend y Frontend con SonarQube
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout del repositorio
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      # ---------- Backend (Django) ----------
+      - name: Configurar Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Instalar dependencias de Python
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Ejecutar tests backend con cobertura (SQLite en CI)
+        env:
+          DJANGO_SETTINGS_MODULE: SystemScoutsApi.settings_ci
+        run: |
+          python -m pip install coverage
+          coverage run SystemScoutsApi/manage.py test
+          coverage xml -o SystemScoutsApi/coverage.xml
+
+      - name: Análisis SonarQube (Backend - Django)
+        uses: sonarsource/sonarqube-scan-action@v2
+        with:
+          projectBaseDir: SystemScoutsApi
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
+
+      - name: Quality Gate (Backend)
+        uses: sonarsource/sonarqube-quality-gate-action@v1
+        with:
+          scanMetadataReportFile: SystemScoutsApi/.scannerwork/report-task.txt
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
+
+      # ---------- Frontend (Vue) ----------
+      - name: Configurar Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Instalar dependencias del frontend
+        working-directory: SystemScoutsClient
+        run: npm ci || npm install
+
+      - name: Ejecutar tests frontend con cobertura (Vitest)
+        working-directory: SystemScoutsClient
+        run: npm run test:coverage --if-present
+
+      - name: Análisis SonarQube (Frontend - Vue)
+        uses: sonarsource/sonarqube-scan-action@v2
+        with:
+          projectBaseDir: SystemScoutsClient
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
+
+      - name: Quality Gate (Frontend)
+        uses: sonarsource/sonarqube-quality-gate-action@v1
+        with:
+          scanMetadataReportFile: SystemScoutsClient/.scannerwork/report-task.txt
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
