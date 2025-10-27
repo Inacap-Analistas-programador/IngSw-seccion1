@@ -15,11 +15,12 @@ TODO: El equipo C debe completar:
 - Integración con sistema de notificaciones
 """
 
-from django.db import models
-from django.contrib.auth import get_user_model
-from django.core.validators import MinValueValidator
-from django.core.exceptions import ValidationError
 from decimal import Decimal
+
+from django.contrib.auth import get_user_model
+from django.core.exceptions import ValidationError
+from django.core.validators import MinValueValidator
+from django.db import models
 
 User = get_user_model()
 
@@ -44,9 +45,15 @@ class Category(models.Model):
     is_active = models.BooleanField(default=True, verbose_name="Categoría activa")
 
     # Campos adicionales para UI
-    color = models.CharField(max_length=7, default="#007bff", verbose_name="Color para interfaz")
-    icon = models.CharField(max_length=50, blank=True, verbose_name="Ícono representativo")
-    order = models.PositiveIntegerField(default=0, verbose_name="Orden de visualización")
+    color = models.CharField(
+        max_length=7, default="#007bff", verbose_name="Color para interfaz"
+    )
+    icon = models.CharField(
+        max_length=50, blank=True, verbose_name="Ícono representativo"
+    )
+    order = models.PositiveIntegerField(
+        default=0, verbose_name="Orden de visualización"
+    )
 
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -142,8 +149,12 @@ class Course(models.Model):
     # Fechas importantes del curso
     start_date = models.DateField(verbose_name="Fecha de inicio")
     end_date = models.DateField(verbose_name="Fecha de fin")
-    enrollment_start = models.DateTimeField(null=True, blank=True, verbose_name="Inicio de inscripción")
-    enrollment_end = models.DateTimeField(null=True, blank=True, verbose_name="Fin de inscripción")
+    enrollment_start = models.DateTimeField(
+        null=True, blank=True, verbose_name="Inicio de inscripción"
+    )
+    enrollment_end = models.DateTimeField(
+        null=True, blank=True, verbose_name="Fin de inscripción"
+    )
 
     # Auditoría
     created_by = models.ForeignKey(
@@ -154,9 +165,17 @@ class Course(models.Model):
 
     def clean(self):
         if self.start_date and self.end_date and self.start_date > self.end_date:
-            raise ValidationError("La fecha de inicio debe ser anterior a la fecha de fin.")
-        if self.enrollment_start and self.enrollment_end and self.enrollment_start > self.enrollment_end:
-            raise ValidationError("La fecha de inicio de inscripción debe ser anterior a la fecha de fin.")
+            raise ValidationError(
+                "La fecha de inicio debe ser anterior a la fecha de fin."
+            )
+        if (
+            self.enrollment_start
+            and self.enrollment_end
+            and self.enrollment_start > self.enrollment_end
+        ):
+            raise ValidationError(
+                "La fecha de inicio de inscripción debe ser anterior a la fecha de fin."
+            )
 
     @property
     def available_slots(self):
@@ -212,15 +231,15 @@ class CourseTeam(models.Model):
         auto_now_add=True, verbose_name="Fecha de asignación"
     )
     assigned_by = models.ForeignKey(
-        User, on_delete=models.SET_NULL, null=True, blank=True, related_name="assigned_teams"
+        User,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="assigned_teams",
     )
-    notes = models.TextField(
-        blank=True, verbose_name="Notas adicionales"
-    )
-    is_active = models.BooleanField(
-        default=True, verbose_name="Activo en el curso"
-    )
-    
+    notes = models.TextField(blank=True, verbose_name="Notas adicionales")
+    is_active = models.BooleanField(default=True, verbose_name="Activo en el curso")
+
     class Meta:
         db_table = "course_teams"
         unique_together = ("course", "user", "role")

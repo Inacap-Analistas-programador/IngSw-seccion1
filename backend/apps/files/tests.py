@@ -1,11 +1,13 @@
 import pytest
+from django.core.files.uploadedfile import SimpleUploadedFile
 from django.urls import reverse
 from rest_framework import status
-from django.core.files.uploadedfile import SimpleUploadedFile
+
 from apps.authentication.models import User
-from apps.preinscriptions.models import Preinscription
 from apps.courses.models import Course
-from .models import FileUpload, FileDownload
+from apps.preinscriptions.models import Preinscription
+
+from .models import FileDownload, FileUpload
 
 
 @pytest.fixture
@@ -73,7 +75,9 @@ class TestArchivoAPI:
         assert FileUpload.objects.count() == 1
         assert FileUpload.objects.first().uploaded_by == user
 
-    def test_upload_file_by_non_owner(self, authenticated_client, create_preinscription):
+    def test_upload_file_by_non_owner(
+        self, authenticated_client, create_preinscription
+    ):
         """Un usuario no debería poder subir un archivo a la preinscripción de otro."""
         client, _ = authenticated_client
         preinscription = create_preinscription  # Pertenece al admin_user
@@ -99,18 +103,23 @@ class TestArchivoAPI:
         file_upload.uploaded_by = user
         file_upload.save()
 
-        url = reverse("files:fileupload-download", kwargs={'pk': file_upload.pk})
+        url = reverse("files:fileupload-download", kwargs={"pk": file_upload.pk})
         response = client.get(url)
 
         assert response.status_code == status.HTTP_200_OK
-        assert response.get('Content-Disposition') == f'attachment; filename="{file_upload.original_name}"'
+        assert (
+            response.get("Content-Disposition")
+            == f'attachment; filename="{file_upload.original_name}"'
+        )
 
-    def test_download_file_permission_denied(self, authenticated_client, create_file_upload):
+    def test_download_file_permission_denied(
+        self, authenticated_client, create_file_upload
+    ):
         """Un usuario no debe poder descargar un archivo que no le pertenece."""
         client, _ = authenticated_client
-        file_upload = create_file_upload # Creado por admin_user
+        file_upload = create_file_upload  # Creado por admin_user
 
-        url = reverse("files:fileupload-download", kwargs={'pk': file_upload.pk})
+        url = reverse("files:fileupload-download", kwargs={"pk": file_upload.pk})
         response = client.get(url)
 
         assert response.status_code == status.HTTP_403_FORBIDDEN
@@ -121,12 +130,12 @@ class TestArchivoAPI:
         file_upload = create_file_upload
         assert file_upload.estado == "SUBIDO"
 
-        url = reverse("files:fileupload-verificar", kwargs={'pk': file_upload.pk})
+        url = reverse("files:fileupload-verificar", kwargs={"pk": file_upload.pk})
         data = {"estado": "APROBADO", "verification_notes": "Documento correcto."}
-        response = client.patch(url, data, format='json')
+        response = client.patch(url, data, format="json")
 
         assert response.status_code == status.HTTP_200_OK
-        assert response.data['estado'] == "APROBADO"
+        assert response.data["estado"] == "APROBADO"
         file_upload.refresh_from_db()
         assert file_upload.estado == "APROBADO"
         assert file_upload.verification_notes == "Documento correcto."
@@ -134,21 +143,27 @@ class TestArchivoAPI:
     def test_list_my_files(self, authenticated_client, create_file_upload):
         """La acción 'mis_archivos' debe devolver solo los archivos del usuario autenticado."""
         client, user = authenticated_client
-        
+
         # Archivo del usuario autenticado
         my_file = create_file_upload
         my_file.uploaded_by = user
         my_file.save()
 
         # Archivo de otro usuario (creado por el admin por defecto en la fixture)
-        other_file = FileUpload.objects.create(name="Otro Archivo", file=SimpleUploadedFile("other.txt", b""), uploaded_by=User.objects.get(username='adminuser'), original_name="other.txt", file_size=1)
+        other_file = FileUpload.objects.create(
+            name="Otro Archivo",
+            file=SimpleUploadedFile("other.txt", b""),
+            uploaded_by=User.objects.get(username="adminuser"),
+            original_name="other.txt",
+            file_size=1,
+        )
 
         url = reverse("files:fileupload-mis-archivos")
         response = client.get(url)
 
         assert response.status_code == status.HTTP_200_OK
         assert len(response.data) == 1
-        assert response.data[0]['id'] == my_file.id
+        assert response.data[0]["id"] == my_file.id
 
     def test_update_file_by_owner(self, authenticated_client, create_file_upload):
         """El propietario del archivo debe poder actualizar su nombre y descripción."""
@@ -157,12 +172,15 @@ class TestArchivoAPI:
         file_upload.uploaded_by = user
         file_upload.save()
 
-        url = reverse("files:fileupload-detail", kwargs={'pk': file_upload.pk})
-        data = {"name": "Nuevo Nombre del Archivo", "description": "Descripción actualizada."}
-        response = client.patch(url, data, format='json')
+        url = reverse("files:fileupload-detail", kwargs={"pk": file_upload.pk})
+        data = {
+            "name": "Nuevo Nombre del Archivo",
+            "description": "Descripción actualizada.",
+        }
+        response = client.patch(url, data, format="json")
 
         assert response.status_code == status.HTTP_200_OK
-        assert response.data['name'] == "Nuevo Nombre del Archivo"
+        assert response.data["name"] == "Nuevo Nombre del Archivo"
         file_upload.refresh_from_db()
         assert file_upload.description == "Descripción actualizada."
 
@@ -171,7 +189,7 @@ class TestArchivoAPI:
         client, _ = admin_client
         file_upload = create_file_upload
 
-        url = reverse("files:fileupload-detail", kwargs={'pk': file_upload.pk})
+        url = reverse("files:fileupload-detail", kwargs={"pk": file_upload.pk})
         response = client.delete(url)
 
         assert response.status_code == status.HTTP_204_NO_CONTENT

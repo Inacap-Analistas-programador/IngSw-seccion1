@@ -1,6 +1,7 @@
-from django.contrib import admin
 from importlib import import_module
+
 from django.apps import apps
+from django.contrib import admin
 
 # Registrar todos los modelos de todas las apps del proyecto
 for app_config in apps.get_app_configs():

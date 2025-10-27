@@ -3,6 +3,7 @@ Serializers para preinscripciones Scout
 """
 
 from rest_framework import serializers
+
 from .models import Preinscripcion
 
 
@@ -123,12 +124,11 @@ class PreinscripcionDetailSerializer(serializers.ModelSerializer):
         # - PER_ID == user.id (common when users and persons share ids)
         # - USU_ID == user (user who registered the payment)
         # - CUR_ID == course.id AND PER_ID == user.id (course-scoped match)
-        pagos_qs = (
-            PagoPersona.objects.filter(
-                Q(PER_ID=user.id) | Q(USU_ID=user) | (Q(CUR_ID=course.id) & Q(PER_ID=user.id))
-            )
-            .order_by("-PAP_FECHA_HORA")[:50]
-        )
+        pagos_qs = PagoPersona.objects.filter(
+            Q(PER_ID=user.id)
+            | Q(USU_ID=user)
+            | (Q(CUR_ID=course.id) & Q(PER_ID=user.id))
+        ).order_by("-PAP_FECHA_HORA")[:50]
 
         return [
             {

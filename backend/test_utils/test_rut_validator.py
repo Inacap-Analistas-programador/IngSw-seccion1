@@ -1,5 +1,3 @@
-
-
 from utils.rut_validator import (
     calculate_verification_digit,
     clean_rut,

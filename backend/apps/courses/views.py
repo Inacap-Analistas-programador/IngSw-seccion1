@@ -3,16 +3,17 @@ Views para gestión de cursos Scout
 Sistema de Gestión Integral de Cursos Scout
 """
 
-from rest_framework import viewsets, status, filters, permissions
+from django.db.models import Q
+from django_filters.rest_framework import DjangoFilterBackend
+from rest_framework import filters, permissions, status, viewsets
 from rest_framework.decorators import action
 from rest_framework.response import Response
-from django_filters.rest_framework import DjangoFilterBackend
-from django.db.models import Q
-from .models import Course, Category, CourseTeam
+
+from .models import Category, Course, CourseTeam
 from .serializers import (
+    CategorySerializer,
     CourseDetailSerializer,
     CourseListSerializer,
-    CategorySerializer,
     CourseTeamSerializer,
 )
 
@@ -86,8 +87,9 @@ class CourseViewSet(viewsets.ModelViewSet):
         archived_courses = Course.objects.filter(status=Course.ARCHIVED).count()
 
         # Lógica de warning/overdue
-        from django.utils import timezone
         from datetime import timedelta
+
+        from django.utils import timezone
 
         today = timezone.now().date()
         warning_date = today + timedelta(days=7)

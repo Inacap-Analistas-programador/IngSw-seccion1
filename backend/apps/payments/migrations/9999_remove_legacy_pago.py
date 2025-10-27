@@ -14,7 +14,7 @@ from django.db import migrations
 class Migration(migrations.Migration):
     # keep the linear dependency so makemigrations --merge is not triggered
     dependencies = [
-        ('payments', '0008_merge_conflicts'),
+        ("payments", "0008_merge_conflicts"),
     ]
 
     # no operations: deletion deferred until explicitly approved

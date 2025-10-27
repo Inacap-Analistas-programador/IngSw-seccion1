@@ -1,7 +1,8 @@
 from django.contrib import admin
-from django.utils.html import format_html
 from django.urls import reverse
+from django.utils.html import format_html
 from django.utils.safestring import mark_safe
+
 from .models import Course
 
 
@@ -24,10 +25,19 @@ class CourseAdmin(admin.ModelAdmin):
     list_per_page = 20
 
     fieldsets = (
-        ("Información Básica", {"fields": ("code", "title", "description", "category", "rama", "status")}),
+        (
+            "Información Básica",
+            {"fields": ("code", "title", "description", "category", "rama", "status")},
+        ),
         ("Fechas", {"fields": ("start_date", "end_date")}),
         ("Participantes y Precios", {"fields": ("max_participants", "price")}),
-        ("Auditoría", {"fields": ("created_by", "created_at", "updated_at"), "classes": ("collapse",)}),
+        (
+            "Auditoría",
+            {
+                "fields": ("created_by", "created_at", "updated_at"),
+                "classes": ("collapse",),
+            },
+        ),
     )
 
     readonly_fields = ("created_at", "updated_at")

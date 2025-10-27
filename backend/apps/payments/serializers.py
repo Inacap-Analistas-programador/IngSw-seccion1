@@ -6,16 +6,17 @@ en formatos de datos como JSON para ser utilizados por la API REST.
 Cada serializer se corresponde con un modelo y define qué campos
 se deben incluir en su representación.
 """
-from rest_framework import serializers
 from django.db import transaction
+from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
+
 from .models import (
-    PagoPersona,
-    PagoCambioPersona,
-    Prepago,
     ComprobantePago,
-    PagoComprobante,
     ConceptoContable,
+    PagoCambioPersona,
+    PagoComprobante,
+    PagoPersona,
+    Prepago,
 )
 
 
@@ -129,11 +130,13 @@ class ComprobantePagoSerializer(serializers.ModelSerializer):
         pagos_ids = validated_data.pop("pagos_ids")
         if not pagos_ids:
             raise ValidationError({"pagos_ids": "Esta lista no puede estar vacía."})
-        
+
         # Validar duplicados antes de consultar la base de datos.
         if len(pagos_ids) != len(set(pagos_ids)):
             raise ValidationError(
-                {"pagos_ids": "Uno o más IDs de pago no son válidos o están duplicados."}
+                {
+                    "pagos_ids": "Uno o más IDs de pago no son válidos o están duplicados."
+                }
             )
 
         # 2. Buscamos los objetos PagoPersona correspondientes a los IDs.

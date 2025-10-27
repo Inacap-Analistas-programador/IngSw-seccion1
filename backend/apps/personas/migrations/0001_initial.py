@@ -4,23 +4,29 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     initial = True
 
-    dependencies = [
-    ]
+    dependencies = []
 
     operations = [
         migrations.CreateModel(
-            name='Persona',
+            name="Persona",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('nombres', models.CharField(max_length=50)),
-                ('email', models.EmailField(max_length=100)),
-                ('fecha_nacimiento', models.DateField(blank=True, null=True)),
-                ('direccion', models.CharField(blank=True, max_length=255, null=True)),
-                ('telefono', models.CharField(blank=True, max_length=15, null=True)),
-                ('vigente', models.BooleanField(default=True)),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("nombres", models.CharField(max_length=50)),
+                ("email", models.EmailField(max_length=100)),
+                ("fecha_nacimiento", models.DateField(blank=True, null=True)),
+                ("direccion", models.CharField(blank=True, max_length=255, null=True)),
+                ("telefono", models.CharField(blank=True, max_length=15, null=True)),
+                ("vigente", models.BooleanField(default=True)),
             ],
         ),
     ]

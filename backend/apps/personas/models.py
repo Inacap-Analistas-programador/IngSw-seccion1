@@ -1,5 +1,6 @@
 from django.db import models
 
+
 class Persona(models.Model):
     nombres = models.CharField(max_length=50)
     email = models.EmailField(max_length=100)

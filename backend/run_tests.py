@@ -7,11 +7,12 @@ Este script ejecuta toda la suite de tests del backend con diferentes opciones.
 Uso: python run_tests.py [options]
 """
 
-import os
-import sys
-import subprocess
 import argparse
+import os
+import subprocess
+import sys
 from pathlib import Path
+
 
 # Colores para la salida
 class Colors:

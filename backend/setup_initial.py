@@ -6,6 +6,7 @@ Ejecuta las configuraciones básicas necesarias para el desarrollo
 
 import os
 import sys
+
 import django
 from django.conf import settings
 from django.core.management import execute_from_command_line
@@ -24,11 +25,11 @@ def create_initial_data():
     print("Creando datos iniciales...")
 
     # Importar modelos después de setup
-    from apps.authentication.models import Role
     from django.contrib.auth import get_user_model
 
-    # get_user_model() imported but not used
+    from apps.authentication.models import Role
 
+    # get_user_model() imported but not used
     # Crear roles básicos
 
 

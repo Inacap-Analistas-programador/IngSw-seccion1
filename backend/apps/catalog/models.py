@@ -9,8 +9,8 @@ Este módulo define las entidades de catálogo base del sistema:
 Basado en el esquema SQL Server proporcionado, adaptado a Django/MySQL.
 """
 
-from django.db import models
 from django.core.validators import RegexValidator
+from django.db import models
 
 
 class Region(models.Model):

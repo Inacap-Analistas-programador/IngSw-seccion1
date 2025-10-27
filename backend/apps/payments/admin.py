@@ -1,7 +1,8 @@
 from django.contrib import admin
+from django.db.models import Sum
 from django.utils.html import format_html
 from django.utils.safestring import mark_safe
-from django.db.models import Sum
+
 from .models import PagoPersona
 
 
@@ -17,7 +18,13 @@ class PagoPersonaAdmin(admin.ModelAdmin):
         "status_icons",
     )
     list_filter = ("PAP_TIPO", "PAP_FECHA_HORA", "USU_ID")
-    search_fields = ("PER_ID", "CUR_ID", "USU_ID__username", "PAP_OBSERVACION", "PAP_ID")
+    search_fields = (
+        "PER_ID",
+        "CUR_ID",
+        "USU_ID__username",
+        "PAP_OBSERVACION",
+        "PAP_ID",
+    )
     ordering = ("-PAP_FECHA_HORA",)
     date_hierarchy = "PAP_FECHA_HORA"
     list_per_page = 25
@@ -48,7 +55,11 @@ class PagoPersonaAdmin(admin.ModelAdmin):
             Persona = django_apps.get_model("personas", "Persona")
             persona = Persona.objects.filter(id=getattr(obj, "PER_ID", None)).first()
             if persona:
-                name = getattr(persona, "get_full_name", lambda: f"{getattr(persona, 'first_name', '')} {getattr(persona, 'last_name', '')}")()
+                name = getattr(
+                    persona,
+                    "get_full_name",
+                    lambda: f"{getattr(persona, 'first_name', '')} {getattr(persona, 'last_name', '')}",
+                )()
                 rut = getattr(persona, "rut", "")
                 return format_html(
                     '<div><strong>{}</strong><br><small style="color: #666;">RUT: {}</small></div>',
@@ -68,7 +79,9 @@ class PagoPersonaAdmin(admin.ModelAdmin):
         """Monto formateado"""
         amount = getattr(obj, "PAP_VALOR", None)
         try:
-            return format_html('<strong style="color: #059669;">${:,.0f}</strong>', amount)
+            return format_html(
+                '<strong style="color: #059669;">${:,.0f}</strong>', amount
+            )
         except Exception:
             return str(amount) or "-"
 
@@ -89,7 +102,9 @@ class PagoPersonaAdmin(admin.ModelAdmin):
         # Show a short observation if present
         obs = getattr(obj, "PAP_OBSERVACION", None)
         if obs:
-            status_info.append(f"<small style=\"color:#666\">{obs[:40]}{'...' if len(obs) > 40 else ''}</small>")
+            status_info.append(
+                f"<small style=\"color:#666\">{obs[:40]}{'...' if len(obs) > 40 else ''}</small>"
+            )
 
         return format_html("<br>".join(status_info)) if status_info else "-"
 

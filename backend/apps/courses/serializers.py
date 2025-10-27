@@ -4,7 +4,8 @@ Sistema de Gestión Integral de Cursos Scout
 """
 
 from rest_framework import serializers
-from .models import Course, Category, CourseTeam
+
+from .models import Category, Course, CourseTeam
 
 
 class CategorySerializer(serializers.ModelSerializer):

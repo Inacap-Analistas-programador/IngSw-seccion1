@@ -2,36 +2,36 @@
 ViewSets para los catálogos maestros de SGICS
 """
 
-from rest_framework import viewsets, filters
 from django_filters.rest_framework import DjangoFilterBackend
+from rest_framework import filters, viewsets
 from rest_framework.decorators import action
 from rest_framework.response import Response
 
 from .models import (
-    Region,
-    Provincia,
     Comuna,
-    Zona,
     Distrito,
-    GrupoScout,
-    Rama,
-    TipoCurso,
-    Nivel,
     EstadoCivil,
+    GrupoScout,
+    Nivel,
+    Provincia,
+    Rama,
+    Region,
     TipoAlimentacion,
+    TipoCurso,
+    Zona,
 )
 from .serializers import (
-    RegionSerializer,
-    ProvinciaSerializer,
     ComunaSerializer,
-    ZonaSerializer,
     DistritoSerializer,
-    GrupoScoutSerializer,
-    RamaSerializer,
-    TipoCursoSerializer,
-    NivelSerializer,
     EstadoCivilSerializer,
+    GrupoScoutSerializer,
+    NivelSerializer,
+    ProvinciaSerializer,
+    RamaSerializer,
+    RegionSerializer,
     TipoAlimentacionSerializer,
+    TipoCursoSerializer,
+    ZonaSerializer,
 )
 
 

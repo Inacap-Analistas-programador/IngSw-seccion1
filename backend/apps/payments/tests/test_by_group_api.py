@@ -2,13 +2,12 @@ from datetime import date
 
 from django.contrib.auth import get_user_model
 from django.urls import reverse
-from rest_framework.test import APITestCase
 from rest_framework import status
+from rest_framework.test import APITestCase
 
 from apps.courses.models import Course
-from apps.preinscriptions.models import Preinscripcion
 from apps.payments.models import PagoPersona
-
+from apps.preinscriptions.models import Preinscripcion
 
 User = get_user_model()
 
