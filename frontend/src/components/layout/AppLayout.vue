@@ -1,19 +1,19 @@
 <template>
-  <div class="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100">
+  <div class="min-h-screen bg-gradient-to-br from-green-50 via-emerald-50 to-teal-100">
     <!-- Navigation Header -->
-    <header class="bg-white/80 backdrop-blur-lg border-b border-gray-200 shadow-sm sticky top-0 z-50">
+    <header class="bg-white/90 backdrop-blur-lg border-b border-green-200 shadow-sm sticky top-0 z-50">
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="flex justify-between items-center h-16">
           <!-- Logo and Brand -->
           <div class="flex items-center space-x-4">
             <router-link to="/dashboard" class="flex items-center space-x-3">
-              <div class="w-10 h-10 bg-gradient-to-r from-indigo-600 to-blue-600 rounded-lg flex items-center justify-center">
+              <div class="w-10 h-10 bg-gradient-to-r from-green-600 to-emerald-600 rounded-lg flex items-center justify-center">
                 <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
                 </svg>
               </div>
               <div>
-                <h1 class="text-xl font-bold bg-gradient-to-r from-indigo-600 to-blue-600 bg-clip-text text-transparent">
+                <h1 class="text-xl font-bold bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent">
                   SGICS
                 </h1>
                 <p class="text-xs text-gray-500 hidden sm:block">Sistema de Gestión Integral</p>
@@ -43,16 +43,16 @@
           <!-- User Menu -->
           <div class="flex items-center space-x-4">
             <!-- Notifications -->
-            <button class="relative p-2 text-gray-600 hover:text-indigo-600 transition-colors rounded-lg hover:bg-gray-100">
+            <button class="relative p-2 text-gray-600 hover:text-green-600 transition-colors rounded-lg hover:bg-green-50">
               <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-5-5h5m-5 0V3"></path>
               </svg>
-              <span class="absolute -top-1 -right-1 h-4 w-4 bg-red-500 rounded-full text-xs text-white flex items-center justify-center">3</span>
+              <span class="absolute -top-1 -right-1 h-4 w-4 bg-green-500 rounded-full text-xs text-white flex items-center justify-center">3</span>
             </button>
 
             <!-- User Profile -->
             <div class="flex items-center space-x-3">
-              <div class="w-8 h-8 bg-gradient-to-r from-indigo-500 to-blue-500 rounded-full flex items-center justify-center">
+              <div class="w-8 h-8 bg-gradient-to-r from-green-500 to-emerald-500 rounded-full flex items-center justify-center">
                 <span class="text-white text-sm font-semibold">{{ userInitials }}</span>
               </div>
               <div class="hidden sm:block">
@@ -86,7 +86,7 @@
       <div class="max-w-7xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
         <div class="flex flex-col md:flex-row justify-between items-center">
           <div class="flex items-center space-x-4 mb-4 md:mb-0">
-            <div class="w-8 h-8 bg-gradient-to-r from-indigo-600 to-blue-600 rounded-lg flex items-center justify-center">
+            <div class="w-8 h-8 bg-gradient-to-r from-green-600 to-emerald-600 rounded-lg flex items-center justify-center">
               <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
               </svg>
@@ -98,8 +98,8 @@
           </div>
           <div class="flex items-center space-x-6 text-sm text-gray-600">
             <span>© 2025 SGICS. Todos los derechos reservados.</span>
-            <a href="#" class="hover:text-indigo-600 transition-colors">Soporte</a>
-            <a href="#" class="hover:text-indigo-600 transition-colors">Documentación</a>
+            <a href="#" class="hover:text-green-600 transition-colors">Soporte</a>
+            <a href="#" class="hover:text-green-600 transition-colors">Documentación</a>
           </div>
         </div>
       </div>
