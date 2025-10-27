@@ -1,0 +1,154 @@
+graph TD
+    %% Inicio del Proceso de Pagos
+    Start([Inscripción Validada])
+
+    %% Generación de Cuotas
+    GenerateQuotas[Generar cuotas de pago]
+    CalculateAmount[Calcular monto total]
+    SetDueDates[Establecer fechas de vencimiento]
+    CreatePaymentPlan[Crear plan de pagos]
+
+    %% Notificación de Pagos
+    SendPaymentInstructions[Enviar instrucciones de pago]
+    NotifyParticipant[Notificar al participante]
+    UpdateStatus[Estado: Pendiente de Pago]
+
+    %% Proceso de Pago Individual
+    IndividualPayment[Pago Individual]
+    UploadReceipt[Subir comprobante]
+    ValidateReceipt[Validar comprobante]
+
+    %% Validaciones de Comprobante
+    ReceiptValid{¿Comprobante válido?}
+    AmountCorrect{¿Monto correcto?}
+    DateValid{¿Fecha válida?}
+    ReferenceValid{¿Referencia válida?}
+
+    %% Proceso de Pago Grupal
+    GroupPayment[Pago Grupal]
+    ImportBatch[Importar lote de pagos]
+    ProcessBatch[Procesar lote]
+    ValidateBatch[Validar lote]
+
+    %% Validaciones de Lote
+    BatchValid{¿Lote válido?}
+    DuplicatesFound{¿Duplicados encontrados?}
+    ErrorsFound{¿Errores encontrados?}
+
+    %% Resultados de Validación
+    ApprovePayment[Estado: Pagado]
+    RejectPayment[Estado: Rechazado]
+    RequestCorrection[Estado: Requiere Corrección]
+
+    %% Acciones Post-Pago
+    GenerateReceipt[Generar recibo]
+    SendConfirmation[Enviar confirmación]
+    UpdateEnrollment[Actualizar estado inscripción]
+    GenerateCredential[Generar credencial]
+
+    %% Notificaciones
+    NotifyParticipantPayment[Notificar al participante]
+    NotifyCoordinator[Notificar al coordinador]
+    UpdateDashboard[Actualizar dashboard]
+
+    %% Logs y Auditoría
+    LogPayment[Registrar en log de pagos]
+    UpdateAuditLog[Actualizar log de auditoría]
+    UpdateFinancialReport[Actualizar reporte financiero]
+
+    %% Proceso de Rechazo
+    RejectPayment --> SendRejectionNotice[Enviar aviso de rechazo]
+    SendRejectionNotice --> NotifyParticipantPayment
+    NotifyParticipantPayment --> NotifyCoordinator
+    NotifyCoordinator --> UpdateDashboard
+    UpdateDashboard --> LogPayment
+    LogPayment --> UpdateAuditLog
+    UpdateAuditLog --> End
+
+    %% Proceso de Corrección
+    RequestCorrection --> SendCorrectionNotice[Enviar aviso de corrección]
+    SendCorrectionNotice --> NotifyParticipantPayment
+    NotifyParticipantPayment --> NotifyCoordinator
+    NotifyCoordinator --> UpdateDashboard
+    UpdateDashboard --> LogPayment
+    LogPayment --> UpdateAuditLog
+    UpdateAuditLog --> End
+
+    %% Fin del Proceso
+    End([Fin])
+
+    %% Flujo Principal
+    Start --> GenerateQuotas
+    GenerateQuotas --> CalculateAmount
+    CalculateAmount --> SetDueDates
+    SetDueDates --> CreatePaymentPlan
+    CreatePaymentPlan --> SendPaymentInstructions
+    SendPaymentInstructions --> NotifyParticipant
+    NotifyParticipant --> UpdateStatus
+
+    %% Bifurcación: Pago Individual vs Grupal
+    UpdateStatus --> IndividualPayment
+    UpdateStatus --> GroupPayment
+
+    %% Flujo Pago Individual
+    IndividualPayment --> UploadReceipt
+    UploadReceipt --> ValidateReceipt
+    ValidateReceipt --> ReceiptValid
+
+    ReceiptValid -->|No| RejectPayment
+    ReceiptValid -->|Sí| AmountCorrect
+
+    AmountCorrect -->|No| RequestCorrection
+    AmountCorrect -->|Sí| DateValid
+
+    DateValid -->|No| RequestCorrection
+    DateValid -->|Sí| ReferenceValid
+
+    ReferenceValid -->|No| RequestCorrection
+    ReferenceValid -->|Sí| ApprovePayment
+
+    %% Flujo Pago Grupal
+    GroupPayment --> ImportBatch
+    ImportBatch --> ProcessBatch
+    ProcessBatch --> ValidateBatch
+    ValidateBatch --> BatchValid
+
+    BatchValid -->|No| RejectPayment
+    BatchValid -->|Sí| DuplicatesFound
+
+    DuplicatesFound -->|Sí| RequestCorrection
+    DuplicatesFound -->|No| ErrorsFound
+
+    ErrorsFound -->|Sí| RequestCorrection
+    ErrorsFound -->|No| ApprovePayment
+
+    %% Resultado Exitoso
+    ApprovePayment --> GenerateReceipt
+    GenerateReceipt --> SendConfirmation
+    SendConfirmation --> UpdateEnrollment
+    UpdateEnrollment --> GenerateCredential
+    GenerateCredential --> NotifyParticipantPayment
+    NotifyParticipantPayment --> NotifyCoordinator
+    NotifyCoordinator --> UpdateDashboard
+    UpdateDashboard --> LogPayment
+    LogPayment --> UpdateAuditLog
+    UpdateAuditLog --> UpdateFinancialReport
+    UpdateFinancialReport --> End
+
+    %% Estilos
+    classDef startEnd fill:#4caf50,stroke:#2e7d32,stroke-width:3px,color:#fff
+    classDef process fill:#2196f3,stroke:#1565c0,stroke-width:2px,color:#fff
+    classDef decision fill:#ff9800,stroke:#ef6c00,stroke-width:2px,color:#fff
+    classDef error fill:#f44336,stroke:#c62828,stroke-width:2px,color:#fff
+    classDef success fill:#4caf50,stroke:#2e7d32,stroke-width:2px,color:#fff
+    classDef warning fill:#ff9800,stroke:#ef6c00,stroke-width:2px,color:#fff
+    classDef info fill:#2196f3,stroke:#1565c0,stroke-width:2px,color:#fff
+
+    class Start,End startEnd
+    class GenerateQuotas,CalculateAmount,SetDueDates,CreatePaymentPlan,SendPaymentInstructions,NotifyParticipant,UpdateStatus,IndividualPayment,UploadReceipt,ValidateReceipt,GroupPayment,ImportBatch,ProcessBatch,ValidateBatch,GenerateReceipt,SendConfirmation,UpdateEnrollment,GenerateCredential,NotifyParticipantPayment,NotifyCoordinator,UpdateDashboard,LogPayment,UpdateAuditLog,UpdateFinancialReport,SendRejectionNotice,SendCorrectionNotice process
+    class ReceiptValid,AmountCorrect,DateValid,ReferenceValid,BatchValid,DuplicatesFound,ErrorsFound decision
+    class RejectPayment,SendRejectionNotice error
+    class ApprovePayment,GenerateReceipt,SendConfirmation,UpdateEnrollment,GenerateCredential success
+    class RequestCorrection,SendCorrectionNotice warning
+    class IndividualPayment,GroupPayment info
+

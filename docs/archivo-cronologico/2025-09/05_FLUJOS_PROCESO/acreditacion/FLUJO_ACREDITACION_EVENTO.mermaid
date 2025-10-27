@@ -1,0 +1,150 @@
+graph TD
+    %% Inicio del Proceso de Acreditación
+    Start([Participante llega al evento])
+
+    %% Verificación de Credencial
+    ShowCredential[Mostrar credencial QR]
+    ScanQR[Escanear código QR]
+    ValidateQR[Validar código QR]
+
+    %% Validaciones de QR
+    QRValid{¿QR válido?}
+    QRExpired{¿QR expirado?}
+    QRUsed{¿QR ya utilizado?}
+
+    %% Verificación de Datos
+    LoadParticipantData[Cargar datos del participante]
+    VerifyIdentity[Verificar identidad]
+    CheckDocuments[Verificar documentos físicos]
+
+    %% Validaciones de Identidad
+    IdentityValid{¿Identidad verificada?}
+    DocumentsValid{¿Documentos OK?}
+    ParticipantValid{¿Participante válido?}
+
+    %% Verificación de Estado
+    CheckPaymentStatus[Verificar estado de pago]
+    CheckEnrollmentStatus[Verificar estado de inscripción]
+    CheckEventStatus[Verificar estado del evento]
+
+    %% Validaciones de Estado
+    PaymentValid{¿Pago confirmado?}
+    EnrollmentValid{¿Inscripción activa?}
+    EventValid{¿Evento activo?}
+
+    %% Proceso de Acreditación
+    ApproveAccreditation[Estado: Acreditado]
+    RejectAccreditation[Estado: Rechazado]
+    RequestDocuments[Estado: Requiere Documentos]
+
+    %% Acciones Post-Acreditación
+    GenerateBadge[Generar gafete]
+    PrintBadge[Imprimir gafete]
+    AssignAccommodation[Asignar alojamiento]
+    AssignGroup[Asignar grupo]
+    ProvideMaterials[Entregar materiales]
+
+    %% Notificaciones
+    NotifyParticipant[Notificar al participante]
+    NotifyCoordinator[Notificar al coordinador]
+    UpdateDashboard[Actualizar dashboard]
+
+    %% Logs y Auditoría
+    LogAccreditation[Registrar en log de acreditación]
+    UpdateAuditLog[Actualizar log de auditoría]
+    UpdateAttendance[Actualizar asistencia]
+
+    %% Proceso de Rechazo
+    RejectAccreditation --> SendRejectionNotice[Enviar aviso de rechazo]
+    SendRejectionNotice --> NotifyParticipant
+    NotifyParticipant --> NotifyCoordinator
+    NotifyCoordinator --> UpdateDashboard
+    UpdateDashboard --> LogAccreditation
+    LogAccreditation --> UpdateAuditLog
+    UpdateAuditLog --> End
+
+    %% Proceso de Documentos Requeridos
+    RequestDocuments --> SendDocumentRequest[Enviar solicitud de documentos]
+    SendDocumentRequest --> NotifyParticipant
+    NotifyParticipant --> NotifyCoordinator
+    NotifyCoordinator --> UpdateDashboard
+    UpdateDashboard --> LogAccreditation
+    LogAccreditation --> UpdateAuditLog
+    UpdateAuditLog --> End
+
+    %% Fin del Proceso
+    End([Fin])
+
+    %% Flujo Principal
+    Start --> ShowCredential
+    ShowCredential --> ScanQR
+    ScanQR --> ValidateQR
+    ValidateQR --> QRValid
+
+    QRValid -->|No| RejectAccreditation
+    QRValid -->|Sí| QRExpired
+
+    QRExpired -->|Sí| RejectAccreditation
+    QRExpired -->|No| QRUsed
+
+    QRUsed -->|Sí| RejectAccreditation
+    QRUsed -->|No| LoadParticipantData
+
+    %% Verificación de Datos
+    LoadParticipantData --> VerifyIdentity
+    VerifyIdentity --> IdentityValid
+
+    IdentityValid -->|No| RejectAccreditation
+    IdentityValid -->|Sí| CheckDocuments
+
+    CheckDocuments --> DocumentsValid
+    DocumentsValid -->|No| RequestDocuments
+    DocumentsValid -->|Sí| ParticipantValid
+
+    ParticipantValid -->|No| RejectAccreditation
+    ParticipantValid -->|Sí| CheckPaymentStatus
+
+    %% Verificación de Estado
+    CheckPaymentStatus --> PaymentValid
+    PaymentValid -->|No| RejectAccreditation
+    PaymentValid -->|Sí| CheckEnrollmentStatus
+
+    CheckEnrollmentStatus --> EnrollmentValid
+    EnrollmentValid -->|No| RejectAccreditation
+    EnrollmentValid -->|Sí| CheckEventStatus
+
+    CheckEventStatus --> EventValid
+    EventValid -->|No| RejectAccreditation
+    EventValid -->|Sí| ApproveAccreditation
+
+    %% Resultado Exitoso
+    ApproveAccreditation --> GenerateBadge
+    GenerateBadge --> PrintBadge
+    PrintBadge --> AssignAccommodation
+    AssignAccommodation --> AssignGroup
+    AssignGroup --> ProvideMaterials
+    ProvideMaterials --> NotifyParticipant
+    NotifyParticipant --> NotifyCoordinator
+    NotifyCoordinator --> UpdateDashboard
+    UpdateDashboard --> LogAccreditation
+    LogAccreditation --> UpdateAuditLog
+    UpdateAuditLog --> UpdateAttendance
+    UpdateAttendance --> End
+
+    %% Estilos
+    classDef startEnd fill:#4caf50,stroke:#2e7d32,stroke-width:3px,color:#fff
+    classDef process fill:#2196f3,stroke:#1565c0,stroke-width:2px,color:#fff
+    classDef decision fill:#ff9800,stroke:#ef6c00,stroke-width:2px,color:#fff
+    classDef error fill:#f44336,stroke:#c62828,stroke-width:2px,color:#fff
+    classDef success fill:#4caf50,stroke:#2e7d32,stroke-width:2px,color:#fff
+    classDef warning fill:#ff9800,stroke:#ef6c00,stroke-width:2px,color:#fff
+    classDef info fill:#2196f3,stroke:#1565c0,stroke-width:2px,color:#fff
+
+    class Start,End startEnd
+    class ShowCredential,ScanQR,ValidateQR,LoadParticipantData,VerifyIdentity,CheckDocuments,CheckPaymentStatus,CheckEnrollmentStatus,CheckEventStatus,GenerateBadge,PrintBadge,AssignAccommodation,AssignGroup,ProvideMaterials,NotifyParticipant,NotifyCoordinator,UpdateDashboard,LogAccreditation,UpdateAuditLog,UpdateAttendance,SendRejectionNotice,SendDocumentRequest process
+    class QRValid,QRExpired,QRUsed,IdentityValid,DocumentsValid,ParticipantValid,PaymentValid,EnrollmentValid,EventValid decision
+    class RejectAccreditation,SendRejectionNotice error
+    class ApproveAccreditation,GenerateBadge,PrintBadge,AssignAccommodation,AssignGroup,ProvideMaterials success
+    class RequestDocuments,SendDocumentRequest warning
+    class ShowCredential,ScanQR,ValidateQR info
+

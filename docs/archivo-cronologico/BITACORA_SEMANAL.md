@@ -1,0 +1,310 @@
+# Bitácora semanal
+
+Generada: 2025-10-26T19:55:24.407292
+
+## Semana 2025-W38 — 2025-09-15 — 2025-09-21
+
+- 2025-09-15 — **2025-09-15** — `docs/archivo-cronologico/2025-09-15/README.md`
+  - # 2025-09-15
+- 2025-09-15 — **Resumen Final del Análisis Completo - Proyecto Sistema Scout** — `docs/archivo-cronologico/2025-09-15/2025-09-15/docs-backup-2025-10-11/legacy/01_ANALISIS_REQUERIMIENTOS/RESUMEN_FINAL_ANALISIS.md`
+  - # Resumen Final del Análisis Completo - Proyecto Sistema Scout
+- 2025-09-15 — **Arquitectura de Datos Completa - Sistema Scout** — `docs/archivo-cronologico/2025-09-15/2025-09-15/docs-backup-2025-10-11/legacy/02_ARQUITECTURA_DATOS/ARQUITECTURA_DATOS_COMPLETA.md`
+  - # Arquitectura de Datos Completa - Sistema Scout
+- 2025-09-15 — **Plan de Completación de Sprints - Sistema Scout** — `docs/archivo-cronologico/2025-09-15/2025-09-15/docs-backup-2025-10-11/legacy/06_SPRINT_PLANNING/SPRINT_COMPLETION_PLAN.md`
+  - # Plan de Completación de Sprints - Sistema Scout
+- 2025-09-15 — **Proyecto Cursos Scouts** — `docs/archivo-cronologico/2025-09-15/2025-09-15/docs-backup-2025-10-11/legacy/08_DOCUMENTOS_ORIGINALES/documentos a migrar/README.md`
+  - #LINK para ver Formulario PREINSCRIPCION: https://forms.gle/KwnRcNmtiFcFrHK46
+- 2025-09-15 — **Prioridad Inmediata (poner primero)** — `docs/archivo-cronologico/2025-09-15/2025-09-15/docs-backup-2025-10-11/legacy/08_DOCUMENTOS_ORIGINALES/markdown_docs/Esquema de Sprints.md`
+  - Prioridad Inmediata (poner primero)
+- 2025-09-15 — **1. Definición del Proyecto y Levantamiento de Requerimientos** — `docs/archivo-cronologico/2025-09-15/2025-09-15/docs-backup-2025-10-11/legacy/08_DOCUMENTOS_ORIGINALES/markdown_docs/Evaluacion 1.md`
+  - Evaluación Sumativa 1 Unidad 1: Levantamiento de Requerimientos y Diseño de Interfaces
+- 2025-09-15 — **Documento De Requerimientos de Software** — `docs/archivo-cronologico/2025-09-15/2025-09-15/docs-backup-2025-10-11/legacy/08_DOCUMENTOS_ORIGINALES/markdown_docs/Informe n1 diseño (1).md`
+  - # Documento De Requerimientos de Software
+- 2025-09-15 — **Introducción** — `docs/archivo-cronologico/2025-09-15/2025-09-15/docs-backup-2025-10-11/legacy/08_DOCUMENTOS_ORIGINALES/markdown_docs/Informe_N°1_T.diseño_y_desarollo_de_soluciones.md`
+  - # Introducción
+- 2025-09-15 — **d1. Requisitos Funcionales (RF)** — `docs/archivo-cronologico/2025-09-15/2025-09-15/docs-backup-2025-10-11/legacy/08_DOCUMENTOS_ORIGINALES/markdown_docs/Issue 8 de septiembre..md`
+  - ## d1. Requisitos Funcionales (RF)
+- 2025-09-15 — **Wireframe - Landing Page** — `docs/archivo-cronologico/2025-09-15/2025-09/04_INTERFACES_USUARIO/wireframes/WIREFRAME_LANDING_PAGE.md`
+  - # Wireframe - Landing Page
+- 2025-09-15 — **Wireframe - Panel de Administración** — `docs/archivo-cronologico/2025-09-15/2025-09/04_INTERFACES_USUARIO/wireframes/WIREFRAME_PANEL_ADMINISTRACION.md`
+  - # Wireframe - Panel de Administración
+- 2025-09-15 — **Wireframe - Wizard de Preinscripción** — `docs/archivo-cronologico/2025-09-15/2025-09/04_INTERFACES_USUARIO/wireframes/WIREFRAME_WIZARD_PREINSCRIPCION.md`
+  - # Wireframe - Wizard de Preinscripción
+
+## Semana 2025-W39 — 2025-09-22 — 2025-09-28
+
+- 2025-09-23 — **2025-09-23** — `docs/archivo-cronologico/2025-09-23/README.md`
+  - # 2025-09-23
+- 2025-09-23 — **Evaluación Sumativa 3** — `docs/archivo-cronologico/2025-09-23/2025-09-23/docs-backup-2025-10-11/legacy/EVALUACION N 2/Informe_Evaluacion_2.md`
+  - # Evaluación Sumativa 3 ## Interfaces, Codificación, Base de Datos y Configuración del Entorno Versión: 0.1 (Borrador)   Fecha: 2025-09-23   Proyecto: Plataforma de Preinscripción y Gestión Scouts
+- 2025-09-23 — **Documentación del Proyecto** — `docs/archivo-cronologico/2025-09-23/2025-09/documentacion-proj/README.md`
+  - # Documentación del Proyecto
+- 2025-09-23 — **API CRUD Preinscripciones** — `docs/archivo-cronologico/2025-09-23/2025-09/documentacion-proj/08_DOCUMENTOS_ORIGINALES/markdown_docs/API_CRUD_Preinscripciones.md`
+  - # API CRUD Preinscripciones
+- 2025-09-23 — **Autenticación de Usuarios API** — `docs/archivo-cronologico/2025-09-23/2025-09/documentacion-proj/08_DOCUMENTOS_ORIGINALES/markdown_docs/Autenticacion_Usuarios_API.md`
+  - # Autenticación de Usuarios API
+- 2025-09-23 — **Comunicacion de Envíos Masivos** — `docs/archivo-cronologico/2025-09-23/2025-09/documentacion-proj/08_DOCUMENTOS_ORIGINALES/markdown_docs/Comunicacion_Envios_Masivos.md`
+  - # Comunicacion de Envíos Masivos
+- 2025-09-23 — **Configuración de Repositorios y CI/CD** — `docs/archivo-cronologico/2025-09-23/2025-09/documentacion-proj/08_DOCUMENTOS_ORIGINALES/markdown_docs/Configuracion_Repos_CICD.md`
+  - # Configuración de Repositorios y CI/CD
+- 2025-09-23 — **Dashboards Iniciales (KPIs Básicos)** — `docs/archivo-cronologico/2025-09-23/2025-09/documentacion-proj/08_DOCUMENTOS_ORIGINALES/markdown_docs/Dashboards_KPIs.md`
+  - # Dashboards Iniciales (KPIs Básicos)
+- 2025-09-23 — **Despliegue Piloto y Formación** — `docs/archivo-cronologico/2025-09-23/2025-09/documentacion-proj/08_DOCUMENTOS_ORIGINALES/markdown_docs/Despliegue_Piloto_Formacion.md`
+  - # Despliegue Piloto y Formación
+- 2025-09-23 — **ERD Modelo de Datos** — `docs/archivo-cronologico/2025-09-23/2025-09/documentacion-proj/08_DOCUMENTOS_ORIGINALES/markdown_docs/ERD_Modelo_Datos.md`
+  - # ERD Modelo de Datos
+- 2025-09-23 — **Esquema de Sprints** — `docs/archivo-cronologico/2025-09-23/2025-09/documentacion-proj/08_DOCUMENTOS_ORIGINALES/markdown_docs/Esquema de Sprints.md`
+  - # Esquema de Sprints
+- 2025-09-23 — **Esquema de Roles y Control de Acceso (RBAC)** — `docs/archivo-cronologico/2025-09-23/2025-09/documentacion-proj/08_DOCUMENTOS_ORIGINALES/markdown_docs/Esquema_Roles_RBAC.md`
+  - # Esquema de Roles y Control de Acceso (RBAC)
+- 2025-09-23 — **Importador de Pagos Grupales** — `docs/archivo-cronologico/2025-09-23/2025-09/documentacion-proj/08_DOCUMENTOS_ORIGINALES/markdown_docs/Importador_Pagos_Grupales.md`
+  - # Importador de Pagos Grupales
+- 2025-09-23 — **Panel de Acreditación Manual** — `docs/archivo-cronologico/2025-09-23/2025-09/documentacion-proj/08_DOCUMENTOS_ORIGINALES/markdown_docs/Panel_Acreditacion_Manual.md`
+  - # Panel de Acreditación Manual
+- 2025-09-23 — **Panel Admin: Habilitación / Selección Manual + Export de correos** — `docs/archivo-cronologico/2025-09-23/2025-09/documentacion-proj/08_DOCUMENTOS_ORIGINALES/markdown_docs/Panel_Admin_Habilitacion.md`
+  - # Panel Admin: Habilitación / Selección Manual + Export de correos
+- 2025-09-23 — **Panel de Finanzas** — `docs/archivo-cronologico/2025-09-23/2025-09/documentacion-proj/08_DOCUMENTOS_ORIGINALES/markdown_docs/Panel_Finanzas.md`
+  - # Panel de Finanzas
+- 2025-09-23 — **Panel de Validadores** — `docs/archivo-cronologico/2025-09-23/2025-09/documentacion-proj/08_DOCUMENTOS_ORIGINALES/markdown_docs/Panel_Validadores.md`
+  - # Panel de Validadores
+- 2025-09-23 — **Plan de Migración** — `docs/archivo-cronologico/2025-09-23/2025-09/documentacion-proj/08_DOCUMENTOS_ORIGINALES/markdown_docs/Plan_Migracion.md`
+  - # Plan de Migración
+- 2025-09-23 — **Prototipo de Landing Page** — `docs/archivo-cronologico/2025-09-23/2025-09/documentacion-proj/08_DOCUMENTOS_ORIGINALES/markdown_docs/Prototipo_Landing.md`
+  - # Prototipo de Landing Page
+- 2025-09-23 — **Prototipo de Wizard de Preinscripción** — `docs/archivo-cronologico/2025-09-23/2025-09/documentacion-proj/08_DOCUMENTOS_ORIGINALES/markdown_docs/Prototipo_Wizard_Preinscripcion.md`
+  - # Prototipo de Wizard de Preinscripción
+- 2025-09-23 — **Pruebas Automatizadas** — `docs/archivo-cronologico/2025-09-23/2025-09/documentacion-proj/08_DOCUMENTOS_ORIGINALES/markdown_docs/Pruebas_Automatizadas.md`
+  - # Pruebas Automatizadas
+- 2025-09-23 — **Regla de Confirmación por Pago** — `docs/archivo-cronologico/2025-09-23/2025-09/documentacion-proj/08_DOCUMENTOS_ORIGINALES/markdown_docs/Regla_Confirmacion_Pago.md`
+  - # Regla de Confirmación por Pago
+- 2025-09-23 — **Subida de Archivos Segura** — `docs/archivo-cronologico/2025-09-23/2025-09/documentacion-proj/08_DOCUMENTOS_ORIGINALES/markdown_docs/Subida_Archivos_Segura.md`
+  - # Subida de Archivos Segura
+- 2025-09-28 — **2025-09-28** — `docs/archivo-cronologico/2025-09-28/README.md`
+  - # 2025-09-28
+- 2025-09-28 — **ORGANIZACIÓN DE EQUIPOS - 6 MÓDULOS ESPECIALIZADOS** — `docs/archivo-cronologico/2025-09-28/2025-09-28/docs-backup-2025-10-11/legacy/ORGANIZACION_EQUIPOS_DETALLADA.md`
+  - # ORGANIZACIÓN DE EQUIPOS - 6 MÓDULOS ESPECIALIZADOS
+- 2025-09-28 — **ANÁLISIS COMPLETO DE REQUERIMIENTOS - SGICS** — `docs/archivo-cronologico/2025-09-28/2025-09-28/docs-backup-2025-10-11/legacy/01_ANALISIS_REQUERIMIENTOS/ANALISIS_COMPLETO_REQUERIMIENTOS_SGICS.md`
+  - # ANÁLISIS COMPLETO DE REQUERIMIENTOS - SGICS ## Sistema de Gestión Integral para Cursos Scouts
+
+## Semana 2025-W40 — 2025-09-29 — 2025-10-05
+
+- 2025-09-29 — **2025-09-29** — `docs/archivo-cronologico/2025-09-29/README.md`
+  - # 2025-09-29
+- 2025-09-29 — **Sprint 2 – Backlog Detallado** — `docs/archivo-cronologico/2025-09-29/2025-09-29/docs-backup-2025-10-11/legacy/06_SPRINT_PLANNING/Sprint2_Backlog.md`
+  - # Sprint 2 – Backlog Detallado Fecha Inicio (estimada): 2025-09-29   Duración: 2 semanas   Objetivo Sprint: Establecer la base ejecutable del producto (infra repos, pipeline, autenticación, autorización, preinscripciones MVP, subida de archivos inicial, auditoría y trazabilidad básica).
+- 2025-10-01 — **2025-10-01** — `docs/archivo-cronologico/2025-10-01/README.md`
+  - # 2025-10-01
+- 2025-10-01 — **PROYECTO SCOUTS - ANÁLISIS COMPLETO Y ORG#### Stack Tecnológico Analizado:** — `docs/archivo-cronologico/2025-10-01/2025-10-01/docs-backup-2025-10-11/legacy/ANALISIS_EJECUTIVO_COMPLETO.md`
+  - # PROYECTO SCOUTS - ANÁLISIS COMPLETO Y ORG#### Stack Tecnológico Analizado: ``` Frontend: Vue 3 + Vite + Tailwind CSS + TypeScript + Pinia Backend: Django 5.0 + DRF + SimpleJWT + Celery + Redis Database: Microsoft SQL Server (modelo SAP PowerDesigner) + Redis (cache/sessions/queues) Storage: Min...
+- 2025-10-01 — **CARTA GANTT SISTEMA SGICS - PROMPT ERASER.IO** — `docs/archivo-cronologico/2025-10-01/2025-10-01/docs-backup-2025-10-11/legacy/CARTA_GANTT_SGICS_ERASER.md`
+  - # CARTA GANTT SISTEMA SGICS - PROMPT ERASER.IO
+- 2025-10-01 — **GUÍA TÉCNICA POR MÓDULOS - SISTEMA DE GESTIÓN SCOUTS** — `docs/archivo-cronologico/2025-10-01/2025-10-01/docs-backup-2025-10-11/legacy/GUIA_TECNOLOGIAS_POR_MODULO.md`
+  - # GUÍA TÉCNICA POR MÓDULOS - SISTEMA DE GESTIÓN SCOUTS
+- 2025-10-01 — **📋 NUEVA PETICIÓN DEL CLIENTE - SGICS** — `docs/archivo-cronologico/2025-10-01/2025-10-01/docs-backup-2025-10-11/legacy/NUEVA_PETICION_CLIENTE.md`
+  - # 📋 NUEVA PETICIÓN DEL CLIENTE - SGICS
+- 2025-10-01 — ****SPRINT 2 BACKLOG - SGICS**** — `docs/archivo-cronologico/2025-10-01/2025-10-01/docs-backup-2025-10-11/legacy/SPRINT2_BACKLOG_DETAILED.md`
+  - # **SPRINT 2 BACKLOG - SGICS**
+- 2025-10-01 — **Database Schema Review — 1 Oct 2025** — `docs/archivo-cronologico/2025-10-01/2025-10-01/docs-backup-2025-10-11/schema/SCHEMA_REVIEW_2025-10-01.md`
+  - # Database Schema Review — 1 Oct 2025
+- 2025-10-01 — **Análisis Completo del Proyecto Sistema Scout** — `docs/archivo-cronologico/2025-10-01/2025-10-01/docs-backup-2025-10-11/legacy/01_ANALISIS_REQUERIMIENTOS/ANALISIS_COMPLETO_PROYECTO.md`
+  - # Análisis Completo del Proyecto Sistema Scout
+- 2025-10-01 — **Documento de Requerimientos de Software (DRS)** — `docs/archivo-cronologico/2025-10-01/2025-10-01/docs-backup-2025-10-11/legacy/01_ANALISIS_REQUERIMIENTOS/DRS_COMPLETO_SCOUTS.md`
+  - # Documento de Requerimientos de Software (DRS)
+- 2025-10-01 — **Arquitectura de la Solución** — `docs/archivo-cronologico/2025-10-01/2025-10-01/docs-backup-2025-10-11/legacy/02_ARQUITECTURA_DATOS/ARQUITECTURA_SOLUCION.md`
+  - # Arquitectura de la Solución
+- 2025-10-01 — **Manual Técnico - Sistema de Gestión Scout** — `docs/archivo-cronologico/2025-10-01/2025-09/07_DOCUMENTACION_TECNICA/MANUAL_TECNICO_SCOUTS.md`
+  - # Manual Técnico - Sistema de Gestión Scout
+- 2025-10-02 — **2025-10-02** — `docs/archivo-cronologico/2025-10-02/README.md`
+  - # 2025-10-02
+- 2025-10-02 — **Documentación y Código del Proyecto** — `docs/archivo-cronologico/2025-10-02/2025-10-02/README.md`
+  - # Documentación y Código del Proyecto
+- 2025-10-02 — **Rastreabilidad de Requerimientos (RF → QA/Dev)** — `docs/archivo-cronologico/2025-10-02/activos/requerimientos/RASTREABILIDAD_RF_QA_DEV.md`
+  - # Rastreabilidad de Requerimientos (RF → QA/Dev)
+- 2025-10-02 — **Requerimientos Actualizados** — `docs/archivo-cronologico/2025-10-02/activos/requerimientos/REQUERIMIENTOS_BACKUP.md`
+  - # Requerimientos Actualizados
+- 2025-10-02 — **Acta de Definición del Documento** — `docs/archivo-cronologico/2025-10-02/2025-10-02/docs-backup-2025-10-11/ACTA_DE_DEFINICION_DEL_DOCUMENTO.md`
+  - # Acta de Definición del Documento
+- 2025-10-02 — **INFORME OFICIAL DEL SISTEMA SGICS** — `docs/archivo-cronologico/2025-10-02/2025-10-02/docs-backup-2025-10-11/INFORME_OFICIAL_SGICS.md`
+  - # INFORME OFICIAL DEL SISTEMA SGICS
+- 2025-10-02 — **Contexto del Proyecto** — `docs/archivo-cronologico/2025-10-02/2025-10-02/docs-backup-2025-10-11/PROMPT_DEFINITIVO.md`
+  - ## Contexto del Proyecto - Nombre: Sistema de Gestión Integral para Cursos Scouts (SGICS) - Cliente: Scouts de Chile – Región del Bío-Bío - Metodología: Scrum (6 sprints, 2 semanas) - Periodo: 29-Sep-2025 a 20-Dic-2025 - Equipo: 14 devs en 6 módulos - Repositorio monorepo: `codigo/backend` (Djang...
+- 2025-10-03 — **2025-10-03** — `docs/archivo-cronologico/2025-10-03/README.md`
+  - # 2025-10-03
+- 2025-10-03 — **ANÁLISIS Y TOMA DE REQUERIMIENTOS - SISTEMA SGICS** — `docs/archivo-cronologico/2025-10-03/2025-10-03/docs-backup-2025-10-11/ANALISIS_TOMA_REQUERIMIENTOS_SGICS.md`
+  - # ANÁLISIS Y TOMA DE REQUERIMIENTOS - SISTEMA SGICS
+- 2025-10-03 — **ASIGNACIÓN DE GRUPOS A MÓDULOS - PROYECTO SGICS** — `docs/archivo-cronologico/2025-10-03/2025-10-03/docs-backup-2025-10-11/ASIGNACION_GRUPOS_MODULOS_SGICS.md`
+  - # ASIGNACIÓN DE GRUPOS A MÓDULOS - PROYECTO SGICS
+- 2025-10-03 — **ASIGNACIÓN DE MÓDULOS Y DIAGRAMAS UML POR EQUIPOS - SGICS** — `docs/archivo-cronologico/2025-10-03/2025-10-03/docs-backup-2025-10-11/ASIGNACION_MODULOS_DIAGRAMAS_EQUIPOS.md`
+  - # ASIGNACIÓN DE MÓDULOS Y DIAGRAMAS UML POR EQUIPOS - SGICS
+- 2025-10-03 — **CARTA GANTT - PROYECTO SGICS** — `docs/archivo-cronologico/2025-10-03/2025-10-03/docs-backup-2025-10-11/CARTA_GANTT_SGICS_COMPLETA.md`
+  - # CARTA GANTT - PROYECTO SGICS
+- 2025-10-03 — **Diagramas UML Actualizados (Mermaid / draw.io)** — `docs/archivo-cronologico/2025-10-03/2025-10-03/docs-backup-2025-10-11/DIAGRAMAS_UML_ACTUALIZADOS.md`
+  - # Diagramas UML Actualizados (Mermaid / draw.io)
+- 2025-10-03 — **ÍNDICE** — `docs/archivo-cronologico/2025-10-03/2025-10-03/docs-backup-2025-10-11/INFORME_COMPLETO_SGICS_INACAP.md`
+  - INSTITUTO PROFESIONAL INACAP                         ESCUELA DE INFORMÁTICA                     INGENIERÍA EN INFORMÁTICA
+- 2025-10-03 — **PROMPTS PARA MOCKUPS - SISTEMA SGICS** — `docs/archivo-cronologico/2025-10-03/2025-09/prompts/PROMPTS_MOCKUPS_FRONTEND_SGICS.md`
+  - # PROMPTS PARA MOCKUPS - SISTEMA SGICS
+
+## Semana 2025-W41 — 2025-10-06 — 2025-10-12
+
+- 2025-10-07 — **2025-10-07** — `docs/archivo-cronologico/2025-10-07/README.md`
+  - # 2025-10-07
+- 2025-10-07 — **ANÁLISIS DE PROGRESO DE EQUIPOS - SPRINT N2** — `docs/archivo-cronologico/2025-10-07/activos/sprint-actual/ANALISIS_PROGRESO_EQUIPOS_SPRINT2.md`
+  - # ANÁLISIS DE PROGRESO DE EQUIPOS - SPRINT N2 **Fecha**: 7 de octubre de 2025   **Responsable**: Ricardo Sanhueza (Scrum Master)   **Sprint**: N2 (13-24 octubre 2025)
+- 2025-10-07 — **Sprint 2 - Backlog (SGICS)** — `docs/archivo-cronologico/2025-10-07/activos/sprint-actual/sprint2-backlog.md`
+  - # Sprint 2 - Backlog (SGICS)
+- 2025-10-07 — **Comandos de Testing y CI - SGICS** — `docs/archivo-cronologico/2025-10-07/activos/sprint-actual/TESTING_CI_COMMANDS.md`
+  - # Comandos de Testing y CI - SGICS
+- 2025-10-07 — **Branching & PR Guide — SGICS** — `docs/archivo-cronologico/2025-10-07/activos/workflow/branching-pr-guide.md`
+  - # Branching & PR Guide — SGICS
+- 2025-10-07 — **Patterns & Conventions — SGICS** — `docs/archivo-cronologico/2025-10-07/activos/workflow/patterns-conventions.md`
+  - # Patterns & Conventions — SGICS
+- 2025-10-07 — **Checklist de Pull Request - SGICS** — `docs/archivo-cronologico/2025-10-07/activos/workflow/pr-checklist.md`
+  - # Checklist de Pull Request - SGICS
+- 2025-10-07 — **Asignación de Equipos Sprint N2 - SGICS** — `docs/archivo-cronologico/2025-10-07/2025-10-07/docs-backup-2025-10-11/ASIGNACION_EQUIPOS_SPRINT2.md`
+  - # Asignación de Equipos Sprint N2 - SGICS
+- 2025-10-07 — **Estimación de complejidad y tamaño por módulos — SGICS** — `docs/archivo-cronologico/2025-10-07/2025-10-07/docs-backup-2025-10-11/complexity-estimates.md`
+  - # Estimación de complejidad y tamaño por módulos — SGICS
+- 2025-10-07 — **Epics, Historias y Roadmap — SGICS (Sprint N2)** — `docs/archivo-cronologico/2025-10-07/2025-10-07/docs-backup-2025-10-11/epics-stories-roadmap.md`
+  - # Epics, Historias y Roadmap — SGICS (Sprint N2)
+- 2025-10-07 — **GUÍA INFORMATIVA COMPLETA - PROYECTO SGICS** — `docs/archivo-cronologico/2025-10-07/2025-10-07/docs-backup-2025-10-11/GUIA_INFORMATIVA_PROYECTO_SGICS.md`
+  - # GUÍA INFORMATIVA COMPLETA - PROYECTO SGICS
+- 2025-10-07 — **Sprint N2 — Calendario y Guía Git/PR** — `docs/archivo-cronologico/2025-10-07/2025-10-07/docs-backup-2025-10-11/sprint-schedule-and-git-guide.md`
+  - ## Sprint N2 — Calendario y Guía Git/PR
+- 2025-10-07 — **Sprint N2 - Calendario y Planificación** — `docs/archivo-cronologico/2025-10-07/2025-10-07/docs-backup-2025-10-11/sprint-schedule.md`
+  - # Sprint N2 - Calendario y Planificación
+- 2025-10-07 — **Epic: Archivos & Validación (SGICS-E-FILES)** — `docs/archivo-cronologico/2025-10-07/2025-10-07/docs-backup-2025-10-11/epics/epic-archivos-validacion.md`
+  - # Epic: Archivos & Validación (SGICS-E-FILES)
+- 2025-10-07 — **Epic: Autenticación y Control de Roles (SGICS-E-AUTH)** — `docs/archivo-cronologico/2025-10-07/2025-10-07/docs-backup-2025-10-11/epics/epic-authentication-control-roles.md`
+  - # Epic: Autenticación y Control de Roles (SGICS-E-AUTH)
+- 2025-10-07 — **Epic: CI / Calidad / DevOps (SGICS-E-CI)** — `docs/archivo-cronologico/2025-10-07/2025-10-07/docs-backup-2025-10-11/epics/epic-ci-devops.md`
+  - # Epic: CI / Calidad / DevOps (SGICS-E-CI)
+- 2025-10-07 — **Epic: Dashboard y Cursos (SGICS-E-DASH)** — `docs/archivo-cronologico/2025-10-07/2025-10-07/docs-backup-2025-10-11/epics/epic-dashboard-cursos.md`
+  - # Epic: Dashboard y Cursos (SGICS-E-DASH)
+- 2025-10-07 — **Epic: Pagos (SGICS-E-PAY)** — `docs/archivo-cronologico/2025-10-07/2025-10-07/docs-backup-2025-10-11/epics/epic-pagos.md`
+  - # Epic: Pagos (SGICS-E-PAY) Tags: epic, payments, backend, sprint2
+- 2025-10-07 — **Epic: Preinscripciones (SGICS-E-PREINS)** — `docs/archivo-cronologico/2025-10-07/2025-10-07/docs-backup-2025-10-11/epics/epic-preinscripciones.md`
+  - # Epic: Preinscripciones (SGICS-E-PREINS)
+- 2025-10-07 — **Epic: Tests & QA (SGICS-E-QA)** — `docs/archivo-cronologico/2025-10-07/2025-10-07/docs-backup-2025-10-11/epics/epic-tests-qa.md`
+  - # Epic: Tests & QA (SGICS-E-QA)
+- 2025-10-07 — **Jira import — Sprint 2** — `docs/archivo-cronologico/2025-10-07/2025-10-07/docs-backup-2025-10-11/tools/jira/jira-import-readme.md`
+  - # Jira import — Sprint 2
+- 2025-10-07 — **==================== BACKEND PIPELINE ====================** — `docs/archivo-cronologico/2025-10-07/2025-10-07/docs-backup-2025-10-11/tools/jira/pipeline-ci-cd-git-actions.md`
+  - name: SGICS Sprint 2 CI/CD Pipeline
+- 2025-10-07 — **Guía Rápida de Inicio - SGICS** — `docs/archivo-cronologico/2025-10-07/2025-09/2025-08/GUIA_RAPIDA.md`
+  - # Guía Rápida de Inicio - SGICS
+- 2025-10-09 — **2025-10-09** — `docs/archivo-cronologico/2025-10-09/README.md`
+  - # 2025-10-09
+- 2025-10-09 — **🚀 SGICS - Commit Inicial Simplificado para Equipos** — `docs/archivo-cronologico/2025-10-09/2025-10-09/IngSw-seccion1/trabajo-2024-10-09/COMMIT_RESUMEN.md`
+  - # 🚀 SGICS - Commit Inicial Simplificado para Equipos
+- 2025-10-09 — **Script de Desarrollo - Comandos Útiles para SGICS** — `docs/archivo-cronologico/2025-10-09/2025-10-09/IngSw-seccion1/trabajo-2024-10-09/DEVELOPMENT.md`
+  - # Script de Desarrollo - Comandos Útiles para SGICS
+- 2025-10-09 — **SGICS - Estructura del Proyecto y Tareas Pendientes** — `docs/archivo-cronologico/2025-10-09/2025-10-09/IngSw-seccion1/trabajo-2024-10-09/EQUIPO_TAREAS.md`
+  - # SGICS - Estructura del Proyecto y Tareas Pendientes
+- 2025-10-11 — **2025-10-11** — `docs/archivo-cronologico/2025-10-11/README.md`
+  - # 2025-10-11
+- 2025-10-11 — **MIGRACIÓN COMPLETADA - DOCUMENTACIÓN SGICS** — `docs/archivo-cronologico/2025-10-11/2025-10-11/MIGRACION_COMPLETADA.md`
+  - # MIGRACIÓN COMPLETADA - DOCUMENTACIÓN SGICS **Fecha**: 2025-10-11   **Acción**: Reemplazo completo de estructura de documentación
+- 2025-10-11 — **DOCUMENTACIÓN SGICS - ESTRUCTURA DEFINITIVA** — `docs/archivo-cronologico/2025-10-11/2025-10-11/README.md`
+  - # DOCUMENTACIÓN SGICS - ESTRUCTURA DEFINITIVA **Fecha reorganización**: 2025-10-11   **Estado**: COMPLETAMENTE ORGANIZADA POR FECHA Y CATEGORÍA   **Proyecto**: Sistema de Gestión Integral para Cursos Scouts (SGICS)
+- 2025-10-11 — **Epic: Archivos y Validación (SGICS-E-FILES)** — `docs/archivo-cronologico/2025-10-11/activos/epicas/epic-archivos-validacion.md`
+  - # Epic: Archivos y Validación (SGICS-E-FILES)
+- 2025-10-11 — **Epic: Autenticación y Control de Roles (SGICS-E-AUTH)# Epic: Autenticación y Control de Roles (SGICS-E-AUTH)** — `docs/archivo-cronologico/2025-10-11/activos/epicas/epic-authentication-control-roles.md`
+  - # Epic: Autenticación y Control de Roles (SGICS-E-AUTH)# Epic: Autenticación y Control de Roles (SGICS-E-AUTH)
+- 2025-10-11 — **Epic: CI/CD y DevOps (SGICS-E-DEVOPS)** — `docs/archivo-cronologico/2025-10-11/activos/epicas/epic-ci-devops.md`
+  - # Epic: CI/CD y DevOps (SGICS-E-DEVOPS)
+- 2025-10-11 — **Epic: Dashboard Cursos (SGICS-E-DASH)** — `docs/archivo-cronologico/2025-10-11/activos/epicas/epic-dashboard-cursos.md`
+  - # Epic: Dashboard Cursos (SGICS-E-DASH)
+- 2025-10-11 — **Epic: Pagos (SGICS-E-PAY)** — `docs/archivo-cronologico/2025-10-11/activos/epicas/epic-pagos.md`
+  - # Epic: Pagos (SGICS-E-PAY)
+- 2025-10-11 — **Epic: Tests y QA (SGICS-E-QA)** — `docs/archivo-cronologico/2025-10-11/activos/epicas/epic-tests-qa.md`
+  - # Epic: Tests y QA (SGICS-E-QA)
+- 2025-10-11 — **Requerimientos SGICS# Requerimientos Actualizados** — `docs/archivo-cronologico/2025-10-11/activos/requerimientos/REQUERIMIENTOS_ACTUALIZADOS.md`
+  - # Requerimientos SGICS# Requerimientos Actualizados
+- 2025-10-11 — **Sprint 2 Status - SGICS# Estado Actual Sprint 2 - SGICS** — `docs/archivo-cronologico/2025-10-11/activos/sprint-actual/CURRENT_SPRINT.md`
+  - # Sprint 2 Status - SGICS# Estado Actual Sprint 2 - SGICS
+- 2025-10-11 — **Estado Actual Sprint 2 - SGICS** — `docs/archivo-cronologico/2025-10-11/activos/sprint-actual/CURRENT_SPRINT_BACKUP.md`
+  - # Estado Actual Sprint 2 - SGICS **Fecha actualización**: 2025-10-11   **Sprint**: N2 (13-24 octubre 2025)   **Scrum Master**: Ricardo Sanhueza
+- 2025-10-11 — **🔧 Configuración Git Local - Equipo SGICS** — `docs/archivo-cronologico/2025-10-11/activos/workflow/configuracion-git-local.md`
+  - # 🔧 Configuración Git Local - Equipo SGICS
+- 2025-10-11 — **Git Workflow Sprint 2# Git Workflow Sprint 2** — `docs/archivo-cronologico/2025-10-11/activos/workflow/git-workflow.md`
+  - # Git Workflow Sprint 2# Git Workflow Sprint 2
+- 2025-10-11 — **🛡️ Protección de Rama Main - GitHub** — `docs/archivo-cronologico/2025-10-11/activos/workflow/proteccion-github-main.md`
+  - # 🛡️ Protección de Rama Main - GitHub
+- 2025-10-11 — **AUDITORÍA COMPLETA DE DOCUMENTACIÓN - SGICS** — `docs/archivo-cronologico/2025-10-11/2025-10-11/docs-backup-2025-10-11/AUDITORIA_DOCUMENTACION_2025-10-11.md`
+  - # AUDITORÍA COMPLETA DE DOCUMENTACIÓN - SGICS **Fecha**: 2025-10-11   **Estado**: Análisis y reorganización definitiva
+- 2025-10-11 — **Flujo de trabajo Git recomendado para el sprint** — `docs/archivo-cronologico/2025-10-11/2025-10-11/docs-backup-2025-10-11/git-workflow.md`
+  - ## Flujo de trabajo Git recomendado para el sprint
+- 2025-10-11 — **Documentación SGICS - Reorganizada 2025-10-11** — `docs/archivo-cronologico/2025-10-11/2025-10-11/docs-backup-2025-10-11/README-REORGANIZED.md`
+  - # Documentación SGICS - Reorganizada 2025-10-11
+- 2025-10-11 — **Documentación SGICS - Reorganizada 2025-10-11** — `docs/archivo-cronologico/2025-10-11/2025-10-11/docs-backup-2025-10-11/README.md`
+  - # Documentación SGICS - Reorganizada 2025-10-11
+- 2025-10-11 — **Legacy Content Index - SGICS** — `docs/archivo-cronologico/2025-10-11/2025-10-11/legacy/README.md`
+  - # Legacy Content Index - SGICS
+- 2025-10-11 — **Registro de archivos copiados el 2025-10-11** — `docs/archivo-cronologico/2025-10-11/2025-10-11/docs-backup-2025-10-11/archivos-por-fecha/2025-10-11/README.md`
+  - Registro de archivos copiados el 2025-10-11
+- 2025-10-11 — **Contenido original: `docs/ANALISIS_PROGRESO_EQUIPOS_SPRINT2.md`** — `docs/archivo-cronologico/2025-10-11/2025-10-11/docs-backup-2025-10-11/archivos-por-fecha/2025-10-11/analysis/ANALISIS_PROGRESO_EQUIPOS_SPRINT2-2025-10-11.md`
+  - Contenido original: `docs/ANALISIS_PROGRESO_EQUIPOS_SPRINT2.md`
+- 2025-10-11 — **Contenido original: `docs/epics/*`** — `docs/archivo-cronologico/2025-10-11/2025-10-11/docs-backup-2025-10-11/archivos-por-fecha/2025-10-11/epics/epic-list-2025-10-11.md`
+  - Contenido original: `docs/epics/*`
+- 2025-10-11 — **Contenido original: `docs/git-workflow.md`** — `docs/archivo-cronologico/2025-10-11/2025-10-11/docs-backup-2025-10-11/archivos-por-fecha/2025-10-11/guides/git-workflow-2025-10-11.md`
+  - Contenido original: `docs/git-workflow.md`
+- 2025-10-11 — **Contenido original: `docs/jira/pipeline-ci-cd-git-actions.md` o `jira/pipeline-ci-cd-git-actions.md`** — `docs/archivo-cronologico/2025-10-11/2025-10-11/docs-backup-2025-10-11/archivos-por-fecha/2025-10-11/jira/pipeline-ci-cd-git-actions-2025-10-11.md`
+  - Contenido original: `docs/jira/pipeline-ci-cd-git-actions.md` o `jira/pipeline-ci-cd-git-actions.md`
+- 2025-10-11 — **Contenido original: `docs/legacy/*`** — `docs/archivo-cronologico/2025-10-11/2025-10-11/docs-backup-2025-10-11/archivos-por-fecha/2025-10-11/legacy/legacy-files-2025-10-11.md`
+  - Contenido original: `docs/legacy/*`
+- 2025-10-11 — **Contenido original: `docs/sprint-schedule.md`** — `docs/archivo-cronologico/2025-10-11/2025-10-11/docs-backup-2025-10-11/archivos-por-fecha/2025-10-11/planning/sprint-schedule-2025-10-11.md`
+  - Contenido original: `docs/sprint-schedule.md`
+- 2025-10-11 — **Contenido original: `docs/branching-pr-guide.md`** — `docs/archivo-cronologico/2025-10-11/2025-10-11/docs-backup-2025-10-11/archivos-por-fecha/2025-10-11/workflows/branching-pr-guide-2025-10-11.md`
+  - Contenido original: `docs/branching-pr-guide.md`
+- 2025-10-12 — **2025-10-12** — `docs/archivo-cronologico/2025-10-12/README.md`
+  - # 2025-10-12
+- 2025-10-12 — **Guía de Despliegue SGICS en cPanel** — `docs/archivo-cronologico/2025-10-12/2025-10-12/cpanel-deployment-guide.md`
+  - # Guía de Despliegue SGICS en cPanel ## Sistema de Gestión Integral de Cursos Scout
+- 2025-10-12 — **🚀 Guía de Despliegue SGICS - guiasyscoutsbiobio.cl** — `docs/archivo-cronologico/2025-10-12/2025-10-12/deployment-checklist-guiasyscoutsbiobio.md`
+  - # 🚀 Guía de Despliegue SGICS - guiasyscoutsbiobio.cl ## Checklist Paso a Paso
+- 2025-10-12 — **Documentación de APIs - SGICS** — `docs/archivo-cronologico/2025-10-12/2025-10-12/IngSw-seccion1/API_DOCUMENTATION.md`
+  - # Documentación de APIs - SGICS
+- 2025-10-12 — **Health Endpoints Documentation** — `docs/archivo-cronologico/2025-10-12/2025-10-12/IngSw-seccion1/health-endpoints.md`
+  - ## Health Endpoints Documentation
+
+## Semana 2025-W42 — 2025-10-13 — 2025-10-19
+
+- 2025-10-13 — **2025-10-13** — `docs/archivo-cronologico/2025-10-13/README.md`
+  - # 2025-10-13
+- 2025-10-13 — **Acceso remoto a MySQL para SGICS** — `docs/archivo-cronologico/2025-10-13/2025-10-13/db-remote-access.md`
+  - # Acceso remoto a MySQL para SGICS
+- 2025-10-13 — **Guía de Deployment SGICS a Hosting de Producción** — `docs/archivo-cronologico/2025-10-13/2025-10-13/IngSw-seccion1/GUIA_DE_DESPLIEGUE.md`
+  - # Guía de Deployment SGICS a Hosting de Producción
+- 2025-10-15 — **2025-10-15** — `docs/archivo-cronologico/2025-10-15/README.md`
+  - # 2025-10-15
+- 2025-10-15 — **📋 LÓGICA DE ASIGNACIÓN DE TAREAS - SPRINT 2 SGICS** — `docs/archivo-cronologico/2025-10-15/2025-10-15/LOGICA_ASIGNACION_TAREAS_SPRINT2.md`
+  - # 📋 LÓGICA DE ASIGNACIÓN DE TAREAS - SPRINT 2 SGICS
+- 2025-10-15 — **SGICS Frontend - Vue.js + TypeScript** — `docs/archivo-cronologico/2025-10-15/2025-10-15/IngSw-seccion1/frontend/README.md`
+  - # SGICS Frontend - Vue.js + TypeScript
+
+## Semana 2025-W43 — 2025-10-20 — 2025-10-26
+
+- 2025-10-23 — **2025-10-23** — `docs/archivo-cronologico/2025-10-23/README.md`
+  - # 2025-10-23
+- 2025-10-23 — **The MIT License (MIT)** — `docs/archivo-cronologico/2025-10-23/2025-10-23/IngSw-seccion1/backend/staticfiles/admin/js/vendor/select2/LICENSE.md`
+  - The MIT License (MIT)
+- 2025-10-25 — **2025-10-25** — `docs/archivo-cronologico/2025-10-25/README.md`
+  - # 2025-10-25
+- 2025-10-25 — **Guía Rápida de Inicio - SGICS** — `docs/archivo-cronologico/2025-10-25/2025-10-25/docs-backup-2025-10-11/GUIA_RAPIDA.md`
+  - # Guía Rápida de Inicio - SGICS
+- 2025-10-25 — **Backend repair checklist & Demo guide (Ricardo Sanhueza)** — `docs/archivo-cronologico/2025-10-25/2025-10-25/IngSw-seccion1/backend y su demo.md`
+  - # Backend repair checklist & Demo guide (Ricardo Sanhueza)
+- 2025-10-25 — **Git workflow quickstart** — `docs/archivo-cronologico/2025-10-25/2025-10-25/IngSw-seccion1/guia del workflow.md`
+  - # Git workflow quickstart
+- 2025-10-25 — **SGICS - Sistema de Gestión Integral de Cursos Scout** — `docs/archivo-cronologico/2025-10-25/2025-10-25/IngSw-seccion1/README.md`
+  - # SGICS - Sistema de Gestión Integral de Cursos Scout
+- 2025-10-25 — **Resumen breve** — `docs/archivo-cronologico/2025-10-25/2025-10-25/IngSw-seccion1/.github/guia pr.md`
+  - <!-- Pull Request template for SGICS -->
+- 2025-10-26 — **Bitácora semanal** — `docs/archivo-cronologico/BITACORA_SEMANAL.md`
+  - # Bitácora semanal
+- 2025-10-26 — **2025-09** — `docs/archivo-cronologico/2025-09/README.md`
+  - # 2025-09
+- 2025-10-26 — **legacy** — `docs/archivo-cronologico/legacy/README.md`
+  - # legacy
+

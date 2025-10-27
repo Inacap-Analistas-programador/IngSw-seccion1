@@ -1,0 +1,112 @@
+graph TD
+    %% Inicio del Proceso de Migración
+    Start([Inicio Migración])
+    
+    %% Preparación
+    BackupOriginal[Backup datos originales]
+    AnalyzeExcel[Analizar archivo Excel]
+    ValidateStructure[Validar estructura Excel]
+    CreateMapping[Crear mapeo de columnas]
+    
+    %% Validaciones
+    StructureValid{¿Estructura válida?}
+    MappingValid{¿Mapeo correcto?}
+    
+    %% Proceso de Migración
+    CreateBatch[Crear lote de migración]
+    ImportUsers[Importar usuarios maestros]
+    ImportCourses[Importar cursos]
+    ImportPersons[Importar personas]
+    ImportEnrollments[Importar inscripciones]
+    ImportPayments[Importar pagos]
+    ImportDocuments[Importar documentos]
+    
+    %% Validaciones Post-Migración
+    ValidateIntegrity[Validar integridad referencial]
+    CompareData[Comparar datos migrados vs originales]
+    GenerateReport[Generar reporte de migración]
+    
+    %% Resultados
+    MigrationSuccess{¿Migración exitosa?}
+    DataIntegrity{¿Integridad OK?}
+    
+    %% Acciones Finales
+    ActivateSystem[Activar sistema migrado]
+    NotifyStakeholders[Notificar stakeholders]
+    ArchiveOriginal[Archivar datos originales]
+    
+    %% Rollback
+    RollbackMigration[Rollback migración]
+    RestoreOriginal[Restaurar datos originales]
+    NotifyRollback[Notificar rollback]
+    
+    %% Errores
+    ShowStructureError[Mostrar error estructura]
+    ShowMappingError[Mostrar error mapeo]
+    ShowMigrationError[Mostrar error migración]
+    ShowIntegrityError[Mostrar error integridad]
+    
+    %% Fin
+    End([Fin])
+    
+    %% Flujo Principal
+    Start --> BackupOriginal
+    BackupOriginal --> AnalyzeExcel
+    AnalyzeExcel --> ValidateStructure
+    ValidateStructure --> StructureValid
+    
+    StructureValid -->|No| ShowStructureError
+    StructureValid -->|Sí| CreateMapping
+    CreateMapping --> MappingValid
+    
+    MappingValid -->|No| ShowMappingError
+    MappingValid -->|Sí| CreateBatch
+    
+    CreateBatch --> ImportUsers
+    ImportUsers --> ImportCourses
+    ImportCourses --> ImportPersons
+    ImportPersons --> ImportEnrollments
+    ImportEnrollments --> ImportPayments
+    ImportPayments --> ImportDocuments
+    
+    ImportDocuments --> ValidateIntegrity
+    ValidateIntegrity --> CompareData
+    CompareData --> GenerateReport
+    GenerateReport --> MigrationSuccess
+    
+    MigrationSuccess -->|No| RollbackMigration
+    MigrationSuccess -->|Sí| DataIntegrity
+    
+    DataIntegrity -->|No| ShowIntegrityError
+    DataIntegrity -->|Sí| ActivateSystem
+    
+    ActivateSystem --> NotifyStakeholders
+    NotifyStakeholders --> ArchiveOriginal
+    ArchiveOriginal --> End
+    
+    %% Flujo de Rollback
+    RollbackMigration --> RestoreOriginal
+    RestoreOriginal --> NotifyRollback
+    NotifyRollback --> End
+    
+    %% Errores
+    ShowStructureError --> End
+    ShowMappingError --> CreateMapping
+    ShowMigrationError --> RollbackMigration
+    ShowIntegrityError --> RollbackMigration
+    
+    %% Estilos
+    classDef startEnd fill:#4caf50,stroke:#2e7d32,stroke-width:3px,color:#fff
+    classDef process fill:#2196f3,stroke:#1565c0,stroke-width:2px,color:#fff
+    classDef decision fill:#ff9800,stroke:#ef6c00,stroke-width:2px,color:#fff
+    classDef error fill:#f44336,stroke:#c62828,stroke-width:2px,color:#fff
+    classDef success fill:#4caf50,stroke:#2e7d32,stroke-width:2px,color:#fff
+    classDef warning fill:#ff9800,stroke:#ef6c00,stroke-width:2px,color:#fff
+    classDef critical fill:#9c27b0,stroke:#6a1b9a,stroke-width:2px,color:#fff
+    
+    class Start,End startEnd
+    class BackupOriginal,AnalyzeExcel,ValidateStructure,CreateMapping,CreateBatch,ImportUsers,ImportCourses,ImportPersons,ImportEnrollments,ImportPayments,ImportDocuments,ValidateIntegrity,CompareData,GenerateReport,ActivateSystem,NotifyStakeholders,ArchiveOriginal process
+    class StructureValid,MappingValid,MigrationSuccess,DataIntegrity decision
+    class ShowStructureError,ShowMappingError,ShowMigrationError,ShowIntegrityError,RollbackMigration,RestoreOriginal,NotifyRollback error
+    class ActivateSystem,NotifyStakeholders success
+    class BackupOriginal,ArchiveOriginal critical

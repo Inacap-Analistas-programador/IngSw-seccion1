@@ -1,0 +1,9 @@
+# Index — 2025-10-09
+
+Generado: 2025-10-26T19:55:51.340423
+
+## 2025-10-09
+- [COMMIT_RESUMEN.md](2025-10-09/IngSw-seccion1/trabajo-2024-10-09/COMMIT_RESUMEN.md)
+- [DEVELOPMENT.md](2025-10-09/IngSw-seccion1/trabajo-2024-10-09/DEVELOPMENT.md)
+- [EQUIPO_TAREAS.md](2025-10-09/IngSw-seccion1/trabajo-2024-10-09/EQUIPO_TAREAS.md)
+

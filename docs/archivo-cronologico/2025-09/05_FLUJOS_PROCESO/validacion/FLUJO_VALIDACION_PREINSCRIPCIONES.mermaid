@@ -1,0 +1,161 @@
+graph TD
+    %% Inicio del Proceso de Validación
+    Start([Nueva Preinscripción])
+
+    %% Notificación y Asignación
+    NotifyValidator[Notificar a validador]
+    AssignValidator[Asignar validador]
+    UpdateStatus[Estado: En Revisión]
+
+    %% Revisión de Documentos
+    ReviewDocuments[Revisar documentos adjuntos]
+    CheckMedicalCert[Verificar ficha médica]
+    CheckAuthorization[Verificar autorización padres]
+    CheckOtherDocs[Verificar otros documentos]
+
+    %% Validaciones
+    MedicalValid{¿Ficha médica válida?}
+    AuthValid{¿Autorización válida?}
+    OtherDocsValid{¿Otros documentos OK?}
+
+    %% Revisión de Datos
+    ReviewPersonalData[Revisar datos personales]
+    ReviewScoutData[Revisar información scout]
+    CheckEligibility[Verificar elegibilidad]
+
+    %% Validaciones de Datos
+    PersonalDataValid{¿Datos personales completos?}
+    ScoutDataValid{¿Info scout correcta?}
+    EligibilityValid{¿Cumple criterios?}
+
+    %% Verificación de Cupos
+    CheckAvailableSlots[Verificar cupos disponibles]
+    CheckBranchSlots[Verificar cupos por rama]
+    CheckGroupSlots[Verificar cupos por grupo]
+
+    %% Decisiones de Cupos
+    SlotsAvailable{¿Hay cupos disponibles?}
+    BranchSlotsAvailable{¿Hay cupos en la rama?}
+    GroupSlotsAvailable{¿Hay cupos en el grupo?}
+
+    %% Resultados de Validación
+    Approve[Estado: Validado]
+    Reject[Estado: Rechazado]
+    WaitList[Estado: Lista de Espera]
+    RequestCorrection[Estado: Requiere Corrección]
+
+    %% Acciones Post-Validación
+    GenerateQuotas[Generar cuotas de pago]
+    SendApprovalEmail[Enviar email de aprobación]
+    SendRejectionEmail[Enviar email de rechazo]
+    SendWaitListEmail[Enviar email lista de espera]
+    SendCorrectionEmail[Enviar email de corrección]
+
+    %% Notificaciones
+    NotifyParticipant[Notificar al participante]
+    NotifyCoordinator[Notificar al coordinador]
+    UpdateDashboard[Actualizar dashboard]
+
+    %% Logs y Auditoría
+    LogValidation[Registrar en log de validación]
+    UpdateAuditLog[Actualizar log de auditoría]
+
+    %% Fin del Proceso
+    End([Fin])
+
+    %% Flujo Principal
+    Start --> NotifyValidator
+    NotifyValidator --> AssignValidator
+    AssignValidator --> UpdateStatus
+    UpdateStatus --> ReviewDocuments
+
+    %% Revisión de Documentos
+    ReviewDocuments --> CheckMedicalCert
+    CheckMedicalCert --> MedicalValid
+    MedicalValid -->|No| Reject
+    MedicalValid -->|Sí| CheckAuthorization
+
+    CheckAuthorization --> AuthValid
+    AuthValid -->|No| Reject
+    AuthValid -->|Sí| CheckOtherDocs
+
+    CheckOtherDocs --> OtherDocsValid
+    OtherDocsValid -->|No| RequestCorrection
+    OtherDocsValid -->|Sí| ReviewPersonalData
+
+    %% Revisión de Datos
+    ReviewPersonalData --> PersonalDataValid
+    PersonalDataValid -->|No| RequestCorrection
+    PersonalDataValid -->|Sí| ReviewScoutData
+
+    ReviewScoutData --> ScoutDataValid
+    ScoutDataValid -->|No| RequestCorrection
+    ScoutDataValid -->|Sí| CheckEligibility
+
+    CheckEligibility --> EligibilityValid
+    EligibilityValid -->|No| Reject
+    EligibilityValid -->|Sí| CheckAvailableSlots
+
+    %% Verificación de Cupos
+    CheckAvailableSlots --> SlotsAvailable
+    SlotsAvailable -->|No| WaitList
+    SlotsAvailable -->|Sí| CheckBranchSlots
+
+    CheckBranchSlots --> BranchSlotsAvailable
+    BranchSlotsAvailable -->|No| WaitList
+    BranchSlotsAvailable -->|Sí| CheckGroupSlots
+
+    CheckGroupSlots --> GroupSlotsAvailable
+    GroupSlotsAvailable -->|No| WaitList
+    GroupSlotsAvailable -->|Sí| Approve
+
+    %% Resultados
+    Approve --> GenerateQuotas
+    GenerateQuotas --> SendApprovalEmail
+    SendApprovalEmail --> NotifyParticipant
+    NotifyParticipant --> NotifyCoordinator
+    NotifyCoordinator --> UpdateDashboard
+    UpdateDashboard --> LogValidation
+    LogValidation --> UpdateAuditLog
+    UpdateAuditLog --> End
+
+    Reject --> SendRejectionEmail
+    SendRejectionEmail --> NotifyParticipant
+    NotifyParticipant --> NotifyCoordinator
+    NotifyCoordinator --> UpdateDashboard
+    UpdateDashboard --> LogValidation
+    LogValidation --> UpdateAuditLog
+    UpdateAuditLog --> End
+
+    WaitList --> SendWaitListEmail
+    SendWaitListEmail --> NotifyParticipant
+    NotifyParticipant --> NotifyCoordinator
+    NotifyCoordinator --> UpdateDashboard
+    UpdateDashboard --> LogValidation
+    LogValidation --> UpdateAuditLog
+    UpdateAuditLog --> End
+
+    RequestCorrection --> SendCorrectionEmail
+    SendCorrectionEmail --> NotifyParticipant
+    NotifyParticipant --> NotifyCoordinator
+    NotifyCoordinator --> UpdateDashboard
+    UpdateDashboard --> LogValidation
+    LogValidation --> UpdateAuditLog
+    UpdateAuditLog --> End
+
+    %% Estilos
+    classDef startEnd fill:#4caf50,stroke:#2e7d32,stroke-width:3px,color:#fff
+    classDef process fill:#2196f3,stroke:#1565c0,stroke-width:2px,color:#fff
+    classDef decision fill:#ff9800,stroke:#ef6c00,stroke-width:2px,color:#fff
+    classDef error fill:#f44336,stroke:#c62828,stroke-width:2px,color:#fff
+    classDef success fill:#4caf50,stroke:#2e7d32,stroke-width:2px,color:#fff
+    classDef warning fill:#ff9800,stroke:#ef6c00,stroke-width:2px,color:#fff
+    classDef info fill:#2196f3,stroke:#1565c0,stroke-width:2px,color:#fff
+
+    class Start,End startEnd
+    class NotifyValidator,AssignValidator,UpdateStatus,ReviewDocuments,CheckMedicalCert,CheckAuthorization,CheckOtherDocs,ReviewPersonalData,ReviewScoutData,CheckEligibility,CheckAvailableSlots,CheckBranchSlots,CheckGroupSlots,GenerateQuotas,SendApprovalEmail,SendRejectionEmail,SendWaitListEmail,SendCorrectionEmail,NotifyParticipant,NotifyCoordinator,UpdateDashboard,LogValidation,UpdateAuditLog process
+    class MedicalValid,AuthValid,OtherDocsValid,PersonalDataValid,ScoutDataValid,EligibilityValid,SlotsAvailable,BranchSlotsAvailable,GroupSlotsAvailable decision
+    class Reject,SendRejectionEmail error
+    class Approve,GenerateQuotas,SendApprovalEmail success
+    class WaitList,SendWaitListEmail warning
+    class RequestCorrection,SendCorrectionEmail info

@@ -1,0 +1,123 @@
+graph TD
+    %% Inicio del Proceso
+    Start([Inicio])
+    
+    %% Verificaciones Iniciales
+    CheckForm{¿Formulario<br/>activo?}
+    CheckCapacity{¿Hay cupos<br/>disponibles?}
+    
+    %% Proceso de Preinscripción
+    AccessForm[Acceder al formulario]
+    FillPersonalData[Completar datos personales]
+    ValidateRUT[Validar RUT único]
+    RUTValid{RUT válido?}
+    FillScoutData[Completar información scout]
+    UploadDocuments[Adjuntar documentos]
+    ValidateFiles{Archivos válidos?}
+    ReviewData[Revisar información]
+    SaveDraft[Guardar borrador]
+    SubmitForm[Enviar preinscripción]
+    
+    %% Estados del Sistema
+    GenerateQR[Generar código QR temporal]
+    SendConfirmation[Enviar email confirmación]
+    NotifyValidators[Notificar a validadores]
+    UpdateStatus[Actualizar estado: Enviado]
+    
+    %% Validación
+    ValidatorReview[Validador revisa]
+    CheckData{¿Datos completos?}
+    CheckEligibility{¿Cumple criterios?}
+    CheckCupos{¿Hay cupos?}
+    
+    %% Resultados de Validación
+    Approve[Estado: Validado]
+    Reject[Estado: Rechazado]
+    WaitList[Estado: Lista de Espera]
+    
+    %% Generación de Cuotas
+    GenerateQuotas[Generar cuotas de pago]
+    SendPaymentInstructions[Enviar instrucciones de pago]
+    
+    %% Notificaciones
+    NotifyParticipant[Notificar al participante]
+    NotifyRejection[Notificar rechazo]
+    NotifyWaitList[Notificar lista de espera]
+    NotifyApproval[Notificar aprobación]
+    
+    %% Errores y Excepciones
+    ShowInactiveMessage[Mostrar mensaje de inactivo]
+    ShowRUTError[Mostrar error RUT]
+    ShowFileError[Mostrar error archivos]
+    ShowCapacityError[Mostrar error de cupos]
+    
+    %% Fin del Proceso
+    End([Fin])
+    
+    %% Flujo Principal
+    Start --> AccessForm
+    AccessForm --> CheckForm
+    CheckForm -->|No| ShowInactiveMessage
+    CheckForm -->|Sí| CheckCapacity
+    CheckCapacity -->|No| ShowCapacityError
+    CheckCapacity -->|Sí| FillPersonalData
+    
+    FillPersonalData --> ValidateRUT
+    ValidateRUT --> RUTValid
+    RUTValid -->|No| ShowRUTError
+    RUTValid -->|Sí| FillScoutData
+    
+    FillScoutData --> UploadDocuments
+    UploadDocuments --> ValidateFiles
+    ValidateFiles -->|No| ShowFileError
+    ValidateFiles -->|Sí| ReviewData
+    
+    ReviewData --> SaveDraft
+    SaveDraft --> SubmitForm
+    SubmitForm --> GenerateQR
+    GenerateQR --> SendConfirmation
+    SendConfirmation --> NotifyValidators
+    NotifyValidators --> UpdateStatus
+    
+    %% Flujo de Validación
+    UpdateStatus --> ValidatorReview
+    ValidatorReview --> CheckData
+    CheckData -->|No| Reject
+    CheckData -->|Sí| CheckEligibility
+    CheckEligibility -->|No| Reject
+    CheckEligibility -->|Sí| CheckCupos
+    CheckCupos -->|No| WaitList
+    CheckCupos -->|Sí| Approve
+    
+    %% Resultados
+    Approve --> GenerateQuotas
+    GenerateQuotas --> SendPaymentInstructions
+    SendPaymentInstructions --> NotifyApproval
+    NotifyApproval --> End
+    
+    Reject --> NotifyRejection
+    NotifyRejection --> End
+    
+    WaitList --> NotifyWaitList
+    NotifyWaitList --> End
+    
+    %% Errores
+    ShowInactiveMessage --> End
+    ShowRUTError --> FillPersonalData
+    ShowFileError --> UploadDocuments
+    ShowCapacityError --> End
+    
+    %% Estilos
+    classDef startEnd fill:#4caf50,stroke:#2e7d32,stroke-width:3px,color:#fff
+    classDef process fill:#2196f3,stroke:#1565c0,stroke-width:2px,color:#fff
+    classDef decision fill:#ff9800,stroke:#ef6c00,stroke-width:2px,color:#fff
+    classDef error fill:#f44336,stroke:#c62828,stroke-width:2px,color:#fff
+    classDef success fill:#4caf50,stroke:#2e7d32,stroke-width:2px,color:#fff
+    classDef warning fill:#ff9800,stroke:#ef6c00,stroke-width:2px,color:#fff
+    
+    class Start,End startEnd
+    class AccessForm,FillPersonalData,ValidateRUT,FillScoutData,UploadDocuments,ReviewData,SaveDraft,SubmitForm,GenerateQR,SendConfirmation,NotifyValidators,UpdateStatus,ValidatorReview,GenerateQuotas,SendPaymentInstructions process
+    class CheckForm,CheckCapacity,RUTValid,ValidateFiles,CheckData,CheckEligibility,CheckCupos decision
+    class ShowInactiveMessage,ShowRUTError,ShowFileError,ShowCapacityError,Reject,NotifyRejection error
+    class Approve,NotifyApproval success
+    class WaitList,NotifyWaitList warning
