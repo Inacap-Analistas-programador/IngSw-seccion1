@@ -8,9 +8,14 @@ y generar automáticamente las URLs para las operaciones CRUD (Crear, Leer, Actu
 from django.urls import include, path
 from rest_framework.routers import DefaultRouter
 
-from .views import (ComprobantePagoViewSet, ConceptoContableViewSet,
-                    PagoCambioPersonaViewSet, PagoComprobanteViewSet,
-                    PagoPersonaViewSet, PrepagoViewSet)
+from .views import (
+    ComprobantePagoViewSet,
+    ConceptoContableViewSet,
+    PagoCambioPersonaViewSet,
+    PagoComprobanteViewSet,
+    PagoPersonaViewSet,
+    PrepagoViewSet,
+)
 
 # Define un espacio de nombres para las URLs de esta aplicación.
 # Esto permite referenciar las URLs de forma única en el proyecto,

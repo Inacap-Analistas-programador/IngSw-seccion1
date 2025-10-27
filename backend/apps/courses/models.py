@@ -16,6 +16,7 @@ TODO: El equipo C debe completar:
 """
 
 from decimal import Decimal
+from django.utils import timezone
 
 from django.contrib.auth import get_user_model
 from django.core.exceptions import ValidationError
@@ -147,8 +148,12 @@ class Course(models.Model):
     )
 
     # Fechas importantes del curso
-    start_date = models.DateField(verbose_name="Fecha de inicio")
-    end_date = models.DateField(verbose_name="Fecha de fin")
+    start_date = models.DateField(
+        verbose_name="Fecha de inicio", default=timezone.localdate
+    )
+    end_date = models.DateField(
+        verbose_name="Fecha de fin", default=timezone.localdate
+    )
     enrollment_start = models.DateTimeField(
         null=True, blank=True, verbose_name="Inicio de inscripción"
     )

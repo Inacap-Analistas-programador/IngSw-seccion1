@@ -9,10 +9,12 @@ from rest_framework.decorators import action
 from rest_framework.response import Response
 
 from .models import Preinscripcion
-from .serializers import (PreinscripcionCreateSerializer,
-                          PreinscripcionDetailSerializer,
-                          PreinscripcionListSerializer,
-                          PreinscripcionUpdateEstadoSerializer)
+from .serializers import (
+    PreinscripcionCreateSerializer,
+    PreinscripcionDetailSerializer,
+    PreinscripcionListSerializer,
+    PreinscripcionUpdateEstadoSerializer,
+)
 
 
 class PreinscripcionViewSet(viewsets.ModelViewSet):

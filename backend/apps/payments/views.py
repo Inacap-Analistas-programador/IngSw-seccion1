@@ -10,17 +10,25 @@ from rest_framework.permissions import IsAuthenticated
 
 # Importamos la clase de permiso personalizada. Asumiendo que está en un módulo de permisos.
 # Para este ejemplo, la importamos desde la configuración de DRF.
-from scouts_platform.settings.rest_framework import \
-    IsTreasurerOrAdminOrReadOnly
+from scouts_platform.settings.rest_framework import IsTreasurerOrAdminOrReadOnly
 
 from .filters import ComprobantePagoFilter, PagoPersonaFilter
-from .models import (ComprobantePago, ConceptoContable, PagoCambioPersona,
-                     PagoComprobante, PagoPersona, Prepago)
-from .serializers import (ComprobantePagoSerializer,
-                          ConceptoContableSerializer,
-                          PagoCambioPersonaSerializer,
-                          PagoComprobanteSerializer, PagoPersonaSerializer,
-                          PrepagoSerializer)
+from .models import (
+    ComprobantePago,
+    ConceptoContable,
+    PagoCambioPersona,
+    PagoComprobante,
+    PagoPersona,
+    Prepago,
+)
+from .serializers import (
+    ComprobantePagoSerializer,
+    ConceptoContableSerializer,
+    PagoCambioPersonaSerializer,
+    PagoComprobanteSerializer,
+    PagoPersonaSerializer,
+    PrepagoSerializer,
+)
 
 
 class PagoPersonaViewSet(viewsets.ModelViewSet):

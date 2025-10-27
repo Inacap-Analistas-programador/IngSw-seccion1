@@ -1,8 +1,18 @@
 from django.contrib import admin
 
-from .models import (Comuna, Distrito, EstadoCivil, GrupoScout, Nivel,
-                     Provincia, Rama, Region, TipoAlimentacion, TipoCurso,
-                     Zona)
+from .models import (
+    Comuna,
+    Distrito,
+    EstadoCivil,
+    GrupoScout,
+    Nivel,
+    Provincia,
+    Rama,
+    Region,
+    TipoAlimentacion,
+    TipoCurso,
+    Zona,
+)
 
 
 @admin.register(Region)

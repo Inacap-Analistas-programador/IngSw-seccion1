@@ -7,14 +7,32 @@ from rest_framework import filters, viewsets
 from rest_framework.decorators import action
 from rest_framework.response import Response
 
-from .models import (Comuna, Distrito, EstadoCivil, GrupoScout, Nivel,
-                     Provincia, Rama, Region, TipoAlimentacion, TipoCurso,
-                     Zona)
-from .serializers import (ComunaSerializer, DistritoSerializer,
-                          EstadoCivilSerializer, GrupoScoutSerializer,
-                          NivelSerializer, ProvinciaSerializer, RamaSerializer,
-                          RegionSerializer, TipoAlimentacionSerializer,
-                          TipoCursoSerializer, ZonaSerializer)
+from .models import (
+    Comuna,
+    Distrito,
+    EstadoCivil,
+    GrupoScout,
+    Nivel,
+    Provincia,
+    Rama,
+    Region,
+    TipoAlimentacion,
+    TipoCurso,
+    Zona,
+)
+from .serializers import (
+    ComunaSerializer,
+    DistritoSerializer,
+    EstadoCivilSerializer,
+    GrupoScoutSerializer,
+    NivelSerializer,
+    ProvinciaSerializer,
+    RamaSerializer,
+    RegionSerializer,
+    TipoAlimentacionSerializer,
+    TipoCursoSerializer,
+    ZonaSerializer,
+)
 
 
 class RegionViewSet(viewsets.ModelViewSet):
