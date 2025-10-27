@@ -1,433 +1,355 @@
 <template>
-  <div class="min-h-screen bg-gradient-to-br from-indigo-50 via-white to-blue-50">
-    <div class="max-w-7xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
-      <!-- Header with modern styling -->
-      <div class="mb-8 text-center">
-        <h1 class="text-4xl font-bold bg-gradient-to-r from-indigo-600 to-blue-600 bg-clip-text text-transparent mb-4">
-          Gestión de Pagos
-        </h1>
-        <p class="text-lg text-gray-600 max-w-2xl mx-auto">
-          Supervisa y administra todos los pagos del sistema de manera eficiente y segura
-        </p>
+  <div class="min-h-screen bg-gray-50">
+    <!-- Header -->
+    <div class="bg-white shadow-sm border-b">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex justify-between items-center py-6">
+          <div class="flex items-center space-x-4">
+            <div class="p-2 bg-blue-100 rounded-lg">
+              <svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1"></path>
+              </svg>
+            </div>
+            <div>
+              <h1 class="text-2xl font-bold text-gray-900">Gestión de Pagos</h1>
+              <p class="text-sm text-gray-500">Sistema de control financiero Scout</p>
+            </div>
+          </div>
+          <button 
+            @click="showCreateModal = true"
+            class="inline-flex items-center px-4 py-2 bg-green-600 text-white text-sm font-medium rounded-lg hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 transition-colors shadow-sm"
+          >
+            <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+            </svg>
+            Registrar Pago
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <!-- Filtros -->
+      <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6 mb-8">
+        <div class="flex items-center justify-between mb-4">
+          <h2 class="text-lg font-semibold text-gray-900">Filtros de Búsqueda</h2>
+          <button @click="clearFilters" class="text-sm text-gray-500 hover:text-gray-700">Limpiar filtros</button>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+          <div class="space-y-1">
+            <label class="text-sm font-medium text-gray-700">Agrupación</label>
+            <select v-model="filters.group" @change="loadPayments" class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-green-500 focus:border-green-500">
+              <option value="">Todos los grupos</option>
+              <option value="curso">Por Curso</option>
+              <option value="persona">Por Persona</option>
+            </select>
+          </div>
+          
+          <div class="space-y-1">
+            <label class="text-sm font-medium text-gray-700">Estado</label>
+            <select v-model="filters.status" @change="loadPayments" class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-green-500 focus:border-green-500"
+              <option value="">Todos los estados</option>
+              <option value="Pendiente">Pendiente</option>
+              <option value="Registrado">Registrado</option>
+              <option value="Cancelado">Cancelado</option>
+              <option value="Comprobado">Comprobado</option>
+            </select>
+          </div>
+
+          <div class="space-y-1">
+            <label class="text-sm font-medium text-gray-700">Fecha desde</label>
+            <input 
+              v-model="filters.date_from" 
+              type="date" 
+              @change="loadPayments"
+              class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-green-500 focus:border-green-500"
+            >
+          </div>
+          
+          <div class="space-y-1">
+            <label class="text-sm font-medium text-gray-700">Fecha hasta</label>
+            <input 
+              v-model="filters.date_to" 
+              type="date" 
+              @change="loadPayments"
+              class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-green-500 focus:border-green-500"
+            >
+          </div>
+        </div>
       </div>
 
-      <!-- Search and Filter Section -->
-      <div class="bg-white rounded-2xl shadow-xl border border-gray-200 p-8 mb-8">
-        <div class="flex items-center mb-6">
-          <div class="w-10 h-10 bg-gradient-to-r from-indigo-500 to-blue-500 rounded-lg flex items-center justify-center mr-4">
-            <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
-            </svg>
+      <!-- Stats Cards -->
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+        <div class="bg-gradient-to-r from-emerald-500 to-teal-600 rounded-xl p-6 text-white">
+          <div class="flex items-center justify-between">
+            <div>
+              <p class="text-emerald-100 text-sm font-medium">Total Pagos</p>
+              <p class="text-3xl font-bold">{{ paymentsStore.meta.count }}</p>
+            </div>
+            <div class="p-3 bg-emerald-400 bg-opacity-30 rounded-lg">
+              <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
+                <path d="M4 4a2 2 0 00-2 2v1h16V6a2 2 0 00-2-2H4zM18 9H2v5a2 2 0 002 2h12a2 2 0 002-2V9zM4 13a1 1 0 011-1h1a1 1 0 110 2H5a1 1 0 01-1-1zm5-1a1 1 0 100 2h1a1 1 0 100-2H9z"></path>
+              </svg>
+            </div>
           </div>
-          <h2 class="text-2xl font-bold text-gray-900">Buscar Pagos</h2>
         </div>
         
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <div class="space-y-2">
-            <label for="group-input" class="block text-sm font-semibold text-gray-700">Grupo</label>
-            <div class="relative">
-              <input 
-                id="group-input"
-                v-model="searchFilters.group" 
-                class="w-full pl-4 pr-12 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all duration-200 text-gray-900 placeholder-gray-500 bg-gray-50 hover:bg-white focus:bg-white" 
-                placeholder="Ej: grupo-a"
-              />
-              <div class="absolute inset-y-0 right-0 flex items-center pr-3">
-                <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
-                </svg>
-              </div>
+        <div class="bg-gradient-to-r from-green-500 to-emerald-600 rounded-xl p-6 text-white">
+          <div class="flex items-center justify-between">
+            <div>
+              <p class="text-green-100 text-sm font-medium">Monto Total</p>
+              <p class="text-3xl font-bold">${{ formatCurrency(paymentsStore.meta.total_amount) }}</p>
             </div>
-          </div>
-          
-          <div class="space-y-2">
-            <label for="course-id-input" class="block text-sm font-semibold text-gray-700">Curso ID (opcional)</label>
-            <div class="relative">
-              <input 
-                id="course-id-input"
-                v-model.number="searchFilters.courseId" 
-                type="number" 
-                class="w-full pl-4 pr-12 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all duration-200 text-gray-900 placeholder-gray-500 bg-gray-50 hover:bg-white focus:bg-white" 
-                placeholder="Ej: 1"
-              />
-              <div class="absolute inset-y-0 right-0 flex items-center pr-3">
-                <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"></path>
-                </svg>
-              </div>
-            </div>
-          </div>
-          
-          <div class="flex items-end">
-            <button 
-              @click="searchPayments" 
-              :disabled="loading"
-              class="w-full px-8 py-3 bg-gradient-to-r from-indigo-600 to-blue-600 text-white rounded-xl hover:from-indigo-700 hover:to-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 font-semibold shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 flex items-center justify-center space-x-2"
-            >
-              <svg v-if="!loading" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+            <div class="p-3 bg-green-400 bg-opacity-30 rounded-lg">
+              <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
+                <path d="M8.433 7.418c.155-.103.346-.196.567-.267v1.698a2.305 2.305 0 01-.567-.267C8.07 8.34 8 8.114 8 8c0-.114.07-.34.433-.582zM11 12.849v-1.698c.22.071.412.164.567.267.364.243.433.468.433.582 0 .114-.07.34-.433.582a2.305 2.305 0 01-.567.267z"></path>
+                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-13a1 1 0 10-2 0v.092a4.535 4.535 0 00-1.676.662C6.602 6.234 6 7.009 6 8c0 .99.602 1.765 1.324 2.246.48.32 1.054.545 1.676.662v1.941c-.391-.127-.68-.317-.843-.504a1 1 0 10-1.51 1.31c.562.649 1.413 1.076 2.353 1.253V15a1 1 0 102 0v-.092a4.535 4.535 0 001.676-.662C13.398 13.766 14 12.991 14 12c0-.99-.602-1.765-1.324-2.246A4.535 4.535 0 0011 9.092V7.151c.391.127.68.317.843.504a1 1 0 101.511-1.31c-.563-.649-1.413-1.076-2.354-1.253V5z" clip-rule="evenodd"></path>
               </svg>
-              <div v-if="loading" class="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
-              <span>{{ loading ? 'Buscando...' : 'Buscar Pagos' }}</span>
-            </button>
+            </div>
+          </div>
+        </div>
+        
+        <div class="bg-gradient-to-r from-green-500 to-green-600 rounded-xl p-6 text-white">
+          <div class="flex items-center justify-between">
+            <div>
+              <p class="text-green-100 text-sm font-medium">Ingresos</p>
+              <p class="text-3xl font-bold">${{ formatCurrency(paymentsStore.meta.breakdown.ingresos) }}</p>
+            </div>
+            <div class="p-3 bg-green-400 bg-opacity-30 rounded-lg">
+              <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
+                <path fill-rule="evenodd" d="M3.293 9.707a1 1 0 010-1.414l6-6a1 1 0 011.414 0l6 6a1 1 0 01-1.414 1.414L11 5.414V17a1 1 0 11-2 0V5.414L4.707 9.707a1 1 0 01-1.414 0z" clip-rule="evenodd"></path>
+              </svg>
+            </div>
+          </div>
+        </div>
+        
+        <div class="bg-gradient-to-r from-red-500 to-red-600 rounded-xl p-6 text-white">
+          <div class="flex items-center justify-between">
+            <div>
+              <p class="text-red-100 text-sm font-medium">Egresos</p>
+              <p class="text-3xl font-bold">${{ formatCurrency(paymentsStore.meta.breakdown.egresos) }}</p>
+            </div>
+            <div class="p-3 bg-red-400 bg-opacity-30 rounded-lg">
+              <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
+                <path fill-rule="evenodd" d="M16.707 10.293a1 1 0 010 1.414l-6 6a1 1 0 01-1.414 0l-6-6a1 1 0 111.414-1.414L9 14.586V3a1 1 0 012 0v11.586l4.293-4.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+              </svg>
+            </div>
           </div>
         </div>
       </div>
 
-      <!-- Error State -->
-      <div v-if="error" class="bg-red-50 border border-red-200 rounded-2xl p-6 mb-8 shadow-lg">
-        <div class="flex items-start">
-          <div class="flex-shrink-0">
-            <div class="w-10 h-10 bg-red-100 rounded-lg flex items-center justify-center">
-              <svg class="w-6 h-6 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-              </svg>
+      <!-- Tabla de Pagos -->
+      <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+        <div class="px-6 py-4 border-b border-gray-200">
+          <div class="flex items-center justify-between">
+            <h2 class="text-lg font-semibold text-gray-900">Lista de Pagos</h2>
+            <div class="flex items-center space-x-2">
+              <span class="text-sm text-gray-500">{{ paymentsStore.list.length }} registros</span>
             </div>
           </div>
-          <div class="ml-4">
-            <h3 class="text-lg font-semibold text-red-800">Error al cargar datos</h3>
-            <p class="text-red-600 mt-1">{{ error }}</p>
-            <button 
-              @click="searchPayments" 
-              class="mt-3 text-sm bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 transition-colors"
-            >
-              Intentar nuevamente
-            </button>
-          </div>
+        </div>
+        
+        <div class="overflow-x-auto">
+          <table class="min-w-full divide-y divide-gray-200">
+            <thead class="bg-gray-50">
+              <tr>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">ID</th>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Fecha</th>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tipo</th>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Valor</th>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Estado</th>
+                <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Acciones</th>
+              </tr>
+            </thead>
+            <tbody class="bg-white divide-y divide-gray-200">
+              <tr v-for="pago in paymentsStore.list" :key="pago.PAP_ID" class="hover:bg-gray-50 transition-colors">
+                <td class="px-6 py-4 whitespace-nowrap">
+                  <div class="text-sm font-medium text-gray-900">#{{ pago.PAP_ID }}</div>
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap">
+                  <div class="text-sm text-gray-900">{{ formatDate(pago.PAP_FECHA_HORA) }}</div>
+                  <div class="text-sm text-gray-500">{{ formatTime(pago.PAP_FECHA_HORA) }}</div>
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap">
+                  <div class="flex items-center">
+                    <div :class="pago.PAP_TIPO === 1 ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'" class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium">
+                      <svg v-if="pago.PAP_TIPO === 1" class="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd" d="M3.293 9.707a1 1 0 010-1.414l6-6a1 1 0 011.414 0l6 6a1 1 0 01-1.414 1.414L11 5.414V17a1 1 0 11-2 0V5.414L4.707 9.707a1 1 0 01-1.414 0z" clip-rule="evenodd"></path>
+                      </svg>
+                      <svg v-else class="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd" d="M16.707 10.293a1 1 0 010 1.414l-6 6a1 1 0 01-1.414 0l-6-6a1 1 0 111.414-1.414L9 14.586V3a1 1 0 012 0v11.586l4.293-4.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+                      </svg>
+                      {{ pago.PAP_TIPO === 1 ? 'Ingreso' : 'Egreso' }}
+                    </div>
+                  </div>
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap">
+                  <div class="text-sm font-semibold text-gray-900">${{ formatCurrency(pago.PAP_VALOR) }}</div>
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap">
+                  <PaymentStatusBadge :status="pago.estado" />
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                  <div class="flex items-center justify-end space-x-2">
+                    <button @click="editPago(pago)" class="inline-flex items-center px-3 py-1 border border-gray-300 text-xs font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-green-500">
+                      <svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
+                      </svg>
+                      Editar
+                    </button>
+                    <button @click="emitComprobante(pago)" class="inline-flex items-center px-3 py-1 border border-green-300 text-xs font-medium rounded-md text-green-700 bg-green-50 hover:bg-green-100 focus:outline-none focus:ring-2 focus:ring-green-500">
+                      <svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                      </svg>
+                      Comprobante
+                    </button>
+                    <button @click="changeTitularidad(pago)" class="inline-flex items-center px-3 py-1 border border-emerald-300 text-xs font-medium rounded-md text-emerald-700 bg-emerald-50 hover:bg-emerald-100 focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                      <svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"></path>
+                      </svg>
+                      Cambiar
+                    </button>
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
         </div>
       </div>
 
-      <!-- Results -->
-      <div v-if="data && !loading" class="space-y-8">
-        <!-- Summary Stats -->
-        <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
-          <MetricCard
-            title="Total Pagos"
-            :value="String(data.count)"
-            description="Pagos encontrados"
-            variant="primary"
-          />
-          <MetricCard
-            title="Monto Total"
-            :value="formatCurrency(data.total_amount)"
-            description="Suma total"
-            variant="success"
-          />
-          <MetricCard
-            title="Pagos Pendientes"
-            :value="String(data.breakdown?.PENDING || 0)"
-            description="Requieren atención"
-            variant="warning"
-          />
-          <MetricCard
-            title="Pagos Completados"
-            :value="String(data.breakdown?.COMPLETED || 0)"
-            description="Finalizados"
-            variant="info"
-          />
-        </div>
-
-        <!-- Breakdown Chart -->
-        <div class="bg-white rounded-2xl shadow-xl border border-gray-200 p-8" v-if="data.breakdown">
-          <div class="flex items-center mb-6">
-            <div class="w-10 h-10 bg-gradient-to-r from-purple-500 to-pink-500 rounded-lg flex items-center justify-center mr-4">
-              <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
-              </svg>
-            </div>
-            <h3 class="text-2xl font-bold text-gray-900">Distribución por Estado</h3>
-          </div>
-          
-          <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
-            <div 
-              v-for="(count, status) in data.breakdown" 
-              :key="status"
-              class="bg-gradient-to-br from-gray-50 to-white border border-gray-200 rounded-xl p-6 text-center hover:shadow-lg transition-all duration-200 transform hover:-translate-y-1"
-            >
-              <div class="text-3xl font-bold mb-2" :class="getStatusColor(status)">{{ count }}</div>
-              <div class="text-sm font-medium text-gray-600 uppercase tracking-wider">{{ getStatusLabel(status) }}</div>
-              <div class="mt-2 h-2 bg-gray-200 rounded-full overflow-hidden">
-                <div 
-                  class="h-full rounded-full transition-all duration-300" 
-                  :class="getStatusBarColor(status)"
-                  :style="{ width: `${(count / data.count * 100)}%` }"
-                ></div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Payments Table -->
-        <div v-if="data.items.length > 0">
-          <ModernTable
-            title="Detalle de Pagos"
-            :columns="tableColumns"
-            :data="data.items"
-            :loading="false"
-            :search-placeholder="'Buscar en pagos...'"
-            :actions="tableActions"
-            @action="handleTableAction"
-          >
-            <!-- Custom status column -->
-            <template #column-estado="{ row }">
-              <span :class="getPaymentStatusBadgeClass(row.estado)">
-                {{ getPaymentStatusLabel(row.estado) }}
-              </span>
-            </template>
-
-            <!-- Custom amount column -->
-            <template #column-monto="{ row }">
-              <span class="font-semibold text-green-600">
-                {{ formatCurrency(row.monto) }}
-              </span>
-            </template>
-
-            <!-- Custom method column -->
-            <template #column-medio="{ row }">
-              <div class="flex items-center space-x-2">
-                <span class="text-sm">{{ getPaymentMethodIcon(row.medio) }}</span>
-                <span>{{ row.medio }}</span>
-              </div>
-            </template>
-          </ModernTable>
-        </div>
-
-        <!-- No Payments State -->
-        <div v-else class="bg-white rounded-2xl shadow-xl border border-gray-200 p-12 text-center">
-          <div class="w-20 h-20 bg-gradient-to-r from-gray-100 to-gray-200 rounded-full flex items-center justify-center mx-auto mb-6">
-            <svg class="w-10 h-10 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"></path>
-            </svg>
-          </div>
-          <h3 class="text-xl font-semibold text-gray-900 mb-2">No hay pagos disponibles</h3>
-          <p class="text-gray-600">No se encontraron pagos para el grupo especificado</p>
-        </div>
-      </div>
-
-      <!-- Loading State -->
-      <div v-if="loading" class="bg-white rounded-2xl shadow-xl border border-gray-200 p-12">
-        <div class="flex flex-col items-center justify-center">
-          <div class="animate-spin rounded-full h-16 w-16 border-4 border-indigo-200 border-t-indigo-600 mb-6"></div>
-          <h3 class="text-xl font-semibold text-gray-900 mb-2">Cargando pagos...</h3>
-          <p class="text-gray-600">Por favor espera mientras procesamos tu búsqueda</p>
+      <!-- Loading -->
+      <div v-if="paymentsStore.loading" class="flex justify-center items-center py-12">
+        <div class="flex items-center space-x-2">
+          <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-green-600"></div>
+          <span class="text-gray-600">Cargando pagos...</span>
         </div>
       </div>
 
       <!-- Empty State -->
-      <div v-if="!data && !loading && !error" class="bg-white rounded-2xl shadow-xl border border-gray-200 p-12 text-center">
-        <div class="w-24 h-24 bg-gradient-to-r from-indigo-100 to-blue-100 rounded-full flex items-center justify-center mx-auto mb-6">
-          <svg class="w-12 h-12 text-indigo-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
-          </svg>
+      <div v-else-if="!paymentsStore.loading && paymentsStore.list.length === 0" class="text-center py-12">
+        <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V9a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path>
+        </svg>
+        <h3 class="mt-2 text-sm font-medium text-gray-900">No hay pagos registrados</h3>
+        <p class="mt-1 text-sm text-gray-500">Comienza registrando el primer pago del sistema.</p>
+        <div class="mt-6">
+          <button @click="showCreateModal = true" class="inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-green-600 hover:bg-green-700">
+            <svg class="-ml-1 mr-2 h-5 w-5" fill="currentColor" viewBox="0 0 20 20">
+              <path fill-rule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clip-rule="evenodd"></path>
+            </svg>
+            Registrar Pago
+          </button>
         </div>
-        <h3 class="text-2xl font-bold text-gray-900 mb-2">Busca pagos por grupo</h3>
-        <p class="text-gray-600 text-lg">Ingresa un grupo para ver los pagos asociados y comenzar a gestionar las transacciones</p>
       </div>
     </div>
+
+    <!-- Modales -->
+    <PaymentFormModal 
+      v-if="showCreateModal" 
+      :pago="selectedPago"
+      @close="showCreateModal = false"
+      @saved="handlePaymentSaved"
+    />
+    
+    <ComprobanteModal 
+      v-if="showComprobanteModal" 
+      :pago="selectedPago"
+      @close="showComprobanteModal = false"
+      @saved="handleComprobanteSaved"
+    />
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, computed } from 'vue'
-import ModernTable from '@/components/ui/ModernTable.vue'
-import MetricCard from '@/components/ui/MetricCard.vue'
+import { ref, onMounted, reactive } from 'vue'
 import { usePaymentsStore } from '@/stores/payments'
-import { useRouter } from 'vue-router'
+import type { PagoPersona, PaymentFilters } from '@/types/payments'
+import PaymentFormModal from '@/components/payments/PaymentFormModal.vue'
+import ComprobanteModal from '@/components/payments/ComprobanteModal.vue'
+import PaymentStatusBadge from '@/components/payments/PaymentStatusBadge.vue'
 
-const router = useRouter()
 const paymentsStore = usePaymentsStore()
 
-// Reactive state from store
-const loading = computed(() => paymentsStore.loading)
-const error = computed(() => paymentsStore.error)
-const data = computed(() => {
-  if (paymentsStore.list.length === 0 && paymentsStore.meta.count === 0) {
-    return null
-  }
-  return {
-    items: paymentsStore.list,
-    count: paymentsStore.meta.count,
-    total_amount: paymentsStore.meta.total_amount,
-    breakdown: paymentsStore.meta.breakdown,
-    group: searchFilters.value.group,
-  }
-})
+const showCreateModal = ref(false)
+const showComprobanteModal = ref(false)
+const selectedPago = ref<PagoPersona | null>(null)
 
-const searchFilters = ref({
+const filters = reactive<PaymentFilters>({
   group: '',
-  courseId: undefined as number | undefined
+  status: '',
+  date_from: '',
+  date_to: ''
 })
 
-// Table configuration
-const tableColumns = [
-  { key: 'id', label: 'ID', sortable: true },
-  { key: 'estado', label: 'Estado', sortable: true },
-  { key: 'monto', label: 'Monto', sortable: true },
-  { key: 'medio', label: 'Método', sortable: true },
-  { key: 'referencia', label: 'Referencia', sortable: false }
-]
-
-const tableActions = [
-  { key: 'view', label: 'Ver Detalle', variant: 'primary' as const },
-  { key: 'edit', label: 'Editar', variant: 'warning' as const }
-]
-
-// Main search function
-const searchPayments = async () => {
-  if (!searchFilters.value.group) {
-    paymentsStore.error = 'Debe ingresar un grupo para buscar pagos'
-    return
-  }
-  
-  await paymentsStore.fetchByGroup(
-    searchFilters.value.group,
-    searchFilters.value.courseId
-  )
-}
-
-// Event handlers
-const handleTableAction = (action: string, row: any) => {
-  switch (action) {
-    case 'view':
-      router.push(`/payments/${row.id}`)
-      break
-    case 'edit':
-      router.push(`/payments/${row.id}/edit`)
-      break
+const loadPayments = async () => {
+  try {
+    await paymentsStore.fetchByGroup(filters.group || 'all')
+  } catch (error) {
+    console.error('Error loading payments:', error)
   }
 }
 
-// Utility functions
-const formatCurrency = (amount: number | string) => {
-  const numAmount = typeof amount === 'string' ? parseFloat(amount) : amount
-  return new Intl.NumberFormat('es-CL', {
-    style: 'currency',
-    currency: 'CLP'
-  }).format(numAmount)
+const editPago = (pago: PagoPersona) => {
+  selectedPago.value = pago
+  showCreateModal.value = true
 }
 
-const getStatusColor = (status: string) => {
-  const colors = {
-    'PENDING': 'text-yellow-400',
-    'COMPLETED': 'text-green-400',
-    'FAILED': 'text-red-400',
-    'CANCELLED': 'text-gray-400'
-  }
-  return colors[status as keyof typeof colors] || 'text-gray-400'
+const emitComprobante = (pago: PagoPersona) => {
+  selectedPago.value = pago
+  showComprobanteModal.value = true
 }
 
-const getStatusLabel = (status: string) => {
-  const labels = {
-    'PENDING': 'Pendiente',
-    'COMPLETED': 'Completado',
-    'FAILED': 'Fallido',
-    'CANCELLED': 'Cancelado'
-  }
-  return labels[status as keyof typeof labels] || status
+const changeTitularidad = async (pago: PagoPersona) => {
+  // Implementar modal de cambio de titularidad
+  console.log('Cambiar titularidad:', pago)
 }
 
-const getStatusBarColor = (status: string) => {
-  const colors = {
-    'PENDING': 'bg-yellow-400',
-    'COMPLETED': 'bg-green-400',
-    'FAILED': 'bg-red-400',
-    'CANCELLED': 'bg-gray-400'
-  }
-  return colors[status as keyof typeof colors] || 'bg-gray-400'
+const handlePaymentSaved = () => {
+  showCreateModal.value = false
+  selectedPago.value = null
+  loadPayments()
 }
 
-const getPaymentStatusBadgeClass = (status: string) => {
+const handleComprobanteSaved = () => {
+  showComprobanteModal.value = false
+  selectedPago.value = null
+  loadPayments()
+}
+
+const formatCurrency = (value: number) => {
+  return new Intl.NumberFormat('es-CL').format(value)
+}
+
+const formatDate = (dateString: string) => {
+  return new Date(dateString).toLocaleDateString('es-CL')
+}
+
+const formatTime = (dateString: string) => {
+  return new Date(dateString).toLocaleTimeString('es-CL', { hour: '2-digit', minute: '2-digit' })
+}
+
+const clearFilters = () => {
+  Object.assign(filters, {
+    group: '',
+    status: '',
+    date_from: '',
+    date_to: ''
+  })
+  loadPayments()
+}
+
+const getStatusClass = (status: string) => {
   const classes = {
-    'PENDING': 'inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-yellow-100 text-yellow-800 border border-yellow-200',
-    'COMPLETED': 'inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-green-100 text-green-800 border border-green-200',
-    'FAILED': 'inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-red-100 text-red-800 border border-red-200',
-    'CANCELLED': 'inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-gray-100 text-gray-800 border border-gray-200'
+    'Pendiente': 'bg-yellow-100 text-yellow-800',
+    'Registrado': 'bg-blue-100 text-blue-800',
+    'Cancelado': 'bg-red-100 text-red-800',
+    'Comprobado': 'bg-green-100 text-green-800'
   }
-  return classes[status as keyof typeof classes] || classes.PENDING
+  return classes[status as keyof typeof classes] || 'bg-gray-100 text-gray-800'
 }
 
-const getPaymentStatusLabel = (status: string) => {
-  return getStatusLabel(status)
-}
-
-const getPaymentMethodIcon = (method: string) => {
-  const icons = {
-    'CREDIT_CARD': 'CC',
-    'DEBIT_CARD': 'DC',
-    'BANK_TRANSFER': 'BT',
-    'CASH': '$',
-    'WEBPAY': 'WP',
-    'PAYPAL': 'PP'
-  }
-  return icons[method as keyof typeof icons] || 'CC'
-}
+onMounted(() => {
+  loadPayments()
+})
 </script>
-
-<style scoped>
-/* Custom animations and transitions */
-.fade-enter-active, .fade-leave-active {
-  transition: opacity 0.3s ease;
-}
-
-.fade-enter-from, .fade-leave-to {
-  opacity: 0;
-}
-
-/* Gradient text effect */
-.gradient-text {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-}
-
-/* Custom scrollbar */
-::-webkit-scrollbar {
-  width: 8px;
-}
-
-::-webkit-scrollbar-track {
-  background: #f1f5f9;
-  border-radius: 4px;
-}
-
-::-webkit-scrollbar-thumb {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  border-radius: 4px;
-}
-
-::-webkit-scrollbar-thumb:hover {
-  background: linear-gradient(135deg, #5a67d8 0%, #6b46c1 100%);
-}
-
-/* Card hover effects */
-.metric-card {
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-.metric-card:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
-}
-
-/* Button pulse effect */
-@keyframes pulse {
-  0%, 100% {
-    opacity: 1;
-  }
-  50% {
-    opacity: .8;
-  }
-}
-
-.btn-pulse:hover {
-  animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
-}
-
-/* Glass morphism effect */
-.glass {
-  background: rgba(255, 255, 255, 0.1);
-  backdrop-filter: blur(20px);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-}
-</style>
