@@ -10,6 +10,7 @@ Compatibilidad con nombres alternativos para sistemas legacy.
 """
 
 from django.urls import path
+
 from . import views
 
 urlpatterns = [
@@ -26,7 +27,9 @@ urlpatterns = [
     path("livez", views.livez, name="livez_no_slash"),  # /healthz/livez
     # Aliases de compatibilidad sin la 'z'
     path("ready/", views.readiness_check, name="readiness_check"),  # /healthz/ready/
-    path("ready", views.readiness_check, name="readiness_check_no_slash"),  # /healthz/ready
+    path(
+        "ready", views.readiness_check, name="readiness_check_no_slash"
+    ),  # /healthz/ready
     path("live/", views.liveness_check, name="liveness_check"),  # /healthz/live/
     path("live", views.liveness_check, name="liveness_check_no_slash"),  # /healthz/live
 ]

@@ -2,6 +2,7 @@ from django.db import models
 from apps.catalog.models import GrupoScout, Rama
 
 
+
 class Persona(models.Model):
     """
     Persona básica del sistema. Ampliada para soportar búsquedas avanzadas.

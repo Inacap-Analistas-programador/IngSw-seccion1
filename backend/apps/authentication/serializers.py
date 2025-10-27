@@ -3,10 +3,11 @@ Serializers para autenticación JWT y gestión de usuarios
 Sistema de Gestión Integral de Cursos Scout
 """
 
+from django.contrib.auth import authenticate
 from rest_framework import serializers
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
-from django.contrib.auth import authenticate
-from .models import User, Role, RoleAssignment
+
+from .models import Role, RoleAssignment, User
 
 
 class UserSerializer(serializers.ModelSerializer):

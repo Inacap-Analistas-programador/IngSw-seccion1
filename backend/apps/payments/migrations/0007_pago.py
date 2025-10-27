@@ -7,30 +7,46 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('payments', '0006_alter_cuota_unique_together_remove_cuota_pago_and_more'),
+        ("payments", "0006_alter_cuota_unique_together_remove_cuota_pago_and_more"),
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='Pago',
+            name="Pago",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('monto', models.DecimalField(decimal_places=2, max_digits=10)),
-                ('medio', models.CharField(default='TRANSFERENCIA', max_length=50)),
-                ('estado', models.CharField(default='PENDIENTE', max_length=30)),
-                ('fecha_pago', models.DateField(blank=True, null=True)),
-                ('fecha_vencimiento', models.DateField(blank=True, null=True)),
-                ('referencia', models.CharField(blank=True, max_length=100, null=True)),
-                ('notas', models.TextField(blank=True, null=True)),
-                ('created_at', models.DateTimeField(default=django.utils.timezone.now)),
-                ('updated_at', models.DateTimeField(default=django.utils.timezone.now)),
-                ('registrado_por', models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='pagos_compat', to=settings.AUTH_USER_MODEL)),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("monto", models.DecimalField(decimal_places=2, max_digits=10)),
+                ("medio", models.CharField(default="TRANSFERENCIA", max_length=50)),
+                ("estado", models.CharField(default="PENDIENTE", max_length=30)),
+                ("fecha_pago", models.DateField(blank=True, null=True)),
+                ("fecha_vencimiento", models.DateField(blank=True, null=True)),
+                ("referencia", models.CharField(blank=True, max_length=100, null=True)),
+                ("notas", models.TextField(blank=True, null=True)),
+                ("created_at", models.DateTimeField(default=django.utils.timezone.now)),
+                ("updated_at", models.DateTimeField(default=django.utils.timezone.now)),
+                (
+                    "registrado_por",
+                    models.ForeignKey(
+                        blank=True,
+                        null=True,
+                        on_delete=django.db.models.deletion.SET_NULL,
+                        related_name="pagos_compat",
+                        to=settings.AUTH_USER_MODEL,
+                    ),
+                ),
             ],
             options={
-                'db_table': 'payments',
+                "db_table": "payments",
             },
         ),
     ]

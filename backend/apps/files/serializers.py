@@ -3,7 +3,8 @@ Serializers para el módulo de archivos
 """
 
 from rest_framework import serializers
-from .models import FileUpload, FileDownload
+
+from .models import FileDownload, FileUpload
 
 
 class FileUploadSerializer(serializers.ModelSerializer):
@@ -113,7 +114,9 @@ class FileUploadCreateSerializer(serializers.ModelSerializer):
         # no fue invocado (ej. alias 'archivo' o comportamiento del cliente).
         max_size = 10 * 1024 * 1024  # 10MB
         if getattr(file, "size", 0) > max_size:
-            raise serializers.ValidationError("El archivo es demasiado grande. Máximo permitido: 10MB")
+            raise serializers.ValidationError(
+                "El archivo es demasiado grande. Máximo permitido: 10MB"
+            )
 
         # Si no se proporcionó un nombre legible, usar el nombre original del archivo
         if not validated_data.get("name"):

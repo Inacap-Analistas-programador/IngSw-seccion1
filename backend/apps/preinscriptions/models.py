@@ -13,9 +13,9 @@ TODO: El equipo H debe completar:
 - Sistema de notificaciones automáticas por cambios de estado
 """
 
-from django.db import models
 from django.contrib.auth import get_user_model
 from django.core.exceptions import ValidationError
+from django.db import models
 
 User = get_user_model()
 
@@ -165,13 +165,20 @@ class Preinscripcion(models.Model):
         """
         try:
             from django.apps import apps as django_apps
-            pago_persona_model = django_apps.get_model('payments', 'PagoPersona')
+
+            pago_persona_model = django_apps.get_model("payments", "PagoPersona")
         except Exception:
-            return pago_persona_model.objects.none() if 'pago_persona_model' in locals() else []
+            return (
+                pago_persona_model.objects.none()
+                if "pago_persona_model" in locals()
+                else []
+            )
 
         # Filter by integer IDs stored on PagoPersona (PER_ID, CUR_ID)
         try:
-            return pago_persona_model.objects.filter(PER_ID=self.user_id, CUR_ID=self.course_id).order_by('-PAP_FECHA_HORA')
+            return pago_persona_model.objects.filter(
+                PER_ID=self.user_id, CUR_ID=self.course_id
+            ).order_by("-PAP_FECHA_HORA")
         except Exception:
             # If for any reason the model cannot be queried, return an empty queryset
             try:
@@ -186,8 +193,9 @@ class Preinscripcion(models.Model):
         # pagos can be a queryset or list fallback
         try:
             from django.db.models import Sum
-            agg = pagos.aggregate(total=Sum('PAP_VALOR'))
-            return agg.get('total') or 0
+
+            agg = pagos.aggregate(total=Sum("PAP_VALOR"))
+            return agg.get("total") or 0
         except Exception:
             # Fallback: sum in Python if pagos is a list
             try:

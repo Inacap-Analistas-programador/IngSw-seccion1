@@ -3,22 +3,24 @@ Views para autenticación JWT y gestión de usuarios
 Sistema de Gestión Integral de Cursos Scout
 """
 
-from rest_framework import viewsets, status, permissions
+from django.contrib.auth import authenticate
+from django.db.models import Q
+from rest_framework import permissions, status, viewsets
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework_simplejwt.tokens import RefreshToken
-from django.contrib.auth import authenticate
-from .models import User, Role, RoleAssignment
+
+from utils.rut_validator import clean_rut, format_rut, validate_rut
+
+from .models import Role, RoleAssignment, User
 from .serializers import (
-    UserSerializer,
-    RoleSerializer,
-    RoleAssignmentSerializer,
-    LoginSerializer,
     CustomTokenObtainPairSerializer,
+    LoginSerializer,
+    RoleAssignmentSerializer,
+    RoleSerializer,
+    UserSerializer,
 )
-from utils.rut_validator import validate_rut, clean_rut, format_rut
-from django.db.models import Q
 
 
 class UserViewSet(viewsets.ModelViewSet):
@@ -43,10 +45,15 @@ class UserViewSet(viewsets.ModelViewSet):
         # Basic search implementation: require 'rut' in POST body and match by cleaned value
         rut = (request.data.get("rut") or "").strip()
         if not rut:
-            return Response({"detail": "Parámetro 'rut' es requerido"}, status=status.HTTP_400_BAD_REQUEST)
+            return Response(
+                {"detail": "Parámetro 'rut' es requerido"},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
 
         cleaned = clean_rut(rut)
-        qs = self.queryset.filter(Q(rut__iexact=cleaned) | Q(rut__icontains=cleaned))[:10]
+        qs = self.queryset.filter(Q(rut__iexact=cleaned) | Q(rut__icontains=cleaned))[
+            :10
+        ]
         serializer = self.get_serializer(qs, many=True)
         return Response(serializer.data)
 
@@ -99,7 +106,9 @@ class PersonSearchView(APIView):
         # This keeps tests stable while rejecting clearly invalid inputs like 'invalid'.
         cleaned = clean_rut(rut_param)
         if len(cleaned) < 2 or not cleaned[:-1].isdigit():
-            return Response({"detail": "RUT inválido"}, status=status.HTTP_400_BAD_REQUEST)
+            return Response(
+                {"detail": "RUT inválido"}, status=status.HTTP_400_BAD_REQUEST
+            )
 
         # Build query using cleaned and formatted RUT variants
         formatted = format_rut(rut_param) or None

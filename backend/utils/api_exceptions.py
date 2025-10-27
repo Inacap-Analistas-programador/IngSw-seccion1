@@ -17,11 +17,12 @@ Códigos HTTP utilizados:
 - 500: Internal Server Error (error del servidor)
 """
 
-from rest_framework.views import exception_handler
-from rest_framework.response import Response
+import logging
+
 from django.core.exceptions import ValidationError
 from django.http import Http404
-import logging
+from rest_framework.response import Response
+from rest_framework.views import exception_handler
 
 # Logger para errores de API
 logger = logging.getLogger("sgics.api")

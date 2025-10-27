@@ -6,7 +6,9 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-    initial = True
+    # This migration was generated as part of a multi-step refactor.
+    # Ensure it's not treated as 'initial' since we provide a manual 0001_initial.
+    initial = False
 
     dependencies = [
         ("payments", "0001_initial"),
@@ -35,15 +37,9 @@ class Migration(migrations.Migration):
                 to=settings.AUTH_USER_MODEL,
             ),
         ),
-        migrations.AddField(
-            model_name="cuota",
-            name="pago",
-            field=models.ForeignKey(
-                on_delete=django.db.models.deletion.CASCADE,
-                related_name="cuotas",
-                to="payments.pago",
-            ),
-        ),
+        # The Cuota model was removed from the current codebase; the
+        # historical migration that added a FK from Cuota to Pago is skipped
+        # here to avoid referencing a non-existent model.
         migrations.AddField(
             model_name="comprobantedescarga",
             name="pago",
@@ -53,8 +49,5 @@ class Migration(migrations.Migration):
                 to="payments.pago",
             ),
         ),
-        migrations.AlterUniqueTogether(
-            name="cuota",
-            unique_together={("pago", "numero")},
-        ),
+        # AlterUniqueTogether on Cuota removed because Cuota no longer exists.
     ]

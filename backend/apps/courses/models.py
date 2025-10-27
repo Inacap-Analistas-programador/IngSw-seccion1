@@ -15,11 +15,13 @@ TODO: El equipo C debe completar:
 - Integración con sistema de notificaciones
 """
 
-from django.db import models
-from django.contrib.auth import get_user_model
-from django.core.validators import MinValueValidator
-from django.core.exceptions import ValidationError
 from decimal import Decimal
+from django.utils import timezone
+
+from django.contrib.auth import get_user_model
+from django.core.exceptions import ValidationError
+from django.core.validators import MinValueValidator
+from django.db import models
 
 User = get_user_model()
 
@@ -43,10 +45,16 @@ class Category(models.Model):
     )
     is_active = models.BooleanField(default=True, verbose_name="Categoría activa")
 
-    # TODO: El equipo debe agregar campos adicionales
-    # color = models.CharField(max_length=7, default='#007bff')  # Color hex para UI
-    # icon = models.CharField(max_length=50, blank=True)  # Icono para UI
-    # order = models.PositiveIntegerField(default=0)  # Orden de visualización
+    # Campos adicionales para UI
+    color = models.CharField(
+        max_length=7, default="#007bff", verbose_name="Color para interfaz"
+    )
+    icon = models.CharField(
+        max_length=50, blank=True, verbose_name="Ícono representativo"
+    )
+    order = models.PositiveIntegerField(
+        default=0, verbose_name="Orden de visualización"
+    )
 
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -140,14 +148,18 @@ class Course(models.Model):
     )
 
     # Fechas importantes del curso
-    # Hacer las fechas opcionales en tests y entornos de desarrollo para evitar
-    # errores de integridad cuando los datos de prueba no proporcionan fechas.
-    start_date = models.DateField(null=True, blank=True, verbose_name="Fecha de inicio")
-    end_date = models.DateField(null=True, blank=True, verbose_name="Fecha de fin")
-
-    # TODO: El equipo debe agregar fechas de inscripción
-    # enrollment_start = models.DateTimeField(null=True, blank=True)
-    # enrollment_end = models.DateTimeField(null=True, blank=True)
+    start_date = models.DateField(
+        verbose_name="Fecha de inicio", default=timezone.localdate
+    )
+    end_date = models.DateField(
+        verbose_name="Fecha de fin", default=timezone.localdate
+    )
+    enrollment_start = models.DateTimeField(
+        null=True, blank=True, verbose_name="Inicio de inscripción"
+    )
+    enrollment_end = models.DateTimeField(
+        null=True, blank=True, verbose_name="Fin de inscripción"
+    )
 
     # Auditoría
     created_by = models.ForeignKey(
@@ -157,12 +169,18 @@ class Course(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
     def clean(self):
-        """TODO: Implementar validaciones de fechas y reglas de negocio"""
-        if self.start_date and self.end_date:
-            if self.start_date > self.end_date:
-                raise ValidationError(
-                    "La fecha de inicio debe ser anterior a la fecha de fin"
-                )
+        if self.start_date and self.end_date and self.start_date > self.end_date:
+            raise ValidationError(
+                "La fecha de inicio debe ser anterior a la fecha de fin."
+            )
+        if (
+            self.enrollment_start
+            and self.enrollment_end
+            and self.enrollment_start > self.enrollment_end
+        ):
+            raise ValidationError(
+                "La fecha de inicio de inscripción debe ser anterior a la fecha de fin."
+            )
 
     @property
     def available_slots(self):
@@ -217,11 +235,15 @@ class CourseTeam(models.Model):
     assigned_at = models.DateTimeField(
         auto_now_add=True, verbose_name="Fecha de asignación"
     )
-
-    # TODO: El equipo debe agregar más campos
-    # is_active = models.BooleanField(default=True)
-    # assigned_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
-    # notes = models.TextField(blank=True)
+    assigned_by = models.ForeignKey(
+        User,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="assigned_teams",
+    )
+    notes = models.TextField(blank=True, verbose_name="Notas adicionales")
+    is_active = models.BooleanField(default=True, verbose_name="Activo en el curso")
 
     class Meta:
         db_table = "course_teams"

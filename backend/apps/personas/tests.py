@@ -1,7 +1,9 @@
 from django.urls import reverse
-from rest_framework.test import APITestCase
 from rest_framework import status
+from rest_framework.test import APITestCase
+
 from apps.personas.models import Persona
+
 
 class PersonaAPITests(APITestCase):
     def setUp(self):
@@ -15,13 +17,13 @@ class PersonaAPITests(APITestCase):
         )
 
     def test_list_personas(self):
-        url = reverse('persona-list')
+        url = reverse("persona-list")
         response = self.client.get(url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertTrue(len(response.data) >= 1)
 
     def test_create_persona(self):
-        url = reverse('persona-list')
+        url = reverse("persona-list")
         data = {
             "nombres": "Nuevo Usuario",
             "email": "nuevo@example.com",
@@ -30,25 +32,25 @@ class PersonaAPITests(APITestCase):
             "telefono": "987654321",
             "vigente": True,
         }
-        response = self.client.post(url, data, format='json')
+        response = self.client.post(url, data, format="json")
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.assertEqual(response.data["nombres"], "Nuevo Usuario")
 
     def test_retrieve_persona(self):
-        url = reverse('persona-detail', args=[self.persona.id])
+        url = reverse("persona-detail", args=[self.persona.id])
         response = self.client.get(url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data["email"], "test@example.com")
 
     def test_update_persona(self):
-        url = reverse('persona-detail', args=[self.persona.id])
+        url = reverse("persona-detail", args=[self.persona.id])
         data = {"nombres": "Usuario Actualizado"}
-        response = self.client.patch(url, data, format='json')
+        response = self.client.patch(url, data, format="json")
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data["nombres"], "Usuario Actualizado")
 
     def test_delete_persona(self):
-        url = reverse('persona-detail', args=[self.persona.id])
+        url = reverse("persona-detail", args=[self.persona.id])
         response = self.client.delete(url)
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
         self.assertFalse(Persona.objects.filter(id=self.persona.id).exists())

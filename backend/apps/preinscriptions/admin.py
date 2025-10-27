@@ -1,12 +1,12 @@
 from django.contrib import admin
 from django.utils.html import format_html
 from django.utils.safestring import mark_safe
+
 from .models import Preinscripcion
 
 
 @admin.register(Preinscripcion)
 class PreinscripcionAdmin(admin.ModelAdmin):
-
     list_display = (
         "id",
         "course",
@@ -99,14 +99,18 @@ class PreinscripcionAdmin(admin.ModelAdmin):
     # Acciones masivas
     def approve_preinscriptions(self, request, queryset):
         """Aprobar preinscripciones seleccionadas"""
-        updated = queryset.filter(estado__in=("ENVIADA", "VALIDACION")).update(estado="APROBADA")
+        updated = queryset.filter(estado__in=("ENVIADA", "VALIDACION")).update(
+            estado="APROBADA"
+        )
         self.message_user(request, f"{updated} preinscripciones aprobadas.")
 
     approve_preinscriptions.short_description = "Aprobar preinscripciones seleccionadas"
 
     def reject_preinscriptions(self, request, queryset):
         """Rechazar preinscripciones seleccionadas"""
-        updated = queryset.filter(estado__in=("ENVIADA", "VALIDACION")).update(estado="RECHAZADA")
+        updated = queryset.filter(estado__in=("ENVIADA", "VALIDACION")).update(
+            estado="RECHAZADA"
+        )
         self.message_user(request, f"{updated} preinscripciones rechazadas.")
 
     reject_preinscriptions.short_description = "Rechazar preinscripciones seleccionadas"

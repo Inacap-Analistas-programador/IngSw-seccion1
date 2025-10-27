@@ -1,7 +1,8 @@
 # c:\Users\the_8\Desktop\boysxou\ProyectoBoyscout\IngSw-seccion1\backend\apps\payments\filters.py
 
 import django_filters
-from .models import PagoPersona, ComprobantePago
+
+from .models import ComprobantePago, PagoPersona
 
 
 class PagoPersonaFilter(django_filters.FilterSet):

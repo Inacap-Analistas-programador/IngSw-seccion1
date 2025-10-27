@@ -4,15 +4,19 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('preinscriptions', '0002_add_grupo'),
+        ("preinscriptions", "0002_add_grupo"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='preinscripcion',
-            name='grupo',
-            field=models.CharField(blank=True, default='', max_length=100, verbose_name='Grupo Scout (texto libre)'),
+            model_name="preinscripcion",
+            name="grupo",
+            field=models.CharField(
+                blank=True,
+                default="",
+                max_length=100,
+                verbose_name="Grupo Scout (texto libre)",
+            ),
         ),
     ]

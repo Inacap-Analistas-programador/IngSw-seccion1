@@ -17,15 +17,13 @@ Estructura de URLs:
 En desarrollo también sirve archivos estáticos y de media.
 """
 
-from django.contrib import admin
-from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
-from rest_framework_simplejwt.views import (
-    TokenObtainPairView,
-    TokenRefreshView,
-)
-from apps.personas.views import PersonaSearchView
+from django.contrib import admin
+from django.urls import include, path
+from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
+
+from apps.authentication.views import PersonSearchView
 
 # Patrones de URL principales del proyecto
 urlpatterns = [

@@ -7,11 +7,12 @@ Este script ejecuta toda la suite de tests del backend con diferentes opciones.
 Uso: python run_tests.py [options]
 """
 
-import os
-import sys
-import subprocess
 import argparse
+import os
+import subprocess
+import sys
 from pathlib import Path
+
 
 # Colores para la salida
 class Colors:
@@ -99,10 +100,10 @@ def run_tests(args):
 
 def run_linting():
     """Ejecutar herramientas de calidad de código."""
+    # Simplificamos la comprobación de calidad para usar únicamente Black
+    # (el equipo decidió usar una sola herramienta de formateo).
     commands = [
         (['python', '-m', 'black', '--check', '.'], "Verificando formato con Black"),
-        (['python', '-m', 'isort', '--check-only', '.'], "Verificando imports con isort"),
-        (['python', '-m', 'flake8', '.'], "Analizando código con Flake8"),
     ]
     
     all_passed = True

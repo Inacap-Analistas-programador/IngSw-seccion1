@@ -1,6 +1,7 @@
 from django.contrib import admin
 from django.utils.html import format_html
 from django.utils.safestring import mark_safe
+
 from .models import FileUpload
 
 
@@ -63,7 +64,9 @@ class FileUploadAdmin(admin.ModelAdmin):
             # Ver archivo si es imagen
             # existing model uses 'tipo' and 'mime_type' / original_name to infer
             file_type = getattr(obj, "tipo", "").lower()
-            if file_type in ["imagen", "image", "pdf"] or (getattr(obj, "mime_type", "") or "").startswith("image"):
+            if file_type in ["imagen", "image", "pdf"] or (
+                getattr(obj, "mime_type", "") or ""
+            ).startswith("image"):
                 actions.append(
                     f'<a href="{obj.file.url}" target="_blank" title="Ver archivo" style="text-decoration:none;">👁️</a>'
                 )
@@ -73,7 +76,11 @@ class FileUploadAdmin(admin.ModelAdmin):
     file_actions.short_description = "Acciones"
 
     def tipo_display(self, obj):
-        return obj.get_tipo_display() if hasattr(obj, "get_tipo_display") else getattr(obj, "tipo", "-")
+        return (
+            obj.get_tipo_display()
+            if hasattr(obj, "get_tipo_display")
+            else getattr(obj, "tipo", "-")
+        )
 
     tipo_display.short_description = "Tipo"
 

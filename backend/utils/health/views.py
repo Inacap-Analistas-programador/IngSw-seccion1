@@ -8,14 +8,15 @@ Endpoints estándar para verificar el estado de la aplicación:
 Basado en las mejores prácticas de Kubernetes health checks.
 """
 
-from django.http import JsonResponse
-from django.views.decorators.http import require_http_methods
-from django.views.decorators.csrf import csrf_exempt
-from django.db import connection
-from django.core.cache import cache
-from django.conf import settings
-import time
 import logging
+import time
+
+from django.conf import settings
+from django.core.cache import cache
+from django.db import connection
+from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
+from django.views.decorators.http import require_http_methods
 
 logger = logging.getLogger(__name__)
 

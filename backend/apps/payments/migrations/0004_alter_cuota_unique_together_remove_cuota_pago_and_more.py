@@ -11,14 +11,9 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
-        migrations.AlterUniqueTogether(
-            name="cuota",
-            unique_together=None,
-        ),
-        migrations.RemoveField(
-            model_name="cuota",
-            name="pago",
-        ),
+        # Cuota-related alter/remove operations removed because Cuota was
+        # previously removed from the models. These were kept historically
+        # but are skipped here to avoid referencing non-existent models.
         migrations.RemoveField(
             model_name="pago",
             name="preinscripcion",
@@ -73,9 +68,7 @@ class Migration(migrations.Migration):
         migrations.DeleteModel(
             name="ComprobanteDescarga",
         ),
-        migrations.DeleteModel(
-            name="Cuota",
-        ),
+        # Historical deletion of Cuota skipped; model no longer exists.
         migrations.DeleteModel(
             name="Pago",
         ),

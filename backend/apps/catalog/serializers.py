@@ -3,18 +3,19 @@ Serializers para los catálogos maestros de SGICS
 """
 
 from rest_framework import serializers
+
 from .models import (
-    Region,
-    Provincia,
     Comuna,
-    Zona,
     Distrito,
-    GrupoScout,
-    Rama,
-    TipoCurso,
-    Nivel,
     EstadoCivil,
+    GrupoScout,
+    Nivel,
+    Provincia,
+    Rama,
+    Region,
     TipoAlimentacion,
+    TipoCurso,
+    Zona,
 )
 
 
