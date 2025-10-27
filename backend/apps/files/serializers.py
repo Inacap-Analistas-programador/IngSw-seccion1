@@ -67,12 +67,22 @@ class FileUploadSerializer(serializers.ModelSerializer):
 class FileUploadCreateSerializer(serializers.ModelSerializer):
     """Serializer para subir archivos"""
 
+    # Algunos tests y clientes usan el nombre de campo en español 'archivo'.
+    # Proporcionamos un alias que mapea a 'file' para compatibilidad.
+    archivo = serializers.FileField(source="file", write_only=True, required=False)
+    # Declarar 'file' explícitamente para que no sea requerido por defecto
+    file = serializers.FileField(write_only=True, required=False)
+    # 'name' puede ser omitido por el cliente; lo rellenamos desde el archivo
+    name = serializers.CharField(required=False, allow_blank=True)
+
     class Meta:
         model = FileUpload
         fields = [
             "name",
             "description",
             "file",
+            # alias usado por tests/cliente en español
+            "archivo",
             "tipo",
             "preinscripcion",
             "course",
@@ -92,7 +102,22 @@ class FileUploadCreateSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         """Crea el archivo con metadatos"""
-        file = validated_data["file"]
+        file = validated_data.get("file")
+
+        if not file:
+            # No debería ocurrir porque la validación previene esto,
+            # pero guardamos una defensiva clara.
+            raise serializers.ValidationError({"file": "No se envió ningún archivo."})
+
+        # Validación adicional del tamaño aquí por si el validador de campo
+        # no fue invocado (ej. alias 'archivo' o comportamiento del cliente).
+        max_size = 10 * 1024 * 1024  # 10MB
+        if getattr(file, "size", 0) > max_size:
+            raise serializers.ValidationError("El archivo es demasiado grande. Máximo permitido: 10MB")
+
+        # Si no se proporcionó un nombre legible, usar el nombre original del archivo
+        if not validated_data.get("name"):
+            validated_data["name"] = getattr(file, "name", "uploaded_file")
 
         # Extraer metadatos del archivo
         validated_data["original_name"] = file.name

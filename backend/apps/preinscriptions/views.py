@@ -42,8 +42,14 @@ class PreinscripcionViewSet(viewsets.ModelViewSet):
     ordering_fields = ["created_at", "updated_at", "validated_at", "confirmado_at"]
     ordering = ["-created_at"]
 
-    def get_serializer_class(self):
-        """Usar serializer apropiado según la acción"""
+    def get_serializer_class(self):  # type: ignore[override]
+        """Usar serializer apropiado según la acción
+
+        Pylance sometimes reports an incompatible override against the
+        REST framework stubs. The method is intentionally returning a
+        serializer class depending on the action; silence the type
+        checker for this override.
+        """
         if self.action == "list":
             return PreinscripcionListSerializer
         elif self.action == "create":
@@ -64,10 +70,12 @@ class PreinscripcionViewSet(viewsets.ModelViewSet):
             motivo_rechazo = serializer.validated_data.get("motivo_rechazo", "")
 
             try:
+                # el modelo Preinscripcion usa 'user_ejecutor' como arg para quien
+                # procesa la transición; pasar el usuario correcto.
                 preinscripcion.cambiar_estado(
                     nuevo_estado=nuevo_estado,
-                    processed_by=request.user,
-                    observaciones=observaciones,
+                    user_ejecutor=request.user,
+                    observacion=observaciones,
                 )
 
                 if motivo_rechazo:

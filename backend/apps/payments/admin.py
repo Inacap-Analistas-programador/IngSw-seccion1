@@ -8,63 +8,69 @@ from .models import PagoPersona
 @admin.register(PagoPersona)
 class PagoPersonaAdmin(admin.ModelAdmin):
     list_display = (
-        "id",
+        "PAP_ID",
         "persona_info",
-        "course",
+        "course_info",
         "amount_formatted",
-        "payment_method",
-        "status",
-        "payment_date",
+        "PAP_TIPO",
+        "pap_fecha_hora",
         "status_icons",
     )
-    list_filter = ("status", "payment_method", "payment_date", "created_at")
-    search_fields = (
-        "persona__first_name",
-        "persona__last_name",
-        "persona__rut",
-        "course__title",
-        "transaction_id",
-    )
-    ordering = ("-created_at",)
-    date_hierarchy = "payment_date"
+    list_filter = ("PAP_TIPO", "PAP_FECHA_HORA", "USU_ID")
+    search_fields = ("PER_ID", "CUR_ID", "USU_ID__username", "PAP_OBSERVACION", "PAP_ID")
+    ordering = ("-PAP_FECHA_HORA",)
+    date_hierarchy = "PAP_FECHA_HORA"
     list_per_page = 25
 
     fieldsets = (
         (
             "Información del Pago",
-            {"fields": ("persona", "course", "amount", "payment_method")},
+            {"fields": ("PER_ID", "CUR_ID", "PAP_VALOR", "PAP_TIPO")},
         ),
         (
             "Estado y Transacción",
-            {"fields": ("status", "transaction_id", "payment_date", "notes")},
+            {"fields": ("PAP_OBSERVACION",)},
         ),
         (
             "Fechas del Sistema",
-            {"fields": ("created_at", "updated_at"), "classes": ("collapse",)},
+            {"fields": ("PAP_FECHA_HORA",), "classes": ("collapse",)},
         ),
     )
 
-    readonly_fields = ("created_at", "updated_at")
+    readonly_fields = ("PAP_FECHA_HORA",)
 
     def persona_info(self, obj):
         """Información de la persona que realizó el pago"""
-        if obj.persona:
-            return format_html(
-                '<div><strong>{}</strong><br><small style="color: #666;">RUT: {}</small></div>',
-                obj.persona.get_full_name()
-                if hasattr(obj.persona, "get_full_name")
-                else f"{obj.persona.first_name} {obj.persona.last_name}",
-                obj.persona.rut or "Sin RUT",
-            )
-        return "-"
+        # The model stores PER_ID (integer). Try resolving a Persona model instance if available.
+        try:
+            from django.apps import apps as django_apps
+
+            Persona = django_apps.get_model("personas", "Persona")
+            persona = Persona.objects.filter(id=getattr(obj, "PER_ID", None)).first()
+            if persona:
+                name = getattr(persona, "get_full_name", lambda: f"{getattr(persona, 'first_name', '')} {getattr(persona, 'last_name', '')}")()
+                rut = getattr(persona, "rut", "")
+                return format_html(
+                    '<div><strong>{}</strong><br><small style="color: #666;">RUT: {}</small></div>',
+                    name,
+                    rut or "Sin RUT",
+                )
+        except Exception:
+            pass
+
+        # Fallback to showing PER_ID
+        per = getattr(obj, "PER_ID", None)
+        return f"Persona ID: {per}" if per is not None else "-"
 
     persona_info.short_description = "Participante"
 
     def amount_formatted(self, obj):
         """Monto formateado"""
-        return format_html(
-            '<strong style="color: #059669;">${:,.0f}</strong>', obj.amount
-        )
+        amount = getattr(obj, "PAP_VALOR", None)
+        try:
+            return format_html('<strong style="color: #059669;">${:,.0f}</strong>', amount)
+        except Exception:
+            return str(amount) or "-"
 
     amount_formatted.short_description = "Monto"
 
@@ -73,54 +79,49 @@ class PagoPersonaAdmin(admin.ModelAdmin):
         status_info = []
 
         # Estado del pago
-        if obj.status == "pending":
-            status_info.append(
-                '<span style="color: #f59e0b;" title="Pago pendiente">⏳ Pendiente</span>'
-            )
-        elif obj.status == "completed":
-            status_info.append(
-                '<span style="color: #10b981;" title="Pago completado">✅ Completado</span>'
-            )
-        elif obj.status == "failed":
-            status_info.append(
-                '<span style="color: #ef4444;" title="Pago fallido">❌ Fallido</span>'
-            )
-        elif obj.status == "refunded":
-            status_info.append(
-                '<span style="color: #3b82f6;" title="Reembolsado">↩️ Reembolsado</span>'
-            )
+        # Use PAP_TIPO to indicate Ingreso/Egreso
+        tipo = getattr(obj, "PAP_TIPO", None)
+        if tipo == 1:
+            status_info.append('<span style="color: #10b981;">✅ Ingreso</span>')
+        elif tipo == 2:
+            status_info.append('<span style="color: #ef4444;">↩️ Egreso</span>')
 
-        # Método de pago
-        if obj.payment_method == "transfer":
-            status_info.append('<span title="Transferencia">🏦 Transferencia</span>')
-        elif obj.payment_method == "cash":
-            status_info.append('<span title="Efectivo">💵 Efectivo</span>')
-        elif obj.payment_method == "card":
-            status_info.append('<span title="Tarjeta">💳 Tarjeta</span>')
+        # Show a short observation if present
+        obs = getattr(obj, "PAP_OBSERVACION", None)
+        if obs:
+            status_info.append(f"<small style=\"color:#666\">{obs[:40]}{'...' if len(obs) > 40 else ''}</small>")
 
         return format_html("<br>".join(status_info)) if status_info else "-"
 
     status_icons.short_description = "Estado y Método"
 
     def get_queryset(self, request):
-        return super().get_queryset(request).select_related("persona", "course")
+        # PER_ID and CUR_ID are integer fields; only USU_ID is a FK
+        return super().get_queryset(request).select_related("USU_ID")
 
-    # Acciones masivas
-    def make_completed(self, request, queryset):
-        """Marcar pagos como completados"""
-        updated = queryset.filter(status="pending").update(status="completed")
-        self.message_user(request, f"{updated} pagos marcados como completados.")
+    def course_info(self, obj):
+        """Resolve a course name from CUR_ID if possible"""
+        try:
+            from django.apps import apps as django_apps
 
-    make_completed.short_description = "Marcar como completados"
+            Course = django_apps.get_model("courses", "Course")
+            course = Course.objects.filter(id=getattr(obj, "CUR_ID", None)).first()
+            if course:
+                return getattr(course, "title", str(course))
+        except Exception:
+            pass
+        cur = getattr(obj, "CUR_ID", None)
+        return f"Curso ID: {cur}" if cur is not None else "-"
 
-    def make_failed(self, request, queryset):
-        """Marcar pagos como fallidos"""
-        updated = queryset.filter(status="pending").update(status="failed")
-        self.message_user(request, f"{updated} pagos marcados como fallidos.")
+    def pap_fecha_hora(self, obj):
+        dt = getattr(obj, "PAP_FECHA_HORA", None)
+        return dt if dt is not None else "-"
 
-    make_failed.short_description = "Marcar como fallidos"
+    course_info.short_description = "Curso"
+    pap_fecha_hora.short_description = "Fecha/Hora"
 
-    actions = ["make_completed", "make_failed"]
+    # No bulk status actions are defined because this model uses legacy field names (PAP_TIPO, etc.)
+    actions = []
 
     def changelist_view(self, request, extra_context=None):
         """Agregar estadísticas al changelist"""
@@ -128,12 +129,9 @@ class PagoPersonaAdmin(admin.ModelAdmin):
 
         # Calcular estadísticas
         queryset = self.get_queryset(request)
-        total_amount = (
-            queryset.filter(status="completed").aggregate(total=Sum("amount"))["total"]
-            or 0
-        )
-        pending_count = queryset.filter(status="pending").count()
-        completed_count = queryset.filter(status="completed").count()
+        total_amount = queryset.aggregate(total=Sum("PAP_VALOR"))["total"] or 0
+        pending_count = queryset.filter(PAP_TIPO=1).count()
+        completed_count = queryset.filter(PAP_TIPO=2).count()
 
         extra_context["total_amount"] = total_amount
         extra_context["pending_count"] = pending_count
