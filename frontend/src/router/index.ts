@@ -86,7 +86,13 @@ const routes = [
     name: "Login",
     component: () => import("../views/LoginView.vue"),
   },
-  // Add other routes here
+  // Gestión de personas (requiere autenticación)
+  {
+    path: "/personas",
+    name: "Personas",
+    component: () => import("../views/PersonasView.vue"),
+    meta: { requiresAuth: true },
+  },
 ];
 
 // Instancia del router con historial basado en HTML5

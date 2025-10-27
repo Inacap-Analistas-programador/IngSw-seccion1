@@ -12,7 +12,8 @@ LABEL description="Sistema de Gestión Integral de Cursos Scout - Backend API"
 ENV PYTHONDONTWRITEBYTECODE=1 \
     PYTHONUNBUFFERED=1 \
     PIP_NO_CACHE_DIR=1 \
-    PIP_DISABLE_PIP_VERSION_CHECK=1
+    PIP_DISABLE_PIP_VERSION_CHECK=1 \
+    DJANGO_SETTINGS_MODULE=scouts_platform.settings.production
 
 # Crear usuario no-root para seguridad
 RUN addgroup --system django && \
@@ -32,12 +33,14 @@ WORKDIR /app
 # Copiar archivo de dependencias
 COPY requirements.txt /app/
 
+
 # Instalar dependencias de Python
 RUN pip install --no-cache-dir -r requirements.txt
 
+
 # Copiar código de la aplicación
 COPY . /app/
-
+RUN python manage.py collectstatic --noinput
 # Crear directorio para logs
 RUN mkdir -p /app/logs && \
     chown -R django:django /app

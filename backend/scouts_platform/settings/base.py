@@ -51,6 +51,7 @@ LOCAL_APPS = [
     "apps.payments",  # Módulo de gestión de pagos
     "apps.files",  # Módulo de gestión de archivos
     "apps.courses",  # Módulo de gestión de cursos
+    "apps.personas",  # Módulo de gestión de personas
 ]
 
 # Lista completa de aplicaciones instaladas
@@ -61,6 +62,7 @@ INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS
 MIDDLEWARE = [
     "corsheaders.middleware.CorsMiddleware",  # CORS - DEBE ir PRIMERO
     "django.middleware.security.SecurityMiddleware",  # Headers de seguridad
+    "whitenoise.middleware.WhiteNoiseMiddleware",  # Servir archivos estáticos en producción
     "django.contrib.sessions.middleware.SessionMiddleware",  # Manejo de sesiones
     "django.middleware.common.CommonMiddleware",  # Funcionalidades comunes
     "django.middleware.csrf.CsrfViewMiddleware",  # Protección CSRF

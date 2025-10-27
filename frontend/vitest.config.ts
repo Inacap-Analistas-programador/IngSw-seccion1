@@ -1,21 +1,35 @@
 /// <reference types="vitest" />
 import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
-import { resolve } from 'path'
+// import { resolve } from 'path' // No usar en ESM
 
 export default defineConfig({
   plugins: [vue()],
   resolve: {
     alias: {
-      '@': resolve(__dirname, 'src'),
+      '@': new URL('./src', import.meta.url).pathname,
     },
   },
   test: {
+    // Mockear archivos CSS usando styleMock.js
+    moduleNameMapper: {
+      '\\.css$': './src/__mocks__/styleMock.js',
+    },
+    mock: {
+      // Ignorar todos los imports de CSS
+      '\\.css$': {}
+    },
+    // ...sin viteConfig, Vitest toma plugins de la raíz
     // Configuración de Vitest para testing del frontend
     globals: true,
     environment: 'jsdom',
     setupFiles: ['./src/test-setup.ts'],
     
+    // Ignorar archivos CSS en los tests
+    testTransformMode: {
+      web: ['.vue'],
+      ssr: ['.ts']
+    },
     // Coverage configuration
     coverage: {
       provider: 'v8',

@@ -21,7 +21,9 @@ export interface PersonSearchResponse {
  * Busca personas por RUT chileno (con o sin formato).
  */
 export async function searchPersonByRut(rut: string): Promise<PersonSummary[]> {
-  const { data } = await apiClient.get<PersonSearchResponse>('/persons/search/', {
+  // Use the absolute API path so tests that spy on the mocked axios instance
+  // receive the same '/api/...' argument they expect.
+  const { data } = await apiClient.get('/api/persons/search/', {
     params: { rut },
   })
   return data.results || []

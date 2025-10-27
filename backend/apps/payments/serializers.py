@@ -161,6 +161,24 @@ class ComprobantePagoSerializer(serializers.ModelSerializer):
 
         return comprobante
 
+    def validate_pagos_ids(self, value):
+        """Validación temprana de la lista de IDs de pagos para lanzar errores en is_valid()."""
+        if not value:
+            raise ValidationError("Esta lista no puede estar vacía.")
+
+        if len(value) != len(set(value)):
+            raise ValidationError(
+                "Uno o más IDs de pago no son válidos o están duplicados."
+            )
+
+        pagos_count = PagoPersona.objects.filter(pk__in=value).count()
+        if pagos_count != len(value):
+            raise ValidationError(
+                "Uno o más IDs de pago no son válidos o están duplicados."
+            )
+
+        return value
+
 
 class PagoComprobanteSerializer(serializers.ModelSerializer):
     """

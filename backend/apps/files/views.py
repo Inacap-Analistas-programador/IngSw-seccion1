@@ -3,6 +3,8 @@ Views para el módulo de archivos
 """
 
 from rest_framework import viewsets, status
+from rest_framework.permissions import IsAdminUser, IsAuthenticated
+from rest_framework.exceptions import PermissionDenied
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from django.http import FileResponse, Http404
@@ -27,12 +29,27 @@ class FileUploadViewSet(viewsets.ModelViewSet):
     ordering_fields = ["uploaded_at", "name", "file_size"]
     ordering = ["-uploaded_at"]
 
-    def get_serializer_class(self):
+    def get_serializer_class(self):  # type: ignore[override]
         if self.action == "create":
             return FileUploadCreateSerializer
         return FileUploadSerializer
 
+    def get_permissions(self):
+        """Permisos por acción: solo staff puede listar todos los archivos; otras
+        acciones requieren al menos autenticación."""
+        if self.action == "list":
+            permission_classes = [IsAdminUser]
+        else:
+            permission_classes = [IsAuthenticated]
+        return [permission() for permission in permission_classes]
+
     def perform_create(self, serializer):
+        # Si se asocia una preinscripción, asegurar que pertenece al usuario que
+        # crea el archivo (a menos que sea staff).
+        preinscription = serializer.validated_data.get("preinscripcion")
+        if preinscription and preinscription.user != self.request.user and not self.request.user.is_staff:
+            raise PermissionDenied("No puede subir archivos a la preinscripción de otro usuario.")
+
         serializer.save(uploaded_by=self.request.user)
 
     @action(detail=True, methods=["get"])

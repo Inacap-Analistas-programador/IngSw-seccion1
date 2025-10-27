@@ -33,8 +33,18 @@ def api_client():
 
 @pytest.fixture
 def create_user(db):
-    def _create_user(username="testuser", password="testpass", is_staff=False):
-        return User.objects.create_user(username=username, password=password, is_staff=is_staff)
+    counter = {"n": 0}
+
+    def _create_user(username=None, password="testpass", is_staff=False):
+        # Si no se proporciona username, generar uno único por llamada para evitar
+        # colisiones de unicidad cuando múltiples fixtures usan el valor por defecto.
+        if username is None:
+            counter["n"] += 1
+            username_local = f"testuser{counter['n']}"
+        else:
+            username_local = username
+        return User.objects.create_user(username=username_local, password=password, is_staff=is_staff)
+
     return _create_user
 
 
@@ -616,14 +626,7 @@ class TestPagoCambioPersonaAPI:
         response = client.delete(url)
         assert response.status_code == status.HTTP_204_NO_CONTENT
         assert PagoCambioPersona.objects.count() == 0
-
-
-
-
-        assert response.status_code == status.HTTP_201_CREATED
-        assert response.data['PAP_VALOR'] == '100.00'
-        assert response.data['USU_ID'] == admin.id
-        assert PagoPersona.objects.count() == 1
+        
 
     def test_filter_pagos_by_date(self, admin_client, create_pago_persona):
         client, admin = admin_client

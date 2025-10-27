@@ -18,15 +18,14 @@ describe('payments service', () => {
       group: 'grupo-a',
       count: 1,
       total_amount: '1000',
-      breakdown: { pagado: 1 },
-      items: [{ id: 1, preinscripcion: 1, monto: '1000', medio: 'transferencia', referencia: '', notas: '', estado: 'pagado', fecha_pago: '2025-01-01', created_at: '2025-01-01', updated_at: '2025-01-01' }]
+      items: [{ PAP_ID: 1, PER_ID: 1, CUR_ID: 2, USU_ID: 3, PAP_VALOR: '1000', PAP_OBSERVACION: '' }]
     }
     vi.spyOn(mocked, 'get').mockResolvedValueOnce({ data: responseData })
 
     const data = await getPaymentsByGroup('grupo-a', 2)
 
-    expect(mocked.get).toHaveBeenCalledWith('/api/payments/by-group/', { params: { group: 'grupo-a', course: 2 }, signal: undefined })
+    expect(mocked.get).toHaveBeenCalledWith('/api/payments/pagos-persona/by-group/', { params: { group: 'grupo-a', course: 2 }, signal: undefined })
     expect(data.count).toBe(1)
-    expect(data.items[0].estado).toBe('pagado')
+    expect(data.items[0].PAP_VALOR).toBe('1000')
   })
 })

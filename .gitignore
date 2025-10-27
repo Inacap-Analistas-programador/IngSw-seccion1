@@ -224,3 +224,8 @@ backend/tests/test_authentication.py
 backend/tests/test_health.py
 backend/tests/test_person_search.py
 backend/apps/payments/tests/test_payments_actions.py
+*guia pr.md
+*SECRETS_SETUP.md
+
+# Ignore generated chronological copies of markdown files (created by scripts/ordenar_docs_cronologico.py)
+docs/archivo-cronologico/

@@ -72,13 +72,26 @@ const isFormValid = computed(() => {
 const submit = async () => {
   if (!isFormValid.value) return
 
-  await authStore.login({
-    username: form.value.username,
-    password: form.value.password
-  })
+  try {
+    await authStore.login({
+      username: form.value.username,
+      password: form.value.password,
+    })
 
-  // Redirigir al dashboard después del login exitoso
-  const redirect = (router.currentRoute.value.query.redirect as string) || '/dashboard'
-  router.push(redirect)
+    // Redirigir al dashboard después del login exitoso
+    const redirect = (router.currentRoute.value.query.redirect as string) || '/dashboard'
+    router.push(redirect)
+  } catch (err: any) {
+    // Mostrar error amigable (guárdalo en el store para que la UI lo muestre)
+    const message = authStore.error || (err?.message || 'Error de autenticación')
+    try {
+      // authStore.error es un ref expuesto por Pinia; asignar actualizará su valor
+      // en la UI
+  // @ts-expect-error - Pinia store exposes `error` as a ref in runtime
+  authStore.error = message
+    } catch {
+      // no-op
+    }
+  }
 }
 </script>

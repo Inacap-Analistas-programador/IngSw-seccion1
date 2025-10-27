@@ -1,3 +1,6 @@
+// Mock explícito para los archivos CSS de Vuetify que causan error en los tests
+// Mock global para todos los archivos CSS
+// Mock de archivos CSS para evitar errores de extensión desconocida en tests
 /**
  * Configuración de setup para tests del frontend SGICS
  * Sistema de Gestión Integral de Cursos Scout
@@ -9,9 +12,13 @@
 import { vi } from 'vitest'
 import { config } from '@vue/test-utils'
 import { createPinia } from 'pinia'
+import { createVuetify } from 'vuetify'
+import * as components from 'vuetify/components'
+import * as directives from 'vuetify/directives'
 
 // Configurar Vue Test Utils globalmente
-config.global.plugins = [createPinia()]
+const vuetify = createVuetify({ components, directives })
+config.global.plugins = [createPinia(), vuetify]
 
 // Mock de Vue Router
 vi.mock('vue-router', () => ({

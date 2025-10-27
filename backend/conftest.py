@@ -1,4 +1,25 @@
+import sys
 import pytest
+
+
+if "tests" in sys.modules:
+    mod = sys.modules.get("tests")
+    try:
+        mod_file = getattr(mod, "__file__", None) or getattr(mod, "__path__", None)
+        if mod_file and "\\backend\\tests" in str(mod_file):
+            del sys.modules["tests"]
+    except Exception:
+        pass
+try:
+    if "tests" not in sys.modules:
+        import types, os
+
+        shim_path = os.path.join(os.path.dirname(__file__), "tests.py")
+        shim = types.ModuleType("tests")
+        shim.__file__ = shim_path
+        sys.modules["tests"] = shim
+except Exception:
+    pass
 from rest_framework.test import APIClient
 from django.contrib.auth import get_user_model
 

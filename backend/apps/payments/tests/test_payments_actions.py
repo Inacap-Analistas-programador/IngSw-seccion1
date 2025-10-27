@@ -7,7 +7,7 @@ from rest_framework import status
 
 from apps.courses.models import Course
 from apps.preinscriptions.models import Preinscripcion
-from apps.payments.models import Pago, Cuota
+from apps.payments.models import PagoPersona
 
 
 User = get_user_model()
@@ -45,61 +45,42 @@ class PaymentsActionsAPITests(APITestCase):
         self.pre_borrador = Preinscripcion.objects.create(
             user=self.user, course=self.course2, estado=Preinscripcion.BORRADOR, grupo='Grupo Uno'
         )
-        self.pago = Pago.objects.create(
-            preinscripcion=self.pre_aprobada, monto=500, medio='TRANSFERENCIA', estado='PENDIENTE'
+        # Create a PagoPersona according to the canonical model (Camilo)
+        self.pago = PagoPersona.objects.create(
+            PER_ID=self.pre_aprobada.user.id,
+            CUR_ID=self.course.id,
+            USU_ID=self.user,
+            PAP_VALOR=500,
         )
         # Another user's payment
         other_pre = Preinscripcion.objects.create(
             user=self.other, course=self.course, estado=Preinscripcion.APROBADA, grupo='Grupo Dos'
         )
-        Pago.objects.create(preinscripcion=other_pre, monto=300, medio='TRANSFERENCIA', estado='PENDIENTE')
+        PagoPersona.objects.create(PER_ID=other_pre.user.id, CUR_ID=self.course.id, USU_ID=self.other, PAP_VALOR=300)
 
     def test_mis_pagos_returns_only_current_user(self):
-        url = reverse('payments:payments-mis-pagos')
+        url = reverse('payments:pago-persona-mis-pagos')
         resp = self.client.get(url)
         self.assertEqual(resp.status_code, status.HTTP_200_OK)
         # Only one payment for self.user
         self.assertEqual(len(resp.data), 1)
-        self.assertEqual(resp.data[0]['preinscripcion'], self.pre_aprobada.id)
+        self.assertEqual(resp.data[0]['PER_ID'], self.pre_aprobada.user.id)
 
-    def test_cambiar_estado_invalid_rejected(self):
-        url = reverse('payments:payments-cambiar-estado', args=[self.pago.id])
-        resp = self.client.patch(url, data={'estado': 'NO_EXISTE'}, format='json')
-        self.assertEqual(resp.status_code, status.HTTP_400_BAD_REQUEST)
+    # Note: cambiar_estado and 'estado' field belong to legacy Pago model and were
+    # removed in the canonical PagoPersona model. Those tests are omitted here.
 
-    def test_cambiar_estado_valid(self):
-        url = reverse('payments:payments-cambiar-estado', args=[self.pago.id])
-        resp = self.client.patch(url, data={'estado': 'PAGADO'}, format='json')
-        self.assertEqual(resp.status_code, status.HTTP_200_OK)
-        self.assertEqual(resp.data['estado'], 'PAGADO')
-
-    def test_crear_cuotas_success_and_duplicate_rejected(self):
-        url = reverse('payments:payments-crear-cuotas', args=[self.pago.id])
-        cuotas = [
-            {'numero': 1, 'monto': 250, 'vencimiento': '2025-02-01'},
-            {'numero': 2, 'monto': 250, 'vencimiento': '2025-03-01'},
-        ]
-        resp = self.client.post(url, data={'cuotas': cuotas}, format='json')
-        self.assertEqual(resp.status_code, status.HTTP_201_CREATED)
-        self.assertEqual(len(resp.data), 2)
-        self.assertEqual(Cuota.objects.filter(pago=self.pago).count(), 2)
-
-        # Duplicate creation should fail with 400
-        resp2 = self.client.post(url, data={'cuotas': cuotas}, format='json')
-        self.assertEqual(resp2.status_code, status.HTTP_400_BAD_REQUEST)
+    # Note: Cuota model and crear-cuotas endpoint removed in canonical payments model.
 
     def test_create_payment_requires_approved_preinscripcion(self):
-        url = reverse('payments:payments-list')
+        url = reverse('payments:pago-persona-list')
         # Attempt with BORRADOR -> should be 400 by serializer validate
         bad_resp = self.client.post(
             url,
             data={
-                'preinscripcion': self.pre_borrador.id,
-                'monto': 100,
-                'medio': 'TRANSFERENCIA',
-                'referencia': '',
-                'notas': '',
-                'fecha_pago': '2025-01-10',
+                'PER_ID': self.pre_borrador.user.id,
+                'CUR_ID': self.course2.id,
+                'PAP_VALOR': 100,
+                'PAP_OBSERVACION': '',
             },
             format='json',
         )
@@ -109,14 +90,12 @@ class PaymentsActionsAPITests(APITestCase):
         ok_resp = self.client.post(
             url,
             data={
-                'preinscripcion': self.pre_aprobada.id,
-                'monto': 100,
-                'medio': 'TRANSFERENCIA',
-                'referencia': 'ABC',
-                'notas': 'ok',
-                'fecha_pago': '2025-01-10',
+                'PER_ID': self.pre_aprobada.user.id,
+                'CUR_ID': self.course.id,
+                'PAP_VALOR': 100,
+                'PAP_OBSERVACION': 'ok',
             },
             format='json',
         )
         self.assertEqual(ok_resp.status_code, status.HTTP_201_CREATED)
-        self.assertEqual(ok_resp.data['preinscripcion'], self.pre_aprobada.id)
+        self.assertEqual(ok_resp.data['PER_ID'], self.pre_aprobada.user.id)
