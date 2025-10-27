@@ -1,8 +1,8 @@
 <template>
   <router-link
     :to="to"
-    class="px-4 py-2 rounded-lg font-medium text-gray-700 hover:text-indigo-600 hover:bg-gray-100 transition-colors flex items-center space-x-2"
-    active-class="text-indigo-600 bg-indigo-50"
+    class="px-4 py-2 rounded-lg font-medium text-gray-700 hover:text-green-600 hover:bg-green-50 transition-colors flex items-center space-x-2"
+    active-class="text-green-600 bg-green-50"
   >
     <span v-if="icon" class="inline-flex">
       <svg v-if="icon === 'home'" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">

@@ -41,6 +41,37 @@ const routes = [
     // Sección protegida: pagos
     meta: { requiresAuth: true },
   },
+  // Pagos - lista, detalle y formularios
+  {
+    path: "/payments/new",
+    name: "Payments.New",
+    component: () => import("../views/payments/PaymentForm.vue"),
+    meta: { requiresAuth: true },
+  },
+  {
+    path: "/payments/cambio-titular",
+    name: "Payments.CambioTitular",
+    component: () => import("../views/payments/CambioTitularidad.vue"),
+    meta: { requiresAuth: true },
+  },
+  {
+    path: "/payments/:id",
+    name: "Payments.Detail",
+    component: () => import("../views/payments/PaymentDetailView.vue"),
+    meta: { requiresAuth: true },
+  },
+  {
+    path: "/payments/:id/edit",
+    name: "Payments.Edit",
+    component: () => import("../views/payments/PaymentForm.vue"),
+    meta: { requiresAuth: true },
+  },
+  {
+    path: "/payments/:id/comprobante",
+    name: "Payments.Comprobante",
+    component: () => import("../views/payments/ComprobanteForm.vue"),
+    meta: { requiresAuth: true },
+  },
   // Asistente de preinscripción (requiere autenticación)
   {
     path: "/preinscriptions",

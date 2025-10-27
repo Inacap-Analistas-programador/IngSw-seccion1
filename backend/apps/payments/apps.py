@@ -5,14 +5,8 @@ Este archivo se utiliza para configurar la aplicación 'payments' dentro del pro
 Permite definir metadatos y comportamientos específicos de la aplicación.
 """
 
-"""
-Módulo de Configuración de la Aplicación de Pagos.
-
-Este archivo se utiliza para configurar la aplicación 'payments' dentro del proyecto Django.
-Permite definir metadatos y comportamientos específicos de la aplicación.
-"""
-
 from django.apps import AppConfig
+
 
 class PagosConfig(AppConfig):
     """
@@ -27,6 +21,7 @@ class PagosConfig(AppConfig):
         verbose_name (str): Un nombre legible por humanos para esta aplicación,
             que se muestra en lugares como el panel de administración de Django.
     """
-    default_auto_field = 'django.db.models.BigAutoField'
-    name = 'apps.payments'
-    verbose_name = 'Gestión de Pagos'
+
+    default_auto_field = "django.db.models.BigAutoField"
+    name = "apps.payments"
+    verbose_name = "Gestión de Pagos"

@@ -114,6 +114,7 @@ class UserAdmin(BaseUserAdmin):
         return super().get_queryset(request).select_related().prefetch_related("groups")
 
 
+# Personalización del admin site
 admin.site.site_header = "SGICS - Sistema de Gestión Integral de Cursos Scout"
 admin.site.site_title = "SGICS Admin"
 admin.site.index_title = "Panel de Administración del Sistema"

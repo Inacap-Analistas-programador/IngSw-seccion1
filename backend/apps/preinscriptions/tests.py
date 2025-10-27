@@ -9,7 +9,8 @@ from .models import Preinscription
 
 @pytest.fixture
 def create_course(db):
-    return Course.objects.create(title="Curso de Liderazgo", code="CL-01")
+    # Crear el curso como ACTIVO para permitir preinscripciones en pruebas
+    return Course.objects.create(title="Curso de Liderazgo", code="CL-01", status=Course.ACTIVE)
 
 
 @pytest.mark.django_db

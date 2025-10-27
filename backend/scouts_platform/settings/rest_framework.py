@@ -117,6 +117,7 @@ class IsAdminOrCoordinator(BasePermission):
         # Implementación temporal usando is_staff
         return request.user.is_staff
 
+
 class IsTreasurerOrAdminOrReadOnly(BasePermission):
     """
     Permiso para el módulo de pagos.
@@ -125,20 +126,17 @@ class IsTreasurerOrAdminOrReadOnly(BasePermission):
     - Lectura (GET, HEAD, OPTIONS) a cualquier usuario autenticado.
     - Escritura (POST, PUT, DELETE) solo a administradores o usuarios con rol de "Tesorero".
     """
+
     def has_permission(self, request, view):
         # Si el usuario no está autenticado, no tiene permiso para nada.
         if not request.user or not request.user.is_authenticated:
             return False
 
         # Si el método es seguro (lectura), se permite.
-        if request.method in ['GET', 'HEAD', 'OPTIONS']:
+        if request.method in ["GET", "HEAD", "OPTIONS"]:
             return True
-        # Si el método es de escritura, solo se permite a administradores (is_staff)
-        # o a usuarios con el rol 'TESORERO'. El método has_role() debería estar
-        # definido en el modelo User; si no existe, se usa False por seguridad.
-        try:
-            has_treasurer_role = request.user.has_role('TESORERO')
-        except Exception:
-            has_treasurer_role = False
 
-        return request.user.is_staff or has_treasurer_role
+        # Si el método es de escritura, solo se permite a administradores (is_staff).
+        # Ahora usamos el sistema de roles: se permite si es admin/staff o si tiene el rol 'TESORERO'.
+        # El método has_role() debería estar definido en el modelo User.
+        return request.user.is_staff or request.user.has_role("TESORERO")

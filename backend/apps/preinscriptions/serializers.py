@@ -171,9 +171,11 @@ class PreinscripcionCreateSerializer(serializers.ModelSerializer):
         model = Preinscripcion
         fields = ["user", "course", "observaciones"]
 
-    def validate(self, data):
-        user = data["user"]
-        course = data["course"]
+    def validate(self, attrs):
+        # DRF's Serializer.validate signature names the parameter `attrs`.
+        # Rename from `data` to `attrs` to satisfy static checkers.
+        user = attrs["user"]
+        course = attrs["course"]
 
         # Validar que no exista preinscripción duplicada
         if Preinscripcion.objects.filter(user=user, course=course).exists():
@@ -187,7 +189,7 @@ class PreinscripcionCreateSerializer(serializers.ModelSerializer):
                 "No se puede inscribir en un curso inactivo"
             )
 
-        return data
+        return attrs
 
 
 class PreinscripcionUpdateEstadoSerializer(serializers.Serializer):
@@ -198,6 +200,34 @@ class PreinscripcionUpdateEstadoSerializer(serializers.Serializer):
     nuevo_estado = serializers.ChoiceField(choices=Preinscripcion.ESTADOS)
     observaciones = serializers.CharField(required=False, allow_blank=True)
     motivo_rechazo = serializers.CharField(required=False, allow_blank=True)
+
+    def __init__(self, *args, **kwargs):
+        # Aceptar 'estado' como alias para compatibilidad con clientes/tests
+        # que envían esa clave en lugar de 'nuevo_estado'. Normalizamos
+        # a 'nuevo_estado' antes de la validación.
+        initial = kwargs.get("data")
+        # request.data may be a QueryDict (not a plain dict). Accept mapping-like
+        # objects too and produce a mutable dict with the normalized key so DRF
+        # validation sees 'nuevo_estado'. This avoids 400s when clients send
+        # the legacy 'estado' key.
+        if initial is not None:
+            try:
+                has_estado = "estado" in initial
+                has_nuevo = "nuevo_estado" in initial
+            except Exception:
+                has_estado = False
+                has_nuevo = False
+
+            if has_estado and not has_nuevo:
+                # Try to make a shallow, mutable copy. QueryDict supports copy().
+                try:
+                    new_data = initial.copy()
+                except Exception:
+                    # Fallback to dict() for other mapping-like objects
+                    new_data = dict(initial)
+                new_data["nuevo_estado"] = new_data.get("estado")
+                kwargs["data"] = new_data
+        super().__init__(*args, **kwargs)
 
     def validate_nuevo_estado(self, value):
         """Validar que la transición de estado sea válida"""
