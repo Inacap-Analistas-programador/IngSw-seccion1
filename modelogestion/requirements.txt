@@ -1,0 +1,4 @@
+djangorestframework
+django-cors-headers
+django-storages[boto3]
+boto3
