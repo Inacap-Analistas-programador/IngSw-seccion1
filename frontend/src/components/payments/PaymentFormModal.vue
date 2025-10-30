@@ -24,30 +24,30 @@
       <!-- Form -->
       <form @submit.prevent="handleSubmit" class="p-6 space-y-6">
         <div class="space-y-1">
-          <label class="block text-sm font-semibold text-gray-700">Persona *</label>
-          <select v-model="form.PER_ID" required class="w-full border border-gray-300 rounded-lg px-4 py-3 text-sm focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-colors">
+          <label for="persona-pago" class="block text-sm font-semibold text-gray-700">Persona *</label>
+          <select id="persona-pago" v-model="form.PER_ID" required class="w-full border border-gray-300 rounded-lg px-4 py-3 text-sm focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-colors">
             <option value="">Seleccionar persona</option>
             <option v-for="persona in personas" :key="persona.id" :value="persona.id">
-              {{ persona.nombre }} - {{ persona.rut }}
+              {{ persona.nombres }} {{ persona.apelpat }} - {{ persona.run }}-{{ persona.dv }}
             </option>
           </select>
         </div>
 
         <div class="space-y-1">
-          <label class="block text-sm font-semibold text-gray-700">Curso *</label>
-          <select v-model="form.CUR_ID" required class="w-full border border-gray-300 rounded-lg px-4 py-3 text-sm focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-colors">
+          <label for="curso-pago" class="block text-sm font-semibold text-gray-700">Curso *</label>
+          <select id="curso-pago" v-model="form.CUR_ID" required class="w-full border border-gray-300 rounded-lg px-4 py-3 text-sm focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-colors">
             <option value="">Seleccionar curso</option>
             <option v-for="curso in cursos" :key="curso.id" :value="curso.id">
-              {{ curso.nombre }}
+              {{ curso.descripcion }}
             </option>
           </select>
         </div>
 
-        <div class="space-y-1">
-          <label class="block text-sm font-semibold text-gray-700">Tipo de Pago *</label>
+        <fieldset class="space-y-1">
+          <legend class="block text-sm font-semibold text-gray-700">Tipo de Pago *</legend>
           <div class="grid grid-cols-2 gap-3">
             <label class="relative">
-              <input v-model="form.PAP_TIPO" :value="1" type="radio" class="sr-only peer">
+              <input v-model="form.PAP_TIPO" :value="1" type="radio" name="tipo-pago" class="sr-only peer">
               <div class="flex items-center justify-center p-3 border-2 border-gray-300 rounded-lg cursor-pointer peer-checked:border-green-500 peer-checked:bg-green-50 hover:bg-gray-50 transition-colors">
                 <div class="flex items-center space-x-2">
                   <svg class="w-5 h-5 text-green-600" fill="currentColor" viewBox="0 0 20 20">
@@ -58,7 +58,7 @@
               </div>
             </label>
             <label class="relative">
-              <input v-model="form.PAP_TIPO" :value="2" type="radio" class="sr-only peer">
+              <input v-model="form.PAP_TIPO" :value="2" type="radio" name="tipo-pago" class="sr-only peer">
               <div class="flex items-center justify-center p-3 border-2 border-gray-300 rounded-lg cursor-pointer peer-checked:border-red-500 peer-checked:bg-red-50 hover:bg-gray-50 transition-colors">
                 <div class="flex items-center space-x-2">
                   <svg class="w-5 h-5 text-red-600" fill="currentColor" viewBox="0 0 20 20">
@@ -69,15 +69,16 @@
               </div>
             </label>
           </div>
-        </div>
+        </fieldset>
 
         <div class="space-y-1">
-          <label class="block text-sm font-semibold text-gray-700">Valor *</label>
+          <label for="valor-pago" class="block text-sm font-semibold text-gray-700">Valor *</label>
           <div class="relative">
             <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
               <span class="text-gray-500 text-sm">$</span>
             </div>
             <input 
+              id="valor-pago"
               v-model.number="form.PAP_VALOR" 
               type="number" 
               min="0" 
@@ -90,8 +91,9 @@
         </div>
 
         <div class="space-y-1">
-          <label class="block text-sm font-semibold text-gray-700">Observación</label>
+          <label for="observacion-pago" class="block text-sm font-semibold text-gray-700">Observación</label>
           <textarea 
+            id="observacion-pago"
             v-model="form.PAP_OBSERVACION" 
             rows="3"
             class="w-full border border-gray-300 rounded-lg px-4 py-3 text-sm focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-colors resize-none"
@@ -125,24 +127,10 @@
 
         <!-- Footer -->
         <div class="flex justify-end space-x-3 pt-6 border-t border-gray-200">
-          <button 
-            type="button" 
-            @click="$emit('close')"
-            class="inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-lg text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 transition-colors"
-          >
-            Cancelar
-          </button>
-          <button 
-            type="submit" 
-            :disabled="loading"
-            class="inline-flex items-center px-6 py-2 border border-transparent text-sm font-medium rounded-lg text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-          >
-            <svg v-if="loading" class="animate-spin -ml-1 mr-2 h-4 w-4 text-white" fill="none" viewBox="0 0 24 24">
-              <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-              <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-            </svg>
+          <BaseButton @click="$emit('close')" variant="secondary">Cancelar</BaseButton>
+          <BaseButton type="submit" :disabled="loading">
             {{ loading ? 'Guardando...' : (isEdit ? 'Actualizar Pago' : 'Registrar Pago') }}
-          </button>
+          </BaseButton>
         </div>
       </form>
     </div>
@@ -151,7 +139,10 @@
 
 <script setup lang="ts">
 import { ref, reactive, computed, onMounted } from 'vue'
+import { storeToRefs } from 'pinia'
 import { usePaymentsStore } from '@/stores/payments'
+import { usePersonasStore } from '@/stores/personas'
+import { useCursosStore } from '@/stores/cursos'
 import type { CreatePaymentRequest, PagoPersona } from '@/types/payments'
 
 interface Props {
@@ -165,20 +156,15 @@ const emit = defineEmits<{
 }>()
 
 const paymentsStore = usePaymentsStore()
+const personasStore = usePersonasStore()
+const cursosStore = useCursosStore()
 const loading = ref(false)
 const generatePrepago = ref(false)
 
 const isEdit = computed(() => !!props.pago)
 
-const personas = ref([
-  { id: 1, nombre: 'Juan Pérez', rut: '12.345.678-9' },
-  { id: 2, nombre: 'María González', rut: '98.765.432-1' }
-])
-
-const cursos = ref([
-  { id: 1, nombre: 'Curso Básico Scout' },
-  { id: 2, nombre: 'Curso Avanzado Scout' }
-])
+const { personas } = storeToRefs(personasStore)
+const { cursos } = storeToRefs(cursosStore)
 
 const form = reactive<CreatePaymentRequest>({
   PER_ID: 0,
@@ -206,6 +192,8 @@ const handleSubmit = async () => {
 }
 
 onMounted(() => {
+  personasStore.fetchPersonas()
+  cursosStore.fetchCursos()
   if (props.pago) {
     Object.assign(form, {
       PER_ID: props.pago.PER_ID,

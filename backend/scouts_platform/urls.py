@@ -21,32 +21,33 @@ from django.conf import settings
 from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import include, path
-from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
+from rest_framework_simplejwt.views import TokenRefreshView
 
-from apps.authentication.views import PersonSearchView
+from authentication.views import PersonSearchView, MyTokenObtainPairView
 
 # Patrones de URL principales del proyecto
 urlpatterns = [
     # Panel de administración de Django
     path("admin/", admin.site.urls),
     # Autenticación JWT para APIs
-    path("api/auth/login/", TokenObtainPairView.as_view(), name="token_obtain_pair"),
-    path("api/auth/refresh/", TokenRefreshView.as_view(), name="token_refresh"),
     # Rutas de APIs por módulo - Cada app tiene sus propias URLs
     path(
-        "api/auth/", include("apps.authentication.urls")
+        "api/auth/", include("authentication.urls")
     ),  # Gestión de usuarios y roles
+    path("api/auth/login/", MyTokenObtainPairView.as_view(), name="token_obtain_pair"),
+    path("api/auth/refresh/", TokenRefreshView.as_view(), name="token_refresh"),
     path(
-        "api/catalog/", include("apps.catalog.urls")
+        "api/catalogo/", include("catalog.urls")
     ),  # Catálogos maestros (regiones, zonas, etc.)
     path(
-        "api/preinscriptions/", include("apps.preinscriptions.urls")
+        "api/preinscripciones/", include("preinscriptions.urls")
     ),  # Preinscripciones de cursos
-    path("api/payments/", include("apps.payments.urls")),  # Gestión de pagos
-    path("api/files/", include("apps.files.urls")),  # Subida y gestión de archivos
-    path("api/courses/", include("apps.courses.urls")),  # Gestión de cursos
-    path("api/persons/search/", PersonSearchView.as_view(), name="persons-search"),
-    path("api/personas/", include("apps.personas.urls")),  # Endpoints CRUD de personas
+    path("api/pagos/", include("payments.urls")),  # Gestión de pagos
+    path("api/archivos/", include("files.urls")),  # Subida y gestión de archivos
+    path("api/cursos/", include("courses.urls")),  # Gestión de cursos
+    path("api/personas/buscar/", PersonSearchView.as_view(), name="persons-search"),
+    path("api/personas/", include("personas.urls")),  # Endpoints CRUD de personas
+    path("api/emails/", include("emails.urls")),
     # Endpoints de salud del sistema (para monitoreo)
     path("healthz/", include("utils.health.urls")),
 ]

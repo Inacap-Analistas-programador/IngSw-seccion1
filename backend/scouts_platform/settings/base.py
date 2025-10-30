@@ -16,16 +16,16 @@ from decouple import config
 # Directorio raíz del proyecto Django - Apunta a la carpeta backend/
 BASE_DIR = Path(__file__).resolve().parent.parent.parent
 
-# SECURITY WARNING: keep the secret key used in production secret!
+# ADVERTENCIA DE SEGURIDAD: ¡mantén en secreto la clave secreta utilizada en producción!
 # Clave secreta para Django - CAMBIAR en producción usando variable de entorno
 SECRET_KEY = config(
     "SECRET_KEY", default="django-insecure-development-key-change-in-production"
 )
 
-# Application definition
+# Definición de la aplicación
 # Aplicaciones de Django instaladas en el proyecto SGICS
 
-# Aplicaciones core de Django - NO MODIFICAR
+# Aplicaciones principales de Django - NO MODIFICAR
 DJANGO_APPS = [
     "django.contrib.admin",  # Panel de administración
     "django.contrib.auth",  # Sistema de autenticación
@@ -35,7 +35,7 @@ DJANGO_APPS = [
     "django.contrib.staticfiles",  # Gestión de archivos estáticos
 ]
 
-# Aplicaciones de terceros instaladas via pip
+# Aplicaciones de terceros instaladas a través de pip
 THIRD_PARTY_APPS = [
     "rest_framework",  # Django REST Framework para APIs
     "rest_framework_simplejwt",  # Autenticación JWT para APIs
@@ -44,25 +44,26 @@ THIRD_PARTY_APPS = [
 ]
 
 # Aplicaciones locales del proyecto SGICS
-# Cada app maneja un módulo específico del sistema
+# Cada aplicación maneja un módulo específico del sistema
 LOCAL_APPS = [
-    "apps.authentication",  # Autenticación y gestión de usuarios/roles
-    "apps.catalog",  # Catálogos maestros (regiones, zonas, etc.)
-    "apps.preinscriptions",  # Módulo de preinscripciones de cursos
-    "apps.payments",  # Módulo de gestión de pagos
-    "apps.files",  # Módulo de gestión de archivos
-    "apps.courses",  # Módulo de gestión de cursos
-    "apps.personas",  # Módulo de gestión de personas
+    "authentication",
+    "catalog",
+    "preinscriptions",
+    "payments",
+    "files",
+    "courses",
+    "personas",
+    "emails",
 ]
 
 # Lista completa de aplicaciones instaladas
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS
 
-# Middleware - Capas de procesamiento de requests/responses
+# Middleware - Capas de procesamiento de peticiones/respuestas
 # ORDEN IMPORTANTE: Cada middleware procesa en orden y afecta a los siguientes
 MIDDLEWARE = [
     "corsheaders.middleware.CorsMiddleware",  # CORS - DEBE ir PRIMERO
-    "django.middleware.security.SecurityMiddleware",  # Headers de seguridad
+    "django.middleware.security.SecurityMiddleware",  # Cabeceras de seguridad
     "whitenoise.middleware.WhiteNoiseMiddleware",  # Servir archivos estáticos en producción
     "django.contrib.sessions.middleware.SessionMiddleware",  # Manejo de sesiones
     "django.middleware.common.CommonMiddleware",  # Funcionalidades comunes
@@ -72,19 +73,19 @@ MIDDLEWARE = [
     "django.middleware.clickjacking.XFrameOptionsMiddleware",  # Protección clickjacking
 ]
 
-# URL configuration - Archivo principal de rutas del proyecto
+# Configuración de URL - Archivo principal de rutas del proyecto
 ROOT_URLCONF = "scouts_platform.urls"
 
-# Templates configuration - Configuración del motor de plantillas
+# Configuración de plantillas - Configuración del motor de plantillas
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
         "DIRS": [BASE_DIR / "templates"],  # Directorio para plantillas personalizadas
-        "APP_DIRS": True,  # Buscar plantillas en directorios de apps automáticamente
+        "APP_DIRS": True,  # Buscar plantillas en directorios de aplicaciones automáticamente
         "OPTIONS": {
             "context_processors": [
-                "django.template.context_processors.debug",  # Variables de debug
-                "django.template.context_processors.request",  # Objeto request
+                "django.template.context_processors.debug",  # Variables de depuración
+                "django.template.context_processors.request",  # Objeto de petición
                 "django.contrib.auth.context_processors.auth",  # Usuario autenticado
                 "django.contrib.messages.context_processors.messages",  # Mensajes
             ],
@@ -92,20 +93,20 @@ TEMPLATES = [
     },
 ]
 
-# WSGI application - Punto de entrada para servidor web en producción
+# Aplicación WSGI - Punto de entrada para servidor web en producción
 WSGI_APPLICATION = "scouts_platform.wsgi.application"
 
-# Custom User Model - Modelo de usuario personalizado para SGICS
-AUTH_USER_MODEL = "authentication.User"
+# Modelo de Usuario Personalizado - Modelo de usuario personalizado para SGICS
+AUTH_USER_MODEL = "authentication.Usuario"
 
-# Password validation - Validadores de contraseñas para seguridad
+# Validación de contraseñas - Validadores de contraseñas para seguridad
 AUTH_PASSWORD_VALIDATORS = [
     {
-        # No puede ser similar a información personal del usuario
+        # No puede ser similar a la información personal del usuario
         "NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator",
     },
     {
-        # Mínimo 8 caracteres de longitud
+        # Longitud mínima de 8 caracteres
         "NAME": "django.contrib.auth.password_validation.MinimumLengthValidator",
     },
     {
@@ -118,48 +119,50 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-# Internationalization - Configuración regional para Chile
+# Internacionalización - Configuración regional para Chile
 LANGUAGE_CODE = "es-cl"  # Idioma español de Chile
 TIME_ZONE = "America/Santiago"  # Zona horaria de Chile (GMT-3/-4)
 USE_I18N = True  # Habilitar internacionalización
 USE_TZ = True  # Usar zonas horarias (recomendado)
 
-# Static files (CSS, JavaScript, Images)
+# Archivos estáticos (CSS, JavaScript, Imágenes)
 # Archivos estáticos del proyecto (CSS, JS, imágenes del admin, etc.)
 STATIC_URL = "/static/"  # URL pública para archivos estáticos
 STATIC_ROOT = BASE_DIR / "staticfiles"  # Directorio donde se recolectan en producción
 
-# Media files - Archivos subidos por usuarios
-MEDIA_URL = "/media/"  # URL pública para archivos de media
-MEDIA_ROOT = BASE_DIR / "media"  # Directorio donde se almacenan los uploads
+# Archivos de medios - Archivos subidos por usuarios
+MEDIA_URL = "/media/"  # URL pública para archivos de medios
+MEDIA_ROOT = BASE_DIR / "media"  # Directorio donde se almacenan los archivos subidos
 
-# Default primary key field type
+# Tipo de campo de clave primaria por defecto
 # Tipo de campo para claves primarias automáticas (IDs de modelos)
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
-# Django REST Framework configuration
-# Configuración completa importada desde módulo dedicado
+# Configuración de Django REST Framework
+# Configuración completa importada desde un módulo dedicado
 from .rest_framework import REST_FRAMEWORK_CONFIG
 
 REST_FRAMEWORK = REST_FRAMEWORK_CONFIG
 
-# JWT Configuration - Configuración de JSON Web Tokens
-# Configuración completa importada desde módulo dedicado
+# Configuración de JWT - Configuración de JSON Web Tokens
+# Configuración completa importada desde un módulo dedicado
 from .jwt import JWT_CONFIG
 
 SIMPLE_JWT = JWT_CONFIG
 
-# CORS Configuration - Cross-Origin Resource Sharing
+# Configuración de CORS - Cross-Origin Resource Sharing
 # Permite que el frontend (Vue.js) se comunique con el backend (Django)
 CORS_ALLOWED_ORIGINS = [
+    "http://localhost:5173",  # Frontend Vue.js en desarrollo (Vite)
+    "http://127.0.0.1:5173",
     "http://localhost:3000",  # Frontend Vue.js en desarrollo
     "http://127.0.0.1:3000",  # Alternativa de localhost
 ]
 
-# Permitir cookies y headers de autenticación
+# Permitir cookies y cabeceras de autenticación
 CORS_ALLOW_CREDENTIALS = True
 
-# Headers adicionales permitidos para CORS
+# Cabeceras adicionales permitidas para CORS
 CORS_ALLOW_HEADERS = [
     "accept",
     "accept-encoding",
@@ -172,11 +175,11 @@ CORS_ALLOW_HEADERS = [
     "x-requested-with",
 ]
 
-# File Upload Configuration - Configuración de subida de archivos
+# Configuración de subida de archivos
 FILE_UPLOAD_MAX_MEMORY_SIZE = 10 * 1024 * 1024  # 10MB máximo en memoria
-DATA_UPLOAD_MAX_MEMORY_SIZE = 10 * 1024 * 1024  # 10MB máximo total por request
+DATA_UPLOAD_MAX_MEMORY_SIZE = 10 * 1024 * 1024  # 10MB máximo total por petición
 
-# Tipos de archivos permitidos para uploads (seguridad)
+# Tipos de archivos permitidos para subidas (seguridad)
 ALLOWED_FILE_EXTENSIONS = [
     ".pdf",
     ".doc",
@@ -190,7 +193,7 @@ ALLOWED_FILE_EXTENSIONS = [
     ".csv",  # Hojas de cálculo
 ]
 
-# Logging Configuration
+# Configuración de Logging
 LOGGING = {
     "version": 1,
     "disable_existing_loggers": False,
@@ -227,7 +230,7 @@ LOGGING = {
     },
 }
 
-# Database
+# Base de datos
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
 DATABASES = {
     'default': {

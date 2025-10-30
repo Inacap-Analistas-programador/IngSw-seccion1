@@ -56,7 +56,7 @@
                 <span class="text-white text-sm font-semibold">{{ userInitials }}</span>
               </div>
               <div class="hidden sm:block">
-                <p class="text-sm font-medium text-gray-900">{{ user?.full_name || 'Usuario' }}</p>
+                <p class="text-sm font-medium text-gray-900">{{ fullName }}</p>
                 <p class="text-xs text-gray-500">{{ user?.email || 'usuario@sistema.com' }}</p>
               </div>
             </div>
@@ -110,19 +110,25 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import { useRouter } from 'vue-router'
-import { useAuthStore } from '@/stores/auth'
-import NavLink from '@/components/layout/NavLink.vue'
+import { useAuthStore } from '../../stores/auth'
+import NavLink from './NavLink.vue'
 
 const router = useRouter()
 const authStore = useAuthStore()
 
 const user = computed(() => authStore.user)
 
+const fullName = computed(() => {
+  if (user.value) {
+    return `${user.value.nombres} ${user.value.apellido_paterno}`
+  }
+  return 'Usuario'
+})
+
 const userInitials = computed(() => {
-  const fullName = user.value?.full_name || 'Usuario'
-  return fullName
+  return fullName.value
     .split(' ')
-    .map(name => name.charAt(0))
+    .map((name: string) => name.charAt(0))
     .join('')
     .toUpperCase()
     .slice(0, 2)

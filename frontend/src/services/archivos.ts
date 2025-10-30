@@ -1,4 +1,4 @@
-import { apiClient } from './api';
+import apiClient from './api';
 import type { Archivo } from '@/types/archivos';
 
 export const getArchivos = async (): Promise<Archivo[]> => {

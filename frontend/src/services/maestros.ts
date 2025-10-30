@@ -1,4 +1,4 @@
-import { apiClient } from './api';
+import apiClient from './api';
 import type { Region, Provincia, Comuna, Cargo, TipoCurso } from '../types/maestros';
 
 export const getRegiones = async (): Promise<Region[]> => {

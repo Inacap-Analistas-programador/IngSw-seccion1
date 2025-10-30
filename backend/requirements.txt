@@ -15,6 +15,7 @@ pytest-django==4.5.2
 pytest-cov==4.1.0
 coverage==7.3.0
 factory-boy==3.3.0
+Faker==25.2.0
 
 # Code Quality
 black==23.7.0

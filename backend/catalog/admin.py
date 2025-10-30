@@ -1,0 +1,21 @@
+from django.contrib import admin
+from .models import Region, Provincia, Comuna, Zona, Distrito, Grupo, EstadoCivil, Nivel, Rama, Rol, TipoArchivo, TipoCurso, Cargo, Alimentacion, Aplicacion, Perfil, PerfilAplicacion, Proveedor
+
+admin.site.register(Region)
+admin.site.register(Provincia)
+admin.site.register(Comuna)
+admin.site.register(Zona)
+admin.site.register(Distrito)
+admin.site.register(Grupo)
+admin.site.register(EstadoCivil)
+admin.site.register(Nivel)
+admin.site.register(Rama)
+admin.site.register(Rol)
+admin.site.register(TipoArchivo)
+admin.site.register(TipoCurso)
+admin.site.register(Cargo)
+admin.site.register(Alimentacion)
+admin.site.register(Aplicacion)
+admin.site.register(Perfil)
+admin.site.register(PerfilAplicacion)
+admin.site.register(Proveedor)

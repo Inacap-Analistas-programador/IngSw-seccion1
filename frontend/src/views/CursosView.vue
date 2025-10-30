@@ -1,142 +1,152 @@
 <template>
-  <MainLayout>
-    <div class="cursos-view">
-      <div class="header">
-        <h1>Cursos</h1>
-        <Button label="+ Nuevo Curso" @click="goToNewCurso" />
+  <div class="cursos-view">
+    <div class="header">
+      <h1>Cursos</h1>
+      <div class="actions">
+        <BaseButton @click="showFilters = !showFilters" variant="secondary">
+          <Icon name="filter" /> Filtros
+        </BaseButton>
+        <BaseButton @click="showCreateModal = true">Crear Curso</BaseButton>
       </div>
-      <p>Gestiona todos los cursos de formación Scout</p>
-
-      <div v-if="cursoStore.error" class="error-message">{{ cursoStore.error }}</div>
-      <DataTable :value="cursoStore.cursos" :loading="cursoStore.isLoading" responsiveLayout="scroll">
-        <template #empty> No se encontraron cursos. </template>
-        <template #loading> Cargando cursos... </template>
-        <Column field="codigo" header="Código"></Column>
-        <Column field="descripcion" header="Nombre del Curso"></Column>
-        <Column field="tipo_curso.descripcion" header="Categoría"></Column>
-        <Column field="modalidad" header="Modalidad"></Column>
-        <Column header="Fechas">
-          <template #body="slotProps">
-            {{ formatFechas(slotProps.data.fechas) }}
-          </template>
-        </Column>
-        <Column field="total_participantes" header="Participantes"></Column>
-        <Column field="cuota_con_almuerzo" header="Precio (Bs.)"></Column>
-        <Column field="estado" header="Estado">
-          <template #body="slotProps">
-            <Tag :value="getEstadoText(slotProps.data.estado)" :severity="getEstadoSeverity(slotProps.data.estado)" />
-          </template>
-        </Column>
-        <Column header="Acciones">
-          <template #body="slotProps">
-            <Button icon="pi pi-pencil" class="p-button-rounded p-button-text" @click="editCurso(slotProps.data.id)" />
-            <Button icon="pi pi-trash" class="p-button-rounded p-button-text p-button-danger" @click="deleteCurso(slotProps.data.id)" />
-          </template>
-        </Column>
-      </DataTable>
     </div>
-  </MainLayout>
+
+    <div v-if="showFilters" class="filter-panel card">
+      <div class="filter-grid">
+        <InputBase label="Título" v-model="filters.titulo" />
+        <BaseSelect label="Rama" v-model="filters.rama" :options="ramaOptions" />
+        <InputBase type="date" label="Fecha Desde" v-model="filters.fechaDesde" />
+        <InputBase type="date" label="Fecha Hasta" v-model="filters.fechaHasta" />
+      </div>
+      <div class="filter-actions">
+        <BaseButton variant="secondary" @click="clearFilters">Limpiar</BaseButton>
+        <BaseButton @click="applyFilters">Buscar</BaseButton>
+      </div>
+    </div>
+
+    <DataTable
+      :columns="columns"
+      :items="cursosStore.cursos"
+      :actions="['acreditar', 'view', 'edit', 'delete']"
+      @acreditar="handleAcreditar"
+      @view="handleView"
+    >
+      <template #cell(estado)="{ item }">
+        <span :class="getEstadoClass(item)">{{ item.estado }}</span>
+      </template>
+    </DataTable>
+    <CreateCursoModal :show="showCreateModal" @close="showCreateModal = false" />
+  </div>
 </template>
 
 <script setup lang="ts">
-import { onMounted } from 'vue';
+import { ref, reactive, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
-import { useCursoStore } from '@/stores/curso';
-import MainLayout from '@/components/layout/MainLayout.vue';
-import DataTable from 'primevue/datatable';
-import Column from 'primevue/column';
-import Button from 'primevue/button';
-import Tag from 'primevue/tag';
+import { useCursosStore } from '@/stores/cursos';
+import DataTable from '@/components/shared/DataTable.vue';
+import BaseButton from '@/components/shared/BaseButton.vue';
+import CreateCursoModal from '@/components/cursos/CreateCursoModal.vue';
+import InputBase from '@/components/shared/InputBase.vue';
+import BaseSelect from '@/components/shared/BaseSelect.vue';
+import Icon from '@/components/shared/Icon.vue';
 
 const router = useRouter();
-const cursoStore = useCursoStore();
+const cursosStore = useCursosStore();
+const showCreateModal = ref(false);
+const showFilters = ref(false);
 
-onMounted(() => {
-  cursoStore.fetchCursos();
+const filters = reactive({
+  titulo: '',
+  rama: '',
+  fechaDesde: '',
+  fechaHasta: '',
 });
 
-const goToNewCurso = () => {
-  router.push({ name: 'Cursos.New' });
+const columns = [
+  { key: 'codigo', label: 'Código' },
+  { key: 'descripcion', label: 'Descripción' },
+  { key: 'cupos', label: 'Cupos' },
+  { key: 'estado', label: 'Estado' },
+];
+
+const ramaOptions = [{ value: '', label: 'Todas' }];
+
+const getEstadoClass = (curso: any) => {
+  // Lógica de semáforo basada en pagos (simulada por ahora)
+  if (curso.estado === 'Cerrado') {
+    return 'status-badge red';
+  } else if (curso.estado === 'En curso') {
+    return 'status-badge yellow';
+  } else {
+    return 'status-badge green';
+  }
 };
 
-const editCurso = (id: number) => {
-  router.push({ name: 'Cursos.Edit', params: { id } });
+onMounted(() => {
+  cursosStore.fetchCursos();
+});
+
+const applyFilters = () => {
+  cursosStore.fetchCursos(filters);
 };
 
-const deleteCurso = (id: number) => {
-  // Implement delete logic, possibly with a confirmation dialog
-  console.log('Delete curso with id:', id);
+const clearFilters = () => {
+  for (const key of Object.keys(filters)) {
+    filters[key as keyof typeof filters] = '';
+  }
+  applyFilters();
 };
 
-const formatFechas = (fechas: { fecha_inicio: string }[]) => {
-  if (!fechas || fechas.length === 0 || !fechas[0]) return 'N/A';
-  const primeraFecha = new Date(fechas[0].fecha_inicio).toLocaleDateString();
-  return `${primeraFecha}...`;
+const handleAcreditar = (curso: any) => {
+  router.push({ name: 'acreditacion', params: { id: curso.id } });
 };
 
-const getEstadoText = (estado: number) => {
-  const estados: { [key: number]: string } = {
-    0: 'Pendiente',
-    1: 'Vigente',
-    2: 'Anulado',
-    3: 'Finalizado',
-  };
-  return estados[estado] || 'Desconocido';
-};
-
-const getEstadoSeverity = (estado: number) => {
-  const severities: { [key: number]: string } = {
-    0: 'warning',
-    1: 'success',
-    2: 'danger',
-    3: 'info',
-  };
-  return severities[estado] || 'secondary';
+const handleView = (curso: any) => {
+  router.push({ name: 'curso-detail', params: { id: curso.id } });
 };
 </script>
 
 <style scoped>
+.cursos-view {
+  padding: 2rem;
+}
+
 .header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 5px;
+  margin-bottom: 2rem;
 }
-
-h1 {
-  font-size: 24px;
-  font-weight: bold;
+.actions {
+  display: flex;
+  gap: 1rem;
 }
-
-.cursos-view p {
-  color: #6b7280;
-  margin-bottom: 20px;
-}
-
-.status {
-  padding: 4px 8px;
+.card {
+  background: #fff;
   border-radius: 12px;
-  font-size: 12px;
-  font-weight: bold;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+  padding: 2rem;
+  margin-bottom: 2rem;
 }
-
-.status.activo {
-  background-color: #d1fae5;
-  color: #065f46;
+.filter-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1.5rem;
 }
-
-.status.próximo {
-  background-color: #dbeafe;
-  color: #1e40af;
+.filter-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 1rem;
+  margin-top: 2rem;
+  border-top: 1px solid #eee;
+  padding-top: 1.5rem;
 }
-
-.status.completado {
-  background-color: #e5e7eb;
-  color: #374151;
+.status-badge {
+  padding: 0.25rem 0.75rem;
+  border-radius: 16px;
+  font-size: 0.8rem;
+  color: #fff;
 }
-
-.status.borrador {
-  background-color: #fef3c7;
-  color: #92400e;
-}
+.status-badge.red { background-color: #ef4444; }
+.status-badge.yellow { background-color: #f59e0b; }
+.status-badge.green { background-color: #10b981; }
 </style>

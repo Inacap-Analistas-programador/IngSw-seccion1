@@ -56,8 +56,8 @@
       <!-- Form -->
       <form @submit.prevent="handleSubmit" class="p-6 space-y-6">
         <div class="space-y-1">
-          <label class="block text-sm font-semibold text-gray-700">Concepto Contable *</label>
-          <select v-model="form.COC_ID" required class="w-full border border-gray-300 rounded-lg px-4 py-3 text-sm focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-colors">
+          <label for="concepto-contable" class="block text-sm font-semibold text-gray-700">Concepto Contable *</label>
+          <select id="concepto-contable" v-model="form.COC_ID" required class="w-full border border-gray-300 rounded-lg px-4 py-3 text-sm focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-colors">
             <option value="">Seleccionar concepto contable</option>
             <option v-for="concepto in conceptos" :key="concepto.COC_ID" :value="concepto.COC_ID">
               {{ concepto.COC_DESCRIPCION }}
@@ -66,8 +66,9 @@
         </div>
 
         <div class="space-y-1">
-          <label class="block text-sm font-semibold text-gray-700">Número de Comprobante</label>
+          <label for="numero-comprobante" class="block text-sm font-semibold text-gray-700">Número de Comprobante</label>
           <input 
+            id="numero-comprobante"
             v-model.number="form.CPA_NUMERO" 
             type="number" 
             min="1"
@@ -78,8 +79,9 @@
         </div>
 
         <div class="space-y-1">
-          <label class="block text-sm font-semibold text-gray-700">Observaciones</label>
+          <label for="observaciones" class="block text-sm font-semibold text-gray-700">Observaciones</label>
           <textarea 
+            id="observaciones"
             v-model="form.CPA_OBSERVACION" 
             rows="3"
             class="w-full border border-gray-300 rounded-lg px-4 py-3 text-sm focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-colors resize-none"

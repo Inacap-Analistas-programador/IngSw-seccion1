@@ -1,128 +1,134 @@
-<template>
-  <MainLayout>
-    <div class="pagos-view">
-      <div class="chart-container">
-        <h2>Ingresos</h2>
-        <!-- Placeholder for line chart -->
-        <div class="placeholder">Line Chart</div>
-      </div>
-
-      <div class="filters">
-        <InputText placeholder="Buscar por participante, curso o referencia..." class="search-input" />
-        <!-- Add filters for estado and cursos later -->
-        <Button label="Exportar" class="p-button-secondary" />
-      </div>
-
-      <DataTable :value="pagos" responsiveLayout="scroll">
-        <Column field="persona.nombres" header="Participante"></Column>
-        <Column field="curso.descripcion" header="Curso"></Column>
-        <Column field="curso.cuota_con_almuerzo" header="Monto Total"></Column>
-        <Column field="valor" header="Monto Pagado"></Column>
-        <Column header="Pendiente">
-          <template #body="slotProps">
-            {{ slotProps.data.curso.cuota_con_almuerzo - slotProps.data.valor }}
-          </template>
-        </Column>
-        <Column header="Estado">
-          <template #body="slotProps">
-            <span :class="['status', getStatus(slotProps.data.valor, slotProps.data.curso.cuota_con_almuerzo).toLowerCase()]">{{ getStatus(slotProps.data.valor, slotProps.data.curso.cuota_con_almuerzo) }}</span>
-          </template>
-        </Column>
-        <Column header="Acciones">
-          <template #body>
-            <Button label="Registrar Pago" class="p-button-link" />
-          </template>
-        </Column>
-      </DataTable>
-    </div>
-  </MainLayout>
-</template>
-
 <script setup lang="ts">
 import { ref, onMounted } from 'vue';
-import MainLayout from '@/components/layout/MainLayout.vue';
-import { getPagos } from '@/services/pagos';
-import type { Pago } from '@/types/pagos';
-import DataTable from 'primevue/datatable';
-import Column from 'primevue/column';
-import Button from 'primevue/button';
-import InputText from 'primevue/inputtext';
+import { usePagosStore } from '@/stores/pagos';
+import type { Pago } from '@/types';
+import DataTable from '@/components/shared/DataTable.vue';
+import BaseModal from '@/components/shared/BaseModal.vue';
+import BaseButton from '@/components/shared/BaseButton.vue';
+import InputBase from '@/components/shared/InputBase.vue';
 
-const pagos = ref<Pago[]>([]);
+const pagosStore = usePagosStore();
 
-const getStatus = (pagado: number, total: number) => {
-  if (pagado >= total) {
-    return 'Pagado';
-  }
-  if (pagado > 0) {
-    return 'Parcial';
-  }
-  return 'Pendiente';
+const isModalOpen = ref(false);
+const isEditing = ref(false);
+const selectedPago = ref<Pago | null>(null);
+
+const columns = [
+  { key: 'id', label: 'ID' },
+  { key: 'persona', label: 'Persona ID' },
+  { key: 'curso', label: 'Curso ID' },
+  { key: 'valor', label: 'Valor' },
+  { key: 'fecha_hora', label: 'Fecha' },
+];
+
+onMounted(() => {
+  pagosStore.fetchPagos();
+});
+
+const openCreateModal = () => {
+  isEditing.value = false;
+  selectedPago.value = {
+    persona: 1, // Debería ser seleccionado de una lista
+    curso: 1, // Debería ser seleccionado de una lista
+    usuario: 1, // Debería venir del usuario autenticado
+    fecha_hora: new Date().toISOString(),
+    tipo: 1,
+    valor: 0,
+  };
+  isModalOpen.value = true;
 };
 
-onMounted(async () => {
-  try {
-    pagos.value = await getPagos();
-  } catch (error) {
-    console.error('Error fetching pagos:', error);
+const openEditModal = (pago: Pago) => {
+  isEditing.value = true;
+  selectedPago.value = { ...pago };
+  isModalOpen.value = true;
+};
+
+const closeModal = () => {
+  isModalOpen.value = false;
+  selectedPago.value = null;
+};
+
+const savePago = async () => {
+  if (!selectedPago.value) return;
+
+  if (isEditing.value) {
+    await pagosStore.updatePago(selectedPago.value.id!, selectedPago.value);
+  } else {
+    await pagosStore.createPago(selectedPago.value);
   }
-});
+  closeModal();
+};
+
+const deletePago = async (id: number) => {
+  if (confirm('¿Estás seguro de que quieres eliminar este pago?')) {
+    await pagosStore.deletePago(id);
+  }
+};
 </script>
 
+<template>
+  <div class="pagos-view">
+    <header class="view-header">
+      <h1>Gestión de Pagos</h1>
+      <BaseButton @click="openCreateModal">Registrar Pago</BaseButton>
+    </header>
+
+    <div v-if="pagosStore.loading">Cargando...</div>
+    <div v-if="pagosStore.error" class="error">{{ pagosStore.error }}</div>
+
+    <DataTable
+      v-if="!pagosStore.loading && pagosStore.pagos.length"
+      :items="pagosStore.pagos"
+      :columns="columns"
+      @edit="openEditModal"
+      @delete="deletePago"
+    />
+
+    <BaseModal :show="isModalOpen" @close="closeModal">
+      <template #header>
+        <h2>{{ isEditing ? 'Editar Pago' : 'Registrar Pago' }}</h2>
+      </template>
+      <template #body>
+        <form v-if="selectedPago" @submit.prevent="savePago" class="pago-form">
+          <InputBase v-model="selectedPago.valor" label="Valor" type="number" />
+          <InputBase v-model="selectedPago.observacion" label="Observación" />
+          <!-- Aquí irían selects para Persona y Curso -->
+        </form>
+      </template>
+      <template #footer>
+        <BaseButton @click="closeModal" variant="secondary">Cancelar</BaseButton>
+        <BaseButton @click="savePago">Guardar</BaseButton>
+      </template>
+    </BaseModal>
+  </div>
+</template>
+
 <style scoped>
-.chart-container {
-  background: white;
-  padding: 20px;
-  border-radius: 8px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-  margin-bottom: 20px;
+.pagos-view {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
 }
 
-.placeholder {
-  height: 150px;
+.view-header {
   display: flex;
-  justify-content: center;
+  justify-content: space-between;
   align-items: center;
-  color: #9ca3af;
-  background-color: #f9fafb;
-  border-radius: 8px;
-  margin-top: 20px;
 }
 
-.filters {
-  display: flex;
-  gap: 10px;
-  margin-bottom: 20px;
+h1 {
+  color: var(--color-heading);
+  font-size: 1.8rem;
 }
 
-.search-input {
-  flex: 1;
+.error {
+  color: #ff5555;
 }
 
-.status {
-  padding: 4px 8px;
-  border-radius: 12px;
-  font-size: 12px;
-  font-weight: bold;
-}
-
-.status.pagado {
-  background-color: #d1fae5;
-  color: #065f46;
-}
-
-.status.pendiente {
-  background-color: #fef3c7;
-  color: #92400e;
-}
-
-.status.vencido {
-  background-color: #fee2e2;
-  color: #991b1b;
-}
-
-.status.parcial {
-  background-color: #dbeafe;
-  color: #1e40af;
+.pago-form {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1rem;
 }
 </style>
