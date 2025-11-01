@@ -6,8 +6,9 @@ from personas.models import Persona
 from catalog.models import Comuna, EstadoCivil, Provincia, Region, Cargo
 from authentication.models import Usuario as User
 
+
 class Command(BaseCommand):
-    help = 'Populates the database with mock data'
+    help = "Populates the database with mock data"
 
     def handle(self, *args, **kwargs):
         # Clear existing data
@@ -20,29 +21,37 @@ class Command(BaseCommand):
         EstadoCivil.objects.all().delete()
         User.objects.filter(is_superuser=False).delete()
 
-        fake = Faker('es_ES')
+        fake = Faker("es_ES")
 
         # Create some base data if it doesn't exist
         if not User.objects.exists():
-            User.objects.create_superuser('admin', 'admin@example.com', 'admin')
-        
+            User.objects.create_superuser("admin", "admin@example.com", "admin")
+
         if not EstadoCivil.objects.exists():
-            EstadoCivil.objects.create(id=1, descripcion='Soltero/a', vigente=True)
+            EstadoCivil.objects.create(id=1, descripcion="Soltero/a", vigente=True)
 
         if not Comuna.objects.exists():
             # This is a simplification. In a real scenario, you'd populate all comunas.
             if not Region.objects.exists():
-                Region.objects.create(id=1, descripcion='Biobío', vigente=True)
+                Region.objects.create(id=1, descripcion="Biobío", vigente=True)
             if not Provincia.objects.exists():
-                Provincia.objects.create(id=1, region_id=1, descripcion='Concepción', vigente=True)
-            Comuna.objects.create(id=1, provincia_id=1, descripcion='Concepción', vigente=True)
+                Provincia.objects.create(
+                    id=1, region_id=1, descripcion="Concepción", vigente=True
+                )
+            Comuna.objects.create(
+                id=1, provincia_id=1, descripcion="Concepción", vigente=True
+            )
 
         if not TipoCurso.objects.exists():
-            TipoCurso.objects.create(id=1, descripcion='Curso Básico', tipo=1, vigente=True)
-            TipoCurso.objects.create(id=2, descripcion='Curso Avanzado', tipo=2, vigente=True)
+            TipoCurso.objects.create(
+                id=1, descripcion="Curso Básico", tipo=1, vigente=True
+            )
+            TipoCurso.objects.create(
+                id=2, descripcion="Curso Avanzado", tipo=2, vigente=True
+            )
 
         if not Cargo.objects.exists():
-            Cargo.objects.create(id=1, descripcion='Jefe de Grupo', vigente=True)
+            Cargo.objects.create(id=1, descripcion="Jefe de Grupo", vigente=True)
 
         # Create Personas
         last_persona_id = Persona.objects.last().id if Persona.objects.exists() else 0
@@ -74,7 +83,7 @@ class Command(BaseCommand):
                 usuario_id=1,
                 tipo_curso_id=random.randint(1, 2),
                 persona_responsable_id=random.randint(1, 10),
-                cargo_responsable_id=1, # Assuming a Cargo with id=1 exists
+                cargo_responsable_id=1,  # Assuming a Cargo with id=1 exists
                 fecha_hora=fake.date_time(),
                 fecha_solicitud=fake.date_time(),
                 codigo=fake.unique.ean(length=8),
@@ -87,4 +96,6 @@ class Command(BaseCommand):
                 estado=1,
             )
 
-        self.stdout.write(self.style.SUCCESS('Successfully populated the database with mock data.'))
+        self.stdout.write(
+            self.style.SUCCESS("Successfully populated the database with mock data.")
+        )

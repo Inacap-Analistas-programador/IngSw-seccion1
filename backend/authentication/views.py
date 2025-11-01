@@ -6,12 +6,14 @@ from personas.models import Persona
 from personas.serializers import PersonaSerializer
 from .serializers import MyTokenObtainPairSerializer
 
+
 class MyTokenObtainPairView(TokenObtainPairView):
     serializer_class = MyTokenObtainPairSerializer
 
+
 class PersonSearchView(APIView):
     def get(self, request):
-        rut = request.query_parmaams.get('rut', None)
+        rut = request.query_parmaams.get("rut", None)
         if rut is not None:
             try:
                 persona = Persona.objects.get(run=rut)
