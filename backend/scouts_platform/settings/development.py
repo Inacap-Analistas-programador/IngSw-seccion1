@@ -4,28 +4,18 @@ from decouple import config
 # ADVERTENCIA DE SEGURIDAD: ¡no ejecutes con debug activado en producción!
 DEBUG = True
 
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = ["*"]
 
 # Base de datos
-# Intenta usar MySQL desde variables de entorno (.env). Si faltan, cae a SQLite para facilitar el desarrollo local.
-# https://docs.djangoproject.com/en/5.2/ref/settings/#databases
-
-_DB_NAME = config('DB_NAME', default=None)
-
-if _DB_NAME:
-    DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.mysql',
-            'NAME': _DB_NAME,
-            'USER': config('DB_USER', default='root'),
-            'PASSWORD': config('DB_PASSWORD', default=''),
-            'HOST': config('DB_HOST', default='127.0.0.1'),
-            'PORT': config('DB_PORT', default='3306'),
-            'OPTIONS': {
-                # Evita problemas de tiempo de espera en entornos locales
-                'connect_timeout': 10,
-            },
-        }
+# https://docs.djangoproject.com/en/5.0/ref/settings/#databases
+DATABASES = {
+    "default": {
+        "ENGINE": "django.db.backends.mysql",
+        "NAME": config("DB_NAME"),
+        "USER": config("DB_USER"),
+        "PASSWORD": config("DB_PASSWORD"),
+        "HOST": config("DB_HOST"),
+        "PORT": config("DB_PORT"),
     }
 else:
     # Fallback a SQLite para que runserver funcione sin configurar MySQL

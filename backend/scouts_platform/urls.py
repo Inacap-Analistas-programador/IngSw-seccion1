@@ -31,17 +31,12 @@ urlpatterns = [
     path("admin/", admin.site.urls),
     # Autenticación JWT para APIs
     # Rutas de APIs por módulo - Cada app tiene sus propias URLs
-    path(
-        "api/auth/", include("authentication.urls")
-    ),  # Gestión de usuarios y roles
+    path("api/auth/", include("authentication.urls")),  # Gestión de usuarios y roles
     path("api/auth/login/", MyTokenObtainPairView.as_view(), name="token_obtain_pair"),
     path("api/auth/refresh/", TokenRefreshView.as_view(), name="token_refresh"),
     path(
         "api/catalogo/", include("catalog.urls")
     ),  # Catálogos maestros (regiones, zonas, etc.)
-    path(
-        "api/preinscripciones/", include("preinscriptions.urls")
-    ),  # Preinscripciones de cursos
     path("api/pagos/", include("payments.urls")),  # Gestión de pagos
     path("api/archivos/", include("files.urls")),  # Subida y gestión de archivos
     path("api/cursos/", include("courses.urls")),  # Gestión de cursos

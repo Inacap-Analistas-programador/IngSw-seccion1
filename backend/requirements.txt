@@ -1,46 +1,148 @@
-# Django and DRF - Framework principal y API REST
+# ============================================================================
+# SGICS - Sistema de Gestión Integral de Cursos para Scouts
+# Requirements.txt - Dependencias del Backend Django
+# ============================================================================
+
+# ============================================================================
+# CORE FRAMEWORK - Django & Django REST Framework
+# ============================================================================
 Django==5.2.7
 djangorestframework==3.15.1
 djangorestframework-simplejwt==5.3.0
 django-cors-headers==4.3.1
 django-filter==24.3
+drf-spectacular==0.27.0              # OpenAPI 3.0 schema generation
+drf-spectacular[sidecar]==0.27.0     # UI bundled
 
-# Database - Conectores de base de datos
-pymysql==1.1.0         # MySQL connector alternativo (pure Python)
-# mssql-django==1.4    # SQL Server support (opcional, instalar solo si se requiere)
+# ============================================================================
+# DATABASE DRIVERS
+# ============================================================================
+pymysql==1.1.0                       # MySQL connector (pure Python)
+mysqlclient==2.2.0                   # MySQL connector (C-based, más rápido)
+psycopg2-binary==2.9.9               # PostgreSQL support (escalabilidad)
+dj-database-url==2.1.0               # Database URL parsing
 
-# Development and Testing
-pytest==7.4.2
-pytest-django==4.5.2
+# ============================================================================
+# ENVIRONMENT & CONFIGURATION
+# ============================================================================
+python-decouple==3.8                 # Manejo de variables de entorno
+python-dotenv==1.0.0                 # .env file support
+django-environ==0.11.2               # Environment-based configuration
+
+# ============================================================================
+# CACHING & PERFORMANCE
+# ============================================================================
+redis==5.0.1                         # Redis client
+django-redis==5.4.0                  # Django Redis cache backend
+hiredis==2.3.2                       # Redis performance boost
+
+# ============================================================================
+# TASK QUEUE & ASYNC PROCESSING
+# ============================================================================
+celery==5.3.4                        # Distributed task queue
+celery[redis]==5.3.4                 # Redis broker support
+django-celery-beat==2.5.0            # Periodic task scheduler
+django-celery-results==2.5.1        # Store task results in Django DB
+flower==2.0.1                        # Celery monitoring
+
+# ============================================================================
+# TESTING & QUALITY ASSURANCE
+# ============================================================================
+pytest==7.4.3
+pytest-django==4.7.0
 pytest-cov==4.1.0
-coverage==7.3.0
+pytest-xdist==3.5.0                  # Parallel test execution
+pytest-mock==3.12.0
+coverage==7.3.2
 factory-boy==3.3.0
-Faker==25.2.0
+Faker==20.1.0
+freezegun==1.4.0                     # Mock datetime for tests
+responses==0.24.1                    # Mock HTTP requests
 
-# Code Quality
-black==23.7.0
-# Note: isort and flake8 were removed — project uses Black as the single formatter/linter.
+# ============================================================================
+# CODE QUALITY & LINTING
+# ============================================================================
+black==23.12.0                       # Code formatter
+flake8==6.1.0                        # Linting
+flake8-django==1.4                   # Django-specific linting
+pylint==3.0.3
+pylint-django==2.5.5
+pylint-celery==0.3
+isort==5.13.2                        # Import sorting
+bandit==1.7.5                        # Security linting
+safety==2.3.5                        # Dependency vulnerability scanner
 
-# Production Server
-gunicorn==21.2.0
-whitenoise==6.5.0
+# ============================================================================
+# SECURITY & AUTHENTICATION
+# ============================================================================
+django-ratelimit==4.1.0              # Rate limiting
+django-defender==0.9.7               # Brute force protection
+django-axes==6.1.1                   # Login attempt tracking
+cryptography==41.0.7                 # Encryption utilities
+PyJWT==2.8.0                         # JWT handling
+argon2-cffi==23.1.0                  # Password hashing
 
-# Health Checks and Monitoring
-django-health-check==3.17.0
+# ============================================================================
+# API DOCUMENTATION & MONITORING
+# ============================================================================
+django-silk==5.0.4                   # Request profiling
+django-debug-toolbar==4.2.0          # Debug toolbar (dev only)
+django-extensions==3.2.3             # Extra management commands
 
-# Security
-django-ratelimit==4.1.0
-python-decouple==3.8
+# ============================================================================
+# HEALTH CHECKS & OBSERVABILITY
+# ============================================================================
+django-health-check==3.18.1
+django-prometheus==2.3.1             # Prometheus metrics
+sentry-sdk==1.39.1                   # Error tracking
 
-# File handling
-Pillow==11.3.0
-django-storages==1.14.2
+# ============================================================================
+# FILE HANDLING & STORAGE
+# ============================================================================
+Pillow==10.1.0                       # Image processing
+django-storages==1.14.2              # Cloud storage backends
+boto3==1.34.10                       # AWS S3 support
+azure-storage-blob==12.19.0          # Azure Blob storage
 
-# Utilities
-celery==5.3.1
-redis==4.6.0
+# ============================================================================
+# EMAIL & NOTIFICATIONS
+# ============================================================================
+django-anymail==10.2                 # Email service provider integration
+sendgrid==6.11.0                     # SendGrid integration
 
-setuptools
+# ============================================================================
+# PRODUCTION SERVER
+# ============================================================================
+gunicorn==21.2.0                     # WSGI HTTP Server
+uvicorn[standard]==0.25.0            # ASGI server (async support)
+whitenoise==6.6.0                    # Static file serving
 
-# Debugging & Profiling (desarrollo)
-django-debug-toolbar==4.4.6
+# ============================================================================
+# DATA PROCESSING & EXPORT
+# ============================================================================
+pandas==2.1.4                        # Data analysis
+openpyxl==3.1.2                      # Excel file handling
+reportlab==4.0.7                     # PDF generation
+django-import-export==3.3.5          # Import/Export data
+
+# ============================================================================
+# UTILITIES
+# ============================================================================
+python-dateutil==2.8.2
+pytz==2023.3.post1
+requests==2.31.0
+httpx==0.25.2                        # Modern HTTP client
+tenacity==8.2.3                      # Retry logic
+pydantic==2.5.3                      # Data validation
+marshmallow==3.20.1                  # Serialization
+
+# ============================================================================
+# DEVELOPMENT DEPENDENCIES (opcional - instalar con pip install -r requirements-dev.txt)
+# ============================================================================
+# ipython==8.18.1                    # Enhanced Python shell
+# ipdb==0.13.13                      # Debugger
+# django-seed==0.3.1                 # Populate database with fake data
+# locust==2.20.0                     # Load testing
+
+setuptools==69.0.2
+wheel==0.42.0

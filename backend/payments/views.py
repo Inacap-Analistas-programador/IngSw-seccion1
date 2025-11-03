@@ -1,12 +1,28 @@
 from rest_framework import viewsets
-from .models import PagoPersona, PagoCambioPersona, Prepago, ConceptoContable, ComprobantePago, PagoComprobante
-from .serializers import PagoPersonaSerializer, PagoCambioPersonaSerializer, PrepagoSerializer, ConceptoContableSerializer, ComprobantePagoSerializer, PagoComprobanteSerializer
+from .models import (
+    PagoPersona,
+    PagoCambioPersona,
+    Prepago,
+    ConceptoContable,
+    ComprobantePago,
+    PagoComprobante,
+)
+from .serializers import (
+    PagoPersonaSerializer,
+    PagoCambioPersonaSerializer,
+    PrepagoSerializer,
+    ConceptoContableSerializer,
+    ComprobantePagoSerializer,
+    PagoComprobanteSerializer,
+)
+
 
 class PagoPersonaViewSet(viewsets.ModelViewSet):
     queryset = (
         PagoPersona.objects.select_related("persona", "curso", "usuario").all()
     )
     serializer_class = PagoPersonaSerializer
+
 
 class PagoCambioPersonaViewSet(viewsets.ModelViewSet):
     queryset = (
@@ -16,15 +32,18 @@ class PagoCambioPersonaViewSet(viewsets.ModelViewSet):
     )
     serializer_class = PagoCambioPersonaSerializer
 
+
 class PrepagoViewSet(viewsets.ModelViewSet):
     queryset = (
         Prepago.objects.select_related("persona", "curso", "pago_persona").all()
     )
     serializer_class = PrepagoSerializer
 
+
 class ConceptoContableViewSet(viewsets.ModelViewSet):
     queryset = ConceptoContable.objects.all()
     serializer_class = ConceptoContableSerializer
+
 
 class ComprobantePagoViewSet(viewsets.ModelViewSet):
     queryset = (
@@ -33,6 +52,7 @@ class ComprobantePagoViewSet(viewsets.ModelViewSet):
         ).all()
     )
     serializer_class = ComprobantePagoSerializer
+
 
 class PagoComprobanteViewSet(viewsets.ModelViewSet):
     queryset = (
