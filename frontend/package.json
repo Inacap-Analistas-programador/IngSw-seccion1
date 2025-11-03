@@ -20,7 +20,10 @@
     "format:check": "prettier --check src/",
     "type-check": "vue-tsc --noEmit",
     "test:e2e": "echo 'E2E tests not configured yet'",
-    "ci": "npm run lint:check && npm run format:check && npm run type-check && npm run test:run"
+    "perf:audit": "lhci autorun",
+    "perf:collect": "lhci collect",
+    "perf:assert": "lhci assert",
+    "ci": "npm run lint:check && npm run format:check && npm run type-check && npm run test:run && npm run perf:audit"
   },
   "dependencies": {
     "@headlessui/vue": "^1.7.16",
@@ -69,6 +72,7 @@
     "vite": "^7.1.12",
     "vite-plugin-vue-inspector": "^5.3.2",
     "vitest": "^4.0.5",
-    "vue-tsc": "^3.1.1"
+    "vue-tsc": "^3.1.1",
+    "@lhci/cli": "^0.13.0"
   }
 }
