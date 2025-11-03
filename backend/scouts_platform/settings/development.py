@@ -1,5 +1,7 @@
 from .base import *
 from decouple import config
+import dj_database_url
+from pathlib import Path
 
 # ADVERTENCIA DE SEGURIDAD: ¡no ejecutes con debug activado en producción!
 DEBUG = True
@@ -8,42 +10,31 @@ ALLOWED_HOSTS = ["*"]
 
 # Base de datos
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
-DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.mysql",
-        "NAME": config("DB_NAME"),
-        "USER": config("DB_USER"),
-        "PASSWORD": config("DB_PASSWORD"),
-        "HOST": config("DB_HOST"),
-        "PORT": config("DB_PORT"),
-    }
-else:
-    # Fallback a SQLite para que runserver funcione sin configurar MySQL
+# Prioridad: DATABASE_URL > variables individuales DB_* > SQLite (fallback)
+if config("DATABASE_URL", default=None):
     DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.sqlite3',
-            'NAME': BASE_DIR / 'db.sqlite3',
+        "default": dj_database_url.config(
+            default=config("DATABASE_URL"),
+            conn_max_age=600,
+        )
+    }
+elif config("USE_SQLITE", default="False") == "True":
+    # Opción SQLite para desarrollo local sin MySQL
+    DATABASES = {
+        "default": {
+            "ENGINE": "django.db.backends.sqlite3",
+            "NAME": BASE_DIR / "db.sqlite3",
         }
     }
-
-# Debug Toolbar (solo desarrollo)
-INSTALLED_APPS += [
-    'debug_toolbar',
-]
-
-# Insertar DebugToolbarMiddleware lo más arriba posible
-MIDDLEWARE = [
-    'debug_toolbar.middleware.DebugToolbarMiddleware',
-] + MIDDLEWARE
-
-# Permitir toolbar desde localhost
-INTERNAL_IPS = [
-    '127.0.0.1',
-]
-
-# Logging de consultas SQL en consola (útil para auditoría)
-LOGGING['loggers']['django.db.backends'] = {
-    'handlers': ['console'],
-    'level': 'DEBUG',
-    'propagate': False,
-}
+else:
+    # Configuración MySQL
+    DATABASES = {
+        "default": {
+            "ENGINE": "django.db.backends.mysql",
+            "NAME": config("DB_NAME", default="sgics_dev"),
+            "USER": config("DB_USER", default="root"),
+            "PASSWORD": config("DB_PASSWORD", default="root"),
+            "HOST": config("DB_HOST", default="localhost"),
+            "PORT": config("DB_PORT", default="3306"),
+        }
+    }
