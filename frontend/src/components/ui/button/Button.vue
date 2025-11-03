@@ -6,14 +6,23 @@
 
 <script setup lang="ts">
 import { computed, useAttrs, defineOptions} from 'vue'
-import { buttonVariants, type ButtonVariants } from './index'
+import { buttonVariants } from './index'
 import { cn } from '../../../utils'
 const $attrs = useAttrs()
 defineOptions({ inheritAttrs: false })
 
-interface Props extends ButtonVariants {
+// Definir Props explícitamente sin tipos complejos de CVA
+interface Props {
+  variant?: 'primary' | 'success' | 'secondary' | 'default'
+  size?: 'default' | 'sm' | 'lg'
   class?: string
 }
 
-const props = defineProps<Props>()
+const props = withDefaults(defineProps<Props>(), {
+  variant: 'default',
+  size: 'default'
+})
+
+// Extraer variant y size para el template
+const { variant, size } = props
 </script>
