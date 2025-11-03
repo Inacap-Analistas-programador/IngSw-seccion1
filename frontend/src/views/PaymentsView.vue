@@ -48,7 +48,7 @@
           
           <div class="space-y-1">
             <label class="text-sm font-medium text-gray-700">Estado</label>
-            <select v-model="filters.status" @change="loadPayments" class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-green-500 focus:border-green-500"
+            <select v-model="filters.status" @change="loadPayments" class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-green-500 focus:border-green-500">
               <option value="">Todos los estados</option>
               <option value="Pendiente">Pendiente</option>
               <option value="Registrado">Registrado</option>

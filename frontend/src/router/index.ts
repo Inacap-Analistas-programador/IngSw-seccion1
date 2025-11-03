@@ -71,6 +71,36 @@ const router = createRouter({
       meta: { requiresAuth: true },
     },
     {
+      path: '/preinscripciones',
+      name: 'preinscripciones',
+      component: () => import('../views/PreinscripcionesView.vue'),
+      meta: { requiresAuth: true },
+    },
+    {
+      path: '/mis-preinscripciones',
+      name: 'mis-preinscripciones',
+      component: () => import('../views/MisPreinscripcionesView.vue'),
+      meta: { requiresAuth: true },
+    },
+    {
+      path: '/maestros',
+      name: 'maestros',
+      component: () => import('../views/MaestrosView.vue'),
+      meta: { requiresAuth: true },
+    },
+    {
+      path: '/participantes',
+      name: 'participantes',
+      component: () => import('../views/ParticipantesView.vue'),
+      meta: { requiresAuth: true },
+    },
+    {
+      path: '/payments',
+      name: 'payments',
+      component: () => import('../views/PaymentsView.vue'),
+      meta: { requiresAuth: true },
+    },
+    {
       path: '/mantenedores',
       name: 'mantenedores',
       component: () => import('../views/MantenedoresView.vue'),

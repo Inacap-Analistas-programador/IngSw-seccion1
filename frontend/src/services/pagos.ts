@@ -1,4 +1,4 @@
-import { apiClient } from './api';
+import apiClient from './api';
 import type { Pago, PaymentBreakdown } from '@/types/pagos';
 
 export const getPagos = async (): Promise<Pago[]> => {
