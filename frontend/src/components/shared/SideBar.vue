@@ -7,9 +7,15 @@
       <RouterLink to="/"><Icon name="dashboard" /> Dashboard</RouterLink>
       <RouterLink to="/cursos"><Icon name="training" /> Cursos</RouterLink>
       <RouterLink to="/preinscripcion"><Icon name="people" /> Preinscripción</RouterLink>
+      <RouterLink to="/preinscripciones"><Icon name="people" /> Preinscripciones</RouterLink>
+      <RouterLink to="/mis-preinscripciones"><Icon name="people" /> Mis Preinscripciones</RouterLink>
+      <RouterLink to="/participantes"><Icon name="people" /> Participantes</RouterLink>
       <RouterLink to="/pagos"><Icon name="payment" /> Pagos</RouterLink>
+      <RouterLink to="/payments"><Icon name="payment" /> Pagos Sistema</RouterLink>
       <RouterLink to="/personas"><Icon name="people" /> Personas</RouterLink>
+      <RouterLink to="/maestros"><Icon name="book" /> Maestros</RouterLink>
       <RouterLink to="/catalogo"><Icon name="book" /> Catálogo</RouterLink>
+      <RouterLink to="/archivos"><Icon name="file" /> Archivos</RouterLink>
       <RouterLink to="/reportes"><Icon name="report" /> Reportes</RouterLink>
       <RouterLink to="/email-forwarder"><Icon name="mail" /> Correos</RouterLink>
     </nav>

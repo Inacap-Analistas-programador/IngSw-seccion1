@@ -25,7 +25,7 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">0% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>0/142</span>
+                <span class='fraction'>0/152</span>
             </div>
         
             
@@ -46,7 +46,7 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">0% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>0/142</span>
+                <span class='fraction'>0/152</span>
             </div>
         
             
@@ -205,7 +205,27 @@
 <a name='L140'></a><a href='#L140'>140</a>
 <a name='L141'></a><a href='#L141'>141</a>
 <a name='L142'></a><a href='#L142'>142</a>
-<a name='L143'></a><a href='#L143'>143</a></td><td class="line-coverage quiet"><span class="cline-any cline-no">&nbsp;</span>
+<a name='L143'></a><a href='#L143'>143</a>
+<a name='L144'></a><a href='#L144'>144</a>
+<a name='L145'></a><a href='#L145'>145</a>
+<a name='L146'></a><a href='#L146'>146</a>
+<a name='L147'></a><a href='#L147'>147</a>
+<a name='L148'></a><a href='#L148'>148</a>
+<a name='L149'></a><a href='#L149'>149</a>
+<a name='L150'></a><a href='#L150'>150</a>
+<a name='L151'></a><a href='#L151'>151</a>
+<a name='L152'></a><a href='#L152'>152</a>
+<a name='L153'></a><a href='#L153'>153</a></td><td class="line-coverage quiet"><span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
@@ -348,146 +368,156 @@
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js"><span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" ><span class="branch-0 cbranch-no" title="branch not covered" >&lt;template&gt;</span></span></span>
-<span class="cstat-no" title="statement not covered" >  &lt;MainLayout&gt;</span>
-<span class="cstat-no" title="statement not covered" >    &lt;div class="cursos-view"&gt;</span>
-<span class="cstat-no" title="statement not covered" >      &lt;div class="header"&gt;</span>
-<span class="cstat-no" title="statement not covered" >        &lt;h1&gt;Cursos&lt;/h1&gt;</span>
-<span class="cstat-no" title="statement not covered" >        &lt;Button label="+ Nuevo Curso" @click="goToNewCurso" /&gt;</span>
+<span class="cstat-no" title="statement not covered" >  &lt;div class="cursos-view"&gt;</span>
+<span class="cstat-no" title="statement not covered" >    &lt;div class="header"&gt;</span>
+<span class="cstat-no" title="statement not covered" >      &lt;h1&gt;Cursos&lt;/h1&gt;</span>
+<span class="cstat-no" title="statement not covered" >      &lt;div class="actions"&gt;</span>
+<span class="cstat-no" title="statement not covered" >        &lt;BaseButton @click="showFilters = !showFilters" variant="secondary"&gt;</span>
+<span class="cstat-no" title="statement not covered" >          &lt;Icon name="filter" /&gt; Filtros</span>
+<span class="cstat-no" title="statement not covered" >        &lt;/BaseButton&gt;</span>
+<span class="cstat-no" title="statement not covered" >        &lt;BaseButton @click="showCreateModal = true"&gt;Crear Curso&lt;/BaseButton&gt;</span>
 <span class="cstat-no" title="statement not covered" >      &lt;/div&gt;</span>
-<span class="cstat-no" title="statement not covered" >      &lt;p&gt;Gestiona todos los cursos de formación Scout&lt;/p&gt;</span>
-<span class="cstat-no" title="statement not covered" ></span>
-<span class="cstat-no" title="statement not covered" >      &lt;div v-if="cursoStore.error" class="error-message"&gt;{{ cursoStore.error }}&lt;/div&gt;</span>
-<span class="cstat-no" title="statement not covered" >      &lt;DataTable :value="cursoStore.cursos" :loading="cursoStore.isLoading" responsiveLayout="scroll"&gt;</span>
-<span class="cstat-no" title="statement not covered" >        &lt;template #empty&gt; No se encontraron cursos. &lt;/template&gt;</span>
-<span class="cstat-no" title="statement not covered" >        &lt;template #loading&gt; Cargando cursos... &lt;/template&gt;</span>
-<span class="cstat-no" title="statement not covered" >        &lt;Column field="codigo" header="Código"&gt;&lt;/Column&gt;</span>
-<span class="cstat-no" title="statement not covered" >        &lt;Column field="descripcion" header="Nombre del Curso"&gt;&lt;/Column&gt;</span>
-<span class="cstat-no" title="statement not covered" >        &lt;Column field="tipo_curso.descripcion" header="Categoría"&gt;&lt;/Column&gt;</span>
-<span class="cstat-no" title="statement not covered" >        &lt;Column field="modalidad" header="Modalidad"&gt;&lt;/Column&gt;</span>
-<span class="cstat-no" title="statement not covered" >        &lt;Column header="Fechas"&gt;</span>
-<span class="cstat-no" title="statement not covered" >          &lt;template #body="slotProps"&gt;</span>
-<span class="cstat-no" title="statement not covered" >            {{ formatFechas(slotProps.data.fechas) }}</span>
-<span class="cstat-no" title="statement not covered" >          &lt;/template&gt;</span>
-<span class="cstat-no" title="statement not covered" >        &lt;/Column&gt;</span>
-<span class="cstat-no" title="statement not covered" >        &lt;Column field="total_participantes" header="Participantes"&gt;&lt;/Column&gt;</span>
-<span class="cstat-no" title="statement not covered" >        &lt;Column field="cuota_con_almuerzo" header="Precio (Bs.)"&gt;&lt;/Column&gt;</span>
-<span class="cstat-no" title="statement not covered" >        &lt;Column field="estado" header="Estado"&gt;</span>
-<span class="cstat-no" title="statement not covered" >          &lt;template #body="slotProps"&gt;</span>
-<span class="cstat-no" title="statement not covered" >            &lt;Tag :value="getEstadoText(slotProps.data.estado)" :severity="getEstadoSeverity(slotProps.data.estado)" /&gt;</span>
-<span class="cstat-no" title="statement not covered" >          &lt;/template&gt;</span>
-<span class="cstat-no" title="statement not covered" >        &lt;/Column&gt;</span>
-<span class="cstat-no" title="statement not covered" >        &lt;Column header="Acciones"&gt;</span>
-<span class="cstat-no" title="statement not covered" >          &lt;template #body="slotProps"&gt;</span>
-<span class="cstat-no" title="statement not covered" >            &lt;Button icon="pi pi-pencil" class="p-button-rounded p-button-text" @click="editCurso(slotProps.data.id)" /&gt;</span>
-<span class="cstat-no" title="statement not covered" >            &lt;Button icon="pi pi-trash" class="p-button-rounded p-button-text p-button-danger" @click="deleteCurso(slotProps.data.id)" /&gt;</span>
-<span class="cstat-no" title="statement not covered" >          &lt;/template&gt;</span>
-<span class="cstat-no" title="statement not covered" >        &lt;/Column&gt;</span>
-<span class="cstat-no" title="statement not covered" >      &lt;/DataTable&gt;</span>
 <span class="cstat-no" title="statement not covered" >    &lt;/div&gt;</span>
-<span class="cstat-no" title="statement not covered" >  &lt;/MainLayout&gt;</span>
+<span class="cstat-no" title="statement not covered" ></span>
+<span class="cstat-no" title="statement not covered" >    &lt;div v-if="showFilters" class="filter-panel card"&gt;</span>
+<span class="cstat-no" title="statement not covered" >      &lt;div class="filter-grid"&gt;</span>
+<span class="cstat-no" title="statement not covered" >        &lt;InputBase label="Título" v-model="filters.titulo" /&gt;</span>
+<span class="cstat-no" title="statement not covered" >        &lt;BaseSelect label="Rama" v-model="filters.rama" :options="ramaOptions" /&gt;</span>
+<span class="cstat-no" title="statement not covered" >        &lt;InputBase type="date" label="Fecha Desde" v-model="filters.fechaDesde" /&gt;</span>
+<span class="cstat-no" title="statement not covered" >        &lt;InputBase type="date" label="Fecha Hasta" v-model="filters.fechaHasta" /&gt;</span>
+<span class="cstat-no" title="statement not covered" >      &lt;/div&gt;</span>
+<span class="cstat-no" title="statement not covered" >      &lt;div class="filter-actions"&gt;</span>
+<span class="cstat-no" title="statement not covered" >        &lt;BaseButton variant="secondary" @click="clearFilters"&gt;Limpiar&lt;/BaseButton&gt;</span>
+<span class="cstat-no" title="statement not covered" >        &lt;BaseButton @click="applyFilters"&gt;Buscar&lt;/BaseButton&gt;</span>
+<span class="cstat-no" title="statement not covered" >      &lt;/div&gt;</span>
+<span class="cstat-no" title="statement not covered" >    &lt;/div&gt;</span>
+<span class="cstat-no" title="statement not covered" ></span>
+<span class="cstat-no" title="statement not covered" >    &lt;DataTable</span>
+<span class="cstat-no" title="statement not covered" >      :columns="columns"</span>
+<span class="cstat-no" title="statement not covered" >      :items="cursosStore.cursos"</span>
+<span class="cstat-no" title="statement not covered" >      :actions="['acreditar', 'view', 'edit', 'delete']"</span>
+<span class="cstat-no" title="statement not covered" >      @acreditar="handleAcreditar"</span>
+<span class="cstat-no" title="statement not covered" >      @view="handleView"</span>
+<span class="cstat-no" title="statement not covered" >    &gt;</span>
+<span class="cstat-no" title="statement not covered" >      &lt;template #cell(estado)="{ item }"&gt;</span>
+<span class="cstat-no" title="statement not covered" >        &lt;span :class="getEstadoClass(item)"&gt;{{ item.estado }}&lt;/span&gt;</span>
+<span class="cstat-no" title="statement not covered" >      &lt;/template&gt;</span>
+<span class="cstat-no" title="statement not covered" >    &lt;/DataTable&gt;</span>
+<span class="cstat-no" title="statement not covered" >    &lt;CreateCursoModal :show="showCreateModal" @close="showCreateModal = false" /&gt;</span>
+<span class="cstat-no" title="statement not covered" >  &lt;/div&gt;</span>
 <span class="cstat-no" title="statement not covered" >&lt;/template&gt;</span>
 <span class="cstat-no" title="statement not covered" ></span>
 <span class="cstat-no" title="statement not covered" >&lt;script setup lang="ts"&gt;</span>
-<span class="cstat-no" title="statement not covered" >import { onMounted } from 'vue';</span>
+<span class="cstat-no" title="statement not covered" >import { ref, reactive, onMounted } from 'vue';</span>
 <span class="cstat-no" title="statement not covered" >import { useRouter } from 'vue-router';</span>
-<span class="cstat-no" title="statement not covered" >import { useCursoStore } from '@/stores/curso';</span>
-<span class="cstat-no" title="statement not covered" >import MainLayout from '@/components/layout/MainLayout.vue';</span>
-<span class="cstat-no" title="statement not covered" >import DataTable from 'primevue/datatable';</span>
-<span class="cstat-no" title="statement not covered" >import Column from 'primevue/column';</span>
-<span class="cstat-no" title="statement not covered" >import Button from 'primevue/button';</span>
-<span class="cstat-no" title="statement not covered" >import Tag from 'primevue/tag';</span>
+<span class="cstat-no" title="statement not covered" >import { useCursosStore } from '@/stores/cursos';</span>
+<span class="cstat-no" title="statement not covered" >import DataTable from '@/components/shared/DataTable.vue';</span>
+<span class="cstat-no" title="statement not covered" >import BaseButton from '@/components/shared/BaseButton.vue';</span>
+<span class="cstat-no" title="statement not covered" >import CreateCursoModal from '@/components/cursos/CreateCursoModal.vue';</span>
+<span class="cstat-no" title="statement not covered" >import InputBase from '@/components/shared/InputBase.vue';</span>
+<span class="cstat-no" title="statement not covered" >import BaseSelect from '@/components/shared/BaseSelect.vue';</span>
+<span class="cstat-no" title="statement not covered" >import Icon from '@/components/shared/Icon.vue';</span>
 <span class="cstat-no" title="statement not covered" ></span>
 <span class="cstat-no" title="statement not covered" >const router = useRouter();</span>
-<span class="cstat-no" title="statement not covered" >const cursoStore = useCursoStore();</span>
+<span class="cstat-no" title="statement not covered" >const cursosStore = useCursosStore();</span>
+<span class="cstat-no" title="statement not covered" >const showCreateModal = ref(false);</span>
+<span class="cstat-no" title="statement not covered" >const showFilters = ref(false);</span>
 <span class="cstat-no" title="statement not covered" ></span>
-<span class="cstat-no" title="statement not covered" >onMounted(() =&gt; {</span>
-<span class="cstat-no" title="statement not covered" >  cursoStore.fetchCursos();</span>
+<span class="cstat-no" title="statement not covered" >const filters = reactive({</span>
+<span class="cstat-no" title="statement not covered" >  titulo: '',</span>
+<span class="cstat-no" title="statement not covered" >  rama: '',</span>
+<span class="cstat-no" title="statement not covered" >  fechaDesde: '',</span>
+<span class="cstat-no" title="statement not covered" >  fechaHasta: '',</span>
 <span class="cstat-no" title="statement not covered" >});</span>
 <span class="cstat-no" title="statement not covered" ></span>
-<span class="cstat-no" title="statement not covered" >const goToNewCurso = () =&gt; {</span>
-<span class="cstat-no" title="statement not covered" >  router.push({ name: 'Cursos.New' });</span>
+<span class="cstat-no" title="statement not covered" >const columns = [</span>
+<span class="cstat-no" title="statement not covered" >  { key: 'codigo', label: 'Código' },</span>
+<span class="cstat-no" title="statement not covered" >  { key: 'descripcion', label: 'Descripción' },</span>
+<span class="cstat-no" title="statement not covered" >  { key: 'cupos', label: 'Cupos' },</span>
+<span class="cstat-no" title="statement not covered" >  { key: 'estado', label: 'Estado' },</span>
+<span class="cstat-no" title="statement not covered" >];</span>
+<span class="cstat-no" title="statement not covered" ></span>
+<span class="cstat-no" title="statement not covered" >const ramaOptions = [{ value: '', label: 'Todas' }];</span>
+<span class="cstat-no" title="statement not covered" ></span>
+<span class="cstat-no" title="statement not covered" >const getEstadoClass = (curso: any) =&gt; {</span>
+<span class="cstat-no" title="statement not covered" >  // Lógica de semáforo basada en pagos (simulada por ahora)</span>
+<span class="cstat-no" title="statement not covered" >  if (curso.estado === 'Cerrado') {</span>
+<span class="cstat-no" title="statement not covered" >    return 'status-badge red';</span>
+<span class="cstat-no" title="statement not covered" >  } else if (curso.estado === 'En curso') {</span>
+<span class="cstat-no" title="statement not covered" >    return 'status-badge yellow';</span>
+<span class="cstat-no" title="statement not covered" >  } else {</span>
+<span class="cstat-no" title="statement not covered" >    return 'status-badge green';</span>
+<span class="cstat-no" title="statement not covered" >  }</span>
 <span class="cstat-no" title="statement not covered" >};</span>
 <span class="cstat-no" title="statement not covered" ></span>
-<span class="cstat-no" title="statement not covered" >const editCurso = (id: number) =&gt; {</span>
-<span class="cstat-no" title="statement not covered" >  router.push({ name: 'Cursos.Edit', params: { id } });</span>
+<span class="cstat-no" title="statement not covered" >onMounted(() =&gt; {</span>
+<span class="cstat-no" title="statement not covered" >  cursosStore.fetchCursos();</span>
+<span class="cstat-no" title="statement not covered" >});</span>
+<span class="cstat-no" title="statement not covered" ></span>
+<span class="cstat-no" title="statement not covered" >const applyFilters = () =&gt; {</span>
+<span class="cstat-no" title="statement not covered" >  cursosStore.fetchCursos(filters);</span>
 <span class="cstat-no" title="statement not covered" >};</span>
 <span class="cstat-no" title="statement not covered" ></span>
-<span class="cstat-no" title="statement not covered" >const deleteCurso = (id: number) =&gt; {</span>
-<span class="cstat-no" title="statement not covered" >  // Implement delete logic, possibly with a confirmation dialog</span>
-<span class="cstat-no" title="statement not covered" >  console.log('Delete curso with id:', id);</span>
+<span class="cstat-no" title="statement not covered" >const clearFilters = () =&gt; {</span>
+<span class="cstat-no" title="statement not covered" >  for (const key of Object.keys(filters)) {</span>
+<span class="cstat-no" title="statement not covered" >    filters[key as keyof typeof filters] = '';</span>
+<span class="cstat-no" title="statement not covered" >  }</span>
+<span class="cstat-no" title="statement not covered" >  applyFilters();</span>
 <span class="cstat-no" title="statement not covered" >};</span>
 <span class="cstat-no" title="statement not covered" ></span>
-<span class="cstat-no" title="statement not covered" >const formatFechas = (fechas: { fecha_inicio: string }[]) =&gt; {</span>
-<span class="cstat-no" title="statement not covered" >  if (!fechas || fechas.length === 0 || !fechas[0]) return 'N/A';</span>
-<span class="cstat-no" title="statement not covered" >  const primeraFecha = new Date(fechas[0].fecha_inicio).toLocaleDateString();</span>
-<span class="cstat-no" title="statement not covered" >  return `${primeraFecha}...`;</span>
+<span class="cstat-no" title="statement not covered" >const handleAcreditar = (curso: any) =&gt; {</span>
+<span class="cstat-no" title="statement not covered" >  router.push({ name: 'acreditacion', params: { id: curso.id } });</span>
 <span class="cstat-no" title="statement not covered" >};</span>
 <span class="cstat-no" title="statement not covered" ></span>
-<span class="cstat-no" title="statement not covered" >const getEstadoText = (estado: number) =&gt; {</span>
-<span class="cstat-no" title="statement not covered" >  const estados: { [key: number]: string } = {</span>
-<span class="cstat-no" title="statement not covered" >    0: 'Pendiente',</span>
-<span class="cstat-no" title="statement not covered" >    1: 'Vigente',</span>
-<span class="cstat-no" title="statement not covered" >    2: 'Anulado',</span>
-<span class="cstat-no" title="statement not covered" >    3: 'Finalizado',</span>
-<span class="cstat-no" title="statement not covered" >  };</span>
-<span class="cstat-no" title="statement not covered" >  return estados[estado] || 'Desconocido';</span>
-<span class="cstat-no" title="statement not covered" >};</span>
-<span class="cstat-no" title="statement not covered" ></span>
-<span class="cstat-no" title="statement not covered" >const getEstadoSeverity = (estado: number) =&gt; {</span>
-<span class="cstat-no" title="statement not covered" >  const severities: { [key: number]: string } = {</span>
-<span class="cstat-no" title="statement not covered" >    0: 'warning',</span>
-<span class="cstat-no" title="statement not covered" >    1: 'success',</span>
-<span class="cstat-no" title="statement not covered" >    2: 'danger',</span>
-<span class="cstat-no" title="statement not covered" >    3: 'info',</span>
-<span class="cstat-no" title="statement not covered" >  };</span>
-<span class="cstat-no" title="statement not covered" >  return severities[estado] || 'secondary';</span>
+<span class="cstat-no" title="statement not covered" >const handleView = (curso: any) =&gt; {</span>
+<span class="cstat-no" title="statement not covered" >  router.push({ name: 'curso-detail', params: { id: curso.id } });</span>
 <span class="cstat-no" title="statement not covered" >};</span>
 <span class="cstat-no" title="statement not covered" >&lt;/script&gt;</span>
 <span class="cstat-no" title="statement not covered" ></span>
 <span class="cstat-no" title="statement not covered" >&lt;style scoped&gt;</span>
+<span class="cstat-no" title="statement not covered" >.cursos-view {</span>
+<span class="cstat-no" title="statement not covered" >  padding: 2rem;</span>
+<span class="cstat-no" title="statement not covered" >}</span>
+<span class="cstat-no" title="statement not covered" ></span>
 <span class="cstat-no" title="statement not covered" >.header {</span>
 <span class="cstat-no" title="statement not covered" >  display: flex;</span>
 <span class="cstat-no" title="statement not covered" >  justify-content: space-between;</span>
 <span class="cstat-no" title="statement not covered" >  align-items: center;</span>
-<span class="cstat-no" title="statement not covered" >  margin-bottom: 5px;</span>
+<span class="cstat-no" title="statement not covered" >  margin-bottom: 2rem;</span>
 <span class="cstat-no" title="statement not covered" >}</span>
-<span class="cstat-no" title="statement not covered" ></span>
-<span class="cstat-no" title="statement not covered" >h1 {</span>
-<span class="cstat-no" title="statement not covered" >  font-size: 24px;</span>
-<span class="cstat-no" title="statement not covered" >  font-weight: bold;</span>
+<span class="cstat-no" title="statement not covered" >.actions {</span>
+<span class="cstat-no" title="statement not covered" >  display: flex;</span>
+<span class="cstat-no" title="statement not covered" >  gap: 1rem;</span>
 <span class="cstat-no" title="statement not covered" >}</span>
-<span class="cstat-no" title="statement not covered" ></span>
-<span class="cstat-no" title="statement not covered" >.cursos-view p {</span>
-<span class="cstat-no" title="statement not covered" >  color: #6b7280;</span>
-<span class="cstat-no" title="statement not covered" >  margin-bottom: 20px;</span>
-<span class="cstat-no" title="statement not covered" >}</span>
-<span class="cstat-no" title="statement not covered" ></span>
-<span class="cstat-no" title="statement not covered" >.status {</span>
-<span class="cstat-no" title="statement not covered" >  padding: 4px 8px;</span>
+<span class="cstat-no" title="statement not covered" >.card {</span>
+<span class="cstat-no" title="statement not covered" >  background: #fff;</span>
 <span class="cstat-no" title="statement not covered" >  border-radius: 12px;</span>
-<span class="cstat-no" title="statement not covered" >  font-size: 12px;</span>
-<span class="cstat-no" title="statement not covered" >  font-weight: bold;</span>
+<span class="cstat-no" title="statement not covered" >  box-shadow: 0 4px 20px rgba(0,0,0,0.05);</span>
+<span class="cstat-no" title="statement not covered" >  padding: 2rem;</span>
+<span class="cstat-no" title="statement not covered" >  margin-bottom: 2rem;</span>
 <span class="cstat-no" title="statement not covered" >}</span>
-<span class="cstat-no" title="statement not covered" ></span>
-<span class="cstat-no" title="statement not covered" >.status.activo {</span>
-<span class="cstat-no" title="statement not covered" >  background-color: #d1fae5;</span>
-<span class="cstat-no" title="statement not covered" >  color: #065f46;</span>
+<span class="cstat-no" title="statement not covered" >.filter-grid {</span>
+<span class="cstat-no" title="statement not covered" >  display: grid;</span>
+<span class="cstat-no" title="statement not covered" >  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));</span>
+<span class="cstat-no" title="statement not covered" >  gap: 1.5rem;</span>
 <span class="cstat-no" title="statement not covered" >}</span>
-<span class="cstat-no" title="statement not covered" ></span>
-<span class="cstat-no" title="statement not covered" >.status.próximo {</span>
-<span class="cstat-no" title="statement not covered" >  background-color: #dbeafe;</span>
-<span class="cstat-no" title="statement not covered" >  color: #1e40af;</span>
+<span class="cstat-no" title="statement not covered" >.filter-actions {</span>
+<span class="cstat-no" title="statement not covered" >  display: flex;</span>
+<span class="cstat-no" title="statement not covered" >  justify-content: flex-end;</span>
+<span class="cstat-no" title="statement not covered" >  gap: 1rem;</span>
+<span class="cstat-no" title="statement not covered" >  margin-top: 2rem;</span>
+<span class="cstat-no" title="statement not covered" >  border-top: 1px solid #eee;</span>
+<span class="cstat-no" title="statement not covered" >  padding-top: 1.5rem;</span>
 <span class="cstat-no" title="statement not covered" >}</span>
-<span class="cstat-no" title="statement not covered" ></span>
-<span class="cstat-no" title="statement not covered" >.status.completado {</span>
-<span class="cstat-no" title="statement not covered" >  background-color: #e5e7eb;</span>
-<span class="cstat-no" title="statement not covered" >  color: #374151;</span>
+<span class="cstat-no" title="statement not covered" >.status-badge {</span>
+<span class="cstat-no" title="statement not covered" >  padding: 0.25rem 0.75rem;</span>
+<span class="cstat-no" title="statement not covered" >  border-radius: 16px;</span>
+<span class="cstat-no" title="statement not covered" >  font-size: 0.8rem;</span>
+<span class="cstat-no" title="statement not covered" >  color: #fff;</span>
 <span class="cstat-no" title="statement not covered" >}</span>
-<span class="cstat-no" title="statement not covered" ></span>
-<span class="cstat-no" title="statement not covered" >.status.borrador {</span>
-<span class="cstat-no" title="statement not covered" >  background-color: #fef3c7;</span>
-<span class="cstat-no" title="statement not covered" >  color: #92400e;</span>
-<span class="cstat-no" title="statement not covered" >}</span>
+<span class="cstat-no" title="statement not covered" >.status-badge.red { background-color: #ef4444; }</span>
+<span class="cstat-no" title="statement not covered" >.status-badge.yellow { background-color: #f59e0b; }</span>
+<span class="cstat-no" title="statement not covered" >.status-badge.green { background-color: #10b981; }</span>
 <span class="cstat-no" title="statement not covered" >&lt;/style&gt;</span>
 &nbsp;</pre></td></tr></table></pre>
 
@@ -496,7 +526,7 @@
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2025-10-29T20:11:20.693Z
+                at 2025-11-03T16:57:01.490Z
             </div>
         <script src="../../prettify.js"></script>
         <script>
