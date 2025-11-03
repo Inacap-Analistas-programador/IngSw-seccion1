@@ -6,20 +6,20 @@
 # ============================================================================
 # CORE FRAMEWORK - Django & Django REST Framework
 # ============================================================================
-Django==5.2.7
+Django==5.2.7  # (Mantener 5.2.7, es la versión más alta)
 djangorestframework==3.15.2
 djangorestframework-simplejwt==5.3.1
 django-cors-headers==4.4.0
 django-filter==24.3
 drf-spectacular==0.27.2
-drf-spectacular[sidecar]==0.27.2
+drf-spectacular[sidecar]==0.27.2 # (Mantener el sidecar)
 
 # ============================================================================
 # DATABASE DRIVERS
 # ============================================================================
 pymysql==1.1.1
-mysqlclient==2.2.0
-psycopg2-binary==2.9.9
+mysqlclient==2.2.4 # (Mantener 2.2.4, es la versión más alta)
+psycopg2-binary==2.9.9 # (Mantener el driver de Postgres)
 dj-database-url==2.2.0
 
 # ============================================================================
@@ -40,8 +40,8 @@ hiredis==2.3.2
 # TASK QUEUE & ASYNC PROCESSING
 # ============================================================================
 celery==5.4.0
-celery[redis]==5.4.0
-django-celery-beat==2.7.0
+celery[redis]==5.4.0 # (Mantener la dependencia de redis)
+django-celery-beat==2.7.0 # (Mantener 2.7.0, es la versión más alta)
 django-celery-results==2.5.1
 flower==2.0.1
 
@@ -56,18 +56,18 @@ pytest-mock==3.14.0
 coverage==7.6.1
 factory-boy==3.3.1
 Faker==30.3.0
-freezegun==1.4.0
-responses==0.24.1
+freezegun==1.4.0 # (Mantener freezegun)
+responses==0.24.1 # (Mantener responses)
 
 # ============================================================================
 # CODE QUALITY & LINTING
 # ============================================================================
 black==24.8.0
-flake8==6.1.0
+flake8==7.1.1 # (Mantener 7.1.1, es la versión más alta)
 flake8-django==1.4
-pylint==3.0.3
+pylint==3.3.1 # (Mantener 3.3.1, es la versión más alta)
 pylint-django==2.5.5
-pylint-celery==0.3
+pylint-celery==0.3 # (Mantener pylint-celery)
 isort==5.13.2
 bandit==1.7.10
 safety==3.2.8
@@ -76,8 +76,8 @@ safety==3.2.8
 # SECURITY & AUTHENTICATION
 # ============================================================================
 django-ratelimit==4.1.0
-django-defender==0.9.7
-django-axes==6.1.1
+django-defender==0.9.7 # (Mantener django-defender)
+django-axes==6.1.1 # (Mantener django-axes)
 cryptography==43.0.1
 PyJWT==2.9.0
 argon2-cffi==23.1.0
@@ -93,37 +93,37 @@ django-extensions==3.2.3
 # HEALTH CHECKS & OBSERVABILITY
 # ============================================================================
 django-health-check==3.18.3
-django-prometheus==2.3.1
+django-prometheus==2.3.1 # (Mantener prometheus)
 sentry-sdk==2.15.0
 
 # ============================================================================
 # FILE HANDLING & STORAGE
 # ============================================================================
-Pillow==12.0.0
+Pillow==12.0.0 # (Mantener 12.0.0, es la versión más alta)
 django-storages==1.14.4
 boto3==1.35.28
-azure-storage-blob==12.19.0
+azure-storage-blob==12.19.0 # (Mantener azure storage)
 
 # ============================================================================
 # EMAIL & NOTIFICATIONS
 # ============================================================================
 django-anymail==12.0
-sendgrid==6.11.0
+sendgrid==6.11.0 # (Mantener sendgrid)
 
 # ============================================================================
 # PRODUCTION SERVER
 # ============================================================================
 gunicorn==23.0.0
-uvicorn[standard]==0.25.0
+uvicorn[standard]==0.25.0 # (Mantener uvicorn)
 whitenoise==6.7.0
 
 # ============================================================================
 # DATA PROCESSING & EXPORT
 # ============================================================================
-pandas==2.1.4
+pandas==2.1.4 # (Mantener pandas)
 openpyxl==3.1.5
 reportlab==4.2.5
-django-import-export==3.3.5
+django-import-export==3.3.5 # (Mantener import-export)
 
 # ============================================================================
 # UTILITIES
@@ -132,9 +132,9 @@ python-dateutil==2.9.0.post0
 pytz==2024.2
 requests==2.32.3
 httpx==0.27.2
-tenacity==8.2.3
-pydantic==2.5.3
-marshmallow==3.20.1
+tenacity==8.2.3 # (Mantener tenacity)
+pydantic==2.5.3 # (Mantener pydantic)
+marshmallow==3.20.1 # (Mantener marshmallow)
 
 setuptools==75.2.0
 wheel==0.44.0
