@@ -113,3 +113,22 @@ Si algún paso falla, anotar:
 
 - Estas pruebas no sustituyen los tests automatizados; son un complemento para validar criterios de negocio.
 - Para ambientes distintos a desarrollo (QA/producción), replica este plan ajustando URLs y credenciales, y deshabilitando Debug Toolbar.
+
+## Resultados UAT — 2025-11-03
+
+Contexto
+- Entorno: desarrollo local con `DJANGO_SETTINGS_MODULE=scouts_platform.settings.development` y DB SQLite por defecto.
+- Método: verificación con el cliente de pruebas de Django/DRF (sin necesidad de levantar servidor externo), para evitar problemas de red locales.
+
+Resumen de resultados
+- Health check: HTTP 200
+- Login JWT: HTTP 200; tokens emitidos (access: 276 chars, refresh: 277 chars)
+- Personas (GET /api/personas/): HTTP 200
+- Cursos (GET /api/cursos/): HTTP 200
+
+Observaciones
+- Se muestra una advertencia de `pkg_resources` proveniente de `djangorestframework-simplejwt` cuando `setuptools>=81`. Es benigna; si molesta en entornos más estrictos, se puede fijar temporalmente `setuptools<81` o esperar a una versión que elimine ese import.
+- El logging SQL/Debug Toolbar confirman consultas resueltas correctamente y joins esperados tras optimizaciones con `select_related()`.
+
+Evidencia breve (log)
+- health_status=200, login_status=200, personas_status=200, cursos_status=200.

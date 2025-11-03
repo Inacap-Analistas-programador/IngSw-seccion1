@@ -199,3 +199,6 @@ Qué revisar
 - Archivos: subida y listado.
 
 Detalle completo del plan y checklist: ver `docs/UAT.md`.
+
+Resultados recientes
+- Consulta la sección "Resultados UAT — 2025-11-03" en `docs/UAT.md` para el último resumen de estado (health, login, personas, cursos).
