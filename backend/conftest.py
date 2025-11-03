@@ -1,4 +1,5 @@
 import sys
+import warnings
 
 import pytest
 
@@ -8,8 +9,11 @@ if "tests" in sys.modules:
         mod_file = getattr(mod, "__file__", None) or getattr(mod, "__path__", None)
         if mod_file and "\\backend\\tests" in str(mod_file):
             del sys.modules["tests"]
-    except Exception:
-        pass
+    except (AttributeError, KeyError) as e:
+        warnings.warn(
+            f"conftest: no se pudo limpiar sys.modules['tests'] de backend/tests: {e}",
+            RuntimeWarning,
+        )
 try:
     if "tests" not in sys.modules:
         import os
@@ -19,12 +23,15 @@ try:
         shim = types.ModuleType("tests")
         shim.__file__ = shim_path
         sys.modules["tests"] = shim
-except Exception:
-    pass
+except Exception as e:
+    warnings.warn(
+        f"conftest: no se pudo crear shim para 'tests' ({e.__class__.__name__}: {e})",
+        RuntimeWarning,
+    )
 from django.contrib.auth import get_user_model
 from rest_framework.test import APIClient
 
-from apps.payments.models import ComprobantePago, ConceptoContable, PagoPersona
+from payments.models import ComprobantePago, ConceptoContable, PagoPersona
 
 User = get_user_model()
 

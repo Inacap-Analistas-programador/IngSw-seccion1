@@ -41,3 +41,6 @@ celery==5.3.1
 redis==4.6.0
 
 setuptools
+
+# Debugging & Profiling (desarrollo)
+django-debug-toolbar==4.4.6

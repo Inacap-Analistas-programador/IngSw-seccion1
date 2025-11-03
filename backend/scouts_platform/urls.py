@@ -55,6 +55,13 @@ urlpatterns = [
 # Servir archivos estáticos y de media SOLO en desarrollo
 # En producción esto lo maneja nginx u otro servidor web
 if settings.DEBUG:
+    # Debug Toolbar
+    try:
+        import debug_toolbar  # type: ignore
+        urlpatterns += [path("__debug__/", include(debug_toolbar.urls))]
+    except ImportError:
+        # Debug toolbar no instalada en este entorno: ignorar de forma segura
+        pass
     # Archivos subidos por usuarios (media)
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
     # Archivos estáticos (CSS, JS, imágenes del admin)

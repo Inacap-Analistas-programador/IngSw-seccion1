@@ -5,19 +5,25 @@ from .serializers import PersonaSerializer, PersonaIndividualSerializer, Persona
 from .filters import PersonaFilter
 
 class PersonaViewSet(viewsets.ModelViewSet):
-    queryset = Persona.objects.all()
+    queryset = Persona.objects.select_related(
+        'estado_civil', 'comuna', 'usuario'
+    ).all()
     serializer_class = PersonaSerializer
     filter_backends = [DjangoFilterBackend]
     filterset_class = PersonaFilter
 
 class PersonaIndividualViewSet(viewsets.ModelViewSet):
-    queryset = PersonaIndividual.objects.all()
+    queryset = PersonaIndividual.objects.select_related(
+        'persona', 'cargo', 'distrito', 'zona'
+    ).all()
     serializer_class = PersonaIndividualSerializer
 
 class PersonaNivelViewSet(viewsets.ModelViewSet):
-    queryset = PersonaNivel.objects.all()
+    queryset = PersonaNivel.objects.select_related(
+        'persona', 'nivel', 'rama'
+    ).all()
     serializer_class = PersonaNivelSerializer
 
 class PersonaFormadorViewSet(viewsets.ModelViewSet):
-    queryset = PersonaFormador.objects.all()
+    queryset = PersonaFormador.objects.select_related('persona').all()
     serializer_class = PersonaFormadorSerializer

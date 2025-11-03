@@ -1,4 +1,40 @@
-# Byte-compiled / optimized / DLL files
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.egg-info/
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Django
+db.sqlite3
+media/
+staticfiles/
+backend/logs/
+
+# Environments
+.env
+backend/.env
+.venv/
+backend/.venv/
+
+# Node / Frontend
+frontend/node_modules/
+frontend/dist/
+frontend/.vite/
+frontend/coverage/
+
+# IDE/editor
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Misc
+*.log
+*.DS_Store
+Thumbs.db# Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
 *$py.class
