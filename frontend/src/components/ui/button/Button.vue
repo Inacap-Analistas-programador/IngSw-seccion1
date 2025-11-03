@@ -5,10 +5,12 @@
 </template>
 
 <script setup lang="ts">
-import { computed, useAttrs, defineOptions} from 'vue'
+import { useAttrs } from 'vue'
 import { buttonVariants } from './index'
 import { cn } from '../../../utils'
 const $attrs = useAttrs()
+
+// defineOptions es un macro del compilador, no necesita importarse
 defineOptions({ inheritAttrs: false })
 
 // Definir Props explícitamente sin tipos complejos de CVA
