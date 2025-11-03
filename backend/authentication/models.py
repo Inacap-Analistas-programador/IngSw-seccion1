@@ -26,9 +26,7 @@ class Usuario(AbstractBaseUser, PermissionsMixin):
     perfil = models.ForeignKey(
         Perfil, on_delete=models.RESTRICT, db_column="pel_id", blank=True, null=True
     )
-    username = models.CharField(
-        db_column="usu_username", max_length=100, unique=True
-    )
+    username = models.CharField(db_column="usu_username", max_length=100, unique=True)
     # password se hereda de AbstractBaseUser
     ruta_foto = models.CharField(db_column="usu_ruta_foto", max_length=255, blank=True, null=True)
     vigente = models.BooleanField(db_column="usu_vigente", default=True)
