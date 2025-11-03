@@ -173,3 +173,29 @@ Sugerencias para continuar
 - En vistas con relaciones many-to-many o reverse FK grandes, agregar `prefetch_related()` con `Prefetch` selectivo.
 - Revisar panel SQL de Debug Toolbar por vistas “calientes” y agregar índices donde aplique (en MySQL, revisar EXPLAIN).
 - Para perfiles más detallados, se puede integrar `django-silk` como opción adicional.
+
+## Pruebas de Aceptación de Usuario (UAT)
+
+Objetivo
+- Validar manualmente los flujos de negocio críticos (login, salud, personas, cursos, preinscripciones, pagos, archivos) en un entorno local.
+
+Cómo ejecutarlas rápidamente
+- Backend (desde `backend/`):
+  - `pip install -r requirements.txt`
+  - `python manage.py migrate`
+  - `python manage.py createsuperuser` (si no existe un admin)
+  - `python manage.py runserver`
+- Frontend (desde `frontend/`):
+  - `npm install`
+  - `npm run dev`
+
+Qué revisar
+- Health check 200 en `/healthz/`.
+- Login JWT (POST `/api/auth/login/`) devuelve `access` y `refresh`.
+- Personas: listado y búsqueda por RUT.
+- Cursos: listado y navegación.
+- Preinscripciones: alta mínima (si tienes Persona y Curso creados).
+- Pagos: listado (alta opcional si cuentas con relaciones creadas).
+- Archivos: subida y listado.
+
+Detalle completo del plan y checklist: ver `docs/UAT.md`.
