@@ -5,7 +5,7 @@
 </template>
 
 <script setup lang="ts">
-import { useAttrs } from 'vue'
+import { computed, useAttrs, defineOptions} from 'vue'
 import { buttonVariants } from './index'
 import { cn } from '../../../utils'
 const $attrs = useAttrs()
