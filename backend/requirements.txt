@@ -39,10 +39,9 @@ hiredis==2.3.2
 # ============================================================================
 # TASK QUEUE & ASYNC PROCESSING
 # ============================================================================
-celery==5.4.0
-celery[redis]==5.4.0 # (Mantener la dependencia de redis)
-django-celery-beat==2.7.0 # (Mantener 2.7.0, es la versión más alta)
-django-celery-results==2.5.1
+
+django-celery-beat==2.7.0
+
 flower==2.0.1
 
 # ============================================================================
