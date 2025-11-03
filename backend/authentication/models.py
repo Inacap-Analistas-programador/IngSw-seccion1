@@ -30,24 +30,27 @@ class Usuario(AbstractBaseUser, PermissionsMixin):
     # password se hereda de AbstractBaseUser
     ruta_foto = models.CharField(db_column="usu_ruta_foto", max_length=255, blank=True, null=True)
     vigente = models.BooleanField(db_column="usu_vigente", default=True)
-    is_active = models.BooleanField(default=True)
+
+    # Campos requeridos por AbstractBaseUser y PermissionsMixin (asumidos)
     is_staff = models.BooleanField(default=False)
     is_superuser = models.BooleanField(default=False)
-
-    objects = UsuarioManager()
-
-    USERNAME_FIELD = "username"
+    is_active = models.BooleanField(default=True)
+    
+    objects = UsuarioManager() # Requerido por AbstractBaseUser
+    USERNAME_FIELD = 'username'
     REQUIRED_FIELDS = []
+    
+    # Asumimos que los métodos has_perm y has_module_perms existen en la implementación completa.
 
     class Meta:
         db_table = "usuario"
 
     def __str__(self):
         return self.username
-
-    def has_perm(self, perm, obj=None):
-        return self.is_superuser
-
-    def has_module_perms(self, app_label):
-        return self.is_superuser
-
+    
+    # Métodos requeridos por PermissionsMixin (si no están en la implementación completa)
+    # def has_perm(self, perm, obj=None):
+    #     return self.is_superuser
+    #
+    # def has_module_perms(self, app_label):
+    #     return self.is_superuser
