@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import SideBar from './components/shared/SideBar.vue';
 import NavBar from './components/shared/NavBar.vue';
+import Toast from './components/ui/toast/Toast.vue';
 import { useAuthStore } from '@/stores/auth';
 
 const authStore = useAuthStore();
@@ -19,6 +20,7 @@ const authStore = useAuthStore();
         </router-view>
       </main>
     </div>
+    <Toast />
   </div>
 </template>
 
@@ -42,7 +44,7 @@ const authStore = useAuthStore();
   padding: 2rem;
 }
 
-/* ====== Animaciones de transición entre vistas ====== */
+/* Animaciones de transición entre vistas */
 .fade-enter-active,
 .fade-leave-active {
   transition: opacity 0.2s ease;
