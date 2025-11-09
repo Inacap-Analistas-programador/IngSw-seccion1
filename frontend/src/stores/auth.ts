@@ -1,8 +1,8 @@
 import { defineStore } from 'pinia';
-import apiClient from '@/services/api';
-import type { User } from '@/types';
+import { ref, computed } from 'vue';
 import { jwtDecode } from 'jwt-decode';
 
+<<<<<<< HEAD
 export const useAuthStore = defineStore('auth', {
   state: () => ({
     token: localStorage.getItem('authToken') || null,
@@ -21,55 +21,41 @@ export const useAuthStore = defineStore('auth', {
     async login(credentials: { username: string; password: string }) {
       this.loading = true;
       this.error = null;
+=======
+export const useAuthStore = defineStore('auth', () => {
+  const token = ref<string | null>(localStorage.getItem('token'));
+
+  const isLoggedIn = computed(() => !!token.value);
+
+  function setToken(newToken: string) {
+    token.value = newToken;
+    localStorage.setItem('token', newToken);
+  }
+
+  function clearToken() {
+    token.value = null;
+    localStorage.removeItem('token');
+  }
+
+  const user = computed(() => {
+    if (token.value) {
+>>>>>>> 7cdb3e2 (feat: Add accreditation interface)
       try {
-        // Se hace la petición a la API para obtener el token.
-        const response = await apiClient.post('/auth/login/', credentials);
-        const token = response.data.access;
-
-        // Se guarda el token en el estado y en localStorage.
-        this.token = token;
-        localStorage.setItem('authToken', token);
-        this.isAuthenticated = true;
-
-        // Decodificar el token para obtener el perfil
-        const decodedToken: { perfil?: string } = jwtDecode(token);
-        this.profile = decodedToken.perfil || null;
-
-        // Opcional: Se podría hacer otra petición para obtener los datos del usuario.
-        // await this.fetchUser();
-
-        return true;
+        return jwtDecode(token.value);
       } catch (error) {
-        // En caso de error, se limpia el estado.
-        this.logout();
-        console.error('Error de autenticación:', error);
-        return false;
-      } finally {
-        this.loading = false;
+        console.error('Failed to decode token:', error);
+        clearToken();
+        return null;
       }
-    },
+    }
+    return null;
+  });
 
-    // Acción para manejar el logout.
-    logout() {
-      this.token = null;
-      this.user = null;
-      this.profile = null;
-      this.isAuthenticated = false;
-      localStorage.removeItem('authToken');
-      // Aquí se podría redirigir al usuario a la página de login.
-    },
-
-    // Acción de ejemplo para obtener los datos del usuario.
-    async fetchUser() {
-      if (this.token) {
-        try {
-          const response = await apiClient.get('/auth/user/');
-          this.user = response.data;
-        } catch (error) {
-          console.error('Error al obtener datos del usuario:', error);
-          this.logout();
-        }
-      }
-    },
-  },
+  return {
+    token,
+    isLoggedIn,
+    user,
+    setToken,
+    clearToken,
+  };
 });

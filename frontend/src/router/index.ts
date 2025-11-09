@@ -35,6 +35,12 @@ const router = createRouter({
       meta: { requiresAuth: true },
     },
     {
+      path: '/acreditacion',
+      name: 'Acreditacion',
+      component: () => import('../views/AcreditacionView.vue'),
+      meta: { requiresAuth: true }
+    },
+    {
       path: '/cursos/:id',
       name: 'curso-detail',
       component: () => import('../views/CursoDetailView.vue'),
