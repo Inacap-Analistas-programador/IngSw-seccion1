@@ -46,11 +46,10 @@ import Dropdown from 'primevue/dropdown';
 import Button from 'primevue/button';
 import { preinscripcionService } from '@/services/preinscripcionService';
 import type { Persona } from '@/types/persona';
-import type { Curso } from '@/types/curso';
 
 const cursoStore = useCursosStore();
 
-const cursos = ref<Curso[]>([]);
+const cursos = ref<any[]>([]);
 const selectedCurso = ref<number | null>(null);
 const rut = ref('');
 const persona = ref<Partial<Persona>>({});

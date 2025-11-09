@@ -11,7 +11,7 @@ services:
       - sonarqube_extensions:/opt/sonarqube/extensions
       - sonarqube_logs:/opt/sonarqube/logs
     environment:
-      - SONAR_JDBC_URL=jdbc:postgresql://db:5432/sonar
+      - SONAR_JDBC_URL=jdbc:mysql://db:3306/sonar?useUnicode=true&characterEncoding=utf8&rewriteBatchedStatements=true&useConfigs=maxPerformance&useSSL=false
       - SONAR_JDBC_USERNAME=sonar
       - SONAR_JDBC_PASSWORD=sonar
     depends_on:
@@ -19,19 +19,20 @@ services:
         condition: service_healthy
 
   db:
-    image: postgres:13
-    container_name: postgres_sonarqube
+    image: mysql:8.0
+    container_name: mysql_sonarqube
     ports:
-      - "5432:5432"
+      - "3306:3306"
     volumes:
-      - postgresql:/var/lib/postgresql
-      - postgresql_data:/var/lib/postgresql/data
+      - mysql:/var/lib/mysql
+      - mysql_data:/var/lib/mysql/data
     environment:
-      - POSTGRES_USER=sonar
-      - POSTGRES_PASSWORD=sonar
-      - POSTGRES_DB=sonar
+      - MYSQL_ROOT_PASSWORD=sonar
+      - MYSQL_USER=sonar
+      - MYSQL_PASSWORD=sonar
+      - MYSQL_DATABASE=sonar
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U sonar -d sonar"]
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "sonar", "-psonar"]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -41,5 +42,5 @@ volumes:
   sonarqube_data:
   sonarqube_extensions:
   sonarqube_logs:
-  postgresql:
-  postgresql_data:
+  mysql:
+  mysql_data:

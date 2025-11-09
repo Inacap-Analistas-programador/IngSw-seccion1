@@ -1,5 +1,5 @@
 import apiClient from './api';
-import type { Persona } from '@/types/personas';
+import type { Persona } from '@/types/persona';
 
 export const getPersonas = async (): Promise<Persona[]> => {
   const response = await apiClient.get('/personas/');

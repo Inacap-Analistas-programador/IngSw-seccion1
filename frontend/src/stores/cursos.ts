@@ -4,7 +4,7 @@ import type { Curso } from '@/types';
 
 export const useCursosStore = defineStore('cursos', {
   state: () => ({
-    cursos: [] as Curso[],
+    cursos: [] as Partial<Curso>[],
     curso: null as Curso | null,
     loading: false,
     error: null as string | null,
