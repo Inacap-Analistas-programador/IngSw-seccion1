@@ -1,5 +1,16 @@
 from django.db import models
-from catalog.models import EstadoCivil, Comuna, Cargo, Distrito, Zona, Nivel, Rama
+from catalog.models import (
+    EstadoCivil,
+    Comuna,
+    Cargo,
+    Distrito,
+    Zona,
+    Nivel,
+    Rama,
+    Grupo,
+    Rol,
+    Alimentacion,
+)
 from authentication.models import Usuario
 
 class Persona(models.Model):
@@ -31,9 +42,35 @@ class Persona(models.Model):
     apodo = models.CharField(db_column='per_apodo', max_length=50)
     foto = models.TextField(db_column='per_foto', blank=True, default='')
     vigente = models.BooleanField(db_column='per_vigente')
+    registro_vigente = models.BooleanField(db_column='per_registro_vigente', default=True)
 
     class Meta:
         db_table = 'persona'
+
+
+class PersonaGrupo(models.Model):
+    id = models.DecimalField(db_column='peg_id', max_digits=10, decimal_places=0, primary_key=True)
+    grupo = models.ForeignKey(Grupo, on_delete=models.RESTRICT, db_column='gru_id')
+    persona = models.ForeignKey('Persona', on_delete=models.RESTRICT, db_column='per_id')
+    vigente = models.BooleanField(db_column='peg_vigente')
+
+    class Meta:
+        db_table = 'persona_grupo'
+
+
+class PersonaCurso(models.Model):
+    id = models.DecimalField(db_column='pec_id', max_digits=10, decimal_places=0, primary_key=True)
+    persona = models.ForeignKey('Persona', on_delete=models.RESTRICT, db_column='per_id')
+    curso_seccion = models.ForeignKey('courses.CursoSeccion', on_delete=models.RESTRICT, db_column='cus_id')
+    rol = models.ForeignKey(Rol, on_delete=models.RESTRICT, db_column='rol_id')
+    alimentacion = models.ForeignKey(Alimentacion, on_delete=models.RESTRICT, db_column='ali_id')
+    nivel = models.ForeignKey(Nivel, on_delete=models.RESTRICT, db_column='niv_id', blank=True, null=True)
+    observacion = models.TextField(db_column='pec_observacion', blank=True, default='')
+    registro = models.BooleanField(db_column='pec_registro')
+    acredito = models.BooleanField(db_column='pec_acredito')
+
+    class Meta:
+        db_table = 'persona_curso'
 
 class PersonaIndividual(models.Model):
     id = models.DecimalField(db_column='pei_id', max_digits=10, decimal_places=0, primary_key=True)

@@ -7,6 +7,8 @@ router.register(r'', views.PersonaViewSet, basename='personas')
 router.register(r'personas-individuales', views.PersonaIndividualViewSet)
 router.register(r'personas-niveles', views.PersonaNivelViewSet)
 router.register(r'personas-formadores', views.PersonaFormadorViewSet)
+router.register(r'personas-grupos', views.PersonaGrupoViewSet)
+router.register(r'personas-cursos', views.PersonaCursoViewSet)
 
 urlpatterns = [
     path('', include(router.urls)),
