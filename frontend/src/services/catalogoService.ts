@@ -42,4 +42,14 @@ export default {
   deleteRama(id: number) {
     return apiClient.delete(`/catalogo/ramas/${id}/`);
   },
+
+  // Métodos para Tipos de Curso
+  getTiposCurso() {
+    return apiClient.get('/catalogo/tipos-curso/');
+  },
+
+  // Métodos para Comunas
+  getComunas() {
+    return apiClient.get('/catalogo/comunas/');
+  },
 };

@@ -17,4 +17,8 @@ export const cursosService = {
   deleteCurso: async (id: number): Promise<void> => {
     await apiClient.delete(`/cursos/${id}/`);
   },
+  changeStatus: async (id: number, estado: number): Promise<Curso> => {
+    const response = await apiClient.post(`/cursos/${id}/change-status/`, { estado });
+    return response.data;
+  },
 };

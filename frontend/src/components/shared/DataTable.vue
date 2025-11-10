@@ -25,7 +25,8 @@
                 {{ sortOrder === 'asc' ? '▲' : '▼' }}
               </span>
             </th>
-            <th>Acciones</th>
+            <!-- Render default actions column only when consumer DID NOT provide an 'actions' column -->
+            <th v-if="!props.columns.some(c => c.key === 'actions')">Acciones</th>
           </tr>
         </thead>
         <tbody>
@@ -38,7 +39,8 @@
                 {{ row[col.key] }}
               </slot>
             </td>
-            <td class="actions">
+            <!-- Default actions cell: only when consumer did not define an 'actions' column -->
+            <td v-if="!props.columns.some(c => c.key === 'actions')" class="actions">
               <button v-if="!props.actions || props.actions.includes('view')" @click="$emit('view', row)">👁 Ver</button>
               <button v-if="!props.actions || props.actions.includes('edit')" @click="$emit('edit', row)">✏ Editar</button>
               <button v-if="!props.actions || props.actions.includes('delete')" @click="$emit('delete', row)">🗑 Eliminar</button>

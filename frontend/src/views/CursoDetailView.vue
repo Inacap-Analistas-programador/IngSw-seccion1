@@ -44,7 +44,7 @@ const curso = ref<Curso | null>(null);
 onMounted(async () => {
   const cursoId = Number(route.params.id);
   await cursosStore.fetchCursos();
-  curso.value = cursosStore.cursos.find(c => c.id === cursoId) || null;
+  curso.value = cursosStore.cursos.find((c: Curso) => c.id === cursoId) || null;
 });
 
 const goToAcreditacion = () => {

@@ -9,7 +9,6 @@ import InputBase from "@/components/shared/InputBase.vue";
 const router = useRouter();
 const authStore = useAuthStore();
 
-// Formulario reactivo para mejor manejo
 const form = reactive({
   username: "",
   password: "",
@@ -18,16 +17,6 @@ const form = reactive({
 const loading = ref(false);
 const error = ref("");
 
-/**
- * SPRINT 2 - Implementar autenticación JWT completa
- *
- * El equipo debe completar:
- * 1. Integración con endpoint /api/auth/login/ del backend Django
- * 2. Manejo de tokens JWT (access + refresh)
- * 3. Almacenamiento seguro de tokens
- * 4. Validación de formularios con errores específicos
- * 5. Redirección basada en roles de usuario
- */
 const handleLogin = async () => {
   loading.value = true;
   error.value = "";
@@ -76,16 +65,13 @@ const handleLogin = async () => {
 
 <template>
   <div class="min-h-screen bg-gradient-to-br from-green-50 via-emerald-50 to-teal-100 flex items-center justify-center p-4">
-    <!-- Background Pattern -->
     <div class="absolute inset-0 overflow-hidden">
       <div class="absolute -top-40 -right-40 w-80 h-80 bg-green-200 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-blob"></div>
       <div class="absolute -bottom-40 -left-40 w-80 h-80 bg-emerald-200 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-blob animation-delay-2000"></div>
       <div class="absolute top-40 left-40 w-80 h-80 bg-teal-200 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-blob animation-delay-4000"></div>
     </div>
-    
-    <!-- Login Card -->
+
     <div class="relative z-10 w-full max-w-md">
-      <!-- Logo Section -->
       <div class="text-center mb-8">
         <div class="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-r from-green-600 to-emerald-600 rounded-2xl shadow-lg mb-4">
           <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -97,7 +83,7 @@ const handleLogin = async () => {
         </h1>
         <p class="text-gray-600">Sistema de Gestión Integral de Cursos Scout</p>
       </div>
-      
+
       <div class="backdrop-blur-lg bg-white/80 border-0 shadow-2xl p-6 rounded-2xl">
         <div class="text-center pb-4">
           <h2 class="text-2xl font-bold text-gray-800">
@@ -134,11 +120,11 @@ const handleLogin = async () => {
               <span v-else>Iniciar Sesión</span>
             </BaseButton>
           </form>
-          
+
           <div v-if="error" class="mt-6 p-4 bg-red-50 border border-red-200 rounded-lg">
             <p class="text-red-700 text-sm font-medium">{{ error }}</p>
           </div>
-          
+
           <div class="mt-6 text-center">
             <p class="text-xs text-gray-500">
               © 2025 SGICS - Guías y Scouts de Chile, Zona Biobío
