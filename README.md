@@ -89,6 +89,8 @@ Contribuir
 ---------
 - Haz fork y PR hacia la rama `main` del repo.
 - Sigue las convenciones en `docs/` y agrega descripciones en los PRs.
+- para realizar testeos y saber si todo esta en orden o saber si hay algun error, primero en el proyecto hay que crear una carpeta para luego crear unos documentos que seran los codigos de testeo
+  utilizando el "import pytest" y al tenerlo creado y completado en la terminal se ejecuta en la raiz del proyecto el comando pytest donde se realizara el testeo y al terminar mostrara si hay errores o no
 
 Contacto
 -------
