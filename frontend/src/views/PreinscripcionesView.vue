@@ -38,7 +38,7 @@
 
 <script setup lang="ts">
 import { ref, onMounted } from 'vue';
-import { useCursoStore } from '@/stores/curso';
+import { useCursosStore } from '@/stores/cursos';
 import { personaService } from '@/services/personaService';
 import MainLayout from '@/components/layout/MainLayout.vue';
 import InputText from 'primevue/inputtext';
@@ -48,7 +48,7 @@ import { preinscripcionService } from '@/services/preinscripcionService';
 import type { Persona } from '@/types/persona';
 import type { Curso } from '@/types/curso';
 
-const cursoStore = useCursoStore();
+const cursoStore = useCursosStore();
 
 const cursos = ref<Curso[]>([]);
 const selectedCurso = ref<number | null>(null);

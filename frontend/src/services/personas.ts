@@ -1,4 +1,4 @@
-import { apiClient } from './api';
+import apiClient from './api';
 import type { Persona } from '@/types/personas';
 
 export const getPersonas = async (): Promise<Persona[]> => {

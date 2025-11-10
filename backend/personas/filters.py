@@ -15,9 +15,9 @@ class PersonaFilter(django_filters.FilterSet):
     class Meta:
         model = Persona
         fields = {
-            'nombres': ['icontains'],
-            'email': ['icontains'],
-            'run': ['exact'],
+            "nombres": ["icontains"],
+            "email": ["icontains"],
+            "run": ["exact"],
         }
 
     def filter_grupo(self, queryset, name, value):

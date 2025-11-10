@@ -1,5 +1,12 @@
 from django.contrib import admin
-from .models import PagoPersona, PagoCambioPersona, Prepago, ConceptoContable, ComprobantePago, PagoComprobante
+from .models import (
+    PagoPersona,
+    PagoCambioPersona,
+    Prepago,
+    ConceptoContable,
+    ComprobantePago,
+    PagoComprobante,
+)
 
 admin.site.register(PagoPersona)
 admin.site.register(PagoCambioPersona)
