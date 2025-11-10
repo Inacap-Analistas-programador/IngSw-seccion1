@@ -3,7 +3,9 @@ from authentication.models import Usuario
 from catalog.models import TipoArchivo
 
 
+
 class Archivo(models.Model):
+<<<<<<< Updated upstream
     id = models.DecimalField(
         db_column="arc_id", max_digits=10, decimal_places=0, primary_key=True
     )
@@ -15,10 +17,17 @@ class Archivo(models.Model):
         on_delete=models.RESTRICT,
         db_column="usu_id_crea",
         related_name="archivos_creados",
+=======
+    id = models.DecimalField(max_digits=10, decimal_places=0, primary_key=True)
+    tipo_archivo = models.ForeignKey(TipoArchivo, on_delete=models.RESTRICT)
+    usuario_crea = models.ForeignKey(
+        Usuario, on_delete=models.RESTRICT, related_name="archivos_creados"
+>>>>>>> Stashed changes
     )
     usuario_modifica = models.ForeignKey(
         Usuario,
         on_delete=models.RESTRICT,
+<<<<<<< Updated upstream
         db_column="usu_id_modifica",
         related_name="archivos_modificados",
         blank=True,
@@ -32,6 +41,17 @@ class Archivo(models.Model):
     class Meta:
         db_table = "archivo"
 
+=======
+        related_name="archivos_modificados",
+        null=True,
+        blank=True,
+    )
+    fecha_hora = models.DateTimeField()
+    descripcion = models.CharField(max_length=100)
+    ruta = models.TextField()
+    vigente = models.BooleanField()
+>>>>>>> Stashed changes
+
 
 class ArchivoCurso(models.Model):
     id = models.DecimalField(
@@ -44,6 +64,7 @@ class ArchivoCurso(models.Model):
 
     class Meta:
         db_table = "archivo_curso"
+
 
 
 class ArchivoPersona(models.Model):

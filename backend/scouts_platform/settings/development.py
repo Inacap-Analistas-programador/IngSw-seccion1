@@ -10,6 +10,7 @@ ALLOWED_HOSTS = ["*"]
 
 # Base de datos
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
+<<<<<<< Updated upstream
 # Prioridad: DATABASE_URL > variables individuales DB_* > SQLite (fallback)
 if config("DATABASE_URL", default=None):
     DATABASES = {
@@ -37,4 +38,14 @@ else:
             "HOST": config("DB_HOST", default="localhost"),
             "PORT": config("DB_PORT", default="3306"),
         }
+=======
+DATABASES = {
+    "default": {
+        "ENGINE": "django.db.backends.mysql",
+        "NAME": config("DB_NAME"),
+        "USER": config("DB_USER"),
+        "PASSWORD": config("DB_PASSWORD"),
+        "HOST": config("DB_HOST"),
+        "PORT": config("DB_PORT"),
+>>>>>>> Stashed changes
     }

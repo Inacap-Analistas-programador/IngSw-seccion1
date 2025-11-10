@@ -1,21 +1,4 @@
-"""
-Configuración de URLs para SGICS - Sistema de Gestión Integral de Cursos Scout
-
-Este archivo define todas las rutas principales del proyecto:
-
-Estructura de URLs:
-- /admin/                    -> Panel de administración de Django
-- /api/auth/login/          -> Endpoint para login JWT  
-- /api/auth/refresh/        -> Endpoint para refresh de token JWT
-- /api/auth/                -> URLs del módulo de autenticación
-- /api/preinscriptions/     -> URLs del módulo de preinscripciones
-- /api/payments/            -> URLs del módulo de pagos
-- /api/files/               -> URLs del módulo de archivos
-- /api/courses/             -> URLs del módulo de cursos
-- /healthz/                 -> Endpoints de health check
-
-En desarrollo también sirve archivos estáticos y de media.
-"""
+"""URL configuration for SGICS."""
 
 from django.conf import settings
 from django.conf.urls.static import static

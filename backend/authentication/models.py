@@ -3,6 +3,7 @@ from django.db import models
 from catalog.models import Perfil
 
 
+<<<<<<< Updated upstream
 class UsuarioManager(BaseUserManager):
     def create_user(self, username, password=None, **extra_fields):
         if not username:
@@ -41,6 +42,16 @@ class Usuario(AbstractBaseUser, PermissionsMixin):
     REQUIRED_FIELDS = []
     
     # Asumimos que los métodos has_perm y has_module_perms existen en la implementación completa.
+=======
+class Usuario(AbstractUser):
+    perfil = models.ForeignKey(
+        Perfil, on_delete=models.SET_NULL, null=True, blank=True, db_column="pel_id"
+    )
+    ruta_foto = models.CharField(
+        max_length=255, blank=True, null=True, db_column="usu_ruta_foto"
+    )
+    vigente = models.BooleanField(default=True, db_column="usu_vigente")
+>>>>>>> Stashed changes
 
     class Meta:
         db_table = "usuario"

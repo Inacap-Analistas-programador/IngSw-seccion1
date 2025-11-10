@@ -3,27 +3,21 @@ import apiClient from '@/services/api';
 import type { User } from '@/types';
 import { jwtDecode } from 'jwt-decode';
 
-// Definimos el store de autenticación con Pinia.
 export const useAuthStore = defineStore('auth', {
-  // El estado inicial del store.
   state: () => ({
     token: localStorage.getItem('authToken') || null,
-    user: null as User | null, // Aquí se podría almacenar la información del usuario.
+    user: null as User | null,
     profile: null as string | null,
     isAuthenticated: !!localStorage.getItem('authToken'),
     loading: false,
     error: null as string | null,
   }),
 
-  // Los getters son como propiedades computadas para los stores.
   getters: {
-    // Un getter para verificar si el usuario está autenticado.
     isLoggedIn: (state) => state.isAuthenticated,
   },
 
-  // Las acciones son donde se define la lógica de negocio.
   actions: {
-    // Acción para manejar el login de un usuario.
     async login(credentials: { username: string; password: string }) {
       this.loading = true;
       this.error = null;

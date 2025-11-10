@@ -217,14 +217,22 @@ class Proveedor(models.Model):
     descripcion = models.CharField(db_column="prv_descripcion", max_length=100)
     celular1 = models.CharField(db_column="prv_celular1", max_length=15)
     celular2 = models.CharField(
+<<<<<<< Updated upstream
         db_column="prv_celular2", max_length=15, blank=True, null=True
     )
     direccion = models.CharField(db_column="prv_direccion", max_length=100)
     observacion = models.TextField(db_column="prv_observacion", blank=True, null=True)
+=======
+        db_column="prv_celular2", max_length=15, blank=True, default=""
+    )
+    direccion = models.CharField(db_column="prv_direccion", max_length=100)
+    observacion = models.TextField(db_column="prv_observacion", blank=True, default="")
+>>>>>>> Stashed changes
     vigente = models.BooleanField(db_column="prv_vigente")
 
     class Meta:
         db_table = "proveedor"
+<<<<<<< Updated upstream
 
 
 class ConceptoContable(models.Model):
@@ -236,3 +244,5 @@ class ConceptoContable(models.Model):
 
     class Meta:
         db_table = "concepto_contable"
+=======
+>>>>>>> Stashed changes

@@ -9,7 +9,6 @@ import InputBase from "@/components/shared/InputBase.vue";
 const router = useRouter();
 const authStore = useAuthStore();
 
-// Formulario reactivo para mejor manejo
 const form = reactive({
   username: "",
   password: "",
@@ -18,16 +17,6 @@ const form = reactive({
 const loading = ref(false);
 const error = ref("");
 
-/**
- * SPRINT 2 - Implementar autenticación JWT completa
- *
- * El equipo debe completar:
- * 1. Integración con endpoint /api/auth/login/ del backend Django
- * 2. Manejo de tokens JWT (access + refresh)
- * 3. Almacenamiento seguro de tokens
- * 4. Validación de formularios con errores específicos
- * 5. Redirección basada en roles de usuario
- */
 const handleLogin = async () => {
   loading.value = true;
   error.value = "";

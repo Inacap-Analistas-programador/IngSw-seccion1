@@ -5,8 +5,18 @@ from authentication.models import Usuario
 from catalog.models import ConceptoContable
 from common.models import PersonaCurso
 
+<<<<<<< Updated upstream
+=======
+
+class ConceptoContable(models.Model):
+    id = models.DecimalField(max_digits=10, decimal_places=0, primary_key=True)
+    descripcion = models.CharField(max_length=50)
+    vigente = models.BooleanField()
+>>>>>>> Stashed changes
+
 
 class PagoPersona(models.Model):
+<<<<<<< Updated upstream
     id = models.DecimalField(
         db_column="pap_id", max_digits=10, decimal_places=0, primary_key=True
     )
@@ -23,6 +33,16 @@ class PagoPersona(models.Model):
 
     class Meta:
         db_table = "pago_persona"
+=======
+    id = models.DecimalField(max_digits=10, decimal_places=0, primary_key=True)
+    persona = models.ForeignKey(Persona, on_delete=models.RESTRICT)
+    curso = models.ForeignKey(Curso, on_delete=models.RESTRICT)
+    usuario = models.ForeignKey(Usuario, on_delete=models.RESTRICT)
+    fecha_hora = models.DateTimeField()
+    tipo = models.IntegerField()
+    valor = models.DecimalField(max_digits=21, decimal_places=6)
+    observacion = models.CharField(max_length=100, blank=True, default="")
+>>>>>>> Stashed changes
 
 
 class PagoCambioPersona(models.Model):
@@ -40,7 +60,9 @@ class PagoCambioPersona(models.Model):
         db_table = "pago_cambio_persona"
 
 
+
 class Prepago(models.Model):
+<<<<<<< Updated upstream
     id = models.DecimalField(
         db_column="ppa_id", max_digits=10, decimal_places=0, primary_key=True
     )
@@ -59,6 +81,18 @@ class Prepago(models.Model):
 
     class Meta:
         db_table = "prepago"
+
+=======
+    id = models.DecimalField(max_digits=10, decimal_places=0, primary_key=True)
+    persona = models.ForeignKey(Persona, on_delete=models.RESTRICT)
+    curso = models.ForeignKey(Curso, on_delete=models.RESTRICT)
+    pago_persona = models.ForeignKey(
+        PagoPersona, on_delete=models.RESTRICT, blank=True, default=0
+    )
+    valor = models.DecimalField(max_digits=21, decimal_places=6)
+    observacion = models.TextField(blank=True, default="")
+    vigente = models.BooleanField()
+>>>>>>> Stashed changes
 
 
 class ComprobantePago(models.Model):
@@ -79,6 +113,7 @@ class ComprobantePago(models.Model):
 
     class Meta:
         db_table = "comprobante_pago"
+
 
 
 class PagoComprobante(models.Model):

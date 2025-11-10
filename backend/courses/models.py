@@ -12,7 +12,11 @@ class Curso(models.Model):
         TipoCurso, on_delete=models.RESTRICT, db_column="tcu_id"
     )
     persona_responsable = models.ForeignKey(
+<<<<<<< Updated upstream
         "personas.Persona",
+=======
+        Persona,
+>>>>>>> Stashed changes
         on_delete=models.RESTRICT,
         db_column="per_id_responsable",
         related_name="cursos_responsable",
@@ -78,9 +82,13 @@ class CursoCoordinador(models.Model):
     )
     curso = models.ForeignKey(Curso, on_delete=models.RESTRICT, db_column="cur_id")
     cargo = models.ForeignKey(Cargo, on_delete=models.RESTRICT, db_column="car_id")
+<<<<<<< Updated upstream
     persona = models.ForeignKey(
         "personas.Persona", on_delete=models.RESTRICT, db_column="per_id"
     )
+=======
+    persona = models.ForeignKey(Persona, on_delete=models.RESTRICT, db_column="per_id")
+>>>>>>> Stashed changes
     cargo_coordinador = models.CharField(
         db_column="cuc_cargo", max_length=100, blank=True, default=""
     )
@@ -120,9 +128,13 @@ class CursoFormador(models.Model):
         db_column="cuo_id", max_digits=10, decimal_places=0, primary_key=True
     )
     curso = models.ForeignKey(Curso, on_delete=models.RESTRICT, db_column="cur_id")
+<<<<<<< Updated upstream
     persona = models.ForeignKey(
         "personas.Persona", on_delete=models.RESTRICT, db_column="per_id"
     )
+=======
+    persona = models.ForeignKey(Persona, on_delete=models.RESTRICT, db_column="per_id")
+>>>>>>> Stashed changes
     rol = models.ForeignKey(Rol, on_delete=models.RESTRICT, db_column="rol_id")
     seccion = models.ForeignKey(
         CursoSeccion, on_delete=models.RESTRICT, db_column="cus_id"
