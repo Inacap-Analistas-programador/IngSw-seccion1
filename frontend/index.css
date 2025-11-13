@@ -1,0 +1,52 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Variables CSS para colores Scout */
+:root {
+  --scout-azul-oscuro: #1f4e79;     /* Color primario de marca */
+  --scout-azul-medio: #3b82f6;      /* Elementos interactivos (botones, enlaces) */
+  --scout-azul-claro: #8b9dc3;      /* Texto secundario */
+  --scout-azul-muy-claro: #dbe7fd;  /* Fondos y separadores */
+  --scout-verde-natura: #22c55e;    /* Estados de éxito */
+  --scout-dorado-aventura: #f59e0b; /* Énfasis y highlights */
+  --scout-rojo-alerta: #ef4444;     /* Errores y advertencias */
+}
+
+/* Configuración base del cuerpo del documento */
+body {
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  line-height: 1.6;
+  color: #1f2937;
+  background-color: #f9fafb;
+  margin: 0;
+  padding: 0;
+  min-height: 100vh;
+}
+
+/* Estilos base para encabezados */
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'Poppins', 'Inter', sans-serif;
+  font-weight: 600;
+  line-height: 1.2;
+  color: var(--scout-azul-oscuro);
+}
+
+/* Componentes personalizados */
+@layer components {
+  .btn-scout-primary {
+    @apply bg-scout-azul-medio hover:bg-scout-azul-oscuro text-white font-medium px-6 py-3 rounded-lg transition-all duration-200 shadow-scout hover:shadow-hover-scout;
+  }
+  
+  .btn-scout-secondary {
+    @apply bg-white hover:bg-scout-azul-muy-claro text-scout-azul-medio border border-scout-azul-medio font-medium px-6 py-3 rounded-lg transition-all duration-200;
+  }
+  
+  .card-scout {
+    @apply bg-white rounded-lg shadow-scout p-6 border border-gray-100;
+  }
+  
+  .input-scout {
+    @apply border border-gray-300 rounded-lg px-4 py-3 focus:ring-2 focus:ring-scout-azul-medio focus:border-scout-azul-medio transition-colors;
+  }
+}

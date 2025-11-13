@@ -1,0 +1,18 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Componentes personalizados con Tailwind */
+@layer components {
+  .btn-scout-primary {
+    @apply bg-scout-azul-medio hover:bg-scout-azul-oscuro text-white font-medium px-6 py-3 rounded-lg transition-all duration-200;
+  }
+  
+  .btn-scout-secondary {
+    @apply bg-white hover:bg-scout-azul-muy-claro text-scout-azul-medio border border-scout-azul-medio font-medium px-6 py-3 rounded-lg transition-all duration-200;
+  }
+  
+  .card-scout {
+    @apply bg-white rounded-lg p-6 border border-gray-200;
+  }
+}
