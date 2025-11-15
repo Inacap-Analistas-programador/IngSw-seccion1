@@ -8,9 +8,9 @@ class Usuario(models.Model):
     # usu_username: Nombre de usuario para el inicio de sesión
     usu_username = models.CharField(max_length=100, unique=True)
     # usu_password: Contraseña del usuario (debe ser hasheada en la aplicación)
-    usu_password = models.CharField(max_length=128) # Django usa max_length=128 para contraseñas hasheadas
+    usu_password = models.CharField(max_length=50)
     # usu_email: Correo electrónico del usuario
-    usu_email = models.EmailField(max_length=100, null=True, blank=True)
+    usu_email = models.EmailField(max_length=100)
     # usu_ruta_foto: Ruta al archivo de la foto del perfil del usuario
     usu_ruta_foto = models.CharField(max_length=255)
     # usu_vigente: Indica si el usuario está activo (True) o inactivo (False)
