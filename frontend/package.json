@@ -13,9 +13,8 @@
     "format:check": "prettier --check \"src/**/*.{js,jsx,json,css,md}\"",
     "test": "vitest",
     "test:ui": "vitest --ui",
-    "test:coverage": "vitest --coverage"
-    "lint:contrast": "node tools/check-contrast.cjs",
-    "preview": "vite preview --host :: --port 3000"
+    "test:coverage": "vitest --coverage",
+    "lint:contrast": "node tools/check-contrast.cjs"
   },
   "dependencies": {
     "@radix-ui/react-alert-dialog": "^1.0.5",

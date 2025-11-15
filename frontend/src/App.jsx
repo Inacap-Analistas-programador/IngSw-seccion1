@@ -18,13 +18,6 @@ const PageLoader = () => (
     <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-scout-azul-oscuro"></div>
   </div>
 );
-import HomePage from '@/pages/HomePage';
-import PreRegistrationForm from '@/pages/PreRegistrationForm';
-import CoordinatorLogin from '@/pages/CoordinatorLogin';
-import CoordinatorDashboard from '@/pages/CoordinatorDashboard';
-// Personas UI removed from local dashboard; external module handles person management
-import MaestrosPage from '@/pages/MaestrosPage';
-import MaestroForm from '@/pages/MaestroForm';
 
 import TestPage from '@/pages/TestPage';
 
@@ -136,4 +129,3 @@ function App() {
 }
 
 export default App;
-
