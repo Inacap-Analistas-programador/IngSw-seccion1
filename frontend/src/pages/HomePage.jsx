@@ -43,24 +43,24 @@ const HomePage = () => {
 
       <div className="min-h-screen bg-white">
         {/* Navigation */}
-        <nav className="bg-green-700 text-white shadow-lg">
+        <nav className="bg-primary text-primary-foreground shadow-lg">
           <div className="container mx-auto px-4 py-4 flex justify-between items-center">
             <div className="flex items-center space-x-3">
               <div className="w-12 h-12 bg-white rounded-full flex items-center justify-center">
-                <Award className="w-8 h-8 text-green-700" />
+                <Award className="w-8 h-8 text-[#001558]" />
               </div>
               <span className="text-2xl font-bold">Scout Formación</span>
             </div>
             <div className="flex space-x-3">
               <Button 
                 onClick={() => navigate('/dashboard')}
-                className="bg-white text-green-700 hover:bg-green-50 transition-all duration-300"
+                className="bg-white text-[#001558] hover:bg-primary/5 transition-all duration-300"
               >
                 Dashboard
               </Button>
               <Button 
                 onClick={() => navigate('/coordinador/login')}
-                className="bg-white text-green-700 hover:bg-green-50 transition-all duration-300"
+                className="bg-white text-[#001558] hover:bg-primary/5 transition-all duration-300"
               >
                 Login Coordinador
               </Button>
@@ -69,7 +69,7 @@ const HomePage = () => {
         </nav>
 
         {/* Hero Section */}
-        <section className="bg-gradient-to-br from-green-600 to-green-800 text-white py-20">
+        <section className="bg-gradient-to-br from-primary to-primary/90 text-white py-20">
           <div className="container mx-auto px-4 text-center">
             <motion.div
               initial={{ opacity: 0, y: 30 }}
@@ -85,7 +85,7 @@ const HomePage = () => {
               <Button 
                 onClick={() => navigate('/preinscripcion')}
                 size="lg"
-                className="bg-white text-green-700 hover:bg-green-50 text-lg px-8 py-6 rounded-full shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:scale-105"
+                className="bg-white text-[#001558] hover:bg-primary/5 text-lg px-8 py-6 rounded-full shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:scale-105"
               >
                 Iniciar Preinscripción
               </Button>
@@ -97,12 +97,12 @@ const HomePage = () => {
                 className="mt-12 max-w-sm mx-auto bg-white/10 backdrop-blur-sm rounded-xl p-6 shadow-lg border border-white/20"
               >
                 <div className="flex items-center justify-center mb-4">
-                  <KeyRound className="w-6 h-6 mr-3 text-green-200" />
+                  <KeyRound className="w-6 h-6 mr-3 text-primary-foreground" />
                   <h3 className="text-xl font-semibold text-white">Credenciales Coordinador</h3>
                 </div>
-                <div className="text-left space-y-2 text-green-50">
-                  <p><span className="font-semibold text-green-100">Email:</span> coordinador@scout.cl</p>
-                  <p><span className="font-semibold text-green-100">Password:</span> scout2024</p>
+                <div className="text-left space-y-2 text-primary-foreground">
+                  <p><span className="font-semibold text-primary-foreground">Email:</span> coordinador@scout.cl</p>
+                  <p><span className="font-semibold text-primary-foreground">Password:</span> scout2024</p>
                 </div>
               </motion.div>
 
@@ -118,7 +118,7 @@ const HomePage = () => {
               animate={{ opacity: 1 }}
               transition={{ duration: 0.8, delay: 0.2 }}
             >
-              <h2 className="text-4xl font-bold text-center mb-4 text-green-800">
+              <h2 className="text-4xl font-bold text-center mb-4 text-[#001558]">
                 Cursos Disponibles
               </h2>
               <p className="text-center text-gray-600 mb-12 text-lg">
@@ -134,9 +134,9 @@ const HomePage = () => {
                     transition={{ duration: 0.5, delay: 0.1 * index }}
                     className="bg-white rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2"
                   >
-                    <div className="bg-green-600 h-2"></div>
+                    <div className="bg-primary h-2"></div>
                     <div className="p-6">
-                      <h3 className="text-2xl font-bold mb-3 text-green-800">
+                      <h3 className="text-2xl font-bold mb-3 text-[#001558]">
                         {course.name}
                       </h3>
                       <p className="text-gray-600 mb-4 min-h-[60px]">
@@ -144,21 +144,21 @@ const HomePage = () => {
                       </p>
                       <div className="space-y-2 text-sm text-gray-700">
                         <div className="flex items-center space-x-2">
-                          <Calendar className="w-4 h-4 text-green-600" />
+                          <Calendar className="w-4 h-4 text-[#001558]" />
                           <span>Inicio: {course.startDate}</span>
                         </div>
                         <div className="flex items-center space-x-2">
-                          <Calendar className="w-4 h-4 text-green-600" />
+                          <Calendar className="w-4 h-4 text-[#001558]" />
                           <span>Término: {course.endDate}</span>
                         </div>
                         <div className="flex items-center space-x-2">
-                          <Users className="w-4 h-4 text-green-600" />
+                          <Users className="w-4 h-4 text-[#001558]" />
                           <span>{course.location}</span>
                         </div>
                       </div>
                       <Button 
                         onClick={() => navigate('/preinscripcion')}
-                        className="w-full mt-6 bg-green-600 hover:bg-green-700 transition-colors duration-300"
+                        className="w-full mt-6 bg-primary hover:bg-primary/90 text-primary-foreground transition-colors duration-300"
                       >
                         Inscribirse
                       </Button>
@@ -171,18 +171,18 @@ const HomePage = () => {
         </section>
 
         {/* Footer */}
-        <footer className="bg-green-800 text-white py-8">
+        <footer className="bg-primary text-primary-foreground py-8">
           <div className="container mx-auto px-4">
             <div className="flex flex-col md:flex-row justify-between items-center">
               <div className="flex items-center space-x-3 mb-4 md:mb-0">
                 <div className="w-10 h-10 bg-white rounded-full flex items-center justify-center">
-                  <Award className="w-6 h-6 text-green-800" />
+                  <Award className="w-6 h-6 text-primary-foreground" />
                 </div>
                 <span className="text-xl font-bold">Scout Formación</span>
               </div>
               <div className="text-center md:text-right">
-                <p className="text-green-100">© 2025 Scout Formación. Todos los derechos reservados.</p>
-                <p className="text-green-200 text-sm mt-1">Siempre Listo para Servir</p>
+                <p className="text-primary-foreground">© 2025 Scout Formación. Todos los derechos reservados.</p>
+                <p className="text-primary-foreground text-sm mt-1">Siempre Listo para Servir</p>
               </div>
             </div>
           </div>

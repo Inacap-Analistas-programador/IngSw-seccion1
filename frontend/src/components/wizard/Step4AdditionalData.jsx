@@ -10,7 +10,7 @@ const Step4AdditionalData = ({ formData, updateFormData }) => {
   return (
     <div className="space-y-6">
       <div>
-        <h2 className="text-2xl font-bold text-green-800 mb-2">Datos Adicionales</h2>
+        <h2 className="text-2xl font-bold text-primary-foreground mb-2">Datos Adicionales</h2>
         <p className="text-gray-600">Información complementaria para tu registro.</p>
       </div>
 

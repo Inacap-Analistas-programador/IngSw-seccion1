@@ -10,7 +10,7 @@ const Step2ScoutInfo = ({ formData, updateFormData }) => {
   return (
     <div className="space-y-6">
       <div>
-        <h2 className="text-2xl font-bold text-green-800 mb-2">Información Scout</h2>
+        <h2 className="text-2xl font-bold text-[#001558] mb-2">Información Scout</h2>
         <p className="text-gray-600">Completa tu información relacionada con el movimiento Scout.</p>
       </div>
 
@@ -144,7 +144,7 @@ const Step2ScoutInfo = ({ formData, updateFormData }) => {
 
       {formData.isTrainer === 'si' && (
         <div className="space-y-4">
-          <h3 className="text-lg font-semibold text-green-800">Información de Formador</h3>
+          <h3 className="text-lg font-semibold text-[#001558]">Información de Formador</h3>
           <div className="grid md:grid-cols-2 gap-4">
             <div className="space-y-2">
               <Label htmlFor="habilitacion1">Habilitación 1</Label>

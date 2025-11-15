@@ -13,14 +13,14 @@ const EnvioCorreo = () => {
         </div>
         <Button 
           onClick={() => toast({ description: "🚧 This feature isn't implemented yet—but don't worry! You can request it in your next prompt! 🚀" })}
-          className="bg-green-600 hover:bg-green-700"
+          className="bg-primary hover:bg-primary/90 text-primary-foreground"
         >
           Nuevo Correo
         </Button>
       </div>
 
-      <div className="bg-white rounded-lg shadow-md p-6">
-        <p className="text-gray-600">Herramienta de envío de correos aparecerá aquí.</p>
+      <div className="bg-card rounded-lg shadow-md p-6">
+        <p className="text-muted-foreground">Herramienta de envío de correos aparecerá aquí.</p>
       </div>
     </div>
   );

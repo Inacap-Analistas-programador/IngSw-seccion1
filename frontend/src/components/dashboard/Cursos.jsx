@@ -215,7 +215,7 @@ const Cursos = () => {
   const getEstadoName = (estado) => {
     const estados = {
       'pendiente': { name: 'Pendiente', color: 'bg-orange-100 text-orange-800' },
-      '1': { name: 'Activo', color: 'bg-green-100 text-green-800' },
+      '1': { name: 'Activo', color: 'bg-primary text-primary-foreground' },
       '2': { name: 'Inactivo', color: 'bg-gray-100 text-gray-800' },
       '3': { name: 'En Proceso', color: 'bg-yellow-100 text-yellow-800' },
       '4': { name: 'Finalizado', color: 'bg-blue-100 text-blue-800' },
@@ -253,7 +253,7 @@ const Cursos = () => {
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
           <div className="bg-white rounded-lg shadow-xl max-w-4xl w-full max-h-[90vh] overflow-y-auto m-4">
             <div className="flex justify-between items-center p-6 border-b">
-              <h2 className="text-2xl font-bold text-green-800">Crear Nuevo Curso</h2>
+              <h2 className="text-2xl font-bold text-primary-foreground">Crear Nuevo Curso</h2>
               <Button 
                 onClick={resetForm}
                 variant="ghost" 
@@ -512,7 +512,7 @@ const Cursos = () => {
                 </Button>
                 <Button 
                   onClick={handleCreateCourse}
-                  className="bg-green-600 hover:bg-green-700"
+                  className="bg-primary hover:bg-primary"
                 >
                   Crear Curso
                 </Button>
@@ -527,7 +527,8 @@ const Cursos = () => {
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
           <div className="bg-white rounded-lg shadow-xl max-w-4xl w-full max-h-[90vh] overflow-y-auto m-4">
             <div className="flex justify-between items-center p-6 border-b">
-              <h2 className="text-2xl font-bold text-green-800">Detalles del Curso</h2>
+              <h2 className="text-2xl font-bold text-primary-foreground">Detalles del Curso</h2>
+                <h2 className="text-2xl font-bold text-primary-foreground">Detalles del Curso</h2>
               <Button 
                 onClick={() => setShowViewModal(false)}
                 variant="ghost" 
@@ -616,7 +617,8 @@ const Cursos = () => {
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
           <div className="bg-white rounded-lg shadow-xl max-w-4xl w-full max-h-[90vh] overflow-y-auto m-4">
             <div className="flex justify-between items-center p-6 border-b">
-              <h2 className="text-2xl font-bold text-green-800">Editar Curso</h2>
+              <h2 className="text-2xl font-bold text-primary-foreground">Editar Curso</h2>
+                <h2 className="text-2xl font-bold text-primary-foreground">Editar Curso</h2>
               <Button 
                 onClick={resetForm}
                 variant="ghost" 
@@ -866,7 +868,7 @@ const Cursos = () => {
           </h2>
           <Button 
             onClick={() => setShowCreateForm(true)}
-            className="bg-green-600 hover:bg-green-700"
+            className="bg-primary hover:bg-primary"
           >
             Nuevo Curso
           </Button>

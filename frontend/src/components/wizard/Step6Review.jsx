@@ -6,7 +6,7 @@ const Step6Review = ({ formData, updateFormData }) => {
   return (
     <div className="space-y-6">
       <div>
-        <h2 className="text-2xl font-bold text-green-800 mb-2">Revisión y Confirmación</h2>
+        <h2 className="text-2xl font-bold text-primary-foreground mb-2">Revisión y Confirmación</h2>
         <p className="text-gray-600">Revisa tu información antes de enviar la preinscripción.</p>
       </div>
 

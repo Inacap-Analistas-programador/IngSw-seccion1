@@ -13,7 +13,7 @@ const AcreditacionManual = () => {
         </div>
         <Button 
           onClick={() => toast({ description: "🚧 This feature isn't implemented yet—but don't worry! You can request it in your next prompt! 🚀" })}
-          className="bg-green-600 hover:bg-green-700"
+          className="bg-primary hover:bg-primary/90 text-primary-foreground"
         >
           Nueva Acreditación
         </Button>

@@ -10,7 +10,7 @@ const Step1PersonalData = ({ formData, updateFormData }) => {
   return (
     <div className="space-y-6">
       <div>
-        <h2 className="text-2xl font-bold text-green-800 mb-2">Datos Personales</h2>
+        <h2 className="text-2xl font-bold text-[#001558] mb-2">Datos Personales</h2>
         <p className="text-gray-600">Por favor completa tu información personal básica.</p>
       </div>
 
@@ -128,7 +128,7 @@ const Step1PersonalData = ({ formData, updateFormData }) => {
       {/* Foto de perfil */}
       <div className="space-y-2">
         <Label htmlFor="profilePhoto">Foto de Perfil</Label>
-        <Input
+          <Input
           id="profilePhoto"
           type="file"
           accept="image/*"
@@ -138,7 +138,7 @@ const Step1PersonalData = ({ formData, updateFormData }) => {
               handleChange('profilePhoto', file);
             }
           }}
-          className="file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-green-50 file:text-green-700 hover:file:bg-green-100"
+          className="file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-primary/5 file:text-[#001558] hover:file:bg-primary/10"
         />
         {formData.profilePhoto && (
           <p className="text-sm text-gray-600">Archivo seleccionado: {formData.profilePhoto.name}</p>

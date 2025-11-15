@@ -50,7 +50,7 @@ const CoordinatorLogin = () => {
         <meta name="description" content="Acceso para coordinadores de la plataforma Scout." />
       </Helmet>
 
-      <div className="min-h-screen bg-gradient-to-br from-green-600 to-green-800 flex items-center justify-center p-4">
+      <div className="min-h-screen bg-gradient-to-br from-primary to-primary/90 flex items-center justify-center p-4">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -58,12 +58,12 @@ const CoordinatorLogin = () => {
           className="w-full max-w-md"
         >
           <div className="bg-white rounded-lg shadow-2xl overflow-hidden">
-            <div className="bg-green-700 text-white p-8 text-center">
+            <div className="bg-primary text-primary-foreground p-8 text-center">
               <div className="w-16 h-16 bg-white rounded-full flex items-center justify-center mx-auto mb-4">
-                <Award className="w-10 h-10 text-green-700" />
+                <Award className="w-10 h-10 text-[#001558]" />
               </div>
               <h1 className="text-3xl font-bold">Portal Coordinador</h1>
-              <p className="text-green-100 mt-2">Scout Formación</p>
+              <p className="text-primary-foreground mt-2">Scout Formación</p>
             </div>
 
             <form onSubmit={handleLogin} className="p-8 space-y-6">
@@ -77,7 +77,7 @@ const CoordinatorLogin = () => {
                     placeholder="coordinador@scout.cl"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    className="pl-10 border-gray-300 focus:border-green-600 focus:ring-green-600"
+                    className="pl-10 border-gray-300 focus:border-primary focus:ring-primary/30"
                   />
                 </div>
               </div>
@@ -92,14 +92,14 @@ const CoordinatorLogin = () => {
                     placeholder="••••••••"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
-                    className="pl-10 border-gray-300 focus:border-green-600 focus:ring-green-600"
+                    className="pl-10 border-gray-300 focus:border-primary focus:ring-primary/30"
                   />
                 </div>
               </div>
 
               <Button 
                 type="submit"
-                className="w-full bg-green-600 hover:bg-green-700 text-white py-6 text-lg font-semibold transition-all duration-300 transform hover:scale-105"
+                className="w-full bg-primary hover:bg-primary/90 text-primary-foreground py-6 text-lg font-semibold transition-all duration-300 transform hover:scale-105"
               >
                 Iniciar Sesión
               </Button>
@@ -109,7 +109,7 @@ const CoordinatorLogin = () => {
                   type="button"
                   variant="link"
                   onClick={() => navigate('/')}
-                  className="text-green-600 hover:text-green-700"
+                  className="text-[#001558] hover:text-primary-foreground"
                 >
                   Volver al Inicio
                 </Button>

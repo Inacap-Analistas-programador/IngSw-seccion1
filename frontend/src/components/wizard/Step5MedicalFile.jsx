@@ -19,14 +19,14 @@ const Step5MedicalFile = ({ formData, updateFormData }) => {
   return (
     <div className="space-y-6">
       <div>
-        <h2 className="text-2xl font-bold text-green-800 mb-2">Carga de Ficha Médica</h2>
+        <h2 className="text-2xl font-bold text-[#001558] mb-2">Carga de Ficha Médica</h2>
         <p className="text-gray-600">Sube tu ficha médica en formato PDF, DOCX o XLSX.</p>
       </div>
 
-      <div className="border-2 border-dashed border-gray-300 rounded-lg p-8 text-center hover:border-green-500 transition-colors duration-300">
+      <div className="border-2 border-dashed border-gray-300 rounded-lg p-8 text-center hover:border-primary/60 transition-colors duration-300">
         <Upload className="w-12 h-12 text-gray-400 mx-auto mb-4" />
         <Label htmlFor="medicalFile" className="cursor-pointer">
-          <span className="text-green-600 font-semibold hover:text-green-700">
+          <span className="text-[#001558] font-semibold hover:text-primary-foreground">
             Haz clic para seleccionar un archivo
           </span>
           <p className="text-sm text-gray-500 mt-2">PDF, DOCX o XLSX (máx. 10MB)</p>
@@ -39,8 +39,8 @@ const Step5MedicalFile = ({ formData, updateFormData }) => {
           className="hidden"
         />
         {formData.medicalFile && (
-          <div className="mt-4 p-3 bg-green-50 rounded-md">
-            <p className="text-sm text-green-700 font-medium">
+          <div className="mt-4 p-3 bg-primary/5 rounded-md">
+            <p className="text-sm text-[#001558] font-medium">
               Archivo seleccionado: {formData.medicalFile.name}
             </p>
           </div>

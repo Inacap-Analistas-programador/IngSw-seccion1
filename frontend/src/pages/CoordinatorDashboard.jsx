@@ -17,6 +17,7 @@ import VerificadorQR from '@/components/dashboard/VerificadorQR';
 import DashboardEjecutivo from '@/components/dashboard/DashboardEjecutivo';
 import Preinscripcion from '@/components/dashboard/Preinscripcion';
 import Acreditacion from '@/components/dashboard/Acreditacion';
+import UseCases from '@/pages/UseCases';
 // import Breadcrumb from '@/components/Breadcrumb';
 
 const CoordinatorDashboard = () => {
@@ -78,6 +79,7 @@ const CoordinatorDashboard = () => {
     { icon: Mail, label: 'Envío de Correos', path: `${basePath}/envio-correos` },
     { icon: Award, label: 'Acreditación', path: `${basePath}/acreditacion` },
     { icon: Database, label: 'Maestros', path: `${basePath}/maestros` },
+    { icon: LayoutDashboard, label: 'Casos de Uso', path: `${basePath}/use-cases` },
   ];
 
   if (!coordinator) {
@@ -99,10 +101,10 @@ const CoordinatorDashboard = () => {
 
       <div className="min-h-screen bg-gray-50 flex">
         {/* Sidebar */}
-        <aside className={`fixed lg:static inset-y-0 left-0 z-40 w-64 bg-green-800 text-white shadow-lg transform transition-transform duration-300 ease-in-out ${
+        <aside className={`fixed lg:static inset-y-0 left-0 z-40 w-64 bg-primary text-primary-foreground shadow-lg transform transition-transform duration-300 ease-in-out ${
           sidebarOpen ? 'translate-x-0' : '-translate-x-full'
         }`}>
-          <div className="flex items-center justify-center h-20 border-b border-green-700">
+          <div className="flex items-center justify-center h-20 border-b border border-border">
             <Award className="w-8 h-8 mr-2" />
             <span className="text-xl font-bold">Scout Admin</span>
           </div>
@@ -117,8 +119,8 @@ const CoordinatorDashboard = () => {
                   }
                 }}
                 variant="ghost"
-                className={`w-full justify-start text-base py-6 hover:bg-green-700 transition-colors duration-200 ${
-                  location.pathname === item.path ? 'bg-green-700' : ''
+                className={`w-full justify-start text-base py-6 hover:bg-primary/90 transition-colors duration-200 ${
+                  location.pathname === item.path ? 'bg-primary/90' : ''
                 }`}
               >
                 <item.icon className="w-5 h-5 mr-4" />
@@ -170,6 +172,7 @@ const CoordinatorDashboard = () => {
             <h1 className="text-3xl font-bold text-gray-800 mb-6">{getPageTitle()}</h1>
             <Routes>
               <Route path="/ejecutivo" element={<DashboardEjecutivo />} />
+              <Route path="/use-cases" element={<UseCases />} />
               <Route path="/gestion-cursos" element={<Cursos />} />
               <Route path="/preinscripcion" element={<Preinscripcion />} />
               <Route path="/gestion-pagos" element={<Pagos />} />

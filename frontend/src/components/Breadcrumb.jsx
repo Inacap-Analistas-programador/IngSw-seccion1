@@ -37,7 +37,7 @@ const Breadcrumb = () => {
               {last ? (
                 <span className="text-sm font-medium text-gray-800">{displayName}</span>
               ) : (
-                <Link to={to} className="text-sm font-medium text-gray-500 hover:text-green-700">
+                <Link to={to} className="text-sm font-medium text-gray-500 hover:text-primary-foreground">
                   {displayName}
                 </Link>
               )}

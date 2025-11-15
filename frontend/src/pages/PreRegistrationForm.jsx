@@ -135,19 +135,19 @@ const PreRegistrationForm = () => {
 
       <div className="min-h-screen bg-gray-50">
         {/* Header */}
-        <div className="bg-green-700 text-white shadow-lg">
+        <div className="bg-primary text-primary-foreground shadow-lg">
           <div className="container mx-auto px-4 py-4">
             <div className="flex items-center justify-between">
               <div className="flex items-center space-x-3">
                 <div className="w-10 h-10 bg-white rounded-full flex items-center justify-center">
-                  <Award className="w-6 h-6 text-green-700" />
+                  <Award className="w-6 h-6 text-[#001558]" />
                 </div>
                 <span className="text-xl font-bold">Preinscripción Scout</span>
               </div>
               <Button 
                 variant="ghost" 
                 onClick={() => navigate('/')}
-                className="text-white hover:bg-green-600"
+                className="text-white hover:bg-primary/90"
               >
                 Volver al Inicio
               </Button>
@@ -164,22 +164,22 @@ const PreRegistrationForm = () => {
                   <div className="flex flex-col items-center">
                     <div className={`w-10 h-10 rounded-full flex items-center justify-center font-bold transition-all duration-300 ${
                       currentStep > step.number 
-                        ? 'bg-green-600 text-white' 
+                        ? 'bg-primary text-primary-foreground' 
                         : currentStep === step.number 
-                        ? 'bg-green-600 text-white ring-4 ring-green-200' 
+                        ? 'bg-primary text-primary-foreground ring-4 ring-primary/30' 
                         : 'bg-gray-200 text-gray-500'
                     }`}>
                       {currentStep > step.number ? <Check className="w-5 h-5" /> : step.number}
                     </div>
                     <span className={`text-xs mt-2 text-center hidden md:block ${
-                      currentStep >= step.number ? 'text-green-700 font-semibold' : 'text-gray-500'
+                      currentStep >= step.number ? 'text-[#001558] font-semibold' : 'text-gray-500'
                     }`}>
                       {step.title}
                     </span>
                   </div>
                   {index < steps.length - 1 && (
                     <div className={`flex-1 h-1 mx-2 transition-all duration-300 ${
-                      currentStep > step.number ? 'bg-green-600' : 'bg-gray-200'
+                      currentStep > step.number ? 'bg-primary' : 'bg-gray-200'
                     }`}></div>
                   )}
                 </React.Fragment>
@@ -187,7 +187,7 @@ const PreRegistrationForm = () => {
             </div>
             <div className="text-center">
               <p className="text-sm text-gray-600">
-                Paso {currentStep} de {totalSteps}: <span className="font-semibold text-green-700">{steps[currentStep - 1].title}</span>
+                Paso {currentStep} de {totalSteps}: <span className="font-semibold text-[#001558]">{steps[currentStep - 1].title}</span>
               </p>
             </div>
           </div>
@@ -222,7 +222,7 @@ const PreRegistrationForm = () => {
                 onClick={handlePrevious}
                 disabled={currentStep === 1}
                 variant="outline"
-                className="border-green-600 text-green-600 hover:bg-green-50"
+                className="border border-border text-[#001558] hover:bg-primary/5"
               >
                 <ChevronLeft className="w-4 h-4 mr-2" />
                 Anterior
@@ -231,7 +231,7 @@ const PreRegistrationForm = () => {
               {currentStep < totalSteps ? (
                 <Button
                   onClick={handleNext}
-                  className="bg-green-600 hover:bg-green-700"
+                  className="bg-primary hover:bg-primary/90 text-primary-foreground"
                 >
                   Siguiente
                   <ChevronRight className="w-4 h-4 ml-2" />
@@ -239,7 +239,7 @@ const PreRegistrationForm = () => {
               ) : (
                 <Button
                   onClick={handleSubmit}
-                  className="bg-green-600 hover:bg-green-700"
+                  className="bg-primary hover:bg-primary/90 text-primary-foreground"
                 >
                   <Check className="w-4 h-4 mr-2" />
                   Enviar Preinscripción
