@@ -1,6 +1,7 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { Users, BookOpen, CreditCard, TrendingUp } from 'lucide-react';
+import Card from '@/components/ui/Card';
 
 const DashboardEjecutivo = () => {
   const stats = [
@@ -19,8 +20,9 @@ const DashboardEjecutivo = () => {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: index * 0.1 }}
-            className="bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow duration-300"
+            className="hover:shadow-lg transition-shadow duration-300"
           >
+            <Card>
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm text-gray-600">{stat.label}</p>
@@ -30,19 +32,20 @@ const DashboardEjecutivo = () => {
                 <stat.icon className="w-6 h-6 text-white" />
               </div>
             </div>
+            </Card>
           </motion.div>
         ))}
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <div className="bg-white rounded-lg shadow-md p-6">
+        <Card>
           <h2 className="text-xl font-bold text-gray-800 mb-4">Estado de Cursos</h2>
           <p className="text-gray-600">Gráfico de estado de cursos aparecerá aquí (RF-02).</p>
-        </div>
-        <div className="bg-white rounded-lg shadow-md p-6">
+        </Card>
+        <Card>
           <h2 className="text-xl font-bold text-gray-800 mb-4">Progreso de Pagos</h2>
           <p className="text-gray-600">Gráfico de progreso de pagos aparecerá aquí (RF-02).</p>
-        </div>
+        </Card>
       </div>
     </div>
   );

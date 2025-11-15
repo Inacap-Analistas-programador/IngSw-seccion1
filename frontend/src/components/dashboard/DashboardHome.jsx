@@ -1,6 +1,7 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { Users, BookOpen, CreditCard, TrendingUp } from 'lucide-react';
+import Card from '@/components/ui/Card';
 
 const DashboardHome = () => {
   const stats = [
@@ -24,8 +25,9 @@ const DashboardHome = () => {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: index * 0.1 }}
-            className="bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow duration-300"
+            className="hover:shadow-lg transition-shadow duration-300"
           >
+            <Card>
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm text-gray-600">{stat.label}</p>
@@ -35,14 +37,15 @@ const DashboardHome = () => {
                 <stat.icon className="w-6 h-6 text-white" />
               </div>
             </div>
+            </Card>
           </motion.div>
         ))}
       </div>
 
-      <div className="bg-white rounded-lg shadow-md p-6">
+      <Card>
         <h2 className="text-xl font-bold text-gray-800 mb-4">Actividad Reciente</h2>
         <p className="text-gray-600">No hay actividad reciente para mostrar.</p>
-      </div>
+      </Card>
     </div>
   );
 };

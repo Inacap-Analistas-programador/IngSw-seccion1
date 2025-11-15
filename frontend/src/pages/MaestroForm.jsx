@@ -13,6 +13,7 @@ import {
   Clock,
   FileText
 } from 'lucide-react';
+import Card from '@/components/ui/Card';
 
 const MaestroForm = () => {
   const navigate = useNavigate();
@@ -212,8 +213,9 @@ const MaestroForm = () => {
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              className="bg-white rounded-lg shadow-md p-6 mb-6"
+              className="mb-6"
             >
+                <Card>
               <div className="flex items-center mb-6">
                 <User className="w-6 h-6 text-scout-azul-medio mr-3" />
                 <h2 className="text-xl font-semibold text-scout-azul-oscuro">Seleccionar Persona</h2>
@@ -252,7 +254,7 @@ const MaestroForm = () => {
                     <div>
                       <p><strong>Nombre:</strong> {selectedPersona.nombres} {selectedPersona.apellidoPaterno} {selectedPersona.apellidoMaterno}</p>
                       <p><strong>RUT:</strong> {selectedPersona.rut}-{selectedPersona.dv}</p>
-                      <p><strong>Email:</strong> {selectedPersona.email}</p>
+                      <p><strong>Correo Electrónico:</strong> {selectedPersona.correo || selectedPersona.email}</p>
                     </div>
                     <div>
                       <p><strong>Teléfono:</strong> {selectedPersona.telefono}</p>
@@ -262,6 +264,7 @@ const MaestroForm = () => {
                   </div>
                 </motion.div>
               )}
+              </Card>
             </motion.div>
 
             {/* Habilitaciones */}
@@ -269,8 +272,9 @@ const MaestroForm = () => {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.1 }}
-              className="bg-white rounded-lg shadow-md p-6 mb-6"
+              className="mb-6"
             >
+              <Card>
               <div className="flex items-center mb-6">
                 <BookOpen className="w-6 h-6 text-scout-azul-medio mr-3" />
                 <h2 className="text-xl font-semibold text-scout-azul-oscuro">Habilitaciones</h2>
@@ -366,6 +370,7 @@ const MaestroForm = () => {
                   </div>
                 </div>
               </div>
+              </Card>
             </motion.div>
 
             {/* Historial de Capacitaciones */}
@@ -373,8 +378,9 @@ const MaestroForm = () => {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.2 }}
-              className="bg-white rounded-lg shadow-md p-6 mb-6"
+              className="mb-6"
             >
+              <Card>
               <div className="flex items-center mb-6">
                 <FileText className="w-6 h-6 text-scout-azul-medio mr-3" />
                 <h2 className="text-xl font-semibold text-scout-azul-oscuro">Historial de Capacitaciones</h2>
@@ -402,6 +408,7 @@ Ejemplo:
                   Este campo es importante para llevar un registro del historial de capacitaciones que no están registradas en esta plataforma.
                 </p>
               </div>
+              </Card>
             </motion.div>
 
             {/* Botones */}

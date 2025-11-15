@@ -12,15 +12,15 @@ import { useToast } from '@/components/ui/use-toast';
 const CoordinatorLogin = () => {
   const navigate = useNavigate();
   const toast = useToast();
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [correo, setCorreo] = useState('');
+  const [contrasena, setContrasena] = useState('');
 
   const handleLogin = (e) => {
     e.preventDefault();
     
-    if (email === 'coordinador@scout.cl' && password === 'scout2024') {
+    if (correo === 'coordinador@scout.cl' && contrasena === 'scout2024') {
       const coordinator = {
-        email,
+        correo,
         name: 'Coordinador Scout',
         loginTime: new Date().toISOString()
       };
@@ -68,30 +68,30 @@ const CoordinatorLogin = () => {
 
             <form onSubmit={handleLogin} className="p-8 space-y-6">
               <div className="space-y-2">
-                <Label htmlFor="email" className="text-gray-700">Correo Electrónico</Label>
+                <Label htmlFor="correo" className="text-gray-700">Correo Electrónico</Label>
                 <div className="relative">
                   <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
                   <Input
-                    id="email"
+                    id="correo"
                     type="email"
                     placeholder="coordinador@scout.cl"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
+                    value={correo}
+                    onChange={(e) => setCorreo(e.target.value)}
                     className="pl-10 border-gray-300 focus:border-primary focus:ring-primary/30"
                   />
                 </div>
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="password" className="text-gray-700">Contraseña</Label>
+                <Label htmlFor="contrasena" className="text-gray-700">Contraseña</Label>
                 <div className="relative">
                   <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
                   <Input
-                    id="password"
+                    id="contrasena"
                     type="password"
                     placeholder="••••••••"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
+                    value={contrasena}
+                    onChange={(e) => setContrasena(e.target.value)}
                     className="pl-10 border-gray-300 focus:border-primary focus:ring-primary/30"
                   />
                 </div>

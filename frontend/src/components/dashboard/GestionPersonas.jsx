@@ -1,4 +1,5 @@
 import React from 'react';
+import Card from '@/components/ui/Card';
 
 const GestionPersonas = () => {
   return (
@@ -8,9 +9,9 @@ const GestionPersonas = () => {
         <p className="text-gray-600 mt-2">Administración avanzada de personas</p>
       </div>
 
-      <div className="bg-white rounded-lg shadow-md p-6">
+      <Card>
         <p className="text-gray-600">Herramientas de gestión de personas aparecerán aquí.</p>
-      </div>
+      </Card>
     </div>
   );
 };

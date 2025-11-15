@@ -51,3 +51,33 @@ input, textarea, select {
   background-color: white !important;
   color: black;
 }
+
+/* Make sure components with white background have readable, dark text by default. */
+@layer components {
+  .bg-white {
+    @apply text-gray-900;
+  }
+
+  /* Muted text inside a white card should be darker than the default muted-foreground (which is tuned for dark backgrounds) */
+  .bg-white .text-muted-foreground {
+    @apply text-gray-600;
+  }
+}
+
+/* Inputs placed on a white background should default to dark text for readability. */
+@layer components {
+  /* Inputs that have white background directly */
+  input.bg-white, select.bg-white, textarea.bg-white, .input-scout.bg-white {
+    @apply text-gray-900;
+  }
+
+  /* Inputs inside a white card or element */
+  .bg-white input, .bg-white select, .bg-white textarea, .bg-white .input-scout {
+    @apply text-gray-900;
+  }
+
+  /* Make placeholder legible on white backgrounds */
+  input.bg-white::placeholder, textarea.bg-white::placeholder, .input-scout.bg-white::placeholder, .bg-white input::placeholder, .bg-white textarea::placeholder {
+    @apply text-gray-400;
+  }
+}

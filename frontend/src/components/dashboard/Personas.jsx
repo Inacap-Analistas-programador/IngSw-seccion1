@@ -1,4 +1,5 @@
 import React from 'react';
+import Card from '@/components/ui/Card';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/Button';
 import { ExternalLink, Users, UserPlus } from 'lucide-react';
@@ -14,7 +15,7 @@ const Personas = () => {
           <p className="text-gray-600 mt-2">Gestión CRUD de personas registradas</p>
         </div>
         <Button 
-          onClick={() => navigate('/personas')}
+          onClick={() => navigate('/panel')}
           className="bg-scout-azul-medio hover:bg-scout-azul-oscuro"
         >
           <ExternalLink className="w-4 h-4 mr-2" />
@@ -22,7 +23,7 @@ const Personas = () => {
         </Button>
       </div>
 
-      <div className="bg-white rounded-lg shadow-md p-6">
+      <Card>
         <div className="text-center py-12">
           <Users className="w-16 h-16 text-scout-azul-medio mx-auto mb-4" />
           <h3 className="text-lg font-semibold text-gray-900 mb-2">
@@ -33,7 +34,7 @@ const Personas = () => {
           </p>
           <div className="space-y-2 sm:space-y-0 sm:space-x-4 sm:flex sm:justify-center">
             <Button 
-              onClick={() => navigate('/personas')}
+              onClick={() => navigate('/panel')}
               className="bg-scout-azul-medio hover:bg-scout-azul-oscuro w-full sm:w-auto"
             >
               <Users className="w-4 h-4 mr-2" />
@@ -49,7 +50,7 @@ const Personas = () => {
             </Button>
           </div>
         </div>
-      </div>
+      </Card>
     </div>
   );
 };

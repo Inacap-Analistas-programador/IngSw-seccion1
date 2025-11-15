@@ -14,23 +14,23 @@ const Step6Review = ({ formData, updateFormData }) => {
         <div className="grid md:grid-cols-2 gap-4">
           <div>
             <p className="text-sm text-gray-600">Nombre Completo</p>
-            <p className="font-semibold text-gray-800">{formData.fullName || 'No especificado'}</p>
+            <p className="font-semibold text-gray-800">{formData.nombreCompleto || 'No especificado'}</p>
           </div>
           <div>
             <p className="text-sm text-gray-600">RUT</p>
             <p className="font-semibold text-gray-800">{formData.rut || 'No especificado'}</p>
           </div>
           <div>
-            <p className="text-sm text-gray-600">Email</p>
-            <p className="font-semibold text-gray-800">{formData.email || 'No especificado'}</p>
+            <p className="text-sm text-gray-600">Correo</p>
+            <p className="font-semibold text-gray-800">{formData.correo || 'No especificado'}</p>
           </div>
           <div>
             <p className="text-sm text-gray-600">Teléfono</p>
-            <p className="font-semibold text-gray-800">{formData.phone || 'No especificado'}</p>
+            <p className="font-semibold text-gray-800">{formData.telefono || 'No especificado'}</p>
           </div>
           <div>
             <p className="text-sm text-gray-600">Profesión</p>
-            <p className="font-semibold text-gray-800">{formData.profession || 'No especificada'}</p>
+            <p className="font-semibold text-gray-800">{formData.profesion || 'No especificada'}</p>
           </div>
           <div>
             <p className="text-sm text-gray-600">Religión</p>
@@ -42,23 +42,23 @@ const Step6Review = ({ formData, updateFormData }) => {
           </div>
           <div>
             <p className="text-sm text-gray-600">Apodo Scout</p>
-            <p className="font-semibold text-gray-800">{formData.nickname || 'No especificado'}</p>
+            <p className="font-semibold text-gray-800">{formData.apodo || 'No especificado'}</p>
           </div>
           <div>
             <p className="text-sm text-gray-600">Grupo Scout</p>
-            <p className="font-semibold text-gray-800">{formData.group || 'No especificado'}</p>
+            <p className="font-semibold text-gray-800">{formData.grupo || 'No especificado'}</p>
           </div>
           <div>
             <p className="text-sm text-gray-600">Rama</p>
-            <p className="font-semibold text-gray-800">{formData.branch || 'No especificado'}</p>
+            <p className="font-semibold text-gray-800">{formData.ramaFormacion || 'No especificado'}</p>
           </div>
           <div>
             <p className="text-sm text-gray-600">Tiempo trabajo con NNAJ</p>
-            <p className="font-semibold text-gray-800">{formData.youthWorkTime || 'No especificado'}</p>
+            <p className="font-semibold text-gray-800">{formData.tiempoTrabajoNNAJ || 'No especificado'}</p>
           </div>
           <div>
             <p className="text-sm text-gray-600">Tiempo trabajo con Adultos</p>
-            <p className="font-semibold text-gray-800">{formData.adultWorkTime || 'No especificado'}</p>
+            <p className="font-semibold text-gray-800">{formData.tiempoTrabajoAdultos || 'No especificado'}</p>
           </div>
         </div>
       </div>

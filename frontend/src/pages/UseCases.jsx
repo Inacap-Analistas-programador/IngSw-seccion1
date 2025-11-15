@@ -11,7 +11,7 @@ const cases = [
   { id: 'reasignar-pago', title: 'Reasignar Pago', desc: 'Cambiar el pago a otra persona con registro (placeholder)', path: '/dashboard/gestion-pagos' },
   { id: 'conciliacion', title: 'Conciliación y Reportes', desc: 'Generar reportes y exportar para contabilidad (placeholder)', path: '/dashboard/ejecutivo' },
   { id: 'gestion-cuotas', title: 'Gestión de Cuotas', desc: 'Validar pagos respecto a cuotas del curso (placeholder)', path: '/dashboard/gestion-cursos' },
-  { id: 'historial', title: 'Consultar Historial de Pagos', desc: 'Ver historial por persona o curso (placeholder)', path: '/dashboard/gestion-personas' },
+  { id: 'historial', title: 'Consultar Historial de Pagos', desc: 'Ver historial por persona o curso (placeholder)', path: '/dashboard/gestion-pagos' },
   { id: 'adjuntar-comprobante', title: 'Adjuntar/Consultar Comprobante', desc: 'Subir o visualizar comprobantes (placeholder)', path: '/dashboard/gestion-pagos' },
   { id: 'auditoria', title: 'Auditoría y Seguridad', desc: 'Ver trazabilidad de cambios en pagos (placeholder)', path: '/dashboard/ejecutivo' },
 ];

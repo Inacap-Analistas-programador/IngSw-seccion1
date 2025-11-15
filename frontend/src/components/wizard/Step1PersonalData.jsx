@@ -16,32 +16,12 @@ const Step1PersonalData = ({ formData, updateFormData }) => {
 
       <div className="grid md:grid-cols-2 gap-4">
         <div className="space-y-2">
-          <Label htmlFor="firstName">Nombre *</Label>
+          <Label htmlFor="nombreCompleto">Nombre Completo *</Label>
           <Input
-            id="firstName"
-            value={formData.firstName}
-            onChange={(e) => handleChange('firstName', e.target.value)}
-            placeholder="Juan"
-          />
-        </div>
-
-        <div className="space-y-2">
-          <Label htmlFor="lastName1">Primer Apellido *</Label>
-          <Input
-            id="lastName1"
-            value={formData.lastName1}
-            onChange={(e) => handleChange('lastName1', e.target.value)}
-            placeholder="Pérez"
-          />
-        </div>
-
-        <div className="space-y-2">
-          <Label htmlFor="lastName2">Segundo Apellido *</Label>
-          <Input
-            id="lastName2"
-            value={formData.lastName2}
-            onChange={(e) => handleChange('lastName2', e.target.value)}
-            placeholder="González"
+            id="nombreCompleto"
+            value={formData.nombreCompleto}
+            onChange={(e) => handleChange('nombreCompleto', e.target.value)}
+            placeholder="Juan Pérez González"
           />
         </div>
 
@@ -56,56 +36,52 @@ const Step1PersonalData = ({ formData, updateFormData }) => {
         </div>
 
         <div className="space-y-2">
-          <Label htmlFor="birthDate">Fecha de Nacimiento *</Label>
+          <Label htmlFor="fechaNacimiento">Fecha de Nacimiento *</Label>
           <Input
-            id="birthDate"
+            id="fechaNacimiento"
             type="date"
-            value={formData.birthDate}
-            onChange={(e) => handleChange('birthDate', e.target.value)}
+            value={formData.fechaNacimiento}
+            onChange={(e) => handleChange('fechaNacimiento', e.target.value)}
           />
         </div>
 
         <div className="space-y-2">
-          <Label htmlFor="email">Correo Electrónico *</Label>
+          <Label htmlFor="correo">Correo Electrónico *</Label>
           <Input
-            id="email"
+            id="correo"
             type="email"
-            value={formData.email}
-            onChange={(e) => handleChange('email', e.target.value)}
+            value={formData.correo}
+            onChange={(e) => handleChange('correo', e.target.value)}
             placeholder="correo@ejemplo.cl"
           />
         </div>
 
         <div className="space-y-2 md:col-span-2">
-          <Label htmlFor="address">Dirección *</Label>
+          <Label htmlFor="direccion">Dirección *</Label>
           <Input
-            id="address"
-            value={formData.address}
-            onChange={(e) => handleChange('address', e.target.value)}
+            id="direccion"
+            value={formData.direccion}
+            onChange={(e) => handleChange('direccion', e.target.value)}
             placeholder="Calle Principal 123"
           />
         </div>
 
         <div className="space-y-2">
-          <Label htmlFor="commune">Comuna *</Label>
+          <Label htmlFor="comuna">Comuna *</Label>
           <Input
-            id="commune"
-            value={formData.commune}
-            onChange={(e) => handleChange('commune', e.target.value)}
+            id="comuna"
+            value={formData.comuna}
+            onChange={(e) => handleChange('comuna', e.target.value)}
             placeholder="Santiago"
           />
         </div>
 
         <div className="space-y-2">
-          <div></div>
-        </div>
-
-        <div className="space-y-2">
-          <Label htmlFor="phoneType">Tipo de Teléfono *</Label>
+          <Label htmlFor="tipoTelefono">Tipo de Teléfono *</Label>
           <select
-            id="phoneType"
-            value={formData.phoneType}
-            onChange={(e) => handleChange('phoneType', e.target.value)}
+            id="tipoTelefono"
+            value={formData.tipoTelefono}
+            onChange={(e) => handleChange('tipoTelefono', e.target.value)}
             className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
           >
             <option value="">Seleccionar tipo</option>
@@ -115,11 +91,11 @@ const Step1PersonalData = ({ formData, updateFormData }) => {
         </div>
 
         <div className="space-y-2">
-          <Label htmlFor="phone">Teléfono *</Label>
+          <Label htmlFor="telefono">Teléfono *</Label>
           <Input
-            id="phone"
-            value={formData.phone}
-            onChange={(e) => handleChange('phone', e.target.value)}
+            id="telefono"
+            value={formData.telefono}
+            onChange={(e) => handleChange('telefono', e.target.value)}
             placeholder="+56 9 1234 5678"
           />
         </div>
@@ -127,21 +103,21 @@ const Step1PersonalData = ({ formData, updateFormData }) => {
 
       {/* Foto de perfil */}
       <div className="space-y-2">
-        <Label htmlFor="profilePhoto">Foto de Perfil</Label>
+          <Label htmlFor="fotoPerfil">Foto de Perfil</Label>
           <Input
-          id="profilePhoto"
+          id="fotoPerfil"
           type="file"
           accept="image/*"
           onChange={(e) => {
             const file = e.target.files[0];
             if (file) {
-              handleChange('profilePhoto', file);
+              handleChange('fotoPerfil', file);
             }
           }}
           className="file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-primary/5 file:text-[#001558] hover:file:bg-primary/10"
         />
-        {formData.profilePhoto && (
-          <p className="text-sm text-gray-600">Archivo seleccionado: {formData.profilePhoto.name}</p>
+        {formData.fotoPerfil && (
+          <p className="text-sm text-gray-600">Archivo seleccionado: {formData.fotoPerfil.name}</p>
         )}
       </div>
     </div>

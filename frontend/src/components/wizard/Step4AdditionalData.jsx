@@ -16,11 +16,11 @@ const Step4AdditionalData = ({ formData, updateFormData }) => {
 
       <div className="grid md:grid-cols-2 gap-4">
         <div className="space-y-2">
-          <Label htmlFor="vehicle">¿Tienes Vehículo?</Label>
+          <Label htmlFor="vehiculo">¿Tienes Vehículo?</Label>
           <select
-            id="vehicle"
-            value={formData.vehicle}
-            onChange={(e) => handleChange('vehicle', e.target.value)}
+            id="vehiculo"
+            value={formData.vehiculo}
+            onChange={(e) => handleChange('vehiculo', e.target.value)}
             className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
           >
             <option value="">Seleccionar</option>
@@ -32,31 +32,31 @@ const Step4AdditionalData = ({ formData, updateFormData }) => {
         {formData.vehicle === 'si' && (
           <>
             <div className="space-y-2">
-              <Label htmlFor="vehicleBrand">Marca del Vehículo</Label>
+              <Label htmlFor="vehiculoMarca">Marca del Vehículo</Label>
               <Input
-                id="vehicleBrand"
-                value={formData.vehicleBrand}
-                onChange={(e) => handleChange('vehicleBrand', e.target.value)}
+                id="vehiculoMarca"
+                  value={formData.vehiculoMarca}
+                  onChange={(e) => handleChange('vehiculoMarca', e.target.value)}
                 placeholder="Toyota, Chevrolet, etc."
               />
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="vehicleModel">Modelo del Vehículo</Label>
+              <Label htmlFor="vehiculoModelo">Modelo del Vehículo</Label>
               <Input
-                id="vehicleModel"
-                value={formData.vehicleModel}
-                onChange={(e) => handleChange('vehicleModel', e.target.value)}
+                id="vehiculoModelo"
+                  value={formData.vehiculoModelo}
+                  onChange={(e) => handleChange('vehiculoModelo', e.target.value)}
                 placeholder="Corolla, Spark, etc."
               />
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="vehiclePlate">Patente del Vehículo</Label>
+              <Label htmlFor="vehiculoPatente">Patente del Vehículo</Label>
               <Input
-                id="vehiclePlate"
-                value={formData.vehiclePlate}
-                onChange={(e) => handleChange('vehiclePlate', e.target.value)}
+                id="vehiculoPatente"
+                  value={formData.vehiculoPatente}
+                  onChange={(e) => handleChange('vehiculoPatente', e.target.value)}
                 placeholder="AB-CD-12"
               />
             </div>
@@ -64,11 +64,11 @@ const Step4AdditionalData = ({ formData, updateFormData }) => {
         )}
 
         <div className="space-y-2">
-          <Label htmlFor="profession">Profesión u Oficio</Label>
+          <Label htmlFor="profesion">Profesión u Oficio</Label>
           <Input
-            id="profession"
-            value={formData.profession}
-            onChange={(e) => handleChange('profession', e.target.value)}
+            id="profesion"
+            value={formData.profesion}
+            onChange={(e) => handleChange('profesion', e.target.value)}
             placeholder="Tu profesión u oficio"
           />
         </div>
@@ -94,11 +94,11 @@ const Step4AdditionalData = ({ formData, updateFormData }) => {
         </div>
 
         <div className="space-y-2">
-          <Label htmlFor="workingWithYouth">¿Trabajas con Jóvenes? *</Label>
+          <Label htmlFor="trabajaConNNAJ">¿Trabajas con Jóvenes? *</Label>
           <select
-            id="workingWithYouth"
-            value={formData.workingWithYouth}
-            onChange={(e) => handleChange('workingWithYouth', e.target.value)}
+            id="trabajaConNNAJ"
+            value={formData.trabajaConNNAJ}
+            onChange={(e) => handleChange('trabajaConNNAJ', e.target.value)}
             className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
           >
             <option value="">Seleccionar</option>
@@ -107,34 +107,34 @@ const Step4AdditionalData = ({ formData, updateFormData }) => {
           </select>
         </div>
 
-        {formData.workingWithYouth === 'si' && (
+        {formData.trabajaConNNAJ === 'si' && (
           <div className="space-y-2">
-            <Label htmlFor="youthWorkTime">Tiempo trabajo con NNAJ</Label>
+            <Label htmlFor="tiempoTrabajoNNAJ">Tiempo trabajo con NNAJ</Label>
             <Input
-              id="youthWorkTime"
-              value={formData.youthWorkTime}
-              onChange={(e) => handleChange('youthWorkTime', e.target.value)}
+              id="tiempoTrabajoNNAJ"
+              value={formData.tiempoTrabajoNNAJ}
+              onChange={(e) => handleChange('tiempoTrabajoNNAJ', e.target.value)}
               placeholder="ej. 5 años"
             />
           </div>
         )}
 
         <div className="space-y-2">
-          <Label htmlFor="adultWorkTime">Tiempo trabajo con Adultos</Label>
+          <Label htmlFor="tiempoTrabajoAdultos">Tiempo trabajo con Adultos</Label>
           <Input
-            id="adultWorkTime"
-            value={formData.adultWorkTime}
-            onChange={(e) => handleChange('adultWorkTime', e.target.value)}
+            id="tiempoTrabajoAdultos"
+            value={formData.tiempoTrabajoAdultos}
+            onChange={(e) => handleChange('tiempoTrabajoAdultos', e.target.value)}
             placeholder="ej. 3 años"
           />
         </div>
 
         <div className="space-y-2">
-          <Label htmlFor="nickname">Apodo Scout</Label>
+          <Label htmlFor="apodo">Apodo Scout</Label>
           <Input
-            id="nickname"
-            value={formData.nickname}
-            onChange={(e) => handleChange('nickname', e.target.value)}
+            id="apodo"
+            value={formData.apodo}
+            onChange={(e) => handleChange('apodo', e.target.value)}
             placeholder="Tu nombre Scout"
           />
         </div>
@@ -154,25 +154,25 @@ const Step4AdditionalData = ({ formData, updateFormData }) => {
         </div>
 
         <div className="space-y-2 md:col-span-2">
-          <Label htmlFor="courseExpectations">Observación del curso (qué esperas del curso)</Label>
+          <Label htmlFor="expectativasCurso">Observación del curso (qué esperas del curso)</Label>
           <textarea
-            id="courseExpectations"
-            value={formData.courseExpectations}
-            onChange={(e) => handleChange('courseExpectations', e.target.value)}
+            id="expectativasCurso"
+            value={formData.expectativasCurso}
+            onChange={(e) => handleChange('expectativasCurso', e.target.value)}
             placeholder="Describe tus expectativas sobre el curso"
-            className="flex min-h-[120px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+            className="flex min-h-[120px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-gray-400 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
             rows={4}
           />
         </div>
 
         <div className="space-y-2 md:col-span-2">
-          <Label htmlFor="observations">Observaciones Adicionales</Label>
+          <Label htmlFor="observaciones">Observaciones Adicionales</Label>
           <textarea
-            id="observations"
-            value={formData.observations}
-            onChange={(e) => handleChange('observations', e.target.value)}
+            id="observaciones"
+            value={formData.observaciones}
+            onChange={(e) => handleChange('observaciones', e.target.value)}
             placeholder="Información adicional relevante"
-            className="flex min-h-[80px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+            className="flex min-h-[80px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-gray-400 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
             rows={3}
           />
         </div>

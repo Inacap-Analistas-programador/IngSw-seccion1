@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
+import Card from '@/components/ui/Card';
 import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
 import { Label } from '@/components/ui/Label';
@@ -602,7 +603,7 @@ const Cursos = () => {
                     value={courseData.observacion}
                     onChange={(e) => handleInputChange('observacion', e.target.value)}
                     placeholder="Información adicional sobre el curso..."
-                    className="flex min-h-[80px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                    className="flex min-h-[80px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-gray-400 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
                     rows={3}
                     maxLength={250}
                   />
@@ -899,7 +900,7 @@ const Cursos = () => {
                     value={courseData.observacion}
                     onChange={(e) => handleInputChange('observacion', e.target.value)}
                     placeholder="Información adicional sobre el curso..."
-                    className="flex min-h-[80px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                    className="flex min-h-[80px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-gray-400 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
                     rows={3}
                     maxLength={250}
                   />
@@ -969,7 +970,7 @@ const Cursos = () => {
       )}
 
       {/* Lista de Cursos */}
-      <div className="bg-white rounded-lg shadow-md p-6">
+      <Card>
         <div className="flex justify-between items-center mb-4">
           <h2 className="text-xl font-semibold text-gray-800">
             Cursos Disponibles ({filteredCourses.length} de {courses.length})
@@ -1176,7 +1177,7 @@ const Cursos = () => {
             <p className="text-gray-400 text-sm mt-2">Crea tu primer curso haciendo clic en "Nuevo Curso"</p>
           </div>
         )}
-      </div>
+      </Card>
     </div>
   );
 };

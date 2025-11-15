@@ -13,7 +13,7 @@ const Breadcrumb = () => {
     'gestion-cursos': 'Gestión de Cursos',
     'preinscripcion': 'Preinscripción',
     'gestion-pagos': 'Gestión de Pagos',
-    'gestion-personas': 'Gestión de Personas',
+    // persona management removed; mapping omitted
     'envio-correos': 'Envío de Correos',
     'acreditacion': 'Acreditación',
     'maestros': 'Maestros',

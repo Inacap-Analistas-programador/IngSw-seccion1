@@ -1,5 +1,4 @@
-
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Helmet } from 'react-helmet';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
@@ -12,57 +11,62 @@ import Step3Health from '@/components/wizard/Step3Health';
 import Step4AdditionalData from '@/components/wizard/Step4AdditionalData';
 import Step5MedicalFile from '@/components/wizard/Step5MedicalFile';
 import Step6Review from '@/components/wizard/Step6Review';
+import api from '@/config/api';
+import { personaToApi } from '@/lib/mappers';
 
 const PreRegistrationForm = () => {
   const navigate = useNavigate();
   // const { toast } = useToast();
   const [currentStep, setCurrentStep] = useState(1);
   
-  console.log('✅ PreRegistrationForm renderizado correctamente, currentStep:', currentStep);
+  // Move console logs to useEffect to avoid side-effects in render (React Strict Mode friendly)
+  useEffect(() => {
+    console.log('✅ Formulario de Pre-inscripción renderizado correctamente, paso actual:', currentStep);
+  }, [currentStep]);
   const [formData, setFormData] = useState({
-    // Step 1
-    fullName: '',
+    // Paso 1: Datos Personales (llaves en español para coherencia)
+    nombreCompleto: '',
     rut: '',
-    birthDate: '',
-    email: '',
-    address: '',
-    commune: '',
-    phone: '',
-    phoneType: '',
-    // Step 2
-    role: '',
-    group: '',
-    branch: '',
-    position: '',
-    unitAntiquity: '',
-    district: '',
-    zone: '',
-    // Step 3 - Salud
-    diet: '',
-    allergies: '',
-    diseases: '',
-    limitations: '',
-    emergencyContact: '',
-    emergencyRelation: '',
-    emergencyPhone: '',
-    // Step 4 - Datos Adicionales
-    vehicle: '',
-    vehicleBrand: '',
-    vehicleModel: '',
-    vehiclePlate: '',
-    profession: '',
+    fechaNacimiento: '',
+    correo: '',
+    direccion: '',
+    comuna: '',
+    telefono: '',
+    tipoTelefono: '',
+    // Paso 2: Información Scout
+    rol: '',
+    grupo: '',
+    ramaFormacion: '',
+    cargo: '',
+    antiguedadUnidad: '',
+    distrito: '',
+    zona: '',
+    // Paso 3: Salud y Alimentación
+    alimentacion: '',
+    alergias: '',
+    enfermedades: '',
+    limitaciones: '',
+    nombreEmergencia: '',
+    parentescoEmergencia: '',
+    telefonoEmergencia: '',
+    // Paso 4: Datos Adicionales
+    vehiculo: '',
+    vehiculoMarca: '',
+    vehiculoModelo: '',
+    vehiculoPatente: '',
+    profesion: '',
     religion: '',
     numeroMMAA: '',
-    workingWithYouth: '',
-    youthWorkTime: '',
-    adultWorkTime: '',
-    nickname: '',
+    trabajaConNNAJ: '',
+    tiempoTrabajoNNAJ: '',
+    tiempoTrabajoAdultos: '',
+    apodo: '',
     needsAccommodation: '',
-    courseExpectations: '',
-    observations: '',
-    // Step 5 - Ficha Médica
+    expectativasCurso: '',
+    observaciones: '',
+    // Paso 5: Carga de Ficha Médica
     medicalFile: null,
-    // Step 6 - Revisión
+    // Paso 6: Revisión
     consent: false
   });
 
@@ -96,18 +100,12 @@ const PreRegistrationForm = () => {
     }
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     if (!formData.consent) {
-      // toast({
-      //   title: "Error",
-      //   description: "Debes aceptar los términos y condiciones para continuar.",
-      //   variant: "destructive"
-      // });
       alert("Debes aceptar los términos y condiciones para continuar.");
       return;
     }
 
-    // Store in preregistrations
     const existingRegistrations = JSON.parse(localStorage.getItem('preregistrations') || '[]');
     const newRegistration = {
       id: Date.now(),
@@ -117,38 +115,37 @@ const PreRegistrationForm = () => {
     existingRegistrations.push(newRegistration);
     localStorage.setItem('preregistrations', JSON.stringify(existingRegistrations));
 
-    // Also create persona record for management
     const personas = JSON.parse(localStorage.getItem('personas') || '[]');
-    const [nombres, ...apellidos] = (formData.fullName || '').split(' ');
+    const [nombres, ...apellidos] = (formData.nombreCompleto || '').split(' ');
     const apellidoPaterno = apellidos[0] || '';
     const apellidoMaterno = apellidos.slice(1).join(' ') || '';
-    const [rut, dv] = (formData.rut || '').split('-');
+    const [rutVal, dv] = (formData.rut || '').split('-');
 
     const newPersona = {
       id: Date.now(),
-      rut: rut || '',
+      rut: rutVal || '',
       dv: dv || '',
       nombres: nombres || '',
       apellidoPaterno,
       apellidoMaterno,
-      email: formData.email || '',
-      fechaNacimiento: formData.birthDate || '',
-      direccion: formData.address || '',
-      tipoTelefono: formData.phoneType === 'celular' ? 2 : 1,
-      telefono: formData.phone || '',
-      profesion: formData.profession || '',
+      correo: formData.correo || '',
+      fechaNacimiento: formData.fechaNacimiento || '',
+      direccion: formData.direccion || '',
+      tipoTelefono: formData.tipoTelefono === 'celular' ? 2 : 1,
+      telefono: formData.telefono || '',
+      profesion: formData.profesion || '',
       religion: formData.religion || '',
       numeroMMAA: formData.numeroMMAA || '',
-      apodo: formData.nickname || '',
-      alergiasEnfermedades: formData.allergies || '',
-      limitaciones: formData.limitations || '',
-      nombreEmergencia: formData.emergencyContact || '',
-      telefonoEmergencia: formData.emergencyPhone || '',
-      otros: formData.observations || '',
-      tiempoNNAJ: formData.youthWorkTime || '',
-      tiempoAdulto: formData.adultWorkTime || '',
+      apodo: formData.apodo || '',
+      alergiasEnfermedades: formData.alergias || '',
+      limitaciones: formData.limitaciones || '',
+      nombreEmergencia: formData.nombreEmergencia || '',
+      telefonoEmergencia: formData.telefonoEmergencia || '',
+      otros: formData.observaciones || '',
+      tiempoNNAJ: formData.tiempoTrabajoNNAJ || '',
+      tiempoAdulto: formData.tiempoTrabajoAdultos || '',
       estadoCivilId: '',
-      comunaId: formData.commune || '',
+      comunaId: formData.comuna || '',
       usuarioId: '',
       vigente: true,
       esFormador: false,
@@ -158,15 +155,18 @@ const PreRegistrationForm = () => {
       historialCapacitaciones: '',
       fechaCreacion: new Date().toISOString()
     };
-    
-    personas.push(newPersona);
-    localStorage.setItem('personas', JSON.stringify(personas));
 
-    // toast({
-    //   title: "¡Preinscripción Exitosa!",
-    //   description: "Tu preinscripción ha sido registrada correctamente.",
-    // });
-    alert("¡Preinscripción Exitosa! Tu preinscripción ha sido registrada correctamente.");
+    try {
+      // Enviar al backend con mapeador para mantener coherencia con la API (per_*)
+      await api.post('/personas/', personaToApi(newPersona));
+      console.log('Persona enviada al API correctamente');
+    } catch (err) {
+      console.warn('API persona POST falló, se guarda en localStorage:', err);
+      personas.push(newPersona);
+      localStorage.setItem('personas', JSON.stringify(personas));
+    }
+
+    alert("¡Pre-inscripción Exitosa! Tu pre-inscripción ha sido registrada correctamente.");
 
     setTimeout(() => {
       navigate('/');
@@ -182,12 +182,12 @@ const PreRegistrationForm = () => {
   return (
     <>
       <Helmet>
-        <title>Preinscripción - Scout Formación</title>
-        <meta name="description" content="Completa tu preinscripción para los cursos de formación Scout." />
+        <title>Pre-inscripción - Scout Formación</title>
+        <meta name="description" content="Completa tu pre-inscripción para los cursos de formación Scout." />
       </Helmet>
-
+      
       <div className="min-h-screen bg-gray-50">
-        {/* Header */}
+        {/* Encabezado */}
         <div className="bg-primary text-primary-foreground shadow-lg">
           <div className="container mx-auto px-4 py-4">
             <div className="flex items-center justify-between">
@@ -195,7 +195,7 @@ const PreRegistrationForm = () => {
                 <div className="w-10 h-10 bg-white rounded-full flex items-center justify-center">
                   <Award className="w-6 h-6 text-[#001558]" />
                 </div>
-                <span className="text-xl font-bold">Preinscripción Scout</span>
+                <span className="text-xl font-bold">Formulario de Pre-inscripción Scout</span>
               </div>
               <Button 
                 variant="ghost" 
@@ -208,7 +208,7 @@ const PreRegistrationForm = () => {
           </div>
         </div>
 
-        {/* Progress Indicator */}
+        {/* Indicador de Progreso */}
         <div className="bg-white shadow-md">
           <div className="container mx-auto px-4 py-6">
             <div className="flex items-center justify-between mb-4">
@@ -246,7 +246,7 @@ const PreRegistrationForm = () => {
           </div>
         </div>
 
-        {/* Form Content */}
+        {/* Contenido del Formulario */}
         <div className="container mx-auto px-4 py-8">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -269,7 +269,7 @@ const PreRegistrationForm = () => {
               </motion.div>
             </AnimatePresence>
 
-            {/* Navigation Buttons */}
+            {/* Botones de Navegación */}
             <div className="flex justify-between mt-8 pt-6 border-t">
               <Button
                 onClick={handlePrevious}
@@ -295,7 +295,7 @@ const PreRegistrationForm = () => {
                   className="bg-primary hover:bg-primary/90 text-primary-foreground"
                 >
                   <Check className="w-4 h-4 mr-2" />
-                  Enviar Preinscripción
+                  Enviar Pre-inscripción
                 </Button>
               )}
             </div>

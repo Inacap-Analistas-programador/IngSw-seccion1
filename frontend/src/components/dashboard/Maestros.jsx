@@ -1,4 +1,5 @@
 import React from 'react';
+import Card from '@/components/ui/Card';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/Button';
 import { ExternalLink, GraduationCap, UserPlus } from 'lucide-react';
@@ -22,7 +23,7 @@ const Maestros = () => {
         </Button>
       </div>
 
-      <div className="bg-white rounded-lg shadow-md p-6">
+      <Card>
         <div className="text-center py-12">
           <GraduationCap className="w-16 h-16 text-scout-azul-medio mx-auto mb-4" />
           <h3 className="text-lg font-semibold text-gray-900 mb-2">
@@ -49,7 +50,7 @@ const Maestros = () => {
             </Button>
           </div>
         </div>
-      </div>
+      </Card>
     </div>
   );
 };

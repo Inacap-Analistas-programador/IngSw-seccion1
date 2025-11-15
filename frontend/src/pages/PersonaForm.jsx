@@ -3,6 +3,8 @@ import { Helmet } from 'react-helmet';
 import { motion } from 'framer-motion';
 import { useNavigate, useParams } from 'react-router-dom';
 import { Button } from '@/components/ui/Button';
+import api from '@/config/api';
+import { personaFromApi, personaToApi } from '@/lib/mappers';
 import { 
   Save, 
   ChevronLeft, 
@@ -18,6 +20,7 @@ import {
   Award,
   Clock
 } from 'lucide-react';
+import Card from '@/components/ui/Card';
 
 const PersonaForm = () => {
   const navigate = useNavigate();
@@ -38,7 +41,7 @@ const PersonaForm = () => {
     nombres: '',
     apellidoPaterno: '',
     apellidoMaterno: '',
-    email: '',
+    correo: '',
     fechaNacimiento: '',
     direccion: '',
     tipoTelefono: 1, // 1: Fijo, 2: Celular, 3: Celular/WhatsApp, 4: WhatsApp
@@ -86,11 +89,26 @@ const PersonaForm = () => {
   // Cargar datos si es edición
   useEffect(() => {
     if (isEdit) {
-      const personas = JSON.parse(localStorage.getItem('personas') || '[]');
-      const persona = personas.find(p => p.id === parseInt(id));
-      if (persona) {
-        setFormData(persona);
-      }
+      (async () => {
+        try {
+          const response = await api.get(`/personas/${id}/`);
+          const mapped = personaFromApi(response.data);
+          setFormData(mapped);
+        } catch (err) {
+          console.warn('No se pudo obtener persona por API, usando localStorage', err);
+          const personas = JSON.parse(localStorage.getItem('personas') || '[]');
+          const persona = personas.find(p => p.id === parseInt(id));
+          if (persona) {
+            const mappedPersona = {
+              ...persona,
+              correo: persona.correo || persona.email || '',
+              telefono: persona.telefono || persona.phone || '',
+              tipoTelefono: persona.tipoTelefono || persona.phoneType || 1,
+            };
+            setFormData(mappedPersona);
+          }
+        }
+      })();
     }
   }, [id, isEdit]);
 
@@ -101,7 +119,7 @@ const PersonaForm = () => {
     if (!formData.dv) newErrors.dv = 'Dígito verificador es requerido';
     if (!formData.nombres) newErrors.nombres = 'Nombres son requeridos';
     if (!formData.apellidoPaterno) newErrors.apellidoPaterno = 'Apellido paterno es requerido';
-    if (!formData.email) newErrors.email = 'Email es requerido';
+    if (!formData.correo) newErrors.correo = 'Correo es requerido';
     if (!formData.fechaNacimiento) newErrors.fechaNacimiento = 'Fecha de nacimiento es requerida';
     if (!formData.direccion) newErrors.direccion = 'Dirección es requerida';
     if (!formData.telefono) newErrors.telefono = 'Teléfono es requerido';
@@ -109,8 +127,8 @@ const PersonaForm = () => {
     
     // Validar formato de email
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (formData.email && !emailRegex.test(formData.email)) {
-      newErrors.email = 'Formato de email inválido';
+    if (formData.correo && !emailRegex.test(formData.correo)) {
+      newErrors.correo = 'Formato de correo inválido';
     }
     
     // Validar RUT (básico)
@@ -134,39 +152,50 @@ const PersonaForm = () => {
     
     try {
       const personas = JSON.parse(localStorage.getItem('personas') || '[]');
-      
+
       if (isEdit) {
-        // Actualizar persona existente
-        const index = personas.findIndex(p => p.id === parseInt(id));
-        if (index !== -1) {
-          personas[index] = { ...formData, id: parseInt(id) };
+        // Intentar actualizar vía API y fallback a localStorage
+        try {
+          await api.put(`/personas/${id}/`, personaToApi({ ...formData, id: parseInt(id) }));
+          console.log('Persona actualizada en API');
+        } catch (err) {
+          console.warn('Fallo al actualizar persona en API, guardando en localStorage', err);
+          const index = personas.findIndex(p => p.id === parseInt(id));
+          if (index !== -1) {
+            personas[index] = { ...formData, id: parseInt(id) };
+          }
         }
       } else {
-        // Crear nueva persona
+        // Crear nueva persona por API y fallback
         const newPersona = {
           ...formData,
           id: Date.now()
         };
-        personas.push(newPersona);
-        
-        // Si es formador, agregar también a la lista de formadores
-        if (formData.esFormador) {
-          const formadores = JSON.parse(localStorage.getItem('formadores') || '[]');
-          formadores.push({
-            id: newPersona.id,
-            personaId: newPersona.id,
-            habilitacion1: formData.habilitacion1,
-            habilitacion2: formData.habilitacion2,
-            verificacion: formData.verificacion,
-            historialCapacitaciones: formData.historialCapacitaciones
-          });
-          localStorage.setItem('formadores', JSON.stringify(formadores));
+        try {
+          await api.post('/personas/', personaToApi(newPersona));
+          console.log('Persona creada en API');
+        } catch (err) {
+          console.warn('Fallo al crear persona en API, guardando en localStorage', err);
+          personas.push(newPersona);
+
+          // Si es formador, agregar también a la lista de formadores (fallback)
+          if (formData.esFormador) {
+            const formadores = JSON.parse(localStorage.getItem('formadores') || '[]');
+            formadores.push({
+              id: newPersona.id,
+              personaId: newPersona.id,
+              habilitacion1: formData.habilitacion1,
+              habilitacion2: formData.habilitacion2,
+              verificacion: formData.verificacion,
+              historialCapacitaciones: formData.historialCapacitaciones
+            });
+            localStorage.setItem('formadores', JSON.stringify(formadores));
+          }
         }
       }
-      
+
       localStorage.setItem('personas', JSON.stringify(personas));
-      
-      navigate('/personas');
+      navigate('/panel');
     } catch (error) {
       console.error('Error al guardar persona:', error);
     } finally {
@@ -204,7 +233,7 @@ const PersonaForm = () => {
               <div className="flex items-center space-x-4">
                 <Button
                   variant="ghost"
-                  onClick={() => navigate('/personas')}
+                  onClick={() => navigate('/panel')}
                   className="text-white hover:bg-scout-azul-medio"
                 >
                   <ChevronLeft className="w-5 h-5 mr-2" />
@@ -226,8 +255,9 @@ const PersonaForm = () => {
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              className="bg-white rounded-lg shadow-md p-6 mb-6"
+              className="mb-6"
             >
+              <Card>
               <div className="flex items-center mb-6">
                 <User className="w-6 h-6 text-scout-azul-medio mr-3" />
                 <h2 className="text-xl font-semibold text-scout-azul-oscuro">Datos Básicos</h2>
@@ -300,15 +330,15 @@ const PersonaForm = () => {
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
                     <Mail className="w-4 h-4 inline mr-1" />
-                    Email *
+                    Correo Electrónico *
                   </label>
                   <input
                     type="email"
-                    value={formData.email}
-                    onChange={(e) => handleInputChange('email', e.target.value)}
-                    className={`input-scout ${errors.email ? 'border-red-500' : ''}`}
+                    value={formData.correo}
+                    onChange={(e) => handleInputChange('correo', e.target.value)}
+                    className={`input-scout ${errors.correo ? 'border-red-500' : ''}`}
                   />
-                  {errors.email && <p className="text-red-500 text-sm mt-1">{errors.email}</p>}
+                  {errors.correo && <p className="text-red-500 text-sm mt-1">{errors.correo}</p>}
                 </div>
                 
                 <div>
@@ -386,6 +416,7 @@ const PersonaForm = () => {
                   {errors.telefono && <p className="text-red-500 text-sm mt-1">{errors.telefono}</p>}
                 </div>
               </div>
+            </Card>
             </motion.div>
 
             {/* Información Adicional */}
@@ -393,8 +424,9 @@ const PersonaForm = () => {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.1 }}
-              className="bg-white rounded-lg shadow-md p-6 mb-6"
+                className="mb-6"
             >
+                <Card>
               <div className="flex items-center mb-6">
                 <FileText className="w-6 h-6 text-scout-azul-medio mr-3" />
                 <h2 className="text-xl font-semibold text-scout-azul-oscuro">Información Adicional</h2>
@@ -467,6 +499,7 @@ const PersonaForm = () => {
                   />
                 </div>
               </div>
+              </Card>
             </motion.div>
 
             {/* Información Médica y Emergencia */}
@@ -474,8 +507,9 @@ const PersonaForm = () => {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.2 }}
-              className="bg-white rounded-lg shadow-md p-6 mb-6"
+              className="mb-6"
             >
+              <Card>
               <div className="flex items-center mb-6">
                 <Heart className="w-6 h-6 text-scout-azul-medio mr-3" />
                 <h2 className="text-xl font-semibold text-scout-azul-oscuro">Información Médica y Emergencia</h2>
@@ -546,6 +580,7 @@ const PersonaForm = () => {
                   placeholder="Cualquier otra información relevante..."
                 />
               </div>
+              </Card>
             </motion.div>
 
             {/* Configuración de Formador */}
@@ -553,8 +588,9 @@ const PersonaForm = () => {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.3 }}
-              className="bg-white rounded-lg shadow-md p-6 mb-6"
+              className="mb-6"
             >
+              <Card>
               <div className="flex items-center mb-6">
                 <Award className="w-6 h-6 text-scout-azul-medio mr-3" />
                 <h2 className="text-xl font-semibold text-scout-azul-oscuro">Configuración de Formador</h2>
@@ -632,6 +668,7 @@ const PersonaForm = () => {
                   </div>
                 </motion.div>
               )}
+              </Card>
             </motion.div>
 
             {/* Estado */}
@@ -639,8 +676,9 @@ const PersonaForm = () => {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.4 }}
-              className="bg-white rounded-lg shadow-md p-6 mb-6"
+              className="mb-6"
             >
+              <Card>
               <div className="mb-6">
                 <label className="flex items-center">
                   <input
@@ -654,6 +692,7 @@ const PersonaForm = () => {
                   </span>
                 </label>
               </div>
+              </Card>
             </motion.div>
 
             {/* Botones */}

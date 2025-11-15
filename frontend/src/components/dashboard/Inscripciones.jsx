@@ -1,4 +1,5 @@
 import React from 'react';
+import Card from '@/components/ui/Card';
 
 const Inscripciones = () => {
   return (
@@ -8,9 +9,9 @@ const Inscripciones = () => {
         <p className="text-gray-600 mt-2">Gestión de inscripciones a cursos</p>
       </div>
 
-      <div className="bg-white rounded-lg shadow-md p-6">
+      <Card>
         <p className="text-gray-600">Lista de inscripciones aparecerá aquí.</p>
-      </div>
+      </Card>
     </div>
   );
 };

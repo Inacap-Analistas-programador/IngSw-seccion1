@@ -4,12 +4,11 @@ import { Helmet } from 'react-helmet';
 import { useNavigate, Routes, Route, useLocation, Navigate } from 'react-router-dom';
 import { Button } from '@/components/ui/Button';
 import { 
-  LogOut, Menu, LayoutDashboard, BookOpen, ClipboardCheck, CreditCard, Users, Mail, Award, Database
+  LogOut, Menu, LayoutDashboard, BookOpen, ClipboardCheck, CreditCard, Users, Mail, Award, Database, Truck
 } from 'lucide-react';
 // import { useToast } from '@/components/ui/use-toast';
 import Cursos from '@/components/dashboard/Cursos';
 import Pagos from '@/components/dashboard/Pagos';
-import Personas from '@/components/dashboard/Personas';
 import EnvioCorreo from '@/components/dashboard/EnvioCorreo';
 import Maestros from '@/components/dashboard/Maestros';
 import AcreditacionManual from '@/components/dashboard/AcreditacionManual';
@@ -18,6 +17,7 @@ import DashboardEjecutivo from '@/components/dashboard/DashboardEjecutivo';
 import Preinscripcion from '@/components/dashboard/Preinscripcion';
 import Acreditacion from '@/components/dashboard/Acreditacion';
 import UseCases from '@/pages/UseCases';
+import ProveedoresPage from '@/pages/ProveedoresPage';
 // import Breadcrumb from '@/components/Breadcrumb';
 
 const CoordinatorDashboard = () => {
@@ -27,14 +27,17 @@ const CoordinatorDashboard = () => {
   const [coordinator, setCoordinator] = useState(null);
   const [sidebarOpen, setSidebarOpen] = useState(window.innerWidth >= 1024);
   
-  console.log('✅ CoordinatorDashboard renderizado correctamente, location:', location.pathname);
+  // Move render-time console logging into an effect so it's only a side effect
+  useEffect(() => {
+    console.log('✅ CoordinatorDashboard renderizado correctamente, location:', location.pathname);
+  }, [location.pathname]);
 
   useEffect(() => {
     const storedCoordinator = localStorage.getItem('coordinator');
     if (!storedCoordinator) {
       // Para desarrollo, creamos un coordinador por defecto
       const defaultCoordinator = {
-        email: 'coordinador@scout.cl',
+        correo: 'coordinador@scout.cl',
         name: 'Coordinador Scout',
         loginTime: new Date().toISOString()
       };
@@ -67,18 +70,25 @@ const CoordinatorDashboard = () => {
     navigate('/');
   };
 
-  // Detectar si estamos en ruta /dashboard o /coordinador/dashboard
-  const basePath = location.pathname.startsWith('/coordinador/dashboard') ? '/coordinador/dashboard' : '/dashboard';
+  // Detectar si estamos en ruta /panel o /coordinador/panel, sino caer en /dashboard por compatibilidad
+  const basePath = location.pathname.startsWith('/coordinador/panel')
+    ? '/coordinador/panel'
+    : location.pathname.startsWith('/panel')
+    ? '/panel'
+    : location.pathname.startsWith('/coordinador/dashboard')
+    ? '/coordinador/dashboard'
+    : '/dashboard';
 
   const menuItems = [
     { icon: LayoutDashboard, label: 'Dashboard Ejecutivo', path: `${basePath}/ejecutivo` },
     { icon: BookOpen, label: 'Gestión de Cursos', path: `${basePath}/gestion-cursos` },
     { icon: ClipboardCheck, label: 'Preinscripción', path: `${basePath}/preinscripcion` },
     { icon: CreditCard, label: 'Gestión de Pagos', path: `${basePath}/gestion-pagos` },
-    { icon: Users, label: 'Gestión de Personas', path: `${basePath}/gestion-personas` },
+    // Persona management moved/removed; link omitted
     { icon: Mail, label: 'Envío de Correos', path: `${basePath}/envio-correos` },
     { icon: Award, label: 'Acreditación', path: `${basePath}/acreditacion` },
     { icon: Database, label: 'Maestros', path: `${basePath}/maestros` },
+    { icon: Truck, label: 'Proveedores', path: '/proveedores' },
     { icon: LayoutDashboard, label: 'Casos de Uso', path: `${basePath}/use-cases` },
   ];
 
@@ -176,10 +186,11 @@ const CoordinatorDashboard = () => {
               <Route path="/gestion-cursos" element={<Cursos />} />
               <Route path="/preinscripcion" element={<Preinscripcion />} />
               <Route path="/gestion-pagos" element={<Pagos />} />
-              <Route path="/gestion-personas" element={<Personas />} />
+              {/* Personas page removed from dashboard (managed in remote repository). */}
               <Route path="/envio-correos" element={<EnvioCorreo />} />
               <Route path="/acreditacion" element={<Acreditacion />} />
               <Route path="/maestros" element={<Maestros />} />
+              <Route path="/proveedores" element={<ProveedoresPage />} />
               {/* Fallback route */}
               <Route path="/" element={<Navigate to="ejecutivo" replace />} />
             </Routes>

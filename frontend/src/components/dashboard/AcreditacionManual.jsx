@@ -19,9 +19,9 @@ const AcreditacionManual = () => {
         </Button>
       </div>
 
-      <div className="bg-white rounded-lg shadow-md p-6">
+      <Card>
         <p className="text-gray-600">Formulario de acreditación manual aparecerá aquí.</p>
-      </div>
+      </Card>
     </div>
   );
 };

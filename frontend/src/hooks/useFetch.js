@@ -1,7 +1,12 @@
 import { useCallback, useEffect, useState } from 'react';
 
 export default function useFetch(fetcher, auto = true, deps = []) {
-	const [data, setData] = useState(null);
+	// default to undefined (not null) so callers that use destructuring
+	// default values e.g. `const { data: items = [] } = useFetch(...)`
+	// will correctly receive [] instead of null when the fetcher
+	// hasn't returned yet. This reduces runtime errors like
+	// "Cannot read properties of null (reading 'map')".
+	const [data, setData] = useState();
 	const [loading, setLoading] = useState(false);
 	const [error, setError] = useState(null);
 

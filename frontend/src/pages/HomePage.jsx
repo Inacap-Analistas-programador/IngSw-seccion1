@@ -53,16 +53,16 @@ const HomePage = () => {
             </div>
             <div className="flex space-x-3">
               <Button 
-                onClick={() => navigate('/dashboard')}
+                onClick={() => navigate('/panel')}
                 className="bg-white text-[#001558] hover:bg-primary/5 transition-all duration-300"
               >
-                Dashboard
+                Panel
               </Button>
               <Button 
-                onClick={() => navigate('/coordinador/login')}
+                onClick={() => navigate('/coordinador/ingreso')}
                 className="bg-white text-[#001558] hover:bg-primary/5 transition-all duration-300"
               >
-                Login Coordinador
+                Ingreso Coordinador
               </Button>
             </div>
           </div>
@@ -83,11 +83,11 @@ const HomePage = () => {
                 Desarrolla tus habilidades como dirigente Scout a través de nuestros cursos de formación especializados
               </p>
               <Button 
-                onClick={() => navigate('/preinscripcion')}
+                onClick={() => navigate('/pre-inscripcion')}
                 size="lg"
                 className="bg-white text-[#001558] hover:bg-primary/5 text-lg px-8 py-6 rounded-full shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:scale-105"
               >
-                Iniciar Preinscripción
+                Iniciar Pre-inscripción
               </Button>
 
               <motion.div
@@ -98,11 +98,11 @@ const HomePage = () => {
               >
                 <div className="flex items-center justify-center mb-4">
                   <KeyRound className="w-6 h-6 mr-3 text-primary-foreground" />
-                  <h3 className="text-xl font-semibold text-white">Credenciales Coordinador</h3>
+                  <h3 className="text-xl font-semibold text-white">Credenciales de Coordinador</h3>
                 </div>
                 <div className="text-left space-y-2 text-primary-foreground">
-                  <p><span className="font-semibold text-primary-foreground">Email:</span> coordinador@scout.cl</p>
-                  <p><span className="font-semibold text-primary-foreground">Password:</span> scout2024</p>
+                  <p><span className="font-semibold text-primary-foreground">Correo:</span> coordinador@scout.cl</p>
+                  <p><span className="font-semibold text-primary-foreground">Contraseña:</span> scout2024</p>
                 </div>
               </motion.div>
 
@@ -157,7 +157,7 @@ const HomePage = () => {
                         </div>
                       </div>
                       <Button 
-                        onClick={() => navigate('/preinscripcion')}
+                        onClick={() => navigate('/pre-inscripcion')}
                         className="w-full mt-6 bg-primary hover:bg-primary/90 text-primary-foreground transition-colors duration-300"
                       >
                         Inscribirse

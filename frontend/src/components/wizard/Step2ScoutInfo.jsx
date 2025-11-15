@@ -16,21 +16,21 @@ const Step2ScoutInfo = ({ formData, updateFormData }) => {
 
       <div className="grid md:grid-cols-2 gap-4">
         <div className="space-y-2">
-          <Label htmlFor="role">Rol *</Label>
+          <Label htmlFor="rol">Rol *</Label>
           <Input
-            id="role"
-            value={formData.role}
-            onChange={(e) => handleChange('role', e.target.value)}
+            id="rol"
+            value={formData.rol}
+            onChange={(e) => handleChange('rol', e.target.value)}
             placeholder="Dirigente / Colaborador"
           />
         </div>
 
         <div className="space-y-2">
-          <Label htmlFor="isIndividual">¿Eres persona individual? *</Label>
+          <Label htmlFor="esIndividual">¿Es persona individual? *</Label>
           <select
-            id="isIndividual"
-            value={formData.isIndividual}
-            onChange={(e) => handleChange('isIndividual', e.target.value)}
+            id="esIndividual"
+            value={formData.esIndividual}
+            onChange={(e) => handleChange('esIndividual', e.target.value)}
             className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
           >
             <option value="">Seleccionar</option>
@@ -39,54 +39,54 @@ const Step2ScoutInfo = ({ formData, updateFormData }) => {
           </select>
         </div>
 
-        {formData.isIndividual !== 'si' && (
+        {formData.esIndividual !== 'si' && (
           <div className="space-y-2">
-            <Label htmlFor="group">Grupo Scout *</Label>
+            <Label htmlFor="grupo">Grupo Scout *</Label>
             <Input
-              id="group"
-              value={formData.group}
-              onChange={(e) => handleChange('group', e.target.value)}
+              id="grupo"
+              value={formData.grupo}
+              onChange={(e) => handleChange('grupo', e.target.value)}
               placeholder="Nombre del grupo"
             />
           </div>
         )}
 
         <div className="space-y-2">
-          <Label htmlFor="position">Cargo *</Label>
+          <Label htmlFor="cargo">Cargo *</Label>
           <Input
-            id="position"
-            value={formData.position}
-            onChange={(e) => handleChange('position', e.target.value)}
+            id="cargo"
+            value={formData.cargo}
+            onChange={(e) => handleChange('cargo', e.target.value)}
             placeholder="Jefe de Tropa, Dirigente"
           />
         </div>
 
         <div className="space-y-2">
-          <Label htmlFor="district">Distrito *</Label>
+          <Label htmlFor="distrito">Distrito *</Label>
           <Input
-            id="district"
-            value={formData.district}
-            onChange={(e) => handleChange('district', e.target.value)}
+            id="distrito"
+            value={formData.distrito}
+            onChange={(e) => handleChange('distrito', e.target.value)}
             placeholder="Distrito"
           />
         </div>
 
         <div className="space-y-2">
-          <Label htmlFor="zone">Zona *</Label>
+          <Label htmlFor="zona">Zona *</Label>
           <Input
-            id="zone"
-            value={formData.zone}
-            onChange={(e) => handleChange('zone', e.target.value)}
+            id="zona"
+            value={formData.zona}
+            onChange={(e) => handleChange('zona', e.target.value)}
             placeholder="Zona"
           />
         </div>
 
         <div className="space-y-2">
-          <Label htmlFor="level">Nivel *</Label>
+          <Label htmlFor="nivel">Nivel *</Label>
           <select
-            id="level"
-            value={formData.level}
-            onChange={(e) => handleChange('level', e.target.value)}
+            id="nivel"
+            value={formData.nivel}
+            onChange={(e) => handleChange('nivel', e.target.value)}
             className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
           >
             <option value="">Seleccionar nivel</option>
@@ -96,13 +96,13 @@ const Step2ScoutInfo = ({ formData, updateFormData }) => {
           </select>
         </div>
 
-        {formData.level === 'avanzado' && (
+        {formData.nivel === 'avanzado' && (
           <div className="space-y-2">
-            <Label htmlFor="formationBranch">Rama de Formación *</Label>
+            <Label htmlFor="ramaFormacion">Rama de Formación *</Label>
             <select
-              id="formationBranch"
-              value={formData.formationBranch}
-              onChange={(e) => handleChange('formationBranch', e.target.value)}
+              id="ramaFormacion"
+              value={formData.ramaFormacion}
+              onChange={(e) => handleChange('ramaFormacion', e.target.value)}
               className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
             >
               <option value="">Seleccionar rama</option>
@@ -115,24 +115,24 @@ const Step2ScoutInfo = ({ formData, updateFormData }) => {
           </div>
         )}
 
-        {formData.level === 'medio' && (
+        {formData.nivel === 'medio' && (
           <div className="space-y-2">
-            <Label htmlFor="mmaaNumber">Número MMAA</Label>
+            <Label htmlFor="numeroMMAA">Número MMAA</Label>
             <Input
-              id="mmaaNumber"
-              value={formData.mmaaNumber}
-              onChange={(e) => handleChange('mmaaNumber', e.target.value)}
+              id="numeroMMAA"
+              value={formData.numeroMMAA}
+              onChange={(e) => handleChange('numeroMMAA', e.target.value)}
               placeholder="Número MMAA"
             />
           </div>
         )}
 
         <div className="space-y-2">
-          <Label htmlFor="isTrainer">¿Eres formador? *</Label>
+          <Label htmlFor="esFormador">¿Es formador? *</Label>
           <select
-            id="isTrainer"
-            value={formData.isTrainer}
-            onChange={(e) => handleChange('isTrainer', e.target.value)}
+            id="esFormador"
+            value={formData.esFormador}
+            onChange={(e) => handleChange('esFormador', e.target.value)}
             className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
           >
             <option value="">Seleccionar</option>
@@ -142,7 +142,7 @@ const Step2ScoutInfo = ({ formData, updateFormData }) => {
         </div>
       </div>
 
-      {formData.isTrainer === 'si' && (
+      {formData.esFormador === 'si' && (
         <div className="space-y-4">
           <h3 className="text-lg font-semibold text-[#001558]">Información de Formador</h3>
           <div className="grid md:grid-cols-2 gap-4">
@@ -150,8 +150,8 @@ const Step2ScoutInfo = ({ formData, updateFormData }) => {
               <Label htmlFor="habilitacion1">Habilitación 1</Label>
               <Input
                 id="habilitacion1"
-                value={formData.habilitacion1}
-                onChange={(e) => handleChange('habilitacion1', e.target.value)}
+                  value={formData.habilitacion1}
+                  onChange={(e) => handleChange('habilitacion1', e.target.value)}
                 placeholder="Habilitación 1"
               />
             </div>

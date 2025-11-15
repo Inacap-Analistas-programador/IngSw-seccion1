@@ -1,5 +1,6 @@
 import React from 'react';
 import { QrCode } from 'lucide-react';
+import Card from '@/components/ui/Card';
 
 const VerificadorQR = () => {
   return (
@@ -9,10 +10,10 @@ const VerificadorQR = () => {
         <p className="text-gray-600 mt-2">Escaneo y verificación de códigos QR</p>
       </div>
 
-      <div className="bg-white rounded-lg shadow-md p-6 text-center">
+      <Card className="text-center">
         <QrCode className="w-24 h-24 text-gray-400 mx-auto mb-4" />
         <p className="text-gray-600">Escáner de códigos QR aparecerá aquí.</p>
-      </div>
+      </Card>
     </div>
   );
 };

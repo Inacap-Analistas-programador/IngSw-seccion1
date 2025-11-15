@@ -14,11 +14,7 @@ const Sidebar = ({ className = '' }) => {
               <span className="flex-0">Inicio</span>
             </Link>
           </li>
-          <li>
-            <Link to="/dashboard/gestion-personas" className="inline-flex items-center gap-3 px-3 py-2 rounded hover:bg-primary/10 w-full text-left">
-              <span className="flex-0">Personas</span>
-            </Link>
-          </li>
+          {/* Personas management moved; link removed to avoid duplicates */}
           <li>
             <Link to="/dashboard/gestion-pagos" className="inline-flex items-center gap-3 px-3 py-2 rounded hover:bg-primary/10 w-full text-left">
               <span className="flex-0">Pagos</span>
