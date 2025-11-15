@@ -544,7 +544,7 @@ create table alimentacion
 
 alter table alimentacion comment 'ALI
 
-Tabla que registra los tipos de alimentació';
+Tabla que registra los tipos de alimentaciï¿½';
 
 /*==============================================================*/
 /* Table: aplicacion                                            */
@@ -559,7 +559,7 @@ create table aplicacion
 
 alter table aplicacion comment 'APL
 
-Tabla que registra todos los módulos del si';
+Tabla que registra todos los mï¿½dulos del si';
 
 /*==============================================================*/
 /* Table: archivo                                               */
@@ -705,7 +705,7 @@ create table curso
              3: Internado/Externado',
    cur_tipo_curso       int not null  comment '1: Presencial
              2: Online
-             3: Híbrido
+             3: Hï¿½brido
              ',
    cur_lugar            varchar(100)  comment '',
    cur_estado           int not null  comment '0: Pendiente
@@ -741,7 +741,7 @@ create table curso_alimentacion
 
 alter table curso_alimentacion comment 'CUA
 
-Tabla que registra la aliimentación que hab';
+Tabla que registra la aliimentaciï¿½n que hab';
 
 /*==============================================================*/
 /* Table: curso_coordinador                                     */
@@ -770,7 +770,7 @@ create table curso_cuota
    cuu_tipo             int not null  comment '1: Con Almuerzo
              2: Sin Almuerzo
              
-             Se realaciona con ALI_TIPO (Alimentación)',
+             Se realaciona con ALI_TIPO (Alimentaciï¿½n)',
    cuu_fecha            datetime not null  comment '',
    cuu_valor            numeric(21,6) not null  comment '',
    primary key (cuu_id)
@@ -1057,7 +1057,7 @@ create table persona_estado_curso
    usu_id               numeric(10) not null  comment '',
    pec_id               numeric(10) not null  comment '',
    peu_fecha_hora       datetime not null  comment '',
-   peu_estado           int not null  comment '1: Pre Inscripción
+   peu_estado           int not null  comment '1: Pre Inscripciï¿½n
              2: Avisado
              3: Lista de Espera
              4: Inscrito
@@ -1084,7 +1084,7 @@ create table persona_formador
    pef_hab_2            bit not null  comment '',
    pef_verif            bit not null  comment '',
    pef_historial        text  comment 'Historial de capacitaciones que tiene la Persona.
-             Esto es para todos los cursos que no es´tan registrado en esta plataforma',
+             Esto es para todos los cursos que no esï¿½tan registrado en esta plataforma',
    primary key (pef_id)
 );
 
@@ -1253,7 +1253,7 @@ create table rol
    rol_tipo             int not null  comment '1: Participante
              2: Formadores
              3: Apoyo Formadores
-             4: Organización
+             4: Organizaciï¿½n
              5: Servicio
              6: Salud',
    rol_vigente          bit not null  comment '',
@@ -1290,8 +1290,8 @@ create table tipo_curso
    tcu_tipo             int not null  comment '1: Inicial
              2: Medio
              3: Avanzado
-             4: Habilitación
-             5: Verificación
+             4: Habilitaciï¿½n
+             5: Verificaciï¿½n
              6: Institucional',
    tcu_cant_participante int  comment '',
    tcu_vigente          bit not null  comment '',
@@ -1311,6 +1311,7 @@ create table usuario
    pel_id               numeric(10) not null  comment '',
    usu_username         varchar(100) not null  comment '',
    usu_password         varchar(50) not null  comment '',
+   usu_email            varchar(100) not null  comment '',
    usu_ruta_foto        varchar(255) not null  comment '',
    usu_vigente          bit not null  comment '',
    primary key (usu_id)

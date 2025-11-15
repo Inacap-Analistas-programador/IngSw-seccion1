@@ -17,6 +17,13 @@ module.exports = {
 		},
 		extend: {
 			colors: {
+        'scout-azul-oscuro': 'var(--scout-azul-oscuro)',
+        'scout-azul-medio': 'var(--scout-azul-medio)',
+        'scout-azul-claro': 'var(--scout-azul-claro)',
+        'scout-azul-muy-claro': 'var(--scout-azul-muy-claro)',
+        'scout-verde-natura': 'var(--scout-verde-natura)',
+        'scout-dorado-aventura': 'var(--scout-dorado-aventura)',
+        'scout-rojo-alerta': 'var(--scout-rojo-alerta)',
 				border: 'hsl(var(--border))',
 				input: 'hsl(var(--input))',
 				ring: 'hsl(var(--ring))',
@@ -51,6 +58,10 @@ module.exports = {
 					foreground: 'hsl(var(--card-foreground))',
 				},
 			},
+      boxShadow: {
+        'scout': '0 4px 12px rgba(31, 78, 121, 0.15)',
+        'hover-scout': '0 6px 16px rgba(31, 78, 121, 0.2)',
+      },
 			borderRadius: {
 				lg: 'var(--radius)',
 				md: 'calc(var(--radius) - 2px)',

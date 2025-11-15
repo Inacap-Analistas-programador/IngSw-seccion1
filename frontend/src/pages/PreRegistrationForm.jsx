@@ -74,6 +74,11 @@ const PreRegistrationForm = () => {
     { number: 6, title: 'Revisión y Confirmación', component: Step6Review }
   ];
 
+  const handleStepClick = (stepNumber) => {
+    setCurrentStep(stepNumber);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
   const handleNext = () => {
     if (currentStep < totalSteps) {
       setCurrentStep(currentStep + 1);
