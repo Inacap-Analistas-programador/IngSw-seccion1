@@ -41,12 +41,13 @@ INSTALLED_APPS = [
     "corsheaders",
     "usuarios",
     "maestros",
+    "geografia",
     "personas",
     "cursos",
     "archivos",
     "pagos",
     "proveedores",
-    "geografia",
+    "preinscripcion",
 ]
 
 MIDDLEWARE = [

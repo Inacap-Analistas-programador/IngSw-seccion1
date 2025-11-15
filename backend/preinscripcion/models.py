@@ -1,8 +1,9 @@
 from django.db import models
 from personas.models import Persona
-from cursos.models import Curso, PersonaCurso
+from cursos.models import Curso
 from usuarios.models import Usuario
-from maestros.models import Rol, Rama, Grupo # Assuming these are needed for FKs
+from maestros.models import Rol, Rama
+from geografia.models import Grupo
 
 # Define choices for inscription states
 ESTADO_INSCRIPCION_CHOICES = [
