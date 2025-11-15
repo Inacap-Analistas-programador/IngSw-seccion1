@@ -1,5 +1,5 @@
 from rest_framework import status
-from rest_framework.decorators import api_view, permission_classes
+from rest_framework.decorators import api_view, permission_classes, throttle_classes
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework_simplejwt.tokens import RefreshToken
@@ -7,6 +7,27 @@ from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from django.contrib.auth.hashers import check_password
 from usuarios.models import Usuario
+from usuarios.throttles import LoginRateThrottle
+import re
+
+
+def validate_email(email):
+    """Valida formato de email"""
+    if not email or not isinstance(email, str):
+        return False
+    pattern = r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$'
+    return re.match(pattern, email) is not None
+
+
+def sanitize_input(text):
+    """Sanitiza entrada de texto para prevenir XSS"""
+    if not text or not isinstance(text, str):
+        return ''
+    # Remover caracteres peligrosos
+    dangerous_chars = ['<', '>', '"', "'", '&', ';']
+    for char in dangerous_chars:
+        text = text.replace(char, '')
+    return text.strip()
 
 
 class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
@@ -19,6 +40,10 @@ class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
         # Obtener email y password
         email = attrs.get('email')
         password = attrs.get('password')
+
+        # Validar formato de email
+        if not validate_email(email):
+            raise Exception('Formato de email inválido')
 
         try:
             # Buscar usuario por email
@@ -62,22 +87,38 @@ class CustomTokenObtainPairView(TokenObtainPairView):
     """
     serializer_class = CustomTokenObtainPairSerializer
     permission_classes = [AllowAny]
+    throttle_classes = [LoginRateThrottle]
 
 
 @api_view(['POST'])
 @permission_classes([AllowAny])
+@throttle_classes([LoginRateThrottle])
 def login_view(request):
     """
     Endpoint de login alternativo
     POST /api/auth/login
     Body: {"email": "user@example.com", "password": "password"}
     """
-    email = request.data.get('email')
+    email = sanitize_input(request.data.get('email', ''))
     password = request.data.get('password')
 
     if not email or not password:
         return Response(
             {'error': 'Email y password son requeridos'},
+            status=status.HTTP_400_BAD_REQUEST
+        )
+
+    # Validar formato de email
+    if not validate_email(email):
+        return Response(
+            {'error': 'Formato de email inválido'},
+            status=status.HTTP_400_BAD_REQUEST
+        )
+
+    # Validar longitud de password
+    if len(password) < 8:
+        return Response(
+            {'error': 'Formato de credenciales inválido'},
             status=status.HTTP_400_BAD_REQUEST
         )
 
@@ -118,7 +159,7 @@ def login_view(request):
         )
     except Exception as e:
         return Response(
-            {'error': str(e)},
+            {'error': 'Error al procesar la solicitud'},
             status=status.HTTP_500_INTERNAL_SERVER_ERROR
         )
 
@@ -142,7 +183,7 @@ def logout_view(request):
         })
     except Exception as e:
         return Response(
-            {'error': str(e)},
+            {'error': 'Error al cerrar sesión'},
             status=status.HTTP_400_BAD_REQUEST
         )
 
@@ -165,7 +206,7 @@ def me_view(request):
         })
     except Exception as e:
         return Response(
-            {'error': str(e)},
+            {'error': 'Error al obtener información del usuario'},
             status=status.HTTP_500_INTERNAL_SERVER_ERROR
         )
 

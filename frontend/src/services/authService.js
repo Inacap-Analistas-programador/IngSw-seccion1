@@ -113,26 +113,31 @@ class AuthService {
     }
 
     try {
-      // TODO: Reemplazar con llamada real a la API
-      // const response = await fetch(`${API_BASE_URL}/api/auth/login`, {
-      //   method: 'POST',
-      //   headers: {
-      //     'Content-Type': 'application/json',
-      //   },
-      //   body: JSON.stringify({ email, password }),
-      // });
+      const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000';
+      
+      const response = await fetch(`${API_BASE_URL}/api/auth/login/`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email, password }),
+        credentials: 'include',
+      });
 
-      // Simulación temporal para desarrollo (REMOVER EN PRODUCCIÓN)
-      const mockResponse = await this.mockLogin(email, password);
+      if (!response.ok) {
+        throw new Error('Credenciales inválidas');
+      }
 
-      if (mockResponse.success) {
+      const data = await response.json();
+
+      if (data.success) {
         // Limpiar intentos fallidos
         this.clearLoginAttempts(email);
 
         // Almacenar tokens de forma segura
-        sessionStorage.setItem(AUTH_TOKEN_KEY, mockResponse.accessToken);
-        sessionStorage.setItem(REFRESH_TOKEN_KEY, mockResponse.refreshToken);
-        sessionStorage.setItem(USER_DATA_KEY, JSON.stringify(mockResponse.user));
+        sessionStorage.setItem(AUTH_TOKEN_KEY, data.accessToken);
+        sessionStorage.setItem(REFRESH_TOKEN_KEY, data.refreshToken);
+        sessionStorage.setItem(USER_DATA_KEY, JSON.stringify(data.user));
 
         // Iniciar temporizador de sesión
         this.resetSessionTimer();
@@ -140,7 +145,7 @@ class AuthService {
         // Auditar login exitoso
         this.auditLog('LOGIN_SUCCESS', { email, timestamp: new Date().toISOString() });
 
-        return mockResponse.user;
+        return data.user;
       } else {
         throw new Error('Credenciales inválidas');
       }
@@ -157,49 +162,6 @@ class AuthService {
       this.auditLog('LOGIN_FAILED', { email, error: error.message });
       throw error;
     }
-  }
-
-  /**
-   * Mock de login para desarrollo (REMOVER EN PRODUCCIÓN)
-   */
-  async mockLogin(email, password) {
-    // Simular delay de red
-    await new Promise((resolve) => setTimeout(resolve, 500));
-
-    // Credenciales de desarrollo
-    if (email === 'coordinador@scout.cl' && password === 'Scout2024!') {
-      return {
-        success: true,
-        accessToken: this.generateMockToken({
-          user_id: 1,
-          email: email,
-          rol: 'coordinador',
-          exp: Math.floor(Date.now() / 1000) + 15 * 60, // 15 minutos
-        }),
-        refreshToken: this.generateMockToken({
-          user_id: 1,
-          type: 'refresh',
-          exp: Math.floor(Date.now() / 1000) + 7 * 24 * 60 * 60, // 7 días
-        }),
-        user: {
-          id: 1,
-          email: email,
-          name: 'Coordinador Scout',
-          rol: 'coordinador',
-        },
-      };
-    }
-
-    return { success: false };
-  }
-
-  /**
-   * Genera un token mock para desarrollo
-   */
-  generateMockToken(payload) {
-    const header = btoa(JSON.stringify({ alg: 'RS256', typ: 'JWT' }));
-    const body = btoa(JSON.stringify(payload));
-    return `${header}.${body}.mock_signature`;
   }
 
   /**
