@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { Helmet } from 'react-helmet';
 import { motion } from 'framer-motion';
@@ -29,9 +28,9 @@ const CoordinatorLogin = () => {
     const reason = searchParams.get('reason');
     if (reason === 'timeout') {
       toast({
-        title: "Sesión Expirada",
-        description: "Tu sesión ha expirado por inactividad. Por favor, inicia sesión nuevamente.",
-        variant: "destructive"
+        title: 'Sesión Expirada',
+        description: 'Tu sesión ha expirado por inactividad. Por favor, inicia sesión nuevamente.',
+        variant: 'destructive',
       });
     }
   }, [navigate, searchParams, toast]);
@@ -43,10 +42,10 @@ const CoordinatorLogin = () => {
 
     try {
       await authService.login(email, password);
-      
+
       toast({
-        title: "¡Bienvenido!",
-        description: "Inicio de sesión exitoso.",
+        title: '¡Bienvenido!',
+        description: 'Inicio de sesión exitoso.',
       });
 
       setTimeout(() => {
@@ -55,9 +54,9 @@ const CoordinatorLogin = () => {
     } catch (err) {
       setError(err.message);
       toast({
-        title: "Error de inicio de sesión",
+        title: 'Error de inicio de sesión',
         description: err.message,
-        variant: "destructive"
+        variant: 'destructive',
       });
     } finally {
       setLoading(false);
@@ -96,7 +95,9 @@ const CoordinatorLogin = () => {
               )}
 
               <div className="space-y-2">
-                <Label htmlFor="correo" className="text-gray-700">Correo Electrónico</Label>
+                <Label htmlFor="correo" className="text-gray-700">
+                  Correo Electrónico
+                </Label>
                 <div className="relative">
                   <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
                   <Input
@@ -113,7 +114,9 @@ const CoordinatorLogin = () => {
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="contrasena" className="text-gray-700">Contraseña</Label>
+                <Label htmlFor="contrasena" className="text-gray-700">
+                  Contraseña
+                </Label>
                 <div className="relative">
                   <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
                   <Input
@@ -130,7 +133,7 @@ const CoordinatorLogin = () => {
                 </div>
               </div>
 
-              <Button 
+              <Button
                 type="submit"
                 className="w-full bg-primary hover:bg-primary/90 text-primary-foreground py-6 text-lg font-semibold transition-all duration-300 transform hover:scale-105"
                 disabled={loading}

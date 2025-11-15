@@ -63,9 +63,7 @@ describe('useForm', () => {
       });
     });
 
-    expect(result.current.errors.password).toBe(
-      'La contraseña debe tener al menos 6 caracteres'
-    );
+    expect(result.current.errors.password).toBe('La contraseña debe tener al menos 6 caracteres');
   });
 
   it('should reset form', () => {

@@ -32,7 +32,7 @@ export const samplePersonas = [
     habilitacion2: true,
     verificacion: true,
     historialCapacitaciones: 'Curso Básico 2020, Curso Avanzado 2022',
-    fechaCreacion: '2024-01-15T10:30:00.000Z'
+    fechaCreacion: '2024-01-15T10:30:00.000Z',
   },
   {
     id: 2,
@@ -66,7 +66,7 @@ export const samplePersonas = [
     habilitacion2: false,
     verificacion: false,
     historialCapacitaciones: '',
-    fechaCreacion: '2024-02-10T14:15:00.000Z'
+    fechaCreacion: '2024-02-10T14:15:00.000Z',
   },
   {
     id: 3,
@@ -100,7 +100,7 @@ export const samplePersonas = [
     habilitacion2: false,
     verificacion: true,
     historialCapacitaciones: 'Curso Básico 2018, Seminario Liderazgo 2023',
-    fechaCreacion: '2024-03-05T09:45:00.000Z'
+    fechaCreacion: '2024-03-05T09:45:00.000Z',
   },
   {
     id: 4,
@@ -134,7 +134,7 @@ export const samplePersonas = [
     habilitacion2: false,
     verificacion: false,
     historialCapacitaciones: '',
-    fechaCreacion: '2024-10-20T16:20:00.000Z'
+    fechaCreacion: '2024-10-20T16:20:00.000Z',
   },
   {
     id: 5,
@@ -167,9 +167,10 @@ export const samplePersonas = [
     habilitacion1: true,
     habilitacion2: true,
     verificacion: true,
-    historialCapacitaciones: 'Curso Básico 2015, Curso Avanzado 2017, Especialización Primeros Auxilios 2020',
-    fechaCreacion: '2023-12-01T11:10:00.000Z'
-  }
+    historialCapacitaciones:
+      'Curso Básico 2015, Curso Avanzado 2017, Especialización Primeros Auxilios 2020',
+    fechaCreacion: '2023-12-01T11:10:00.000Z',
+  },
 ];
 
 // Función para inicializar datos de prueba

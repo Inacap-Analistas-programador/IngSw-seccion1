@@ -103,8 +103,8 @@ const Step1PersonalData = ({ formData, updateFormData }) => {
 
       {/* Foto de perfil */}
       <div className="space-y-2">
-          <Label htmlFor="fotoPerfil">Foto de Perfil</Label>
-          <Input
+        <Label htmlFor="fotoPerfil">Foto de Perfil</Label>
+        <Input
           id="fotoPerfil"
           type="file"
           accept="image/*"

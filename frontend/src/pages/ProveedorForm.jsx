@@ -16,7 +16,7 @@ const ProveedorForm = () => {
     celular2: '',
     direccion: '',
     observacion: '',
-    vigente: true
+    vigente: true,
   });
 
   const [loading, setLoading] = useState(false);
@@ -30,7 +30,7 @@ const ProveedorForm = () => {
         } catch (err) {
           // fallback to localStorage
           const proveedores = JSON.parse(localStorage.getItem('proveedores') || '[]');
-          const proveedor = proveedores.find(p => p.id === parseInt(id));
+          const proveedor = proveedores.find((p) => p.id === parseInt(id));
           if (proveedor) setFormData(proveedor);
         }
       })();
@@ -57,7 +57,7 @@ const ProveedorForm = () => {
           await api.put(`/proveedores/${id}/`, proveedorToApi({ ...formData, id: parseInt(id) }));
           console.log('Proveedor actualizado en API');
         } catch (err) {
-          const index = proveedores.findIndex(p => p.id === parseInt(id));
+          const index = proveedores.findIndex((p) => p.id === parseInt(id));
           if (index !== -1) proveedores[index] = { ...formData, id: parseInt(id) };
         }
       } else {
@@ -80,7 +80,7 @@ const ProveedorForm = () => {
   };
 
   const handleChange = (field, value) => {
-    setFormData(prev => ({ ...prev, [field]: value }));
+    setFormData((prev) => ({ ...prev, [field]: value }));
   };
 
   return (
@@ -97,7 +97,7 @@ const ProveedorForm = () => {
               <label className="block text-sm font-medium text-gray-700">Descripción</label>
               <input
                 value={formData.descripcion}
-                onChange={e => handleChange('descripcion', e.target.value)}
+                onChange={(e) => handleChange('descripcion', e.target.value)}
                 className="mt-1 block w-full rounded-md border-gray-300 shadow-sm"
                 placeholder="Nombre o razón social"
               />
@@ -107,7 +107,7 @@ const ProveedorForm = () => {
               <label className="block text-sm font-medium text-gray-700">Celular 1</label>
               <input
                 value={formData.celular1}
-                onChange={e => handleChange('celular1', e.target.value)}
+                onChange={(e) => handleChange('celular1', e.target.value)}
                 className="mt-1 block w-full rounded-md border-gray-300 shadow-sm"
                 placeholder="+56912345678"
               />
@@ -117,7 +117,7 @@ const ProveedorForm = () => {
               <label className="block text-sm font-medium text-gray-700">Dirección</label>
               <input
                 value={formData.direccion}
-                onChange={e => handleChange('direccion', e.target.value)}
+                onChange={(e) => handleChange('direccion', e.target.value)}
                 className="mt-1 block w-full rounded-md border-gray-300 shadow-sm"
                 placeholder="Dirección del proveedor"
               />
@@ -127,17 +127,23 @@ const ProveedorForm = () => {
               <label className="block text-sm font-medium text-gray-700">Observación</label>
               <textarea
                 value={formData.observacion}
-                onChange={e => handleChange('observacion', e.target.value)}
+                onChange={(e) => handleChange('observacion', e.target.value)}
                 className="mt-1 block w-full rounded-md border-gray-300 shadow-sm"
                 placeholder="Notas o comentarios opcionales"
               />
             </div>
 
             <div className="flex space-x-3">
-              <Button disabled={loading} className="bg-scout-azul-medio hover:bg-scout-azul-oscuro" type="submit">
+              <Button
+                disabled={loading}
+                className="bg-scout-azul-medio hover:bg-scout-azul-oscuro"
+                type="submit"
+              >
                 Guardar
               </Button>
-              <Button variant="ghost" onClick={() => navigate('/proveedores')}>Cancelar</Button>
+              <Button variant="ghost" onClick={() => navigate('/proveedores')}>
+                Cancelar
+              </Button>
             </div>
           </form>
         </div>

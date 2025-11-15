@@ -17,7 +17,7 @@ function useToast() {
   const [toasts, setToasts] = useToastState();
 
   function toast(options) {
-    setToasts(currentToasts => [
+    setToasts((currentToasts) => [
       ...currentToasts,
       {
         ...options,
