@@ -13,7 +13,7 @@ const Maestros = () => {
           <h1 className="text-3xl font-bold text-gray-800">Maestros/Formadores</h1>
           <p className="text-gray-600 mt-2">Gestión de formadores del sistema</p>
         </div>
-        <Button 
+        <Button
           onClick={() => navigate('/maestros')}
           className="bg-scout-azul-medio hover:bg-scout-azul-oscuro"
         >
@@ -29,17 +29,18 @@ const Maestros = () => {
             Gestión Completa de Formadores
           </h3>
           <p className="text-gray-600 mb-6">
-            Accede al sistema completo de gestión de formadores para administrar habilitaciones, verificaciones y el historial de capacitaciones.
+            Accede al sistema completo de gestión de formadores para administrar habilitaciones,
+            verificaciones y el historial de capacitaciones.
           </p>
           <div className="space-y-2 sm:space-y-0 sm:space-x-4 sm:flex sm:justify-center">
-            <Button 
+            <Button
               onClick={() => navigate('/maestros')}
               className="bg-scout-azul-medio hover:bg-scout-azul-oscuro w-full sm:w-auto"
             >
               <GraduationCap className="w-4 h-4 mr-2" />
               Ver Todos los Formadores
             </Button>
-            <Button 
+            <Button
               onClick={() => navigate('/maestros/nuevo')}
               variant="outline"
               className="border-scout-azul-medio text-scout-azul-medio hover:bg-scout-azul-muy-claro w-full sm:w-auto"

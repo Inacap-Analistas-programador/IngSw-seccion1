@@ -7,7 +7,7 @@ const DashboardEjecutivo = () => {
     { icon: Users, label: 'Total Participantes', value: '156', color: 'bg-blue-500' },
     { icon: BookOpen, label: 'Cursos Activos', value: '8', color: 'bg-primary' },
     { icon: CreditCard, label: 'Pagos Pendientes', value: '23', color: 'bg-yellow-500' },
-    { icon: TrendingUp, label: 'Ingresos del Mes', value: '$4,560', color: 'bg-purple-500' }
+    { icon: TrendingUp, label: 'Ingresos del Mes', value: '$4,560', color: 'bg-purple-500' },
   ];
 
   return (

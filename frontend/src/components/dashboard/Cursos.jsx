@@ -17,7 +17,7 @@ const Cursos = () => {
     search: '',
     estado: '',
     modalidad: '',
-    tipoCurso: ''
+    tipoCurso: '',
   });
   const [errors, setErrors] = useState({});
   const [courseData, setCourseData] = useState({
@@ -37,33 +37,35 @@ const Cursos = () => {
     responsableId: '',
     cargoResponsableId: '',
     comunaId: '',
-    administra: '1'
+    administra: '1',
   });
 
   const handleInputChange = (field, value) => {
-    setCourseData(prev => ({
+    setCourseData((prev) => ({
       ...prev,
-      [field]: value
+      [field]: value,
     }));
     // Limpiar error del campo al modificarlo
     if (errors[field]) {
-      setErrors(prev => ({ ...prev, [field]: '' }));
+      setErrors((prev) => ({ ...prev, [field]: '' }));
     }
   };
 
   const validateCourseData = () => {
     const newErrors = {};
-    
+
     if (!courseData.codigo.trim()) newErrors.codigo = 'El código es obligatorio';
     if (!courseData.fechaHora) newErrors.fechaHora = 'La fecha y hora es obligatoria';
-    if (!courseData.fechaSolicitud) newErrors.fechaSolicitud = 'La fecha de solicitud es obligatoria';
+    if (!courseData.fechaSolicitud)
+      newErrors.fechaSolicitud = 'La fecha de solicitud es obligatoria';
     if (!courseData.modalidad) newErrors.modalidad = 'La modalidad es obligatoria';
     if (!courseData.tipoCurso) newErrors.tipoCurso = 'El tipo de curso es obligatorio';
     if (!courseData.responsableId) newErrors.responsableId = 'El responsable es obligatorio';
-    if (!courseData.cargoResponsableId) newErrors.cargoResponsableId = 'El cargo del responsable es obligatorio';
+    if (!courseData.cargoResponsableId)
+      newErrors.cargoResponsableId = 'El cargo del responsable es obligatorio';
     if (!courseData.comunaId) newErrors.comunaId = 'La comuna es obligatoria';
     if (!courseData.administra) newErrors.administra = 'El tipo de administración es obligatorio';
-    
+
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
@@ -71,15 +73,15 @@ const Cursos = () => {
   const handleCreateCourse = () => {
     if (!validateCourseData()) {
       toast({
-        title: "Error de validación",
-        description: "Por favor completa todos los campos obligatorios",
-        variant: "destructive"
+        title: 'Error de validación',
+        description: 'Por favor completa todos los campos obligatorios',
+        variant: 'destructive',
       });
       return;
     }
-    
+
     console.log('Datos del curso:', courseData);
-    
+
     // Crear nuevo curso con ID único
     const newCourse = {
       id: courses.length + 1,
@@ -98,19 +100,19 @@ const Cursos = () => {
       fechaSolicitud: courseData.fechaSolicitud,
       coordLatitud: courseData.coordLatitud,
       coordLongitud: courseData.coordLongitud,
-      comunaId: courseData.comunaId
+      comunaId: courseData.comunaId,
     };
-    
+
     // Agregar el nuevo curso a la lista
-    setCourses(prev => [...prev, newCourse]);
-    
+    setCourses((prev) => [...prev, newCourse]);
+
     // Limpiar formulario y cerrar modal
     setShowCreateForm(false);
     resetForm();
-    toast({ 
-      title: "Curso creado", 
-      description: "El curso se ha creado exitosamente",
-      variant: "default"
+    toast({
+      title: 'Curso creado',
+      description: 'El curso se ha creado exitosamente',
+      variant: 'default',
     });
   };
 
@@ -138,7 +140,7 @@ const Cursos = () => {
       responsableId: getIdFromName(course.responsable, 'responsable'),
       cargoResponsableId: getIdFromName(course.cargo, 'cargo'),
       comunaId: course.comunaId,
-      administra: '1'
+      administra: '1',
     });
     setShowEditForm(true);
   };
@@ -146,13 +148,13 @@ const Cursos = () => {
   const handleUpdateCourse = () => {
     if (!validateCourseData()) {
       toast({
-        title: "Error de validación",
-        description: "Por favor completa todos los campos obligatorios",
-        variant: "destructive"
+        title: 'Error de validación',
+        description: 'Por favor completa todos los campos obligatorios',
+        variant: 'destructive',
       });
       return;
     }
-    
+
     const updatedCourse = {
       ...selectedCourse,
       codigo: courseData.codigo,
@@ -170,20 +172,20 @@ const Cursos = () => {
       fechaSolicitud: courseData.fechaSolicitud,
       coordLatitud: courseData.coordLatitud,
       coordLongitud: courseData.coordLongitud,
-      comunaId: courseData.comunaId
+      comunaId: courseData.comunaId,
     };
 
-    setCourses(prev => prev.map(course => 
-      course.id === selectedCourse.id ? updatedCourse : course
-    ));
+    setCourses((prev) =>
+      prev.map((course) => (course.id === selectedCourse.id ? updatedCourse : course))
+    );
 
     setShowEditForm(false);
     setSelectedCourse(null);
     resetForm();
-    toast({ 
-      title: "Curso actualizado", 
-      description: "Los cambios se han guardado exitosamente",
-      variant: "default"
+    toast({
+      title: 'Curso actualizado',
+      description: 'Los cambios se han guardado exitosamente',
+      variant: 'default',
     });
   };
 
@@ -193,13 +195,13 @@ const Cursos = () => {
   };
 
   const confirmDeleteCourse = () => {
-    setCourses(prev => prev.filter(course => course.id !== selectedCourse.id));
+    setCourses((prev) => prev.filter((course) => course.id !== selectedCourse.id));
     setShowDeleteModal(false);
     setSelectedCourse(null);
-    toast({ 
-      title: "Curso eliminado", 
-      description: "El curso ha sido eliminado exitosamente",
-      variant: "default"
+    toast({
+      title: 'Curso eliminado',
+      description: 'El curso ha sido eliminado exitosamente',
+      variant: 'default',
     });
   };
 
@@ -208,16 +210,16 @@ const Cursos = () => {
       const responsableMap = {
         'Juan Pérez': '1',
         'María González': '2',
-        'Carlos López': '3'
+        'Carlos López': '3',
       };
       return responsableMap[name] || '1';
     }
     if (type === 'cargo') {
       const cargoMap = {
-        'Coordinador': '1',
-        'Instructor': '2',
+        Coordinador: '1',
+        Instructor: '2',
         'Jefe de Grupo': '3',
-        'Dirigente': '4'
+        Dirigente: '4',
       };
       return cargoMap[name] || '1';
     }
@@ -242,7 +244,7 @@ const Cursos = () => {
       responsableId: '',
       cargoResponsableId: '',
       comunaId: '',
-      administra: '1'
+      administra: '1',
     });
     setErrors({});
     setShowCreateForm(false);
@@ -254,84 +256,89 @@ const Cursos = () => {
 
   const getResponsableName = (id) => {
     const responsables = {
-      '1': 'Juan Pérez',
-      '2': 'María González', 
-      '3': 'Carlos López'
+      1: 'Juan Pérez',
+      2: 'María González',
+      3: 'Carlos López',
     };
     return responsables[id] || 'Sin asignar';
   };
 
   const getCargoName = (id) => {
     const cargos = {
-      '1': 'Coordinador',
-      '2': 'Instructor',
-      '3': 'Jefe de Grupo',
-      '4': 'Dirigente'
+      1: 'Coordinador',
+      2: 'Instructor',
+      3: 'Jefe de Grupo',
+      4: 'Dirigente',
     };
     return cargos[id] || 'Sin cargo';
   };
 
   const getEstadoName = (estado) => {
     const estados = {
-      'pendiente': { name: 'Pendiente', color: 'bg-orange-100 text-orange-800' },
-      '1': { name: 'Activo', color: 'bg-primary text-primary-foreground' },
-      '2': { name: 'Inactivo', color: 'bg-gray-100 text-gray-800' },
-      '3': { name: 'En Proceso', color: 'bg-yellow-100 text-yellow-800' },
-      '4': { name: 'Finalizado', color: 'bg-blue-100 text-blue-800' },
-      '5': { name: 'Cancelado', color: 'bg-red-100 text-red-800' }
+      pendiente: { name: 'Pendiente', color: 'bg-orange-100 text-orange-800' },
+      1: { name: 'Activo', color: 'bg-primary text-primary-foreground' },
+      2: { name: 'Inactivo', color: 'bg-gray-100 text-gray-800' },
+      3: { name: 'En Proceso', color: 'bg-yellow-100 text-yellow-800' },
+      4: { name: 'Finalizado', color: 'bg-blue-100 text-blue-800' },
+      5: { name: 'Cancelado', color: 'bg-red-100 text-red-800' },
     };
     return estados[estado] || { name: 'Desconocido', color: 'bg-gray-100 text-gray-800' };
   };
 
   const getModalidadName = (modalidad) => {
     const modalidades = {
-      '1': 'Presencial',
-      '2': 'Online', 
-      '3': 'Híbrida'
+      1: 'Presencial',
+      2: 'Online',
+      3: 'Híbrida',
     };
     return modalidades[modalidad] || 'Sin definir';
   };
 
   const getTipoCursoName = (tipoCurso) => {
     const tipos = {
-      '1': 'Presencial',
-      '2': 'Online',
-      '3': 'Híbrido'
+      1: 'Presencial',
+      2: 'Online',
+      3: 'Híbrido',
     };
     return tipos[tipoCurso] || 'Sin definir';
   };
 
   const getAdministraName = (administra) => {
     const tipos = {
-      '1': 'Zona',
-      '2': 'Distrito'
+      1: 'Zona',
+      2: 'Distrito',
     };
     return tipos[administra] || 'Sin definir';
   };
 
-  const filteredCourses = courses.filter(course => {
-    const matchSearch = !filters.search || 
+  const filteredCourses = courses.filter((course) => {
+    const matchSearch =
+      !filters.search ||
       course.codigo.toLowerCase().includes(filters.search.toLowerCase()) ||
       course.descripcion.toLowerCase().includes(filters.search.toLowerCase()) ||
       course.lugar.toLowerCase().includes(filters.search.toLowerCase());
-    
+
     const matchEstado = !filters.estado || course.estado === filters.estado;
     const matchModalidad = !filters.modalidad || course.modalidad === filters.modalidad;
     const matchTipoCurso = !filters.tipoCurso || course.tipoCurso === filters.tipoCurso;
-    
+
     return matchSearch && matchEstado && matchModalidad && matchTipoCurso;
   });
 
   const formatDate = (dateString) => {
     if (!dateString) return 'Sin fecha';
     const date = new Date(dateString);
-    return date.toLocaleDateString('es-CL') + ' ' + date.toLocaleTimeString('es-CL', { hour: '2-digit', minute: '2-digit' });
+    return (
+      date.toLocaleDateString('es-CL') +
+      ' ' +
+      date.toLocaleTimeString('es-CL', { hour: '2-digit', minute: '2-digit' })
+    );
   };
 
   const formatCurrency = (amount) => {
     return new Intl.NumberFormat('es-CL', {
       style: 'currency',
-      currency: 'CLP'
+      currency: 'CLP',
     }).format(amount);
   };
 
@@ -343,15 +350,11 @@ const Cursos = () => {
           <div className="bg-white rounded-lg shadow-xl max-w-4xl w-full max-h-[90vh] overflow-y-auto m-4">
             <div className="flex justify-between items-center p-6 border-b">
               <h2 className="text-2xl font-bold text-primary-foreground">Crear Nuevo Curso</h2>
-              <Button 
-                onClick={resetForm}
-                variant="ghost" 
-                className="p-2"
-              >
+              <Button onClick={resetForm} variant="ghost" className="p-2">
                 <X className="h-6 w-6" />
               </Button>
             </div>
-            
+
             <div className="p-6 space-y-6">
               {/* Información Básica */}
               <div className="space-y-4">
@@ -402,7 +405,9 @@ const Cursos = () => {
                       onChange={(e) => handleInputChange('fechaSolicitud', e.target.value)}
                       className={errors.fechaSolicitud ? 'border-red-500' : ''}
                     />
-                    {errors.fechaSolicitud && <p className="text-xs text-red-600">{errors.fechaSolicitud}</p>}
+                    {errors.fechaSolicitud && (
+                      <p className="text-xs text-red-600">{errors.fechaSolicitud}</p>
+                    )}
                   </div>
                 </div>
               </div>
@@ -541,7 +546,9 @@ const Cursos = () => {
                       <option value="3">Carlos López</option>
                       {/* Aquí irían las personas desde la BD */}
                     </select>
-                    {errors.responsableId && <p className="text-xs text-red-600">{errors.responsableId}</p>}
+                    {errors.responsableId && (
+                      <p className="text-xs text-red-600">{errors.responsableId}</p>
+                    )}
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor="cargoResponsableId">Cargo del Responsable *</Label>
@@ -557,7 +564,9 @@ const Cursos = () => {
                       <option value="3">Jefe de Grupo</option>
                       <option value="4">Dirigente</option>
                     </select>
-                    {errors.cargoResponsableId && <p className="text-xs text-red-600">{errors.cargoResponsableId}</p>}
+                    {errors.cargoResponsableId && (
+                      <p className="text-xs text-red-600">{errors.cargoResponsableId}</p>
+                    )}
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor="estado">Estado del Curso *</Label>
@@ -587,7 +596,9 @@ const Cursos = () => {
                       <option value="1">Zona</option>
                       <option value="2">Distrito</option>
                     </select>
-                    {errors.administra && <p className="text-xs text-red-600">{errors.administra}</p>}
+                    {errors.administra && (
+                      <p className="text-xs text-red-600">{errors.administra}</p>
+                    )}
                   </div>
                 </div>
               </div>
@@ -606,22 +617,18 @@ const Cursos = () => {
                     rows={3}
                     maxLength={250}
                   />
-                  <p className="text-xs text-gray-500">{courseData.observacion.length}/250 caracteres</p>
+                  <p className="text-xs text-gray-500">
+                    {courseData.observacion.length}/250 caracteres
+                  </p>
                 </div>
               </div>
 
               {/* Botones de Acción */}
               <div className="flex justify-end space-x-4 pt-6 border-t">
-                <Button 
-                  onClick={resetForm}
-                  variant="outline"
-                >
+                <Button onClick={resetForm} variant="outline">
                   Cancelar
                 </Button>
-                <Button 
-                  onClick={handleCreateCourse}
-                  className="bg-primary hover:bg-primary"
-                >
+                <Button onClick={handleCreateCourse} className="bg-primary hover:bg-primary">
                   Crear Curso
                 </Button>
               </div>
@@ -636,76 +643,102 @@ const Cursos = () => {
           <div className="bg-white rounded-lg shadow-xl max-w-4xl w-full max-h-[90vh] overflow-y-auto m-4">
             <div className="flex justify-between items-center p-6 border-b">
               <h2 className="text-2xl font-bold text-primary-foreground">Detalles del Curso</h2>
-                <h2 className="text-2xl font-bold text-primary-foreground">Detalles del Curso</h2>
-              <Button 
-                onClick={() => setShowViewModal(false)}
-                variant="ghost" 
-                className="p-2"
-              >
+              <h2 className="text-2xl font-bold text-primary-foreground">Detalles del Curso</h2>
+              <Button onClick={() => setShowViewModal(false)} variant="ghost" className="p-2">
                 <X className="h-6 w-6" />
               </Button>
             </div>
-            
+
             <div className="p-6 space-y-6">
               <div className="grid md:grid-cols-2 gap-6">
                 <div className="space-y-4">
                   <h3 className="text-lg font-semibold text-gray-800">Información Básica</h3>
                   <div className="space-y-2">
-                    <p><span className="font-medium">Código:</span> {selectedCourse.codigo}</p>
-                    <p><span className="font-medium">Descripción:</span> {selectedCourse.descripcion}</p>
-                    <p><span className="font-medium">Fecha y Hora:</span> {formatDate(selectedCourse.fechaHora)}</p>
-                    <p><span className="font-medium">Fecha Solicitud:</span> {formatDate(selectedCourse.fechaSolicitud)}</p>
+                    <p>
+                      <span className="font-medium">Código:</span> {selectedCourse.codigo}
+                    </p>
+                    <p>
+                      <span className="font-medium">Descripción:</span> {selectedCourse.descripcion}
+                    </p>
+                    <p>
+                      <span className="font-medium">Fecha y Hora:</span>{' '}
+                      {formatDate(selectedCourse.fechaHora)}
+                    </p>
+                    <p>
+                      <span className="font-medium">Fecha Solicitud:</span>{' '}
+                      {formatDate(selectedCourse.fechaSolicitud)}
+                    </p>
                   </div>
                 </div>
-                
+
                 <div className="space-y-4">
                   <h3 className="text-lg font-semibold text-gray-800">Ubicación</h3>
                   <div className="space-y-2">
-                    <p><span className="font-medium">Lugar:</span> {selectedCourse.lugar}</p>
+                    <p>
+                      <span className="font-medium">Lugar:</span> {selectedCourse.lugar}
+                    </p>
                     {selectedCourse.coordLatitud && selectedCourse.coordLongitud && (
-                      <p><span className="font-medium">Coordenadas:</span> {selectedCourse.coordLatitud}, {selectedCourse.coordLongitud}</p>
+                      <p>
+                        <span className="font-medium">Coordenadas:</span>{' '}
+                        {selectedCourse.coordLatitud}, {selectedCourse.coordLongitud}
+                      </p>
                     )}
                   </div>
                 </div>
-                
+
                 <div className="space-y-4">
                   <h3 className="text-lg font-semibold text-gray-800">Configuración</h3>
                   <div className="space-y-2">
-                    <p><span className="font-medium">Modalidad:</span> {getModalidadName(selectedCourse.modalidad)}</p>
-                    <p><span className="font-medium">Cuota con almuerzo:</span> {formatCurrency(selectedCourse.cuotaConAlmuerzo)}</p>
-                    <p><span className="font-medium">Cuota sin almuerzo:</span> {formatCurrency(selectedCourse.cuotaSinAlmuerzo)}</p>
+                    <p>
+                      <span className="font-medium">Modalidad:</span>{' '}
+                      {getModalidadName(selectedCourse.modalidad)}
+                    </p>
+                    <p>
+                      <span className="font-medium">Cuota con almuerzo:</span>{' '}
+                      {formatCurrency(selectedCourse.cuotaConAlmuerzo)}
+                    </p>
+                    <p>
+                      <span className="font-medium">Cuota sin almuerzo:</span>{' '}
+                      {formatCurrency(selectedCourse.cuotaSinAlmuerzo)}
+                    </p>
                   </div>
                 </div>
-                
+
                 <div className="space-y-4">
                   <h3 className="text-lg font-semibold text-gray-800">Responsabilidad</h3>
                   <div className="space-y-2">
-                    <p><span className="font-medium">Responsable:</span> {selectedCourse.responsable}</p>
-                    <p><span className="font-medium">Cargo:</span> {selectedCourse.cargo}</p>
-                    <p><span className="font-medium">Estado:</span> 
-                      <span className={`ml-2 inline-flex px-2 py-1 text-xs font-semibold rounded-full ${getEstadoName(selectedCourse.estado).color}`}>
+                    <p>
+                      <span className="font-medium">Responsable:</span> {selectedCourse.responsable}
+                    </p>
+                    <p>
+                      <span className="font-medium">Cargo:</span> {selectedCourse.cargo}
+                    </p>
+                    <p>
+                      <span className="font-medium">Estado:</span>
+                      <span
+                        className={`ml-2 inline-flex px-2 py-1 text-xs font-semibold rounded-full ${getEstadoName(selectedCourse.estado).color}`}
+                      >
                         {getEstadoName(selectedCourse.estado).name}
                       </span>
                     </p>
                   </div>
                 </div>
               </div>
-              
+
               {selectedCourse.observacion && (
                 <div className="space-y-2">
                   <h3 className="text-lg font-semibold text-gray-800">Observaciones</h3>
-                  <p className="text-gray-700 bg-gray-50 p-3 rounded-md">{selectedCourse.observacion}</p>
+                  <p className="text-gray-700 bg-gray-50 p-3 rounded-md">
+                    {selectedCourse.observacion}
+                  </p>
                 </div>
               )}
-              
+
               <div className="flex justify-end space-x-4 pt-6 border-t">
-                <Button 
-                  onClick={() => setShowViewModal(false)}
-                  variant="outline"
-                >
+                <Button onClick={() => setShowViewModal(false)} variant="outline">
                   Cerrar
                 </Button>
-                <Button 
+                <Button
                   onClick={() => {
                     setShowViewModal(false);
                     handleEditCourse(selectedCourse);
@@ -726,16 +759,12 @@ const Cursos = () => {
           <div className="bg-white rounded-lg shadow-xl max-w-4xl w-full max-h-[90vh] overflow-y-auto m-4">
             <div className="flex justify-between items-center p-6 border-b">
               <h2 className="text-2xl font-bold text-primary-foreground">Editar Curso</h2>
-                <h2 className="text-2xl font-bold text-primary-foreground">Editar Curso</h2>
-              <Button 
-                onClick={resetForm}
-                variant="ghost" 
-                className="p-2"
-              >
+              <h2 className="text-2xl font-bold text-primary-foreground">Editar Curso</h2>
+              <Button onClick={resetForm} variant="ghost" className="p-2">
                 <X className="h-6 w-6" />
               </Button>
             </div>
-            
+
             <div className="p-6 space-y-6">
               {/* Información Básica */}
               <div className="space-y-4">
@@ -903,22 +932,18 @@ const Cursos = () => {
                     rows={3}
                     maxLength={250}
                   />
-                  <p className="text-xs text-gray-500">{courseData.observacion.length}/250 caracteres</p>
+                  <p className="text-xs text-gray-500">
+                    {courseData.observacion.length}/250 caracteres
+                  </p>
                 </div>
               </div>
 
               {/* Botones de Acción */}
               <div className="flex justify-end space-x-4 pt-6 border-t">
-                <Button 
-                  onClick={resetForm}
-                  variant="outline"
-                >
+                <Button onClick={resetForm} variant="outline">
                   Cancelar
                 </Button>
-                <Button 
-                  onClick={handleUpdateCourse}
-                  className="bg-blue-600 hover:bg-blue-700"
-                >
+                <Button onClick={handleUpdateCourse} className="bg-blue-600 hover:bg-blue-700">
                   Guardar Cambios
                 </Button>
               </div>
@@ -938,25 +963,18 @@ const Cursos = () => {
                 </div>
               </div>
               <div className="text-center">
-                <h3 className="text-lg font-medium text-gray-900 mb-2">
-                  Eliminar Curso
-                </h3>
+                <h3 className="text-lg font-medium text-gray-900 mb-2">Eliminar Curso</h3>
                 <p className="text-sm text-gray-500 mb-4">
-                  ¿Estás seguro de que deseas eliminar el curso "{selectedCourse.descripcion}" 
-                  con código "{selectedCourse.codigo}"?
+                  ¿Estás seguro de que deseas eliminar el curso "{selectedCourse.descripcion}" con
+                  código "{selectedCourse.codigo}"?
                 </p>
-                <p className="text-sm text-red-600 mb-6">
-                  Esta acción no se puede deshacer.
-                </p>
+                <p className="text-sm text-red-600 mb-6">Esta acción no se puede deshacer.</p>
               </div>
               <div className="flex justify-center space-x-4">
-                <Button 
-                  onClick={() => setShowDeleteModal(false)}
-                  variant="outline"
-                >
+                <Button onClick={() => setShowDeleteModal(false)} variant="outline">
                   Cancelar
                 </Button>
-                <Button 
+                <Button
                   onClick={confirmDeleteCourse}
                   className="bg-red-600 hover:bg-red-700 text-white"
                 >
@@ -974,10 +992,7 @@ const Cursos = () => {
           <h2 className="text-xl font-semibold text-gray-800">
             Cursos Disponibles ({filteredCourses.length} de {courses.length})
           </h2>
-          <Button 
-            onClick={() => setShowCreateForm(true)}
-            className="bg-primary hover:bg-primary"
-          >
+          <Button onClick={() => setShowCreateForm(true)} className="bg-primary hover:bg-primary">
             Nuevo Curso
           </Button>
         </div>
@@ -994,7 +1009,7 @@ const Cursos = () => {
               <Input
                 id="filter-search"
                 value={filters.search}
-                onChange={(e) => setFilters(prev => ({ ...prev, search: e.target.value }))}
+                onChange={(e) => setFilters((prev) => ({ ...prev, search: e.target.value }))}
                 placeholder="Código, descripción, lugar..."
               />
             </div>
@@ -1003,7 +1018,7 @@ const Cursos = () => {
               <select
                 id="filter-estado"
                 value={filters.estado}
-                onChange={(e) => setFilters(prev => ({ ...prev, estado: e.target.value }))}
+                onChange={(e) => setFilters((prev) => ({ ...prev, estado: e.target.value }))}
                 className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
               >
                 <option value="">Todos</option>
@@ -1020,7 +1035,7 @@ const Cursos = () => {
               <select
                 id="filter-modalidad"
                 value={filters.modalidad}
-                onChange={(e) => setFilters(prev => ({ ...prev, modalidad: e.target.value }))}
+                onChange={(e) => setFilters((prev) => ({ ...prev, modalidad: e.target.value }))}
                 className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
               >
                 <option value="">Todas</option>
@@ -1034,7 +1049,7 @@ const Cursos = () => {
               <select
                 id="filter-tipoCurso"
                 value={filters.tipoCurso}
-                onChange={(e) => setFilters(prev => ({ ...prev, tipoCurso: e.target.value }))}
+                onChange={(e) => setFilters((prev) => ({ ...prev, tipoCurso: e.target.value }))}
                 className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
               >
                 <option value="">Todos</option>
@@ -1046,8 +1061,8 @@ const Cursos = () => {
           </div>
           {(filters.search || filters.estado || filters.modalidad || filters.tipoCurso) && (
             <div className="mt-3">
-              <Button 
-                variant="outline" 
+              <Button
+                variant="outline"
                 size="sm"
                 onClick={() => setFilters({ search: '', estado: '', modalidad: '', tipoCurso: '' })}
               >
@@ -1056,7 +1071,7 @@ const Cursos = () => {
             </div>
           )}
         </div>
-        
+
         {filteredCourses.length > 0 ? (
           <div className="overflow-x-auto">
             <table className="w-full border-collapse">
@@ -1129,28 +1144,30 @@ const Cursos = () => {
                         </div>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
-                        <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${estadoInfo.color}`}>
+                        <span
+                          className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${estadoInfo.color}`}
+                        >
                           {estadoInfo.name}
                         </span>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
                         <div className="flex space-x-2">
-                          <Button 
-                            size="sm" 
+                          <Button
+                            size="sm"
                             variant="outline"
                             onClick={() => handleViewCourse(course)}
                           >
                             Ver
                           </Button>
-                          <Button 
-                            size="sm" 
+                          <Button
+                            size="sm"
                             variant="outline"
                             onClick={() => handleEditCourse(course)}
                           >
                             Editar
                           </Button>
-                          <Button 
-                            size="sm" 
+                          <Button
+                            size="sm"
                             variant="outline"
                             onClick={() => handleDeleteCourse(course)}
                             className="text-red-600 hover:text-red-700 hover:bg-red-50"
@@ -1167,13 +1184,17 @@ const Cursos = () => {
           </div>
         ) : courses.length > 0 ? (
           <div className="text-center py-8">
-            <p className="text-gray-500 text-lg">No se encontraron cursos con los filtros aplicados</p>
+            <p className="text-gray-500 text-lg">
+              No se encontraron cursos con los filtros aplicados
+            </p>
             <p className="text-gray-400 text-sm mt-2">Intenta ajustar los filtros de búsqueda</p>
           </div>
         ) : (
           <div className="text-center py-8">
             <p className="text-gray-500 text-lg">No hay cursos registrados</p>
-            <p className="text-gray-400 text-sm mt-2">Crea tu primer curso haciendo clic en "Nuevo Curso"</p>
+            <p className="text-gray-400 text-sm mt-2">
+              Crea tu primer curso haciendo clic en "Nuevo Curso"
+            </p>
           </div>
         )}
       </div>

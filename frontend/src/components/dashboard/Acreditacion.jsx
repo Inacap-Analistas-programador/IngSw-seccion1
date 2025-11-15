@@ -1,8 +1,8 @@
-import { useState } from "react";
-import { Button } from "@/components/ui/Button";
-import { Scanner } from "@yudiel/react-qr-scanner";
-import { QrCode, Scan, Copy, Check } from "lucide-react";
-import { useToast } from "@/components/ui/use-toast";
+import { useState } from 'react';
+import { Button } from '@/components/ui/Button';
+import { Scanner } from '@yudiel/react-qr-scanner';
+import { QrCode, Scan, Copy, Check } from 'lucide-react';
+import { useToast } from '@/components/ui/use-toast';
 
 const Acreditacion = () => {
   const { toast } = useToast();
@@ -16,8 +16,8 @@ const Acreditacion = () => {
     setGeneratedQR(fakeQR);
 
     toast({
-      title: "QR generado",
-      description: "El código QR se generó correctamente.",
+      title: 'QR generado',
+      description: 'El código QR se generó correctamente.',
     });
 
     setTimeout(() => setCopiedGenerated(false), 1500);
@@ -35,14 +35,13 @@ const Acreditacion = () => {
   const [copied, setCopied] = useState(false);
 
   const handleCopy = () => {
-    navigator.clipboard.writeText(qrResult || "");
+    navigator.clipboard.writeText(qrResult || '');
     setCopied(true);
     setTimeout(() => setCopied(false), 1500);
   };
 
   return (
     <div className="space-y-10">
-
       {/* ---------------------- Card: Generación QR ---------------------- */}
       <div className="bg-white rounded-lg shadow-md p-6">
         <h2 className="text-xl font-bold text-gray-800 flex items-center gap-2 mb-3">
@@ -54,10 +53,7 @@ const Acreditacion = () => {
           Genera un código QR único para la acreditación de un participante.
         </p>
 
-        <Button
-          onClick={generarQR}
-          className="bg-blue-600 hover:bg-blue-900 text-white"
-        >
+        <Button onClick={generarQR} className="bg-blue-600 hover:bg-blue-900 text-white">
           Generar QR
         </Button>
 
@@ -67,9 +63,7 @@ const Acreditacion = () => {
             <p className="text-sm text-gray-700 font-semibold">QR Generado:</p>
 
             <div className="mt-2 flex items-center gap-2">
-              <code className="text-black bg-white px-2 py-1 rounded border">
-                {generatedQR}
-              </code>
+              <code className="text-black bg-white px-2 py-1 rounded border">{generatedQR}</code>
 
               <Button
                 variant="ghost"
@@ -142,33 +136,26 @@ const Acreditacion = () => {
                   setQrResult(result[0]?.rawValue || null);
 
                   toast({
-                    title: "QR detectado",
-                    description: "El código se ha leído correctamente.",
+                    title: 'QR detectado',
+                    description: 'El código se ha leído correctamente.',
                   });
                 }}
-                onError={(error) =>
-                  console.error("Error en escáner:", error.message)
-                }
+                onError={(error) => console.error('Error en escáner:', error.message)}
                 components={{ torch: true, zoom: true }}
-                styles={{ container: { width: "100%" } }}
+                styles={{ container: { width: '100%' } }}
               />
             </div>
 
             {/* Resultado del Escáner */}
             {qrResult && (
               <div className="mt-6 p-4 bg-blue-50 border border-blue-200 rounded-lg">
-                <h4 className="text-lg font-semibold text-blue-800">
-                  Resultado del Código:
-                </h4>
+                <h4 className="text-lg font-semibold text-blue-800">Resultado del Código:</h4>
 
                 <div className="flex items-center gap-3 mt-2 bg-white border p-3 rounded-md shadow-sm">
                   <span className="text-gray-700 break-all">{qrResult}</span>
 
                   {!copied ? (
-                    <button
-                      onClick={handleCopy}
-                      className="text-blue-600 hover:text-blue-800"
-                    >
+                    <button onClick={handleCopy} className="text-blue-600 hover:text-blue-800">
                       <Copy className="w-5 h-5" />
                     </button>
                   ) : (

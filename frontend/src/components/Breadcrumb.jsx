@@ -7,16 +7,16 @@ const Breadcrumb = () => {
   const pathnames = location.pathname.split('/').filter((x) => x);
 
   const breadcrumbNameMap = {
-    'coordinador': 'Coordinador',
-    'dashboard': 'Dashboard',
-    'ejecutivo': 'Dashboard Ejecutivo',
+    coordinador: 'Coordinador',
+    dashboard: 'Dashboard',
+    ejecutivo: 'Dashboard Ejecutivo',
     'gestion-cursos': 'Gestión de Cursos',
-    'preinscripcion': 'Preinscripción',
+    preinscripcion: 'Preinscripción',
     'gestion-pagos': 'Gestión de Pagos',
     'gestion-personas': 'Gestión de Personas',
     'envio-correos': 'Envío de Correos',
-    'acreditacion': 'Acreditación',
-    'maestros': 'Maestros',
+    acreditacion: 'Acreditación',
+    maestros: 'Maestros',
     'acreditacion-manual': 'Acreditación Manual',
     'verificador-qr': 'Verificador QR',
   };
@@ -27,7 +27,8 @@ const Breadcrumb = () => {
         {pathnames.map((value, index) => {
           const last = index === pathnames.length - 1;
           const to = `/${pathnames.slice(0, index + 1).join('/')}`;
-          const displayName = breadcrumbNameMap[value] || value.charAt(0).toUpperCase() + value.slice(1);
+          const displayName =
+            breadcrumbNameMap[value] || value.charAt(0).toUpperCase() + value.slice(1);
 
           if (index === 0) return null; // Skip 'coordinador'
 
@@ -37,7 +38,10 @@ const Breadcrumb = () => {
               {last ? (
                 <span className="text-sm font-medium text-gray-800">{displayName}</span>
               ) : (
-                <Link to={to} className="text-sm font-medium text-gray-500 hover:text-primary-foreground">
+                <Link
+                  to={to}
+                  className="text-sm font-medium text-gray-500 hover:text-primary-foreground"
+                >
                   {displayName}
                 </Link>
               )}

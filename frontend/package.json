@@ -6,7 +6,14 @@
   "scripts": {
     "dev": "vite --host :: --port 3000",
     "build": "node tools/generate-llms.js || true && vite build",
-    "preview": "vite preview --host :: --port 3000"
+    "preview": "vite preview --host :: --port 3000",
+    "lint": "eslint src",
+    "lint:fix": "eslint src --fix",
+    "format": "prettier --write \"src/**/*.{js,jsx,json,css,md}\"",
+    "format:check": "prettier --check \"src/**/*.{js,jsx,json,css,md}\"",
+    "test": "vitest",
+    "test:ui": "vitest --ui",
+    "test:coverage": "vitest --coverage"
   },
   "dependencies": {
     "@radix-ui/react-alert-dialog": "^1.0.5",
@@ -37,16 +44,23 @@
     "@babel/parser": "^7.27.0",
     "@babel/traverse": "^7.27.0",
     "@babel/types": "^7.27.0",
+    "@testing-library/jest-dom": "^6.9.1",
+    "@testing-library/react": "^14.3.1",
+    "@testing-library/user-event": "^14.6.1",
     "@types/node": "^20.8.3",
     "@types/react": "^18.2.15",
     "@types/react-dom": "^18.2.7",
     "@vitejs/plugin-react": "^4.0.3",
+    "@vitest/ui": "^1.6.1",
     "autoprefixer": "^10.4.16",
     "eslint": "^8.57.1",
     "eslint-config-react-app": "^7.0.1",
+    "jsdom": "^23.2.0",
     "postcss": "^8.4.31",
+    "prettier": "^3.6.2",
     "tailwindcss": "^3.3.3",
     "terser": "^5.39.0",
-    "vite": "^4.4.5"
+    "vite": "^4.4.5",
+    "vitest": "^1.6.1"
   }
 }

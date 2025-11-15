@@ -11,10 +11,10 @@ import MaestroForm from '@/pages/MaestroForm';
 
 function App() {
   return (
-    <Router 
+    <Router
       future={{
         v7_startTransition: true,
-        v7_relativeSplatPath: true
+        v7_relativeSplatPath: true,
       }}
     >
       <div className="min-h-screen">
