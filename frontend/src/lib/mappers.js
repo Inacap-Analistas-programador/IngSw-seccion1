@@ -34,7 +34,7 @@ export const personaFromApi = (p = {}) => {
     habilitacion2: p.per_hab_2 || p.habilitacion2 || false,
     verificacion: p.per_verificacion || p.verificacion || false,
     historialCapacitaciones: p.per_historial || p.historialCapacitaciones || '',
-    fechaCreacion: p.per_fecha_hora || p.fechaCreacion || p.createdAt || ''
+    fechaCreacion: p.per_fecha_hora || p.fechaCreacion || p.createdAt || '',
   };
 };
 // Proveedores mapper (emparejar per_id -> prv_id)
@@ -47,7 +47,7 @@ export const proveedorFromApi = (p = {}) => {
     celular2: p.prv_celular2 || p.celular2 || '',
     direccion: p.prv_direccion || p.direccion || '',
     observacion: p.prv_observacion || p.observacion || '',
-    vigente: typeof p.prv_vigente === 'boolean' ? p.prv_vigente : p.vigente || true
+    vigente: typeof p.prv_vigente === 'boolean' ? p.prv_vigente : p.vigente || true,
   };
 };
 
@@ -60,11 +60,12 @@ export const proveedorToApi = (f = {}) => {
     prv_celular2: f.celular2,
     prv_direccion: f.direccion,
     prv_observacion: f.observacion,
-    prv_vigente: f.vigente
+    prv_vigente: f.vigente,
   };
 };
 
-export const proveedoresFromApi = (arr = []) => (Array.isArray(arr) ? arr.map(proveedorFromApi) : []);
+export const proveedoresFromApi = (arr = []) =>
+  Array.isArray(arr) ? arr.map(proveedorFromApi) : [];
 
 export const personaToApi = (f = {}) => {
   if (!f) return {};
@@ -96,7 +97,7 @@ export const personaToApi = (f = {}) => {
     per_hab_1: f.habilitacion1,
     per_hab_2: f.habilitacion2,
     per_verificacion: f.verificacion,
-    per_historial: f.historialCapacitaciones
+    per_historial: f.historialCapacitaciones,
   };
 };
 
@@ -105,5 +106,5 @@ export const personasFromApi = (arr = []) => (Array.isArray(arr) ? arr.map(perso
 export default {
   personaFromApi,
   personaToApi,
-  personasFromApi
+  personasFromApi,
 };

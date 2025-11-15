@@ -1,10 +1,19 @@
-
 import { useState, useEffect } from 'react';
 import { Helmet } from 'react-helmet';
 import { useNavigate, Routes, Route, useLocation, Navigate } from 'react-router-dom';
 import { Button } from '@/components/ui/Button';
-import { 
-  LogOut, Menu, LayoutDashboard, BookOpen, ClipboardCheck, CreditCard, Users, Mail, Award, Database, Truck
+import {
+  LogOut,
+  Menu,
+  LayoutDashboard,
+  BookOpen,
+  ClipboardCheck,
+  CreditCard,
+  Users,
+  Mail,
+  Award,
+  Database,
+  Truck,
 } from 'lucide-react';
 import authService from '@/services/authService';
 import Cursos from '@/components/dashboard/Cursos';
@@ -25,7 +34,7 @@ const CoordinatorDashboard = () => {
   const location = useLocation();
   const [coordinator, setCoordinator] = useState(null);
   const [sidebarOpen, setSidebarOpen] = useState(window.innerWidth >= 1024);
-  
+
   // Move render-time console logging into an effect so it's only a side effect
   useEffect(() => {
     console.log('✅ CoordinatorDashboard renderizado correctamente, location:', location.pathname);
@@ -38,7 +47,7 @@ const CoordinatorDashboard = () => {
       const defaultCoordinator = {
         correo: 'coordinador@scout.cl',
         name: 'Coordinador Scout',
-        loginTime: new Date().toISOString()
+        loginTime: new Date().toISOString(),
       };
       localStorage.setItem('coordinator', JSON.stringify(defaultCoordinator));
       setCoordinator(defaultCoordinator);
@@ -69,10 +78,10 @@ const CoordinatorDashboard = () => {
   const basePath = location.pathname.startsWith('/coordinador/panel')
     ? '/coordinador/panel'
     : location.pathname.startsWith('/panel')
-    ? '/panel'
-    : location.pathname.startsWith('/coordinador/dashboard')
-    ? '/coordinador/dashboard'
-    : '/dashboard';
+      ? '/panel'
+      : location.pathname.startsWith('/coordinador/dashboard')
+        ? '/coordinador/dashboard'
+        : '/dashboard';
 
   const menuItems = [
     { icon: LayoutDashboard, label: 'Dashboard Ejecutivo', path: `${basePath}/ejecutivo` },
@@ -93,7 +102,7 @@ const CoordinatorDashboard = () => {
 
   const getPageTitle = () => {
     const currentPath = location.pathname;
-    const activeItem = menuItems.find(item => item.path === currentPath);
+    const activeItem = menuItems.find((item) => item.path === currentPath);
     return activeItem ? activeItem.label : 'Dashboard';
   };
 
@@ -106,9 +115,11 @@ const CoordinatorDashboard = () => {
 
       <div className="min-h-screen bg-gray-50 flex">
         {/* Sidebar */}
-        <aside className={`fixed lg:static inset-y-0 left-0 z-40 w-64 bg-primary text-primary-foreground shadow-lg transform transition-transform duration-300 ease-in-out ${
-          sidebarOpen ? 'translate-x-0' : '-translate-x-full'
-        }`}>
+        <aside
+          className={`fixed lg:static inset-y-0 left-0 z-40 w-64 bg-primary text-primary-foreground shadow-lg transform transition-transform duration-300 ease-in-out ${
+            sidebarOpen ? 'translate-x-0' : '-translate-x-full'
+          }`}
+        >
           <div className="flex items-center justify-center h-20 border-b border border-border">
             <Award className="w-8 h-8 mr-2" />
             <span className="text-xl font-bold">Scout Admin</span>
@@ -153,7 +164,9 @@ const CoordinatorDashboard = () => {
                 <span className="text-lg font-semibold text-gray-700">Dashboard Scout</span>
               </div>
               <div className="flex items-center space-x-4">
-                <span className="text-sm hidden md:block">Bienvenido, <span className="font-semibold">{coordinator.name}</span></span>
+                <span className="text-sm hidden md:block">
+                  Bienvenido, <span className="font-semibold">{coordinator.name}</span>
+                </span>
                 <Button
                   onClick={() => navigate('/')}
                   variant="ghost"
@@ -191,7 +204,7 @@ const CoordinatorDashboard = () => {
             </Routes>
           </main>
         </div>
-        
+
         {/* Overlay for mobile */}
         {sidebarOpen && window.innerWidth < 1024 && (
           <div

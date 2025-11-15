@@ -81,8 +81,6 @@ const Cursos = () => {
       return;
     }
 
-    console.log('Datos del curso:', courseData);
-
     // Crear nuevo curso con ID único
     const newCourse = {
       id: courses.length + 1,
@@ -302,14 +300,6 @@ const Cursos = () => {
       3: 'Híbrido',
     };
     return tipos[tipoCurso] || 'Sin definir';
-  };
-
-  const getAdministraName = (administra) => {
-    const tipos = {
-      1: 'Zona',
-      2: 'Distrito',
-    };
-    return tipos[administra] || 'Sin definir';
   };
 
   const filteredCourses = courses.filter((course) => {

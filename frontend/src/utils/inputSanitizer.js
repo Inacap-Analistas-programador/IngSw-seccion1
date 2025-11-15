@@ -30,7 +30,7 @@ export function sanitizeText(input) {
   let sanitized = input;
 
   // Eliminar patrones XSS peligrosos
-  XSS_PATTERNS.forEach(pattern => {
+  XSS_PATTERNS.forEach((pattern) => {
     sanitized = sanitized.replace(pattern, '');
   });
 
@@ -51,7 +51,7 @@ export function sanitizeText(input) {
 
 /**
  * Valida y sanitiza un email
- * @param {string} email 
+ * @param {string} email
  * @returns {string}
  */
 export function sanitizeEmail(email) {
@@ -61,7 +61,7 @@ export function sanitizeEmail(email) {
 
   const sanitized = email.toLowerCase().trim();
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  
+
   if (!emailRegex.test(sanitized)) {
     throw new Error('Formato de email inválido');
   }
@@ -71,7 +71,7 @@ export function sanitizeEmail(email) {
 
 /**
  * Valida y sanitiza un RUT chileno
- * @param {string} rut 
+ * @param {string} rut
  * @returns {string}
  */
 export function sanitizeRUT(rut) {
@@ -81,7 +81,7 @@ export function sanitizeRUT(rut) {
 
   // Eliminar puntos y guiones
   let sanitized = rut.replace(/\./g, '').replace(/-/g, '').toUpperCase();
-  
+
   // Solo números y K
   sanitized = sanitized.replace(/[^0-9K]/g, '');
 
@@ -95,7 +95,7 @@ export function sanitizeRUT(rut) {
 
 /**
  * Valida y sanitiza un número de teléfono
- * @param {string} phone 
+ * @param {string} phone
  * @returns {string}
  */
 export function sanitizePhone(phone) {
@@ -105,7 +105,7 @@ export function sanitizePhone(phone) {
 
   // Solo números, espacios, guiones, paréntesis y +
   const sanitized = phone.replace(/[^\d\s\-+()]/g, '').trim();
-  
+
   // Validar que tenga al menos 8 dígitos
   const digitsOnly = sanitized.replace(/\D/g, '');
   if (digitsOnly.length < 8 || digitsOnly.length > 15) {
@@ -117,7 +117,7 @@ export function sanitizePhone(phone) {
 
 /**
  * Valida y sanitiza un nombre
- * @param {string} name 
+ * @param {string} name
  * @returns {string}
  */
 export function sanitizeName(name) {
@@ -144,7 +144,7 @@ export function sanitizeName(name) {
 
 /**
  * Valida y sanitiza una dirección
- * @param {string} address 
+ * @param {string} address
  * @returns {string}
  */
 export function sanitizeAddress(address) {
@@ -176,7 +176,7 @@ export function sanitizeDate(date) {
   }
 
   const dateRegex = /^\d{4}-\d{2}-\d{2}$/;
-  
+
   if (!dateRegex.test(date)) {
     throw new Error('Formato de fecha inválido. Use YYYY-MM-DD');
   }
@@ -199,7 +199,7 @@ export function sanitizeDate(date) {
  */
 export function validateDateRange(date, minDate, maxDate) {
   const dateObj = new Date(date);
-  
+
   if (minDate && dateObj < minDate) {
     throw new Error('La fecha es anterior al mínimo permitido');
   }
@@ -213,7 +213,7 @@ export function validateDateRange(date, minDate, maxDate) {
 
 /**
  * Sanitiza datos de un formulario completo
- * @param {object} formData 
+ * @param {object} formData
  * @param {object} schema - Esquema de validación
  * @returns {object}
  */
@@ -269,7 +269,7 @@ export function sanitizeFormData(formData, schema) {
 
 /**
  * Verifica si una cadena contiene patrones XSS
- * @param {string} input 
+ * @param {string} input
  * @returns {boolean}
  */
 export function containsXSS(input) {
@@ -277,12 +277,12 @@ export function containsXSS(input) {
     return false;
   }
 
-  return XSS_PATTERNS.some(pattern => pattern.test(input));
+  return XSS_PATTERNS.some((pattern) => pattern.test(input));
 }
 
 /**
  * Valida contraseña segura
- * @param {string} password 
+ * @param {string} password
  * @returns {object} - {valid: boolean, errors: string[]}
  */
 export function validatePassword(password) {
@@ -314,7 +314,7 @@ export function validatePassword(password) {
 
   return {
     valid: errors.length === 0,
-    errors
+    errors,
   };
 }
 
@@ -326,17 +326,17 @@ export function validatePassword(password) {
 export function validateMinorAge(birthDate) {
   const today = new Date();
   const birth = new Date(birthDate);
-  
+
   let age = today.getFullYear() - birth.getFullYear();
   const monthDiff = today.getMonth() - birth.getMonth();
-  
+
   if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birth.getDate())) {
     age--;
   }
 
   return {
     isMinor: age < 18,
-    age
+    age,
   };
 }
 

@@ -14,7 +14,7 @@ const HomePage = () => {
       description: 'Introducción a los fundamentos del movimiento Scout y metodología educativa.',
       startDate: '15 Enero 2026',
       endDate: '20 Enero 2026',
-      location: 'Centro Scout Nacional'
+      location: 'Centro Scout Nacional',
     },
     {
       id: 2,
@@ -22,7 +22,7 @@ const HomePage = () => {
       description: 'Desarrollo de habilidades de liderazgo y gestión de equipos Scout.',
       startDate: '10 Febrero 2026',
       endDate: '15 Febrero 2026',
-      location: 'Campamento Regional'
+      location: 'Campamento Regional',
     },
     {
       id: 3,
@@ -30,15 +30,18 @@ const HomePage = () => {
       description: 'Técnicas avanzadas de campismo, orientación y supervivencia.',
       startDate: '5 Marzo 2026',
       endDate: '10 Marzo 2026',
-      location: 'Base Scout Cordillera'
-    }
+      location: 'Base Scout Cordillera',
+    },
   ];
 
   return (
     <>
       <Helmet>
         <title>Scout - Plataforma de Formación</title>
-        <meta name="description" content="Plataforma oficial de formación Scout. Inscríbete en nuestros cursos y desarrolla tus habilidades como dirigente Scout." />
+        <meta
+          name="description"
+          content="Plataforma oficial de formación Scout. Inscríbete en nuestros cursos y desarrolla tus habilidades como dirigente Scout."
+        />
       </Helmet>
 
       <div className="min-h-screen bg-white">
@@ -52,13 +55,13 @@ const HomePage = () => {
               <span className="text-2xl font-bold">Scout Formación</span>
             </div>
             <div className="flex space-x-3">
-              <Button 
+              <Button
                 onClick={() => navigate('/panel')}
                 className="bg-white text-[#001558] hover:bg-primary/5 transition-all duration-300"
               >
                 Panel
               </Button>
-              <Button 
+              <Button
                 onClick={() => navigate('/coordinador/ingreso')}
                 className="bg-white text-[#001558] hover:bg-primary/5 transition-all duration-300"
               >
@@ -80,9 +83,10 @@ const HomePage = () => {
                 Bienvenido a la Plataforma Scout
               </h1>
               <p className="text-xl md:text-2xl mb-8 max-w-3xl mx-auto">
-                Desarrolla tus habilidades como dirigente Scout a través de nuestros cursos de formación especializados
+                Desarrolla tus habilidades como dirigente Scout a través de nuestros cursos de
+                formación especializados
               </p>
-              <Button 
+              <Button
                 onClick={() => navigate('/pre-inscripcion')}
                 size="lg"
                 className="bg-white text-[#001558] hover:bg-primary/5 text-lg px-8 py-6 rounded-full shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:scale-105"
@@ -101,11 +105,16 @@ const HomePage = () => {
                   <h3 className="text-xl font-semibold text-white">Credenciales de Coordinador</h3>
                 </div>
                 <div className="text-left space-y-2 text-primary-foreground">
-                  <p><span className="font-semibold text-primary-foreground">Correo:</span> coordinador@scout.cl</p>
-                  <p><span className="font-semibold text-primary-foreground">Contraseña:</span> scout2024</p>
+                  <p>
+                    <span className="font-semibold text-primary-foreground">Correo:</span>{' '}
+                    coordinador@scout.cl
+                  </p>
+                  <p>
+                    <span className="font-semibold text-primary-foreground">Contraseña:</span>{' '}
+                    scout2024
+                  </p>
                 </div>
               </motion.div>
-
             </motion.div>
           </div>
         </section>
@@ -136,12 +145,8 @@ const HomePage = () => {
                   >
                     <div className="bg-primary h-2"></div>
                     <div className="p-6">
-                      <h3 className="text-2xl font-bold mb-3 text-[#001558]">
-                        {course.name}
-                      </h3>
-                      <p className="text-gray-600 mb-4 min-h-[60px]">
-                        {course.description}
-                      </p>
+                      <h3 className="text-2xl font-bold mb-3 text-[#001558]">{course.name}</h3>
+                      <p className="text-gray-600 mb-4 min-h-[60px]">{course.description}</p>
                       <div className="space-y-2 text-sm text-gray-700">
                         <div className="flex items-center space-x-2">
                           <Calendar className="w-4 h-4 text-[#001558]" />
@@ -156,7 +161,7 @@ const HomePage = () => {
                           <span>{course.location}</span>
                         </div>
                       </div>
-                      <Button 
+                      <Button
                         onClick={() => navigate('/pre-inscripcion')}
                         className="w-full mt-6 bg-primary hover:bg-primary/90 text-primary-foreground transition-colors duration-300"
                       >
@@ -181,7 +186,9 @@ const HomePage = () => {
                 <span className="text-xl font-bold">Scout Formación</span>
               </div>
               <div className="text-center md:text-right">
-                <p className="text-primary-foreground">© 2025 Scout Formación. Todos los derechos reservados.</p>
+                <p className="text-primary-foreground">
+                  © 2025 Scout Formación. Todos los derechos reservados.
+                </p>
                 <p className="text-primary-foreground text-sm mt-1">Siempre Listo para Servir</p>
               </div>
             </div>

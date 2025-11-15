@@ -35,8 +35,8 @@ const Step4AdditionalData = ({ formData, updateFormData }) => {
               <Label htmlFor="vehiculoMarca">Marca del Vehículo</Label>
               <Input
                 id="vehiculoMarca"
-                  value={formData.vehiculoMarca}
-                  onChange={(e) => handleChange('vehiculoMarca', e.target.value)}
+                value={formData.vehiculoMarca}
+                onChange={(e) => handleChange('vehiculoMarca', e.target.value)}
                 placeholder="Toyota, Chevrolet, etc."
               />
             </div>
@@ -45,8 +45,8 @@ const Step4AdditionalData = ({ formData, updateFormData }) => {
               <Label htmlFor="vehiculoModelo">Modelo del Vehículo</Label>
               <Input
                 id="vehiculoModelo"
-                  value={formData.vehiculoModelo}
-                  onChange={(e) => handleChange('vehiculoModelo', e.target.value)}
+                value={formData.vehiculoModelo}
+                onChange={(e) => handleChange('vehiculoModelo', e.target.value)}
                 placeholder="Corolla, Spark, etc."
               />
             </div>
@@ -55,8 +55,8 @@ const Step4AdditionalData = ({ formData, updateFormData }) => {
               <Label htmlFor="vehiculoPatente">Patente del Vehículo</Label>
               <Input
                 id="vehiculoPatente"
-                  value={formData.vehiculoPatente}
-                  onChange={(e) => handleChange('vehiculoPatente', e.target.value)}
+                value={formData.vehiculoPatente}
+                onChange={(e) => handleChange('vehiculoPatente', e.target.value)}
                 placeholder="AB-CD-12"
               />
             </div>

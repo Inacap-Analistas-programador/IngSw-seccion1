@@ -15,10 +15,7 @@ describe('Breadcrumb', () => {
   });
 
   it('should render breadcrumb items', () => {
-    const items = [
-      { label: 'Dashboard', href: '/dashboard' },
-      { label: 'Usuarios' },
-    ];
+    const items = [{ label: 'Dashboard', href: '/dashboard' }, { label: 'Usuarios' }];
     renderWithRouter(<Breadcrumb items={items} />);
 
     expect(screen.getByText('Dashboard')).toBeInTheDocument();
@@ -26,10 +23,7 @@ describe('Breadcrumb', () => {
   });
 
   it('should render last item as current page', () => {
-    const items = [
-      { label: 'Dashboard', href: '/dashboard' },
-      { label: 'Usuarios' },
-    ];
+    const items = [{ label: 'Dashboard', href: '/dashboard' }, { label: 'Usuarios' }];
     renderWithRouter(<Breadcrumb items={items} />);
 
     const lastItem = screen.getByText('Usuarios');
@@ -37,10 +31,7 @@ describe('Breadcrumb', () => {
   });
 
   it('should render links for non-last items', () => {
-    const items = [
-      { label: 'Dashboard', href: '/dashboard' },
-      { label: 'Usuarios' },
-    ];
+    const items = [{ label: 'Dashboard', href: '/dashboard' }, { label: 'Usuarios' }];
     renderWithRouter(<Breadcrumb items={items} />);
 
     const dashboardLink = screen.getByText('Dashboard');

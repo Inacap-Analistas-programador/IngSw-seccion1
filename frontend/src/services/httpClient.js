@@ -26,7 +26,7 @@ class SecureHttpClient {
       // });
       // const data = await response.json();
       // this.csrfToken = data.csrfToken;
-      
+
       // Por ahora, generar token temporal (reemplazar con backend real)
       this.csrfToken = this.generateCSRFToken();
     } catch (error) {
@@ -39,7 +39,7 @@ class SecureHttpClient {
    */
   generateCSRFToken() {
     return Array.from(crypto.getRandomValues(new Uint8Array(32)))
-      .map(b => b.toString(16).padStart(2, '0'))
+      .map((b) => b.toString(16).padStart(2, '0'))
       .join('');
   }
 
@@ -84,9 +84,9 @@ class SecureHttpClient {
       }
 
       const error = await response.json().catch(() => ({
-        message: 'Error en la solicitud'
+        message: 'Error en la solicitud',
       }));
-      
+
       throw new Error(error.message || `Error ${response.status}`);
     }
 
@@ -193,7 +193,7 @@ class SecureHttpClient {
     try {
       const formData = new FormData();
       formData.append('file', file);
-      
+
       // Agregar datos adicionales
       Object.entries(additionalData).forEach(([key, value]) => {
         formData.append(key, value);

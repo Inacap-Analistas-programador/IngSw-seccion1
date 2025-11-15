@@ -11,7 +11,9 @@ const Step3Health = ({ formData, updateFormData }) => {
     <div className="space-y-6">
       <div>
         <h2 className="text-2xl font-bold text-[#001558] mb-2">Salud y Alimentación</h2>
-        <p className="text-gray-600">Información importante sobre tu salud y necesidades alimentarias.</p>
+        <p className="text-gray-600">
+          Información importante sobre tu salud y necesidades alimentarias.
+        </p>
       </div>
 
       <div className="grid md:grid-cols-2 gap-4">
