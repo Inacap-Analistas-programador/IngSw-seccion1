@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/Button';
 import { 
   LogOut, Menu, LayoutDashboard, BookOpen, ClipboardCheck, CreditCard, Users, Mail, Award, Database
 } from 'lucide-react';
-// import { useToast } from '@/components/ui/use-toast';
+import authService from '@/services/authService';
 import Cursos from '@/components/dashboard/Cursos';
 import Pagos from '@/components/dashboard/Pagos';
 import Personas from '@/components/dashboard/Personas';
@@ -18,31 +18,24 @@ import DashboardEjecutivo from '@/components/dashboard/DashboardEjecutivo';
 import Preinscripcion from '@/components/dashboard/Preinscripcion';
 import Acreditacion from '@/components/dashboard/Acreditacion';
 import UseCases from '@/pages/UseCases';
-// import Breadcrumb from '@/components/Breadcrumb';
 
 const CoordinatorDashboard = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  // const { toast } = useToast();
   const [coordinator, setCoordinator] = useState(null);
   const [sidebarOpen, setSidebarOpen] = useState(window.innerWidth >= 1024);
   
   console.log('✅ CoordinatorDashboard renderizado correctamente, location:', location.pathname);
 
   useEffect(() => {
-    const storedCoordinator = localStorage.getItem('coordinator');
-    if (!storedCoordinator) {
-      // Para desarrollo, creamos un coordinador por defecto
-      const defaultCoordinator = {
-        email: 'coordinador@scout.cl',
-        name: 'Coordinador Scout',
-        loginTime: new Date().toISOString()
-      };
-      localStorage.setItem('coordinator', JSON.stringify(defaultCoordinator));
-      setCoordinator(defaultCoordinator);
-    } else {
-      setCoordinator(JSON.parse(storedCoordinator));
+    // Verificar autenticación
+    if (!authService.isAuthenticated()) {
+      navigate('/coordinador/login');
+      return;
     }
+
+    const user = authService.getCurrentUser();
+    setCoordinator(user);
   }, [navigate]);
 
   useEffect(() => {
@@ -58,11 +51,7 @@ const CoordinatorDashboard = () => {
   }, []);
 
   const handleLogout = () => {
-    localStorage.removeItem('coordinator');
-    // toast({
-    //   title: "Sesión Cerrada",
-    //   description: "Has cerrado sesión exitosamente.",
-    // });
+    authService.logout('USER_ACTION');
     console.log('Sesión cerrada');
     navigate('/');
   };

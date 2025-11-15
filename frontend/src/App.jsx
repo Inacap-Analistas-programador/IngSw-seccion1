@@ -1,5 +1,6 @@
 import React, { lazy, Suspense } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import ProtectedRoute from '@/components/auth/ProtectedRoute';
 
 // Lazy load pages for code splitting
 const HomePage = lazy(() => import('@/pages/HomePage'));
@@ -32,15 +33,64 @@ function App() {
             <Route path="/" element={<HomePage />} />
             <Route path="/preinscripcion" element={<PreRegistrationForm />} />
             <Route path="/coordinador/login" element={<CoordinatorLogin />} />
-            <Route path="/coordinador/dashboard/*" element={<CoordinatorDashboard />} />
-            <Route path="/dashboard/*" element={<CoordinatorDashboard />} />
-            {/* Rutas de personas */}
-            <Route path="/personas" element={<PersonasPage />} />
-            <Route path="/personas/editar/:id" element={<PersonaForm />} />
-            {/* Rutas de maestros */}
-            <Route path="/maestros" element={<MaestrosPage />} />
-            <Route path="/maestros/nuevo" element={<MaestroForm />} />
-            <Route path="/maestros/editar/:id" element={<MaestroForm />} />
+            <Route 
+              path="/coordinador/dashboard/*" 
+              element={
+                <ProtectedRoute>
+                  <CoordinatorDashboard />
+                </ProtectedRoute>
+              } 
+            />
+            <Route 
+              path="/dashboard/*" 
+              element={
+                <ProtectedRoute>
+                  <CoordinatorDashboard />
+                </ProtectedRoute>
+              } 
+            />
+            {/* Rutas de personas - protegidas */}
+            <Route 
+              path="/personas" 
+              element={
+                <ProtectedRoute>
+                  <PersonasPage />
+                </ProtectedRoute>
+              } 
+            />
+            <Route 
+              path="/personas/editar/:id" 
+              element={
+                <ProtectedRoute>
+                  <PersonaForm />
+                </ProtectedRoute>
+              } 
+            />
+            {/* Rutas de maestros - protegidas */}
+            <Route 
+              path="/maestros" 
+              element={
+                <ProtectedRoute>
+                  <MaestrosPage />
+                </ProtectedRoute>
+              } 
+            />
+            <Route 
+              path="/maestros/nuevo" 
+              element={
+                <ProtectedRoute>
+                  <MaestroForm />
+                </ProtectedRoute>
+              } 
+            />
+            <Route 
+              path="/maestros/editar/:id" 
+              element={
+                <ProtectedRoute>
+                  <MaestroForm />
+                </ProtectedRoute>
+              } 
+            />
             <Route path="*" element={<Navigate to="/" replace />} />
           </Routes>
         </Suspense>
