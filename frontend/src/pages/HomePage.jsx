@@ -87,7 +87,7 @@ const HomePage = () => {
                 formación especializados
               </p>
               <Button
-                onClick={() => navigate('/pre-inscripcion')}
+                onClick={() => navigate('/preinscripcion')}
                 size="lg"
                 className="bg-white text-[#001558] hover:bg-primary/5 text-lg px-8 py-6 rounded-full shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:scale-105"
               >
@@ -162,7 +162,7 @@ const HomePage = () => {
                         </div>
                       </div>
                       <Button
-                        onClick={() => navigate('/pre-inscripcion')}
+                        onClick={() => navigate('/preinscripcion')}
                         className="w-full mt-6 bg-primary hover:bg-primary/90 text-primary-foreground transition-colors duration-300"
                       >
                         Inscribirse
