@@ -40,7 +40,7 @@ class Preinscripcion(models.Model):
     habilitado_fecha = models.DateTimeField(null=True, blank=True)
     # confirmado_por_pago_id: Referencia al pago que confirmó la inscripción (nullable)
     # Asumiendo que existe un modelo Pago en la app 'pagos'
-    confirmado_por_pago = models.ForeignKey('pagos.Pago', on_delete=models.SET_NULL, db_column='confirmado_por_pago_id', null=True, blank=True, related_name='preinscripciones_confirmadas')
+    confirmado_por_pago = models.ForeignKey('pagos.PagoPersona', on_delete=models.SET_NULL, db_column='confirmado_por_pago_id', null=True, blank=True, related_name='preinscripciones_confirmadas')
     # en_lista_espera: Indica si la persona está en lista de espera
     en_lista_espera = models.BooleanField(default=False)
     # motivo_rechazo: Motivo si la preinscripción es rechazada
@@ -137,7 +137,7 @@ class Documento(models.Model):
     # archivo_relacionado: Clave foránea al modelo Archivo genérico (si existe)
     # Si no existe un modelo Archivo genérico, este campo podría ser un FileField directo.
     # Asumiendo que el modelo Archivo de la app 'archivos' es el que se usa para almacenar el archivo.
-    archivo_relacionado = models.ForeignKey('archivos.Archivo', on_delete=models.CASCADE, db_column='archivo_id', null=True, blank=True, related_name='documentos_asociados')
+    archivo_relacionado = models.ForeignKey('archivos.Archivo', on_delete=models.CASCADE, db_column='archivo_id', related_name='documentos_asociados')
     # tipo_documento: Tipo de documento (ej. 'ficha_medica', 'dni', 'otro')
     tipo_documento = models.CharField(max_length=50)
     # numero: Número del documento (si aplica, ej. DNI)
@@ -152,7 +152,7 @@ class Documento(models.Model):
     verified = models.BooleanField(default=False)
 
     class Meta:
-        db_table = 'documento_persona'
+        db_table = 'preinscripcion_documento'
         verbose_name = 'Documento de Persona'
         verbose_name_plural = 'Documentos de Personas'
 

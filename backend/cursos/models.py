@@ -1,45 +1,27 @@
 
 from django.db import models
 from usuarios.models import Usuario
-from personas.models import Persona
-from maestros.models import Comuna, TipoCurso, Alimentacion,  Rama, Rol, Nivel, Cargo # Importar modelos maestros
+from maestros.models import TipoCurso, Alimentacion,  Rama, Rol, Nivel, Cargo # Importar modelos maestros
+from geografia.models import Comuna
 # Tabla: curso
 class Curso(models.Model):
-    # cur_id: Identificador único del curso (clave primaria)
     cur_id = models.AutoField(primary_key=True)
-    # usu_id: Clave foránea a Usuario (quien registra/modifica)
     usu_id = models.ForeignKey(Usuario, on_delete=models.CASCADE, db_column='usu_id')
-    # tcu_id: Clave foránea a TipoCurso (tipo de curso)
     tcu_id = models.ForeignKey(TipoCurso, on_delete=models.CASCADE, db_column='tcu_id')
-    # per_id_responsable: Clave foránea a Persona (responsable del curso)
-    per_id_responsable = models.ForeignKey(Persona, on_delete=models.CASCADE, db_column='per_id_responsable')
-    # car_id_responsable: Clave foránea a Cargo (cargo del responsable)
+    per_id_responsable = models.ForeignKey('personas.Persona', on_delete=models.CASCADE, db_column='per_id_responsable')
     car_id_responsable = models.ForeignKey(Cargo, on_delete=models.CASCADE, db_column='car_id_responsable')
-    # com_id_lugar: Clave foránea a Comuna (lugar donde se imparte, opcional)
     com_id_lugar = models.ForeignKey(Comuna, on_delete=models.CASCADE, db_column='com_id_lugar', null=True, blank=True)
-    # cur_fecha_hora: Fecha y hora de registro/modificación
-    cur_fecha_hora = models.DateTimeField()
-    # cur_fecha_solicitud: Fecha de solicitud del curso
+    cur_fecha_hora = models.DateTimeField(auto_now_add=True)
     cur_fecha_solicitud = models.DateTimeField()
-    # cur_codigo: Código único del curso
     cur_codigo = models.CharField(max_length=10)
-    # cur_descripcion: Descripción breve del curso
     cur_descripcion = models.CharField(max_length=50, null=True, blank=True)
-    # cur_observacion: Observaciones generales del curso
-    cur_observacion = models.TextField(null=True, blank=True)
-    # cur_administra: Indica la entidad administradora (1: Zona, 2: Distrito)
+    cur_observacion = models.CharField(max_length=255, null=True, blank=True)
     cur_administra = models.IntegerField()
-    # cur_cuota_con_almuerzo: Valor de la cuota con almuerzo
     cur_cuota_con_almuerzo = models.DecimalField(max_digits=21, decimal_places=6)
-    # cur_cuota_sin_almuerzo: Valor de la cuota sin almuerzo
     cur_cuota_sin_almuerzo = models.DecimalField(max_digits=21, decimal_places=6)
-    # cur_modalidad: Modalidad del curso (1: Internado, 2: Externado, 3: Internado/Externado)
     cur_modalidad = models.IntegerField()
-    # cur_tipo_curso: Tipo de curso (1: Presencial, 2: Online, 3: Híbrido)
     cur_tipo_curso = models.IntegerField()
-    # cur_lugar: Lugar específico de impartición (si no es una comuna)
     cur_lugar = models.CharField(max_length=100, null=True, blank=True)
-    # cur_estado: Estado del curso (0: Pendiente, 1: Vigente, 2: Anulado, 3: Finalizado)
     cur_estado = models.IntegerField()
 
     class Meta:
@@ -150,7 +132,7 @@ class CursoCoordinador(models.Model):
     # car_id: Clave foránea a Cargo (relación ManyToOne)
     car_id = models.ForeignKey(Cargo, on_delete=models.CASCADE, db_column='car_id')
     # per_id: Clave foránea a Persona (relación ManyToOne)
-    per_id = models.ForeignKey(Persona, on_delete=models.CASCADE, db_column='per_id')
+    per_id = models.ForeignKey('personas.Persona', on_delete=models.CASCADE, db_column='per_id')
     # cuc_cargo: Cargo específico del coordinador en este curso
     cuc_cargo = models.CharField(max_length=100, null=True, blank=True)
 
@@ -170,7 +152,7 @@ class CursoFormador(models.Model):
     # cur_id: Clave foránea a Curso (relación ManyToOne)
     cur_id = models.ForeignKey(Curso, on_delete=models.CASCADE, db_column='cur_id')
     # per_id: Clave foránea a Persona (relación ManyToOne)
-    per_id = models.ForeignKey(Persona, on_delete=models.CASCADE, db_column='per_id')
+    per_id = models.ForeignKey('personas.Persona', on_delete=models.CASCADE, db_column='per_id')
     # rol_id: Clave foránea a Rol (rol del formador)
     rol_id = models.ForeignKey(Rol, on_delete=models.CASCADE, db_column='rol_id')
     # cus_id: Clave foránea a CursoSeccion (relación ManyToOne)
@@ -186,56 +168,3 @@ class CursoFormador(models.Model):
 
     def __str__(self):
         return f"Formador {self.per_id} en {self.cur_id} (Sección: {self.cus_id})"
-
-# Tabla: persona_curso
-class PersonaCurso(models.Model):
-    # pec_id: Identificador único de la inscripción (clave primaria)
-    pec_id = models.AutoField(primary_key=True)
-    # per_id: Clave foránea a Persona (relación ManyToOne)
-    per_id = models.ForeignKey(Persona, on_delete=models.CASCADE, db_column='per_id')
-    # cus_id: Clave foránea a CursoSeccion (relación ManyToOne)
-    cus_id = models.ForeignKey(CursoSeccion, on_delete=models.CASCADE, db_column='cus_id')
-    # rol_id: Clave foránea a Rol (rol de la persona en el curso)
-    rol_id = models.ForeignKey(Rol, on_delete=models.CASCADE, db_column='rol_id')
-    # ali_id: Clave foránea a Alimentacion (preferencia de alimentación)
-    ali_id = models.ForeignKey(Alimentacion, on_delete=models.CASCADE, db_column='ali_id')
-    # niv_id: Clave foránea a Nivel (nivel de la persona en el curso, opcional)
-    niv_id = models.ForeignKey(Nivel, on_delete=models.CASCADE, db_column='niv_id', null=True, blank=True)
-    # pec_observacion: Observaciones sobre la inscripción
-    pec_observacion = models.TextField(null=True, blank=True)
-    # pec_registro: Indica si la persona está registrada (booleano)
-    pec_registro = models.BooleanField()
-    # pec_acreditado: Indica si la persona está acreditada (booleano)
-    pec_acreditado = models.BooleanField()
-
-    class Meta:
-        db_table = 'persona_curso'
-        verbose_name = 'Inscripción de Persona en Curso'
-        verbose_name_plural = 'Inscripciones de Personas en Cursos'
-        unique_together = ('per_id', 'cus_id') # Una persona solo puede inscribirse una vez por sección de curso
-
-    def __str__(self):
-        return f"{self.per_id} en {self.cus_id}"
-
-# Tabla: persona_estado_curso
-class PersonaEstadoCurso(models.Model):
-    # peu_id: Identificador único del cambio de estado (clave primaria)
-    peu_id = models.AutoField(primary_key=True)
-    # usu_id: Clave foránea a Usuario (quien realiza el cambio)
-    usu_id = models.ForeignKey(Usuario, on_delete=models.CASCADE, db_column='usu_id')
-    # pec_id: Clave foránea a PersonaCurso (la inscripción afectada)
-    pec_id = models.ForeignKey(PersonaCurso, on_delete=models.CASCADE, db_column='pec_id')
-    # peu_fecha_hora: Fecha y hora del cambio de estado
-    peu_fecha_hora = models.DateTimeField()
-    # peu_estado: Nuevo estado de la inscripción (1: PreInscripción, 2: Avisado, 3: Lista de Espera, 4: Inscrito, 5: Vigente, 6: Anulado, 10: Sobrecupo)
-    peu_estado = models.IntegerField()
-    # peu_vigente: Indica si el registro de estado está activo (True) o inactivo (False)
-    peu_vigente = models.BooleanField()
-
-    class Meta:
-        db_table = 'persona_estado_curso'
-        verbose_name = 'Estado de Inscripción de Persona'
-        verbose_name_plural = 'Estados de Inscripción de Personas'
-
-    def __str__(self):
-        return f"Estado {self.peu_estado} para {self.pec_id} por {self.usu_id}"

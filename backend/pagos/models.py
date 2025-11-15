@@ -1,7 +1,7 @@
 from django.db import models
 from usuarios.models import Usuario
-from personas.models import Persona
-from cursos.models import Curso, PersonaCurso
+from cursos.models import Curso
+from personas.models import Persona, PersonaCurso
 from maestros.models import ConceptoContable
 
 # Tabla: pago_persona
@@ -9,7 +9,7 @@ class PagoPersona(models.Model):
     # pap_id: Identificador único del pago (clave primaria)
     pap_id = models.AutoField(primary_key=True)
     # per_id: Clave foránea a Persona (quien realiza el pago)
-    per_id = models.ForeignKey(Persona, on_delete=models.CASCADE, db_column='per_id')
+    per_id = models.ForeignKey('personas.Persona', on_delete=models.CASCADE, db_column='per_id')
     # cur_id: Clave foránea a Curso (a qué curso se asocia el pago)
     cur_id = models.ForeignKey(Curso, on_delete=models.CASCADE, db_column='cur_id')
     # usu_id: Clave foránea a Usuario (quien registra el pago)
@@ -81,7 +81,7 @@ class PagoCambioPersona(models.Model):
     # pcp_id: Identificador único del cambio (clave primaria)
     pcp_id = models.AutoField(primary_key=True)
     # per_id: Clave foránea a Persona (persona afectada por el cambio)
-    per_id = models.ForeignKey(Persona, on_delete=models.CASCADE, db_column='per_id')
+    per_id = models.ForeignKey('personas.Persona', on_delete=models.CASCADE, db_column='per_id')
     # pap_id: Clave foránea a PagoPersona (el pago que fue modificado)
     pap_id = models.ForeignKey(PagoPersona, on_delete=models.CASCADE, db_column='pap_id')
     # usu_id: Clave foránea a Usuario (quien realizó el cambio)
@@ -102,7 +102,7 @@ class Prepago(models.Model):
     # ppa_id: Identificador único del prepago (clave primaria)
     ppa_id = models.AutoField(primary_key=True)
     # per_id: Clave foránea a Persona (persona que realiza el prepago)
-    per_id = models.ForeignKey(Persona, on_delete=models.CASCADE, db_column='per_id')
+    per_id = models.ForeignKey('personas.Persona', on_delete=models.CASCADE, db_column='per_id')
     # cur_id: Clave foránea a Curso (curso al que se aplica el prepago)
     cur_id = models.ForeignKey(Curso, on_delete=models.CASCADE, db_column='cur_id')
     # pap_id: Clave foránea a PagoPersona (pago asociado, opcional)
