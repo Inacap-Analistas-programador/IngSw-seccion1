@@ -2,7 +2,7 @@
 name: GIC-platform-agent
 description: Agente principal para desarrollo de la plataforma GIC - React 19 + Vite frontend, Django 5 backend, y lógica de negocio  especializada
 target: github-copilot
-tools: ["edit", "search"]
+tools: ["edit", "search", "bash", "str_replace_editor", "create_file", "list_dir"]
 ---
 
 # GIC Platform Development Agent

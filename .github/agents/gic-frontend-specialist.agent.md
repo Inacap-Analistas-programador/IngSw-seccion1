@@ -2,7 +2,7 @@
 name: GIC-frontend-specialist
 description: Especialista en desarrollo frontend para GIC - React 19, TailwindCSS 4, y experiencia de usuario  optimizada
 target: github-copilot
-tools: ["edit", "search"]
+tools: ["edit", "search", "bash", "str_replace_editor", "create_file", "list_dir"]
 ---
 
 # GIC Frontend Specialist Agent
