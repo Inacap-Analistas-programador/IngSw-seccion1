@@ -11,6 +11,10 @@ const PersonasPage = lazy(() => import('@/pages/PersonasPage'));
 const PersonaForm = lazy(() => import('@/pages/PersonaForm'));
 const MaestrosPage = lazy(() => import('@/pages/MaestrosPage'));
 const MaestroForm = lazy(() => import('@/pages/MaestroForm'));
+const ProveedoresPage = lazy(() => import('@/pages/ProveedoresPage'));
+const ProveedorForm = lazy(() => import('@/pages/ProveedorForm'));
+const TestPage = lazy(() => import('@/pages/TestPage'));
+const RegionList = lazy(() => import('@/components/geografia/RegionList'));
 
 // Loading component
 const PageLoader = () => (
@@ -18,12 +22,6 @@ const PageLoader = () => (
     <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-scout-azul-oscuro"></div>
   </div>
 );
-
-import TestPage from '@/pages/TestPage';
-
-import ProveedoresPage from '@/pages/ProveedoresPage';
-import ProveedorForm from '@/pages/ProveedorForm';
-import RegionList from '@/components/geografia/RegionList';
 
 function App() {
   return (
@@ -36,9 +34,12 @@ function App() {
       <div className="min-h-screen">
         <Suspense fallback={<PageLoader />}>
           <Routes>
+            {/* Rutas públicas */}
             <Route path="/" element={<HomePage />} />
             <Route path="/preinscripcion" element={<PreRegistrationForm />} />
             <Route path="/coordinador/login" element={<CoordinatorLogin />} />
+            
+            {/* Rutas del dashboard - protegidas */}
             <Route
               path="/coordinador/dashboard/*"
               element={
@@ -55,6 +56,7 @@ function App() {
                 </ProtectedRoute>
               }
             />
+            
             {/* Rutas de personas - protegidas */}
             <Route
               path="/personas"
@@ -72,6 +74,7 @@ function App() {
                 </ProtectedRoute>
               }
             />
+            
             {/* Rutas de maestros - protegidas */}
             <Route
               path="/maestros"
@@ -97,32 +100,57 @@ function App() {
                 </ProtectedRoute>
               }
             />
+            
+            {/* Rutas de proveedores - protegidas */}
+            <Route
+              path="/proveedores"
+              element={
+                <ProtectedRoute>
+                  <ProveedoresPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/proveedores/nuevo"
+              element={
+                <ProtectedRoute>
+                  <ProveedorForm />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/proveedores/editar/:id"
+              element={
+                <ProtectedRoute>
+                  <ProveedorForm />
+                </ProtectedRoute>
+              }
+            />
+            
+            {/* Rutas de geografía - protegidas */}
+            <Route
+              path="/geografia/regiones"
+              element={
+                <ProtectedRoute>
+                  <RegionList />
+                </ProtectedRoute>
+              }
+            />
+            
+            {/* Ruta de prueba - protegida */}
+            <Route
+              path="/prueba"
+              element={
+                <ProtectedRoute>
+                  <TestPage />
+                </ProtectedRoute>
+              }
+            />
+            
+            {/* Ruta por defecto */}
             <Route path="*" element={<Navigate to="/" replace />} />
           </Routes>
         </Suspense>
-        <Routes>
-          <Route path="/" element={<HomePage />} />
-          <Route path="/pre-inscripcion" element={<PreRegistrationForm />} />
-          <Route path="/coordinador/ingreso" element={<CoordinatorLogin />} />
-          <Route path="/coordinador/panel/*" element={<CoordinatorDashboard />} />
-          <Route path="/coordinador/dashboard/*" element={<CoordinatorDashboard />} />
-          <Route path="/panel/*" element={<CoordinatorDashboard />} />
-          <Route path="/dashboard/*" element={<CoordinatorDashboard />} />
-          <Route path="/panel/*" element={<CoordinatorDashboard />} />
-          {/* Rutas de personas eliminadas (gestionadas por repositorio remoto) */}
-          {/* Rutas de maestros */}
-          <Route path="/maestros" element={<MaestrosPage />} />
-          <Route path="/maestros/nuevo" element={<MaestroForm />} />
-          <Route path="/maestros/editar/:id" element={<MaestroForm />} />
-          {/* Rutas de proveedores */}
-          <Route path="/proveedores" element={<ProveedoresPage />} />
-          <Route path="/proveedores/nuevo" element={<ProveedorForm />} />
-          <Route path="/proveedores/editar/:id" element={<ProveedorForm />} />
-          <Route path="/prueba" element={<TestPage />} />
-          {/* Rutas de geografía */}
-          <Route path="/geografia/regiones" element={<RegionList />} />
-          <Route path="*" element={<Navigate to="/" replace />} />
-        </Routes>
       </div>
     </Router>
   );
