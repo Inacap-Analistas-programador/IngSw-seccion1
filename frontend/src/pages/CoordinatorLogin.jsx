@@ -5,7 +5,7 @@ import { useNavigate, useSearchParams } from 'react-router-dom';
 import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
 import { Label } from '@/components/ui/Label';
-import { Award, Lock, Mail, AlertCircle } from 'lucide-react';
+import { FaAward, FaLock, FaEnvelope, FaCircleExclamation } from 'react-icons/fa6';
 import { useToast } from '@/components/ui/use-toast';
 import authService from '@/services/authService';
 
@@ -80,7 +80,7 @@ const CoordinatorLogin = () => {
           <div className="bg-white rounded-lg shadow-2xl overflow-hidden">
             <div className="bg-primary text-primary-foreground p-8 text-center">
               <div className="w-16 h-16 bg-white rounded-full flex items-center justify-center mx-auto mb-4">
-                <Award className="w-10 h-10 text-[#001558]" />
+                <FaAward className="w-10 h-10 text-[#001558]" />
               </div>
               <h1 className="text-3xl font-bold">Portal Coordinador</h1>
               <p className="text-primary-foreground mt-2">Scout Formación</p>
@@ -89,7 +89,7 @@ const CoordinatorLogin = () => {
             <form onSubmit={handleLogin} className="p-8 space-y-6">
               {error && (
                 <div className="bg-red-50 border border-red-200 text-red-800 px-4 py-3 rounded-lg flex items-start">
-                  <AlertCircle className="w-5 h-5 mr-2 mt-0.5 flex-shrink-0" />
+                  <FaCircleExclamation className="w-5 h-5 mr-2 mt-0.5 flex-shrink-0" />
                   <span className="text-sm">{error}</span>
                 </div>
               )}
@@ -99,7 +99,7 @@ const CoordinatorLogin = () => {
                   Correo Electrónico
                 </Label>
                 <div className="relative">
-                  <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
+                  <FaEnvelope className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
                   <Input
                     id="correo"
                     type="email"
@@ -118,7 +118,7 @@ const CoordinatorLogin = () => {
                   Contraseña
                 </Label>
                 <div className="relative">
-                  <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
+                  <FaLock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
                   <Input
                     id="contrasena"
                     type="password"

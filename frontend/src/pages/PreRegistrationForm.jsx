@@ -3,7 +3,7 @@ import { Helmet } from 'react-helmet';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/Button';
-import { ChevronLeft, ChevronRight, Check, Award } from 'lucide-react';
+import { FaChevronLeft, FaChevronRight, FaCheck, FaAward } from 'react-icons/fa6';
 // import { useToast } from '@/components/ui/use-toast';
 import Step1PersonalData from '@/components/wizard/Step1PersonalData';
 import Step2ScoutInfo from '@/components/wizard/Step2ScoutInfo';
@@ -199,7 +199,7 @@ const PreRegistrationForm = () => {
             <div className="flex items-center justify-between">
               <div className="flex items-center space-x-3">
                 <div className="w-10 h-10 bg-white rounded-full flex items-center justify-center">
-                  <Award className="w-6 h-6 text-[#001558]" />
+                  <FaAward className="w-6 h-6 text-[#001558]" />
                 </div>
                 <span className="text-xl font-bold">Formulario de Pre-inscripción Scout</span>
               </div>
@@ -230,7 +230,7 @@ const PreRegistrationForm = () => {
                             : 'bg-gray-200 text-gray-500'
                       }`}
                     >
-                      {currentStep > step.number ? <Check className="w-5 h-5" /> : step.number}
+                      {currentStep > step.number ? <FaCheck className="w-5 h-5" /> : step.number}
                     </div>
                     <span
                       className={`text-xs mt-2 text-center hidden md:block ${
@@ -289,7 +289,7 @@ const PreRegistrationForm = () => {
                 variant="outline"
                 className="border border-border text-[#001558] hover:bg-primary/5"
               >
-                <ChevronLeft className="w-4 h-4 mr-2" />
+                <FaChevronLeft className="w-4 h-4 mr-2" />
                 Anterior
               </Button>
 
@@ -299,14 +299,14 @@ const PreRegistrationForm = () => {
                   className="bg-primary hover:bg-primary/90 text-primary-foreground"
                 >
                   Siguiente
-                  <ChevronRight className="w-4 h-4 ml-2" />
+                  <FaChevronRight className="w-4 h-4 ml-2" />
                 </Button>
               ) : (
                 <Button
                   onClick={handleSubmit}
                   className="bg-primary hover:bg-primary/90 text-primary-foreground"
                 >
-                  <Check className="w-4 h-4 mr-2" />
+                  <FaCheck className="w-4 h-4 mr-2" />
                   Enviar Pre-inscripción
                 </Button>
               )}

@@ -1,14 +1,14 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { Users, BookOpen, CreditCard, TrendingUp } from 'lucide-react';
+import { FaUsers, FaBook, FaCreditCard, FaChartLine } from 'react-icons/fa6';
 import Card from '@/components/ui/Card';
 
 const DashboardEjecutivo = () => {
   const stats = [
-    { icon: Users, label: 'Total Participantes', value: '156', color: 'bg-blue-500' },
-    { icon: BookOpen, label: 'Cursos Activos', value: '8', color: 'bg-primary' },
-    { icon: CreditCard, label: 'Pagos Pendientes', value: '23', color: 'bg-yellow-500' },
-    { icon: TrendingUp, label: 'Ingresos del Mes', value: '$4,560', color: 'bg-purple-500' },
+    { icon: FaUsers, label: 'Total Participantes', value: '156', color: 'bg-blue-500' },
+    { icon: FaBook, label: 'Cursos Activos', value: '8', color: 'bg-primary' },
+    { icon: FaCreditCard, label: 'Pagos Pendientes', value: '23', color: 'bg-yellow-500' },
+    { icon: FaChartLine, label: 'Ingresos del Mes', value: '$4,560', color: 'bg-purple-500' },
   ];
 
   return (
