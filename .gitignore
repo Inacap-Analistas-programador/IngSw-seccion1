@@ -13,11 +13,24 @@ yarn-error.log*
 .env.development.local
 .env.test.local
 .env.production.local
+.env.production
 
 # Python
 venv/
 *.pyc
 __pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+
+# Django
+db.sqlite3
+db.sqlite3-journal
+/backend/staticfiles/
+/backend/media/
+*.log
+local_settings.py
 
 # IDE
 .vscode/
@@ -33,9 +46,31 @@ Thumbs.db
 # Coverage
 coverage/
 .nyc_output/
+htmlcov/
+.coverage
+.coverage.*
 
 # Temporary files
 *.tmp
 *.bak
 *.swp
 .cache/
+
+# Docker
+.docker/
+
+# Backups
+/backups/
+*.sql
+*.sql.gz
+*.tar.gz
+
+# Logs
+logs/
+*.log
+/var/log/
+
+# SSL Certificates
+*.pem
+*.key
+*.crt

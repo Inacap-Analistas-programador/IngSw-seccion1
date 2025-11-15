@@ -1,0 +1,93 @@
+version: '3.8'
+
+services:
+  mysql:
+    image: mysql:8.0
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-GIC_root_2024}
+      MYSQL_DATABASE: ${MYSQL_DATABASE:-GIC_dev}
+      MYSQL_USER: ${MYSQL_USER:-GIC_user}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD:-GIC_pass_2024}
+    volumes:
+      - mysql_data:/var/lib/mysql
+    ports:
+      - "3306:3306"
+    networks:
+      - gic-network
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  redis:
+    image: redis:alpine
+    ports:
+      - "6379:6379"
+    networks:
+      - gic-network
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile.dev
+    environment:
+      - DEBUG=True
+      - DATABASE_URL=mysql://${MYSQL_USER:-GIC_user}:${MYSQL_PASSWORD:-GIC_pass_2024}@mysql:3306/${MYSQL_DATABASE:-GIC_dev}
+      - REDIS_URL=redis://redis:6379/0
+      - SECRET_KEY=${SECRET_KEY:-dev-secret-key-change-in-production}
+    volumes:
+      - ./backend:/app
+      - ./logs:/app/logs
+    ports:
+      - "8000:8000"
+    depends_on:
+      mysql:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    networks:
+      - gic-network
+    command: >
+      sh -c "python manage.py migrate &&
+             python manage.py runserver 0.0.0.0:8000"
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile.dev
+    environment:
+      - VITE_API_BASE_URL=http://localhost:8000/api
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+    ports:
+      - "3000:3000"
+    depends_on:
+      - backend
+    networks:
+      - gic-network
+
+  nginx:
+    image: nginx:alpine
+    volumes:
+      - ./nginx/prod.conf:/etc/nginx/nginx.conf:ro
+    ports:
+      - "80:80"
+    depends_on:
+      - frontend
+      - backend
+    networks:
+      - gic-network
+
+volumes:
+  mysql_data:
+
+networks:
+  gic-network:
+    driver: bridge

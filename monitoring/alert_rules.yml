@@ -1,0 +1,74 @@
+groups:
+  - name: gic-alerts
+    rules:
+      - alert: GICHighResponseTime
+        expr: histogram_quantile(0.95, rate(http_request_duration_seconds_bucket{job="gic-backend"}[5m])) > 0.5
+        for: 2m
+        labels:
+          severity: warning
+        annotations:
+          summary: "GIC: Alto tiempo de respuesta"
+          description: "El 95% de las requests toman más de 500ms en {{ $labels.instance }}"
+
+      - alert: GICHighErrorRate
+        expr: rate(http_requests_total{status=~"5.."}[5m]) / rate(http_requests_total[5m]) > 0.05
+        for: 2m
+        labels:
+          severity: critical
+        annotations:
+          summary: "GIC: Alta tasa de errores"
+          description: "Más del 5% de requests están fallando en {{ $labels.instance }}"
+
+      - alert: GICMySQLDown
+        expr: up{job="gic-mysql"} == 0
+        for: 1m
+        labels:
+          severity: critical
+        annotations:
+          summary: "GIC: MySQL está down"
+          description: "La base de datos MySQL no está disponible"
+
+      - alert: GICHighCPU
+        expr: rate(process_cpu_seconds_total{job="gic-backend"}[5m]) > 0.8
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "GIC: Alto uso de CPU"
+          description: "El backend está usando más del 80% de CPU"
+
+      - alert: GICHighMemory
+        expr: process_resident_memory_bytes{job="gic-backend"} > 1000000000
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "GIC: Alto uso de memoria"
+          description: "El backend está usando más de 1GB de memoria"
+
+      - alert: GICDiskSpaceLow
+        expr: node_filesystem_avail_bytes{mountpoint="/"} / node_filesystem_size_bytes{mountpoint="/"} < 0.1
+        for: 5m
+        labels:
+          severity: critical
+        annotations:
+          summary: "GIC: Poco espacio en disco"
+          description: "Menos del 10% de espacio disponible en disco"
+
+      - alert: GICInscripcionesAumentando
+        expr: increase(inscripciones_total[1h]) > 100
+        for: 5m
+        labels:
+          severity: info
+        annotations:
+          summary: "GIC: Alto volumen de inscripciones"
+          description: "Más de 100 inscripciones en la última hora"
+
+      - alert: GICContainerDown
+        expr: up{job=~"gic-.*"} == 0
+        for: 1m
+        labels:
+          severity: critical
+        annotations:
+          summary: "GIC: Contenedor caído"
+          description: "El contenedor {{ $labels.job }} no está respondiendo"
