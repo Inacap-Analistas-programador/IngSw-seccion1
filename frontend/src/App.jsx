@@ -39,63 +39,63 @@ function App() {
             <Route path="/" element={<HomePage />} />
             <Route path="/preinscripcion" element={<PreRegistrationForm />} />
             <Route path="/coordinador/login" element={<CoordinatorLogin />} />
-            <Route 
-              path="/coordinador/dashboard/*" 
+            <Route
+              path="/coordinador/dashboard/*"
               element={
                 <ProtectedRoute>
                   <CoordinatorDashboard />
                 </ProtectedRoute>
-              } 
+              }
             />
-            <Route 
-              path="/dashboard/*" 
+            <Route
+              path="/dashboard/*"
               element={
                 <ProtectedRoute>
                   <CoordinatorDashboard />
                 </ProtectedRoute>
-              } 
+              }
             />
             {/* Rutas de personas - protegidas */}
-            <Route 
-              path="/personas" 
+            <Route
+              path="/personas"
               element={
                 <ProtectedRoute>
                   <PersonasPage />
                 </ProtectedRoute>
-              } 
+              }
             />
-            <Route 
-              path="/personas/editar/:id" 
+            <Route
+              path="/personas/editar/:id"
               element={
                 <ProtectedRoute>
                   <PersonaForm />
                 </ProtectedRoute>
-              } 
+              }
             />
             {/* Rutas de maestros - protegidas */}
-            <Route 
-              path="/maestros" 
+            <Route
+              path="/maestros"
               element={
                 <ProtectedRoute>
                   <MaestrosPage />
                 </ProtectedRoute>
-              } 
+              }
             />
-            <Route 
-              path="/maestros/nuevo" 
+            <Route
+              path="/maestros/nuevo"
               element={
                 <ProtectedRoute>
                   <MaestroForm />
                 </ProtectedRoute>
-              } 
+              }
             />
-            <Route 
-              path="/maestros/editar/:id" 
+            <Route
+              path="/maestros/editar/:id"
               element={
                 <ProtectedRoute>
                   <MaestroForm />
                 </ProtectedRoute>
-              } 
+              }
             />
             <Route path="*" element={<Navigate to="/" replace />} />
           </Routes>

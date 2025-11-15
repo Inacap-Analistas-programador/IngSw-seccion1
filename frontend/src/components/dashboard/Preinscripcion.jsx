@@ -6,7 +6,9 @@ const Preinscripcion = () => {
     <div className="space-y-6">
       <Card>
         <h2 className="text-xl font-bold text-gray-800 mb-4">Estado del Formulario</h2>
-        <p className="text-gray-600">Información sobre el estado del formulario de preinscripción (RF-03).</p>
+        <p className="text-gray-600">
+          Información sobre el estado del formulario de preinscripción (RF-03).
+        </p>
       </Card>
 
       <Card>

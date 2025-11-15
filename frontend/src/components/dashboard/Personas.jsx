@@ -14,8 +14,6 @@ const Personas = () => {
           <h1 className="text-3xl font-bold text-gray-800">Personas</h1>
           <p className="text-gray-600 mt-2">Gestión CRUD de personas registradas</p>
         </div>
-        <Button 
-          onClick={() => navigate('/panel')}
         <Button
           onClick={() => navigate('/personas')}
           className="bg-scout-azul-medio hover:bg-scout-azul-oscuro"
@@ -33,8 +31,6 @@ const Personas = () => {
             Ve, modifica y administra las personas registradas a través de la preinscripción.
           </p>
           <div className="space-y-2 sm:space-y-0 sm:space-x-4 sm:flex sm:justify-center">
-            <Button 
-              onClick={() => navigate('/panel')}
             <Button
               onClick={() => navigate('/personas')}
               className="bg-scout-azul-medio hover:bg-scout-azul-oscuro w-full sm:w-auto"

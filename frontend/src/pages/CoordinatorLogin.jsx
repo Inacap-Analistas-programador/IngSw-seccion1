@@ -103,8 +103,8 @@ const CoordinatorLogin = () => {
                     id="correo"
                     type="email"
                     placeholder="coordinador@scout.cl"
-                    value={correo}
-                    onChange={(e) => setCorreo(e.target.value)}
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
                     className="pl-10 border-gray-300 focus:border-primary focus:ring-primary/30"
                     required
                     disabled={loading}
@@ -120,8 +120,8 @@ const CoordinatorLogin = () => {
                     id="contrasena"
                     type="password"
                     placeholder="••••••••"
-                    value={contrasena}
-                    onChange={(e) => setContrasena(e.target.value)}
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
                     className="pl-10 border-gray-300 focus:border-primary focus:ring-primary/30"
                     required
                     minLength={8}
