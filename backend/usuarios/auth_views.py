@@ -27,9 +27,8 @@ class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
                 usu_vigente=True
             )
 
-            # Verificar password (asumiendo que está hasheado)
-            # NOTA: Ajustar según el método de hash usado en la BD
-            if usuario.usu_password != password:  # Temporal - implementar hash apropiado
+            # Verificar password usando check_password de Django
+            if not usuario.check_password(password):
                 raise Exception('Credenciales inválidas')
 
             # Generar tokens
@@ -89,8 +88,8 @@ def login_view(request):
             usu_vigente=True
         )
 
-        # Verificar password (implementar hash apropiado en producción)
-        if usuario.usu_password != password:
+        # Verificar password usando check_password de Django
+        if not usuario.check_password(password):
             return Response(
                 {'error': 'Credenciales inválidas'},
                 status=status.HTTP_401_UNAUTHORIZED
