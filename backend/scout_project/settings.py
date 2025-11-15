@@ -87,12 +87,34 @@ WSGI_APPLICATION = "scout_project.wsgi.application"
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 
-DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.sqlite3",
-        "NAME": BASE_DIR / "db.sqlite3",
+# Para desarrollo local: SQLite
+# Para producción: MySQL (configurar variables de entorno)
+import os
+
+if os.environ.get('DB_ENGINE') == 'mysql':
+    # Configuración para MySQL en producción
+    DATABASES = {
+        "default": {
+            "ENGINE": "django.db.backends.mysql",
+            "NAME": os.environ.get('DB_NAME', 'gic_db'),
+            "USER": os.environ.get('DB_USER', 'root'),
+            "PASSWORD": os.environ.get('DB_PASSWORD', ''),
+            "HOST": os.environ.get('DB_HOST', 'localhost'),
+            "PORT": os.environ.get('DB_PORT', '3306'),
+            "OPTIONS": {
+                "init_command": "SET sql_mode='STRICT_TRANS_TABLES'",
+                "charset": "utf8mb4",
+            },
+        }
     }
-}
+else:
+    # Configuración para SQLite en desarrollo
+    DATABASES = {
+        "default": {
+            "ENGINE": "django.db.backends.sqlite3",
+            "NAME": BASE_DIR / "db.sqlite3",
+        }
+    }
 
 
 # Password validation
