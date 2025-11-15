@@ -1,0 +1,17 @@
+{
+  "extends": ["react-app"],
+  "overrides": [
+    {
+      "files": ["src/test/**/*.js", "src/test/**/*.jsx"],
+      "env": {
+        "jest": true,
+        "vitest-globals/env": true
+      },
+      "globals": {
+        "vi": "readonly",
+        "global": "readonly",
+        "Buffer": "readonly"
+      }
+    }
+  ]
+}

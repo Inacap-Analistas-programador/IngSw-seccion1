@@ -1,3 +1,4 @@
+/* eslint-disable no-undef */
 import { describe, it, expect, beforeEach, vi, afterEach } from 'vitest';
 import httpClient from '../services/httpClient';
 import authService from '../services/authService';

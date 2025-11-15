@@ -19,6 +19,11 @@ export default defineConfig({
         'dist/',
       ],
     },
+    environmentOptions: {
+      jsdom: {
+        resources: 'usable',
+      },
+    },
   },
   resolve: {
     alias: {
