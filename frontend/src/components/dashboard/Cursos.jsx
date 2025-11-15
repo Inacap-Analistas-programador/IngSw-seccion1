@@ -2,17 +2,24 @@ import React, { useState } from 'react';
 import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
 import { Label } from '@/components/ui/Label';
-import { X, Calendar, MapPin, Settings } from 'lucide-react';
-// import { useToast } from '@/components/ui/use-toast';
+import { X, Calendar, MapPin, Settings, Filter } from 'lucide-react';
+import { useToast } from '@/components/ui/use-toast';
 
 const Cursos = () => {
-  // const { toast } = useToast();
+  const { toast } = useToast();
   const [showCreateForm, setShowCreateForm] = useState(false);
   const [showViewModal, setShowViewModal] = useState(false);
   const [showEditForm, setShowEditForm] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [selectedCourse, setSelectedCourse] = useState(null);
   const [courses, setCourses] = useState([]);
+  const [filters, setFilters] = useState({
+    search: '',
+    estado: '',
+    modalidad: '',
+    tipoCurso: ''
+  });
+  const [errors, setErrors] = useState({});
   const [courseData, setCourseData] = useState({
     codigo: '',
     descripcion: '',
@@ -38,9 +45,39 @@ const Cursos = () => {
       ...prev,
       [field]: value
     }));
+    // Limpiar error del campo al modificarlo
+    if (errors[field]) {
+      setErrors(prev => ({ ...prev, [field]: '' }));
+    }
+  };
+
+  const validateCourseData = () => {
+    const newErrors = {};
+    
+    if (!courseData.codigo.trim()) newErrors.codigo = 'El código es obligatorio';
+    if (!courseData.fechaHora) newErrors.fechaHora = 'La fecha y hora es obligatoria';
+    if (!courseData.fechaSolicitud) newErrors.fechaSolicitud = 'La fecha de solicitud es obligatoria';
+    if (!courseData.modalidad) newErrors.modalidad = 'La modalidad es obligatoria';
+    if (!courseData.tipoCurso) newErrors.tipoCurso = 'El tipo de curso es obligatorio';
+    if (!courseData.responsableId) newErrors.responsableId = 'El responsable es obligatorio';
+    if (!courseData.cargoResponsableId) newErrors.cargoResponsableId = 'El cargo del responsable es obligatorio';
+    if (!courseData.comunaId) newErrors.comunaId = 'La comuna es obligatoria';
+    if (!courseData.administra) newErrors.administra = 'El tipo de administración es obligatorio';
+    
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
   };
 
   const handleCreateCourse = () => {
+    if (!validateCourseData()) {
+      toast({
+        title: "Error de validación",
+        description: "Por favor completa todos los campos obligatorios",
+        variant: "destructive"
+      });
+      return;
+    }
+    
     console.log('Datos del curso:', courseData);
     
     // Crear nuevo curso con ID único
@@ -70,7 +107,11 @@ const Cursos = () => {
     // Limpiar formulario y cerrar modal
     setShowCreateForm(false);
     resetForm();
-    // toast({ title: "Curso creado", description: "El curso se ha creado exitosamente" });
+    toast({ 
+      title: "Curso creado", 
+      description: "El curso se ha creado exitosamente",
+      variant: "default"
+    });
   };
 
   const handleViewCourse = (course) => {
@@ -103,6 +144,15 @@ const Cursos = () => {
   };
 
   const handleUpdateCourse = () => {
+    if (!validateCourseData()) {
+      toast({
+        title: "Error de validación",
+        description: "Por favor completa todos los campos obligatorios",
+        variant: "destructive"
+      });
+      return;
+    }
+    
     const updatedCourse = {
       ...selectedCourse,
       codigo: courseData.codigo,
@@ -130,7 +180,11 @@ const Cursos = () => {
     setShowEditForm(false);
     setSelectedCourse(null);
     resetForm();
-    // toast({ title: "Curso actualizado", description: "Los cambios se han guardado exitosamente" });
+    toast({ 
+      title: "Curso actualizado", 
+      description: "Los cambios se han guardado exitosamente",
+      variant: "default"
+    });
   };
 
   const handleDeleteCourse = (course) => {
@@ -142,7 +196,11 @@ const Cursos = () => {
     setCourses(prev => prev.filter(course => course.id !== selectedCourse.id));
     setShowDeleteModal(false);
     setSelectedCourse(null);
-    // toast({ title: "Curso eliminado", description: "El curso ha sido eliminado exitosamente" });
+    toast({ 
+      title: "Curso eliminado", 
+      description: "El curso ha sido eliminado exitosamente",
+      variant: "default"
+    });
   };
 
   const getIdFromName = (name, type) => {
@@ -186,6 +244,7 @@ const Cursos = () => {
       comunaId: '',
       administra: '1'
     });
+    setErrors({});
     setShowCreateForm(false);
     setShowEditForm(false);
     setShowViewModal(false);
@@ -227,11 +286,41 @@ const Cursos = () => {
   const getModalidadName = (modalidad) => {
     const modalidades = {
       '1': 'Presencial',
-      '2': 'Virtual', 
-      '3': 'Mixta'
+      '2': 'Online', 
+      '3': 'Híbrida'
     };
     return modalidades[modalidad] || 'Sin definir';
   };
+
+  const getTipoCursoName = (tipoCurso) => {
+    const tipos = {
+      '1': 'Presencial',
+      '2': 'Online',
+      '3': 'Híbrido'
+    };
+    return tipos[tipoCurso] || 'Sin definir';
+  };
+
+  const getAdministraName = (administra) => {
+    const tipos = {
+      '1': 'Zona',
+      '2': 'Distrito'
+    };
+    return tipos[administra] || 'Sin definir';
+  };
+
+  const filteredCourses = courses.filter(course => {
+    const matchSearch = !filters.search || 
+      course.codigo.toLowerCase().includes(filters.search.toLowerCase()) ||
+      course.descripcion.toLowerCase().includes(filters.search.toLowerCase()) ||
+      course.lugar.toLowerCase().includes(filters.search.toLowerCase());
+    
+    const matchEstado = !filters.estado || course.estado === filters.estado;
+    const matchModalidad = !filters.modalidad || course.modalidad === filters.modalidad;
+    const matchTipoCurso = !filters.tipoCurso || course.tipoCurso === filters.tipoCurso;
+    
+    return matchSearch && matchEstado && matchModalidad && matchTipoCurso;
+  });
 
   const formatDate = (dateString) => {
     if (!dateString) return 'Sin fecha';
@@ -279,7 +368,9 @@ const Cursos = () => {
                       onChange={(e) => handleInputChange('codigo', e.target.value)}
                       placeholder="ej: FORM001"
                       maxLength={10}
+                      className={errors.codigo ? 'border-red-500' : ''}
                     />
+                    {errors.codigo && <p className="text-xs text-red-600">{errors.codigo}</p>}
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor="descripcion">Descripción</Label>
@@ -298,7 +389,9 @@ const Cursos = () => {
                       type="datetime-local"
                       value={courseData.fechaHora}
                       onChange={(e) => handleInputChange('fechaHora', e.target.value)}
+                      className={errors.fechaHora ? 'border-red-500' : ''}
                     />
+                    {errors.fechaHora && <p className="text-xs text-red-600">{errors.fechaHora}</p>}
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor="fechaSolicitud">Fecha de Solicitud *</Label>
@@ -307,7 +400,9 @@ const Cursos = () => {
                       type="datetime-local"
                       value={courseData.fechaSolicitud}
                       onChange={(e) => handleInputChange('fechaSolicitud', e.target.value)}
+                      className={errors.fechaSolicitud ? 'border-red-500' : ''}
                     />
+                    {errors.fechaSolicitud && <p className="text-xs text-red-600">{errors.fechaSolicitud}</p>}
                   </div>
                 </div>
               </div>
@@ -351,19 +446,15 @@ const Cursos = () => {
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor="comunaId">Comuna *</Label>
-                    <select
+                    <Input
                       id="comunaId"
                       value={courseData.comunaId}
                       onChange={(e) => handleInputChange('comunaId', e.target.value)}
-                      className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-                    >
-                      <option value="">Seleccionar comuna</option>
-                      <option value="1">Santiago</option>
-                      <option value="2">Las Condes</option>
-                      <option value="3">Providencia</option>
-                      <option value="4">Ñuñoa</option>
-                      {/* Aquí irían todas las comunas desde la BD */}
-                    </select>
+                      placeholder="Ingrese la comuna"
+                      maxLength={50}
+                      className={errors.comunaId ? 'border-red-500' : ''}
+                    />
+                    {errors.comunaId && <p className="text-xs text-red-600">{errors.comunaId}</p>}
                   </div>
                 </div>
               </div>
@@ -381,14 +472,14 @@ const Cursos = () => {
                       id="tipoCurso"
                       value={courseData.tipoCurso}
                       onChange={(e) => handleInputChange('tipoCurso', e.target.value)}
-                      className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                      className={`flex h-10 w-full rounded-md border bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 ${errors.tipoCurso ? 'border-red-500' : 'border-input'}`}
                     >
                       <option value="">Seleccionar tipo</option>
-                      <option value="1">Formación Básica</option>
-                      <option value="2">Formación Avanzada</option>
-                      <option value="3">Especialización</option>
-                      <option value="4">Taller</option>
+                      <option value="1">Presencial</option>
+                      <option value="2">Online</option>
+                      <option value="3">Híbrido</option>
                     </select>
+                    {errors.tipoCurso && <p className="text-xs text-red-600">{errors.tipoCurso}</p>}
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor="modalidad">Modalidad *</Label>
@@ -396,13 +487,14 @@ const Cursos = () => {
                       id="modalidad"
                       value={courseData.modalidad}
                       onChange={(e) => handleInputChange('modalidad', e.target.value)}
-                      className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                      className={`flex h-10 w-full rounded-md border bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 ${errors.modalidad ? 'border-red-500' : 'border-input'}`}
                     >
                       <option value="">Seleccionar modalidad</option>
                       <option value="1">Presencial</option>
-                      <option value="2">Virtual</option>
-                      <option value="3">Mixta</option>
+                      <option value="2">Online</option>
+                      <option value="3">Híbrida</option>
                     </select>
+                    {errors.modalidad && <p className="text-xs text-red-600">{errors.modalidad}</p>}
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor="cuotaConAlmuerzo">Cuota con Almuerzo</Label>
@@ -441,7 +533,7 @@ const Cursos = () => {
                       id="responsableId"
                       value={courseData.responsableId}
                       onChange={(e) => handleInputChange('responsableId', e.target.value)}
-                      className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                      className={`flex h-10 w-full rounded-md border bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 ${errors.responsableId ? 'border-red-500' : 'border-input'}`}
                     >
                       <option value="">Seleccionar responsable</option>
                       <option value="1">Juan Pérez</option>
@@ -449,6 +541,7 @@ const Cursos = () => {
                       <option value="3">Carlos López</option>
                       {/* Aquí irían las personas desde la BD */}
                     </select>
+                    {errors.responsableId && <p className="text-xs text-red-600">{errors.responsableId}</p>}
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor="cargoResponsableId">Cargo del Responsable *</Label>
@@ -456,7 +549,7 @@ const Cursos = () => {
                       id="cargoResponsableId"
                       value={courseData.cargoResponsableId}
                       onChange={(e) => handleInputChange('cargoResponsableId', e.target.value)}
-                      className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                      className={`flex h-10 w-full rounded-md border bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 ${errors.cargoResponsableId ? 'border-red-500' : 'border-input'}`}
                     >
                       <option value="">Seleccionar cargo</option>
                       <option value="1">Coordinador</option>
@@ -464,6 +557,7 @@ const Cursos = () => {
                       <option value="3">Jefe de Grupo</option>
                       <option value="4">Dirigente</option>
                     </select>
+                    {errors.cargoResponsableId && <p className="text-xs text-red-600">{errors.cargoResponsableId}</p>}
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor="estado">Estado del Curso *</Label>
@@ -480,6 +574,20 @@ const Cursos = () => {
                       <option value="4">Finalizado</option>
                       <option value="5">Cancelado</option>
                     </select>
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="administra">Administrado por *</Label>
+                    <select
+                      id="administra"
+                      value={courseData.administra}
+                      onChange={(e) => handleInputChange('administra', e.target.value)}
+                      className={`flex h-10 w-full rounded-md border bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 ${errors.administra ? 'border-red-500' : 'border-input'}`}
+                    >
+                      <option value="">Seleccionar</option>
+                      <option value="1">Zona</option>
+                      <option value="2">Distrito</option>
+                    </select>
+                    {errors.administra && <p className="text-xs text-red-600">{errors.administra}</p>}
                   </div>
                 </div>
               </div>
@@ -864,7 +972,7 @@ const Cursos = () => {
       <div className="bg-white rounded-lg shadow-md p-6">
         <div className="flex justify-between items-center mb-4">
           <h2 className="text-xl font-semibold text-gray-800">
-            Cursos Disponibles ({courses.length})
+            Cursos Disponibles ({filteredCourses.length} de {courses.length})
           </h2>
           <Button 
             onClick={() => setShowCreateForm(true)}
@@ -873,8 +981,83 @@ const Cursos = () => {
             Nuevo Curso
           </Button>
         </div>
+
+        {/* Filtros */}
+        <div className="mb-6 p-4 bg-gray-50 rounded-lg border border-gray-200">
+          <div className="flex items-center mb-3">
+            <Filter className="h-5 w-5 mr-2 text-gray-600" />
+            <h3 className="font-semibold text-gray-700">Filtros</h3>
+          </div>
+          <div className="grid md:grid-cols-4 gap-4">
+            <div className="space-y-2">
+              <Label htmlFor="filter-search">Buscar</Label>
+              <Input
+                id="filter-search"
+                value={filters.search}
+                onChange={(e) => setFilters(prev => ({ ...prev, search: e.target.value }))}
+                placeholder="Código, descripción, lugar..."
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="filter-estado">Estado</Label>
+              <select
+                id="filter-estado"
+                value={filters.estado}
+                onChange={(e) => setFilters(prev => ({ ...prev, estado: e.target.value }))}
+                className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
+              >
+                <option value="">Todos</option>
+                <option value="pendiente">Pendiente</option>
+                <option value="1">Activo</option>
+                <option value="2">Inactivo</option>
+                <option value="3">En Proceso</option>
+                <option value="4">Finalizado</option>
+                <option value="5">Cancelado</option>
+              </select>
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="filter-modalidad">Modalidad</Label>
+              <select
+                id="filter-modalidad"
+                value={filters.modalidad}
+                onChange={(e) => setFilters(prev => ({ ...prev, modalidad: e.target.value }))}
+                className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
+              >
+                <option value="">Todas</option>
+                <option value="1">Presencial</option>
+                <option value="2">Online</option>
+                <option value="3">Híbrida</option>
+              </select>
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="filter-tipoCurso">Tipo de Curso</Label>
+              <select
+                id="filter-tipoCurso"
+                value={filters.tipoCurso}
+                onChange={(e) => setFilters(prev => ({ ...prev, tipoCurso: e.target.value }))}
+                className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
+              >
+                <option value="">Todos</option>
+                <option value="1">Presencial</option>
+                <option value="2">Online</option>
+                <option value="3">Híbrido</option>
+              </select>
+            </div>
+          </div>
+          {(filters.search || filters.estado || filters.modalidad || filters.tipoCurso) && (
+            <div className="mt-3">
+              <Button 
+                variant="outline" 
+                size="sm"
+                onClick={() => setFilters({ search: '', estado: '', modalidad: '', tipoCurso: '' })}
+              >
+                Limpiar filtros
+              </Button>
+            </div>
+          )}
+        </div>
         
-        {courses.length > 0 ? (
+        {filteredCourses.length > 0 ? (
           <div className="overflow-x-auto">
             <table className="w-full border-collapse">
               <thead className="bg-gray-50">
@@ -887,6 +1070,9 @@ const Cursos = () => {
                   </th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b">
                     Fecha y Hora
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b">
+                    Tipo
                   </th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b">
                     Modalidad
@@ -906,7 +1092,7 @@ const Cursos = () => {
                 </tr>
               </thead>
               <tbody className="bg-white divide-y divide-gray-200">
-                {courses.map((course) => {
+                {filteredCourses.map((course) => {
                   const estadoInfo = getEstadoName(course.estado);
                   return (
                     <tr key={course.id} className="hover:bg-gray-50">
@@ -921,6 +1107,11 @@ const Cursos = () => {
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                         {formatDate(course.fechaHora)}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                        <span className="inline-flex px-2 py-1 text-xs rounded-full bg-blue-100 text-blue-800">
+                          {getTipoCursoName(course.tipoCurso)}
+                        </span>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                         {getModalidadName(course.modalidad)}
@@ -973,6 +1164,11 @@ const Cursos = () => {
                 })}
               </tbody>
             </table>
+          </div>
+        ) : courses.length > 0 ? (
+          <div className="text-center py-8">
+            <p className="text-gray-500 text-lg">No se encontraron cursos con los filtros aplicados</p>
+            <p className="text-gray-400 text-sm mt-2">Intenta ajustar los filtros de búsqueda</p>
           </div>
         ) : (
           <div className="text-center py-8">
