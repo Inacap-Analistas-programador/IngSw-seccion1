@@ -13,6 +13,7 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 from pathlib import Path
 from datetime import timedelta
 import os
+from decouple import config, Csv
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -22,12 +23,12 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY', "django-insecure--ygw7o^qbch5z3prtxi_+%dxny^p3k9=l6_!*p_y*j__a3%0-y")
+SECRET_KEY = config('DJANGO_SECRET_KEY', default="django-insecure--ygw7o^qbch5z3prtxi_+%dxny^p3k9=l6_!*p_y*j__a3%0-y")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = os.environ.get('DJANGO_DEBUG', 'False') == 'True'
+DEBUG = config('DJANGO_DEBUG', default=False, cast=bool)
 
-ALLOWED_HOSTS = os.environ.get('DJANGO_ALLOWED_HOSTS', 'localhost,127.0.0.1').split(',') if not DEBUG else ['*']
+ALLOWED_HOSTS = config('DJANGO_ALLOWED_HOSTS', default='localhost,127.0.0.1', cast=Csv()) if not DEBUG else ['*']
 
 
 # Application definition
@@ -67,7 +68,7 @@ MIDDLEWARE = [
     "scout_project.security_middleware.XSSProtectionMiddleware",
 ]
 
-CORS_ALLOW_ALL_ORIGINS = os.environ.get('CORS_ALLOW_ALL', 'False') == 'True' and DEBUG
+CORS_ALLOW_ALL_ORIGINS = config('CORS_ALLOW_ALL', default=False, cast=bool) and DEBUG
 
 # Configuración de Django REST Framework
 REST_FRAMEWORK = {
@@ -183,18 +184,17 @@ WSGI_APPLICATION = "scout_project.wsgi.application"
 
 # Para desarrollo local: SQLite
 # Para producción: MySQL (configurar variables de entorno)
-import os
 
-if os.environ.get('DB_ENGINE') == 'mysql':
+if config('DB_ENGINE', default='sqlite3') == 'mysql':
     # Configuración para MySQL en producción
     DATABASES = {
         "default": {
             "ENGINE": "django.db.backends.mysql",
-            "NAME": os.environ.get('DB_NAME', 'gic_db'),
-            "USER": os.environ.get('DB_USER', 'root'),
-            "PASSWORD": os.environ.get('DB_PASSWORD', ''),
-            "HOST": os.environ.get('DB_HOST', 'localhost'),
-            "PORT": os.environ.get('DB_PORT', '3306'),
+            "NAME": config('DB_NAME', default='gic_db'),
+            "USER": config('DB_USER', default='root'),
+            "PASSWORD": config('DB_PASSWORD', default=''),
+            "HOST": config('DB_HOST', default='localhost'),
+            "PORT": config('DB_PORT', default='3306'),
             "OPTIONS": {
                 "init_command": "SET sql_mode='STRICT_TRANS_TABLES'",
                 "charset": "utf8mb4",
@@ -246,6 +246,11 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/5.2/howto/static-files/
 
 STATIC_URL = "static/"
+STATIC_ROOT = BASE_DIR / "staticfiles"
+
+# Media files (uploads)
+MEDIA_URL = "/media/"
+MEDIA_ROOT = BASE_DIR / "media"
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
