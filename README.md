@@ -293,6 +293,11 @@ npm run test:coverage
 - [x] UI profesional con TailwindCSS
 - [x] Rutas protegidas
 - [x] Tests unitarios básicos
+- [x] **Docker setup (dev y prod)**
+- [x] **CI/CD con GitHub Actions**
+- [x] **Password hashing seguro**
+- [x] **Monitoreo con Prometheus/Grafana**
+- [x] **Scripts de deployment y backup**
 
 ### En Progreso 🚧
 - [ ] Tests de integración frontend-backend
@@ -302,14 +307,85 @@ npm run test:coverage
 - [ ] Exportación PDF/Excel
 
 ### Por Hacer 📋
-- [ ] Caché con Redis
+- [ ] Caché con Redis (configurado, pendiente uso)
 - [ ] WebSockets para tiempo real
 - [ ] Envío de emails
 - [ ] Dashboard ejecutivo completo
 - [ ] Reportes avanzados
-- [ ] CI/CD pipeline
-- [ ] Docker containers
-- [ ] Deployment en producción
+
+## 🐳 Deployment en Producción
+
+### Con Docker (Recomendado)
+
+```bash
+# 1. Configurar variables de entorno
+cp .env.production.example .env
+nano .env  # Editar con valores de producción
+
+# 2. Ejecutar deployment
+./scripts/deploy-production.sh
+```
+
+### Docker Compose Manual
+
+```bash
+# Desarrollo
+docker-compose -f docker-compose.dev.yml up -d
+
+# Producción
+docker-compose -f docker-compose.prod.yml up -d
+```
+
+### Monitoreo
+
+```bash
+# Iniciar stack de monitoreo
+cd monitoring
+docker-compose -f docker-compose.monitoring.yml up -d
+
+# Acceder a:
+# - Prometheus: http://localhost:9090
+# - Grafana: http://localhost:3001
+# - Alertmanager: http://localhost:9093
+```
+
+### Scripts de Mantenimiento
+
+```bash
+# Backup de base de datos
+./scripts/backup.sh
+
+# Verificar rendimiento
+./scripts/performance-check.sh
+```
+
+Ver [DEPLOYMENT_GUIDE.md](DEPLOYMENT_GUIDE.md) para instrucciones completas de deployment.
+
+## 🔐 Seguridad
+
+### Mejoras Implementadas
+
+- ✅ **Password Hashing**: PBKDF2-SHA256 para contraseñas
+- ✅ **JWT Tokens**: Access + refresh tokens con rotación
+- ✅ **HTTPS Ready**: Configuración SSL/TLS lista
+- ✅ **Rate Limiting**: Nginx con límites por endpoint
+- ✅ **Security Headers**: X-Frame-Options, CSP, HSTS
+- ✅ **CORS Específico**: Solo orígenes permitidos
+- ✅ **Usuarios de Prueba**: Comando `create_test_users`
+
+Ver [SECURITY_IMPROVEMENTS.md](SECURITY_IMPROVEMENTS.md) para detalles completos.
+
+### Crear Usuarios de Prueba
+
+```bash
+cd backend
+python manage.py create_test_users
+
+# Usuarios creados:
+# - admin@test.com / Admin123!
+# - coordinador@test.com / Coord123!
+# - dirigente@test.com / Dirig123!
+```
 
 ## 🤝 Contribuir
 
