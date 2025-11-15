@@ -7,7 +7,7 @@ import authService from '@/services/authService';
  */
 const ProtectedRoute = ({ children, requiredRole = null }) => {
   const isAuthenticated = authService.isAuthenticated();
-  
+
   if (!isAuthenticated) {
     // Redirigir al login si no está autenticado
     return <Navigate to="/coordinador/login" replace />;

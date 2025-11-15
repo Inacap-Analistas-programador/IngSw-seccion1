@@ -25,7 +25,6 @@ export default function useFetch(fetcher, auto = true, deps = []) {
 				setLoading(false);
 			}
 		},
-		// eslint-disable-next-line react-hooks/exhaustive-deps
 		deps
 	);
 

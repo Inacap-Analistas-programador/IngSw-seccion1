@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { ToastContext } from '@/components/ui/use-toast';
 
 function ToastProvider({ children }) {

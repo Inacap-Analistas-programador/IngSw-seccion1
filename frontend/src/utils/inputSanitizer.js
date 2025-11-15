@@ -104,7 +104,7 @@ export function sanitizePhone(phone) {
   }
 
   // Solo números, espacios, guiones, paréntesis y +
-  const sanitized = phone.replace(/[^\d\s\-\+\(\)]/g, '').trim();
+  const sanitized = phone.replace(/[^\d\s\-+()]/g, '').trim();
   
   // Validar que tenga al menos 8 dígitos
   const digitsOnly = sanitized.replace(/\D/g, '');
@@ -127,7 +127,7 @@ export function sanitizeName(name) {
 
   // Solo letras, espacios, guiones y apóstrofes
   const sanitized = name
-    .replace(/[^a-zA-ZáéíóúÁÉÍÓÚñÑüÜ\s\-\']/g, '')
+    .replace(/[^a-zA-ZáéíóúÁÉÍÓÚñÑüÜ\s\-']/g, '')
     .trim()
     .replace(/\s+/g, ' '); // Normalizar espacios múltiples
 
@@ -154,7 +154,7 @@ export function sanitizeAddress(address) {
 
   // Permitir letras, números, espacios y caracteres comunes en direcciones
   const sanitized = address
-    .replace(/[^a-zA-Z0-9áéíóúÁÉÍÓÚñÑ\s\-\.\,\#°]/g, '')
+    .replace(/[^a-zA-Z0-9áéíóúÁÉÍÓÚñÑ\s\-.,#°]/g, '')
     .trim()
     .replace(/\s+/g, ' ');
 
@@ -308,7 +308,7 @@ export function validatePassword(password) {
     errors.push('Debe contener al menos un número');
   }
 
-  if (!/[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(password)) {
+  if (!/[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]/.test(password)) {
     errors.push('Debe contener al menos un carácter especial');
   }
 

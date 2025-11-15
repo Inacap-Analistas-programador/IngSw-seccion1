@@ -58,9 +58,7 @@ const Pagos = () => {
         </button>
       </div>
 
-      <div className="bg-white p-6 rounded-lg shadow-md">
-        {renderSection()}
-      </div>
+      <div className="bg-white p-6 rounded-lg shadow-md">{renderSection()}</div>
     </div>
   );
 };

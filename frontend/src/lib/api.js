@@ -281,6 +281,7 @@ export const syncOffline = async () => {
       const arr = JSON.parse(localStorage.getItem('comprobantes') || '[]').filter(x => (x.cpa_id || x.id) !== (c.cpa_id || c.id));
       localStorage.setItem('comprobantes', JSON.stringify(arr));
     } catch (err) {
+      // Error al sincronizar comprobante, mantener en localStorage
     }
   }
 
@@ -293,6 +294,7 @@ export const syncOffline = async () => {
       const arr = JSON.parse(localStorage.getItem('prepagos') || '[]').filter(x => (x.ppa_id || x.id) !== (p.ppa_id || p.id));
       localStorage.setItem('prepagos', JSON.stringify(arr));
     } catch (err) {
+      // Error al sincronizar prepago, mantener en localStorage
     }
   }
 
@@ -305,6 +307,7 @@ export const syncOffline = async () => {
       const arr = JSON.parse(localStorage.getItem('pagocomprobantes') || '[]').filter(x => (x.pco_id || x.id) !== (pc.pco_id || pc.id));
       localStorage.setItem('pagocomprobantes', JSON.stringify(arr));
     } catch (err) {
+      // Error al sincronizar pagocomprobante, mantener en localStorage
     }
   }
 
@@ -317,6 +320,7 @@ export const syncOffline = async () => {
       const arr = JSON.parse(localStorage.getItem('pagocambios') || '[]').filter(x => (x.pcp_id || x.id) !== (pc.pcp_id || pc.id));
       localStorage.setItem('pagocambios', JSON.stringify(arr));
     } catch (err) {
+      // Error al sincronizar pagocambio, mantener en localStorage
     }
   }
 

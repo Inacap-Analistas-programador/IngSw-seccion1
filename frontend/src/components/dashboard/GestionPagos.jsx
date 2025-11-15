@@ -1,5 +1,4 @@
-
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import api from '../../config/api'; // Asegúrate de que la ruta sea correcta
 
 const GestionPagos = () => {
@@ -28,7 +27,7 @@ const GestionPagos = () => {
   return (
     <div>
       <h2 className="text-2xl font-bold mb-4">Gestión de Pagos</h2>
-      
+
       <button className="bg-green-500 text-white px-4 py-2 rounded-md mb-4">
         Registrar Nuevo Pago
       </button>
@@ -54,15 +53,25 @@ const GestionPagos = () => {
               {pagos.map((pago) => (
                 <tr key={pago.pap_id}>
                   <td className="py-2 px-4 border-b">{pago.pap_id}</td>
-                  <td className="py-2 px-4 border-b">{pago.per_id}</td> {/* Esto mostrará el ID de la persona, luego lo mejoraremos */}
-                  <td className="py-2 px-4 border-b">{pago.cur_id}</td> {/* Esto mostrará el ID del curso, luego lo mejoraremos */}
-                  <td className="py-2 px-4 border-b">{new Date(pago.pap_fecha_hora).toLocaleString()}</td>
-                  <td className="py-2 px-4 border-b">{pago.pap_tipo === 1 ? 'Ingreso' : 'Egreso'}</td>
+                  <td className="py-2 px-4 border-b">{pago.per_id}</td>{' '}
+                  {/* Esto mostrará el ID de la persona, luego lo mejoraremos */}
+                  <td className="py-2 px-4 border-b">{pago.cur_id}</td>{' '}
+                  {/* Esto mostrará el ID del curso, luego lo mejoraremos */}
+                  <td className="py-2 px-4 border-b">
+                    {new Date(pago.pap_fecha_hora).toLocaleString()}
+                  </td>
+                  <td className="py-2 px-4 border-b">
+                    {pago.pap_tipo === 1 ? 'Ingreso' : 'Egreso'}
+                  </td>
                   <td className="py-2 px-4 border-b">{pago.pap_valor}</td>
                   <td className="py-2 px-4 border-b">{pago.pap_observacion || '-'}</td>
                   <td className="py-2 px-4 border-b">
-                    <button className="bg-blue-500 text-white px-2 py-1 rounded-md mr-2">Ver</button>
-                    <button className="bg-yellow-500 text-white px-2 py-1 rounded-md mr-2">Editar</button>
+                    <button className="bg-blue-500 text-white px-2 py-1 rounded-md mr-2">
+                      Ver
+                    </button>
+                    <button className="bg-yellow-500 text-white px-2 py-1 rounded-md mr-2">
+                      Editar
+                    </button>
                     <button className="bg-red-500 text-white px-2 py-1 rounded-md">Anular</button>
                   </td>
                 </tr>

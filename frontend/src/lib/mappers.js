@@ -98,9 +98,6 @@ export const personaToApi = (f = {}) => {
     per_verificacion: f.verificacion,
     per_historial: f.historialCapacitaciones
   };
-  proveedorFromApi,
-  proveedorToApi,
-  proveedoresFromApi
 };
 
 export const personasFromApi = (arr = []) => (Array.isArray(arr) ? arr.map(personaFromApi) : []);
