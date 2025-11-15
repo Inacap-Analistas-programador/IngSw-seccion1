@@ -3,18 +3,18 @@ import { Helmet } from 'react-helmet';
 import { useNavigate, Routes, Route, useLocation, Navigate } from 'react-router-dom';
 import { Button } from '@/components/ui/Button';
 import {
-  LogOut,
-  Menu,
-  LayoutDashboard,
-  BookOpen,
-  ClipboardCheck,
-  CreditCard,
-  Users,
-  Mail,
-  Award,
-  Database,
-  Truck,
-} from 'lucide-react';
+  FaRightFromBracket,
+  FaBars,
+  FaChartLine,
+  FaBook,
+  FaClipboardCheck,
+  FaCreditCard,
+  FaUsers,
+  FaEnvelope,
+  FaAward,
+  FaDatabase,
+  FaTruck,
+} from 'react-icons/fa6';
 import authService from '@/services/authService';
 import Cursos from '@/components/dashboard/Cursos';
 import Pagos from '@/components/dashboard/Pagos';
@@ -84,16 +84,16 @@ const CoordinatorDashboard = () => {
         : '/dashboard';
 
   const menuItems = [
-    { icon: LayoutDashboard, label: 'Dashboard Ejecutivo', path: `${basePath}/ejecutivo` },
-    { icon: BookOpen, label: 'Gestión de Cursos', path: `${basePath}/gestion-cursos` },
-    { icon: ClipboardCheck, label: 'Preinscripción', path: `${basePath}/preinscripcion` },
-    { icon: CreditCard, label: 'Gestión de Pagos', path: `${basePath}/gestion-pagos` },
+    { icon: FaChartLine, label: 'Dashboard Ejecutivo', path: `${basePath}/ejecutivo` },
+    { icon: FaBook, label: 'Gestión de Cursos', path: `${basePath}/gestion-cursos` },
+    { icon: FaClipboardCheck, label: 'Preinscripción', path: `${basePath}/preinscripcion` },
+    { icon: FaCreditCard, label: 'Gestión de Pagos', path: `${basePath}/gestion-pagos` },
     // Persona management moved/removed; link omitted
-    { icon: Mail, label: 'Envío de Correos', path: `${basePath}/envio-correos` },
-    { icon: Award, label: 'Acreditación', path: `${basePath}/acreditacion` },
-    { icon: Database, label: 'Maestros', path: `${basePath}/maestros` },
-    { icon: Truck, label: 'Proveedores', path: '/proveedores' },
-    { icon: LayoutDashboard, label: 'Casos de Uso', path: `${basePath}/use-cases` },
+    { icon: FaEnvelope, label: 'Envío de Correos', path: `${basePath}/envio-correos` },
+    { icon: FaAward, label: 'Acreditación', path: `${basePath}/acreditacion` },
+    { icon: FaDatabase, label: 'Maestros', path: `${basePath}/maestros` },
+    { icon: FaTruck, label: 'Proveedores', path: '/proveedores' },
+    { icon: FaChartLine, label: 'Casos de Uso', path: `${basePath}/use-cases` },
   ];
 
   if (!coordinator) {
@@ -121,7 +121,7 @@ const CoordinatorDashboard = () => {
           }`}
         >
           <div className="flex items-center justify-center h-20 border-b border border-border">
-            <Award className="w-8 h-8 mr-2" />
+            <FaAward className="w-8 h-8 mr-2" />
             <span className="text-xl font-bold">Scout Admin</span>
           </div>
           <nav className="p-4 space-y-2 h-full overflow-y-auto">
@@ -158,7 +158,7 @@ const CoordinatorDashboard = () => {
                   onClick={() => setSidebarOpen(!sidebarOpen)}
                   className="text-gray-600 hover:bg-gray-100 lg:hidden"
                 >
-                  <Menu className="w-6 h-6" />
+                  <FaBars className="w-6 h-6" />
                 </Button>
                 {/* <Breadcrumb /> */}
                 <span className="text-lg font-semibold text-gray-700">Dashboard Scout</span>
@@ -179,7 +179,7 @@ const CoordinatorDashboard = () => {
                   variant="ghost"
                   className="text-gray-600 hover:bg-red-50 hover:text-red-600"
                 >
-                  <LogOut className="w-5 h-5 mr-0 sm:mr-2" />
+                  <FaRightFromBracket className="w-5 h-5 mr-0 sm:mr-2" />
                   <span className="hidden sm:inline">Cerrar Sesión</span>
                 </Button>
               </div>

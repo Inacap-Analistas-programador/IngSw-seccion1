@@ -2,7 +2,7 @@ import { Helmet } from 'react-helmet';
 import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/Button';
-import { Calendar, Users, Award, KeyRound } from 'lucide-react';
+import { FaCalendarDays, FaUsers, FaAward, FaKey } from 'react-icons/fa6';
 
 const HomePage = () => {
   const navigate = useNavigate();
@@ -50,19 +50,19 @@ const HomePage = () => {
           <div className="container mx-auto px-4 py-4 flex justify-between items-center">
             <div className="flex items-center space-x-3">
               <div className="w-12 h-12 bg-white rounded-full flex items-center justify-center">
-                <Award className="w-8 h-8 text-[#001558]" />
+                <FaAward className="w-8 h-8 text-[#001558]" />
               </div>
               <span className="text-2xl font-bold">Scout Formación</span>
             </div>
             <div className="flex space-x-3">
               <Button
-                onClick={() => navigate('/panel')}
+                onClick={() => navigate('/dashboard')}
                 className="bg-white text-[#001558] hover:bg-primary/5 transition-all duration-300"
               >
                 Panel
               </Button>
               <Button
-                onClick={() => navigate('/coordinador/ingreso')}
+                onClick={() => navigate('/coordinador/login')}
                 className="bg-white text-[#001558] hover:bg-primary/5 transition-all duration-300"
               >
                 Ingreso Coordinador
@@ -101,7 +101,7 @@ const HomePage = () => {
                 className="mt-12 max-w-sm mx-auto bg-white/10 backdrop-blur-sm rounded-xl p-6 shadow-lg border border-white/20"
               >
                 <div className="flex items-center justify-center mb-4">
-                  <KeyRound className="w-6 h-6 mr-3 text-primary-foreground" />
+                  <FaKey className="w-6 h-6 mr-3 text-primary-foreground" />
                   <h3 className="text-xl font-semibold text-white">Credenciales de Coordinador</h3>
                 </div>
                 <div className="text-left space-y-2 text-primary-foreground">
@@ -149,15 +149,15 @@ const HomePage = () => {
                       <p className="text-gray-600 mb-4 min-h-[60px]">{course.description}</p>
                       <div className="space-y-2 text-sm text-gray-700">
                         <div className="flex items-center space-x-2">
-                          <Calendar className="w-4 h-4 text-[#001558]" />
+                          <FaCalendarDays className="w-4 h-4 text-[#001558]" />
                           <span>Inicio: {course.startDate}</span>
                         </div>
                         <div className="flex items-center space-x-2">
-                          <Calendar className="w-4 h-4 text-[#001558]" />
+                          <FaCalendarDays className="w-4 h-4 text-[#001558]" />
                           <span>Término: {course.endDate}</span>
                         </div>
                         <div className="flex items-center space-x-2">
-                          <Users className="w-4 h-4 text-[#001558]" />
+                          <FaUsers className="w-4 h-4 text-[#001558]" />
                           <span>{course.location}</span>
                         </div>
                       </div>
@@ -181,7 +181,7 @@ const HomePage = () => {
             <div className="flex flex-col md:flex-row justify-between items-center">
               <div className="flex items-center space-x-3 mb-4 md:mb-0">
                 <div className="w-10 h-10 bg-white rounded-full flex items-center justify-center">
-                  <Award className="w-6 h-6 text-primary-foreground" />
+                  <FaAward className="w-6 h-6 text-[#001558]" />
                 </div>
                 <span className="text-xl font-bold">Scout Formación</span>
               </div>
