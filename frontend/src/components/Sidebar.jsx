@@ -1,5 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import { FaHouse, FaCreditCard, FaBook, FaClipboardCheck, FaClipboardList } from 'react-icons/fa6';
 
 const Sidebar = ({ className = '' }) => {
   return (
@@ -16,6 +17,7 @@ const Sidebar = ({ className = '' }) => {
               to="/dashboard"
               className="inline-flex items-center gap-3 px-3 py-2 rounded hover:bg-primary/10 w-full text-left"
             >
+              <FaHouse className="w-5 h-5 flex-shrink-0" />
               <span className="flex-0">Inicio</span>
             </Link>
           </li>
@@ -25,6 +27,7 @@ const Sidebar = ({ className = '' }) => {
               to="/dashboard/gestion-pagos"
               className="inline-flex items-center gap-3 px-3 py-2 rounded hover:bg-primary/10 w-full text-left"
             >
+              <FaCreditCard className="w-5 h-5 flex-shrink-0" />
               <span className="flex-0">Pagos</span>
             </Link>
           </li>
@@ -33,6 +36,7 @@ const Sidebar = ({ className = '' }) => {
               to="/dashboard/gestion-cursos"
               className="inline-flex items-center gap-3 px-3 py-2 rounded hover:bg-primary/10 w-full text-left"
             >
+              <FaBook className="w-5 h-5 flex-shrink-0" />
               <span className="flex-0">Cursos</span>
             </Link>
           </li>
@@ -41,6 +45,7 @@ const Sidebar = ({ className = '' }) => {
               to="/dashboard/inscripciones"
               className="inline-flex items-center gap-3 px-3 py-2 rounded hover:bg-primary/10 w-full text-left"
             >
+              <FaClipboardList className="w-5 h-5 flex-shrink-0" />
               <span className="flex-0">Inscripciones</span>
             </Link>
           </li>
@@ -49,6 +54,7 @@ const Sidebar = ({ className = '' }) => {
               to="/dashboard/preinscripcion"
               className="inline-flex items-center gap-3 px-3 py-2 rounded hover:bg-primary/10 w-full text-left"
             >
+              <FaClipboardCheck className="w-5 h-5 flex-shrink-0" />
               <span className="flex-0">Preinscripción</span>
             </Link>
           </li>
