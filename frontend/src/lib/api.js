@@ -1,15 +1,11 @@
-const API_URL = 'http://localhost:8000/api';
 import api from '@/config/api';
 
 export const getCursos = async () => {
   try {
-    const response = await fetch(`${API_URL}/cursos/`);
-    if (!response.ok) {
-      throw new Error('Respuesta de red no fue correcta');
-    }
-    return await response.json();
+    const response = await api.get('/cursos/');
+    return response.data;
   } catch (error) {
-    console.error('Hubo un problema con la operación de fetch:', error);
+    console.error('Error fetching cursos:', error);
     throw error;
   }
 };
