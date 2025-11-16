@@ -57,6 +57,7 @@ INSTALLED_APPS = [
     "pagos",
     "proveedores",
     "preinscripcion",
+    "emails",
 ]
 
 MIDDLEWARE = [
@@ -271,3 +272,20 @@ MEDIA_ROOT = BASE_DIR / "media"
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+
+# Email Configuration
+# For development, use console backend to print emails to console
+EMAIL_BACKEND = config('EMAIL_BACKEND', default='django.core.mail.backends.console.EmailBackend')
+EMAIL_HOST = config('EMAIL_HOST', default='smtp.sendgrid.net')
+EMAIL_PORT = config('EMAIL_PORT', default=587, cast=int)
+EMAIL_USE_TLS = config('EMAIL_USE_TLS', default=True, cast=bool)
+EMAIL_HOST_USER = config('EMAIL_HOST_USER', default='apikey')
+EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD', default='')
+DEFAULT_FROM_EMAIL = config('DEFAULT_FROM_EMAIL', default='noreply@scouts.cl')
+SERVER_EMAIL = config('SERVER_EMAIL', default='noreply@scouts.cl')
+
+# Frontend URL for email links
+FRONTEND_URL = config('FRONTEND_URL', default='http://localhost:3000')
+
+# Google Maps API Key
+GOOGLE_MAPS_API_KEY = config('GOOGLE_MAPS_API_KEY', default='')
