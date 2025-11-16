@@ -9,7 +9,7 @@ const GestionPagos = () => {
   useEffect(() => {
     const fetchPagos = async () => {
       try {
-        const response = await api.get('/pagopersonas/');
+        const response = await api.get('/pagos/pagopersonas/');
         setPagos(response.data);
       } catch (err) {
         setError(err);
