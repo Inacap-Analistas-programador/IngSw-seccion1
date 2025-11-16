@@ -30,9 +30,6 @@ const Inscripciones = () => {
   const [loading, setLoading] = useState(false);
   const [submissions, setSubmissions] = useState([]);
 
-  const [loading, setLoading] = useState(false);
-  const [submissions, setSubmissions] = useState([]);
-
   // Load data on mount
   useEffect(() => {
     loadSubmissions();
