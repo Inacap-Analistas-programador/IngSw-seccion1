@@ -43,8 +43,9 @@ class Command(BaseCommand):
         skipped_count = 0
 
         for user_data in test_users:
-            # Check if user already exists
-            if Usuario.objects.filter(usu_username=user_data['username']).exists():
+            # Check if user already exists (by username or email)
+            if Usuario.objects.filter(usu_username=user_data['username']).exists() or \
+               Usuario.objects.filter(usu_email=user_data['email']).exists():
                 self.stdout.write(
                     self.style.WARNING(
                         f'User "{user_data["username"]}" already exists. Skipping...'

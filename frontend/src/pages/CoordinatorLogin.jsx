@@ -143,7 +143,9 @@ const CoordinatorLogin = () => {
 
               <div className="text-center text-sm text-gray-600 mt-4">
                 <p>Credenciales de desarrollo:</p>
-                <p className="font-mono text-xs mt-1">coordinador@scout.cl / Scout2024!</p>
+                <p className="font-mono text-xs mt-1">admin@test.com / Admin123!</p>
+                <p className="font-mono text-xs mt-1">coordinador@test.com / Coord123!</p>
+                <p className="font-mono text-xs mt-1">dirigente@test.com / Dirig123!</p>
               </div>
 
               <div className="text-center">
