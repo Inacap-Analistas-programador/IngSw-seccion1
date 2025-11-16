@@ -4,7 +4,6 @@ import ProtectedRoute from '@/components/auth/ProtectedRoute';
 
 // Lazy load pages for code splitting
 const HomePage = lazy(() => import('@/pages/HomePage'));
-const ModernHomePage = lazy(() => import('@/pages/ModernHomePage'));
 const PreRegistrationForm = lazy(() => import('@/pages/PreRegistrationForm'));
 const CoordinatorLogin = lazy(() => import('@/pages/CoordinatorLogin'));
 const CoordinatorDashboard = lazy(() => import('@/pages/CoordinatorDashboard'));
@@ -50,8 +49,7 @@ function App() {
         <Suspense fallback={<PageLoader />}>
           <Routes>
             {/* Rutas públicas */}
-            <Route path="/" element={<ModernHomePage />} />
-            <Route path="/home-old" element={<HomePage />} />
+            <Route path="/" element={<HomePage />} />
             <Route path="/preinscripcion" element={<PreRegistrationForm />} />
             <Route path="/coordinador/login" element={<CoordinatorLogin />} />
             
