@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { Helmet } from 'react-helmet';
 import { motion } from 'framer-motion';
@@ -6,7 +5,7 @@ import { useNavigate, useSearchParams } from 'react-router-dom';
 import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
 import { Label } from '@/components/ui/Label';
-import { Award, Lock, Mail, AlertCircle } from 'lucide-react';
+import { FaAward, FaLock, FaEnvelope, FaCircleExclamation } from 'react-icons/fa6';
 import { useToast } from '@/components/ui/use-toast';
 import authService from '@/services/authService';
 
@@ -29,9 +28,9 @@ const CoordinatorLogin = () => {
     const reason = searchParams.get('reason');
     if (reason === 'timeout') {
       toast({
-        title: "Sesión Expirada",
-        description: "Tu sesión ha expirado por inactividad. Por favor, inicia sesión nuevamente.",
-        variant: "destructive"
+        title: 'Sesión Expirada',
+        description: 'Tu sesión ha expirado por inactividad. Por favor, inicia sesión nuevamente.',
+        variant: 'destructive',
       });
     }
   }, [navigate, searchParams, toast]);
@@ -43,10 +42,10 @@ const CoordinatorLogin = () => {
 
     try {
       await authService.login(email, password);
-      
+
       toast({
-        title: "¡Bienvenido!",
-        description: "Inicio de sesión exitoso.",
+        title: '¡Bienvenido!',
+        description: 'Inicio de sesión exitoso.',
       });
 
       setTimeout(() => {
@@ -55,9 +54,9 @@ const CoordinatorLogin = () => {
     } catch (err) {
       setError(err.message);
       toast({
-        title: "Error de inicio de sesión",
+        title: 'Error de inicio de sesión',
         description: err.message,
-        variant: "destructive"
+        variant: 'destructive',
       });
     } finally {
       setLoading(false);
@@ -81,7 +80,7 @@ const CoordinatorLogin = () => {
           <div className="bg-white rounded-lg shadow-2xl overflow-hidden">
             <div className="bg-primary text-primary-foreground p-8 text-center">
               <div className="w-16 h-16 bg-white rounded-full flex items-center justify-center mx-auto mb-4">
-                <Award className="w-10 h-10 text-[#001558]" />
+                <FaAward className="w-10 h-10 text-[#001558]" />
               </div>
               <h1 className="text-3xl font-bold">Portal Coordinador</h1>
               <p className="text-primary-foreground mt-2">Scout Formación</p>
@@ -90,21 +89,23 @@ const CoordinatorLogin = () => {
             <form onSubmit={handleLogin} className="p-8 space-y-6">
               {error && (
                 <div className="bg-red-50 border border-red-200 text-red-800 px-4 py-3 rounded-lg flex items-start">
-                  <AlertCircle className="w-5 h-5 mr-2 mt-0.5 flex-shrink-0" />
+                  <FaCircleExclamation className="w-5 h-5 mr-2 mt-0.5 flex-shrink-0" />
                   <span className="text-sm">{error}</span>
                 </div>
               )}
 
               <div className="space-y-2">
-                <Label htmlFor="correo" className="text-gray-700">Correo Electrónico</Label>
+                <Label htmlFor="correo" className="text-gray-700">
+                  Correo Electrónico
+                </Label>
                 <div className="relative">
-                  <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
+                  <FaEnvelope className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
                   <Input
                     id="correo"
                     type="email"
                     placeholder="coordinador@scout.cl"
-                    value={correo}
-                    onChange={(e) => setCorreo(e.target.value)}
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
                     className="pl-10 border-gray-300 focus:border-primary focus:ring-primary/30"
                     required
                     disabled={loading}
@@ -113,15 +114,17 @@ const CoordinatorLogin = () => {
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="contrasena" className="text-gray-700">Contraseña</Label>
+                <Label htmlFor="contrasena" className="text-gray-700">
+                  Contraseña
+                </Label>
                 <div className="relative">
-                  <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
+                  <FaLock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
                   <Input
                     id="contrasena"
                     type="password"
                     placeholder="••••••••"
-                    value={contrasena}
-                    onChange={(e) => setContrasena(e.target.value)}
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
                     className="pl-10 border-gray-300 focus:border-primary focus:ring-primary/30"
                     required
                     minLength={8}
@@ -130,7 +133,7 @@ const CoordinatorLogin = () => {
                 </div>
               </div>
 
-              <Button 
+              <Button
                 type="submit"
                 className="w-full bg-primary hover:bg-primary/90 text-primary-foreground py-6 text-lg font-semibold transition-all duration-300 transform hover:scale-105"
                 disabled={loading}

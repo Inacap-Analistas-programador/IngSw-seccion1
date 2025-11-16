@@ -11,7 +11,9 @@ const Step2ScoutInfo = ({ formData, updateFormData }) => {
     <div className="space-y-6">
       <div>
         <h2 className="text-2xl font-bold text-[#001558] mb-2">Información Scout</h2>
-        <p className="text-gray-600">Completa tu información relacionada con el movimiento Scout.</p>
+        <p className="text-gray-600">
+          Completa tu información relacionada con el movimiento Scout.
+        </p>
       </div>
 
       <div className="grid md:grid-cols-2 gap-4">
@@ -150,8 +152,8 @@ const Step2ScoutInfo = ({ formData, updateFormData }) => {
               <Label htmlFor="habilitacion1">Habilitación 1</Label>
               <Input
                 id="habilitacion1"
-                  value={formData.habilitacion1}
-                  onChange={(e) => handleChange('habilitacion1', e.target.value)}
+                value={formData.habilitacion1}
+                onChange={(e) => handleChange('habilitacion1', e.target.value)}
                 placeholder="Habilitación 1"
               />
             </div>

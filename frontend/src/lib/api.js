@@ -46,7 +46,7 @@ export const updatePayment = async (id, payload) => {
   } catch (err) {
     console.warn('API updatePayment falló, actualizando localStorage', err);
     const pagos = JSON.parse(localStorage.getItem('pagos') || '[]');
-    const index = pagos.findIndex(p => p.pap_id === id || p.id === id);
+    const index = pagos.findIndex((p) => p.pap_id === id || p.id === id);
     if (index !== -1) {
       pagos[index] = { ...pagos[index], ...payload };
       localStorage.setItem('pagos', JSON.stringify(pagos));
@@ -63,7 +63,7 @@ export const deletePayment = async (id) => {
   } catch (err) {
     console.warn('API deletePayment falló, eliminando en localStorage', err);
     const pagos = JSON.parse(localStorage.getItem('pagos') || '[]');
-    const filtered = pagos.filter(p => p.pap_id !== id && p.id !== id);
+    const filtered = pagos.filter((p) => p.pap_id !== id && p.id !== id);
     localStorage.setItem('pagos', JSON.stringify(filtered));
     return filtered;
   }
@@ -171,7 +171,7 @@ export const deletePagoComprobante = async (id) => {
   } catch (err) {
     console.warn('API deletePagoComprobante falló, actualizando localStorage', err);
     const arr = JSON.parse(localStorage.getItem('pagocomprobantes') || '[]');
-    const filtered = arr.filter(x => x.pco_id !== id && x.id !== id);
+    const filtered = arr.filter((x) => x.pco_id !== id && x.id !== id);
     localStorage.setItem('pagocomprobantes', JSON.stringify(filtered));
     return filtered;
   }
@@ -210,8 +210,12 @@ export const updateComprobante = async (id, payload) => {
   } catch (err) {
     console.warn('API updateComprobante falló, actualizando localStorage', err);
     const arr = JSON.parse(localStorage.getItem('comprobantes') || '[]');
-    const idx = arr.findIndex(x => x.cpa_id === id || x.id === id);
-    if (idx !== -1) { arr[idx] = { ...arr[idx], ...payload }; localStorage.setItem('comprobantes', JSON.stringify(arr)); return arr[idx]; }
+    const idx = arr.findIndex((x) => x.cpa_id === id || x.id === id);
+    if (idx !== -1) {
+      arr[idx] = { ...arr[idx], ...payload };
+      localStorage.setItem('comprobantes', JSON.stringify(arr));
+      return arr[idx];
+    }
     throw err;
   }
 };
@@ -223,7 +227,7 @@ export const deleteComprobante = async (id) => {
   } catch (err) {
     console.warn('API deleteComprobante falló, eliminando en localStorage', err);
     const arr = JSON.parse(localStorage.getItem('comprobantes') || '[]');
-    const filtered = arr.filter(x => x.cpa_id !== id && x.id !== id);
+    const filtered = arr.filter((x) => x.cpa_id !== id && x.id !== id);
     localStorage.setItem('comprobantes', JSON.stringify(filtered));
     return filtered;
   }
@@ -236,8 +240,12 @@ export const updatePrepago = async (id, payload) => {
   } catch (err) {
     console.warn('API updatePrepago falló, actualizando localStorage', err);
     const arr = JSON.parse(localStorage.getItem('prepagos') || '[]');
-    const idx = arr.findIndex(x => x.ppa_id === id || x.id === id);
-    if (idx !== -1) { arr[idx] = { ...arr[idx], ...payload }; localStorage.setItem('prepagos', JSON.stringify(arr)); return arr[idx]; }
+    const idx = arr.findIndex((x) => x.ppa_id === id || x.id === id);
+    if (idx !== -1) {
+      arr[idx] = { ...arr[idx], ...payload };
+      localStorage.setItem('prepagos', JSON.stringify(arr));
+      return arr[idx];
+    }
     throw err;
   }
 };
@@ -249,7 +257,7 @@ export const deletePrepago = async (id) => {
   } catch (err) {
     console.warn('API deletePrepago falló, eliminando en localStorage', err);
     const arr = JSON.parse(localStorage.getItem('prepagos') || '[]');
-    const filtered = arr.filter(x => x.ppa_id !== id && x.id !== id);
+    const filtered = arr.filter((x) => x.ppa_id !== id && x.id !== id);
     localStorage.setItem('prepagos', JSON.stringify(filtered));
     return filtered;
   }
@@ -265,7 +273,9 @@ export const syncOffline = async () => {
     try {
       await api.post('/pagos/pagopersonas/', p);
       results.pagos += 1;
-      const arr = JSON.parse(localStorage.getItem('pagos') || '[]').filter(x => (x.pap_id || x.id) !== (p.pap_id || p.id));
+      const arr = JSON.parse(localStorage.getItem('pagos') || '[]').filter(
+        (x) => (x.pap_id || x.id) !== (p.pap_id || p.id)
+      );
       localStorage.setItem('pagos', JSON.stringify(arr));
     } catch (err) {
       // ignore and try next
@@ -278,9 +288,12 @@ export const syncOffline = async () => {
     try {
       await api.post('/pagos/comprobantes/', c);
       results.comprobantes += 1;
-      const arr = JSON.parse(localStorage.getItem('comprobantes') || '[]').filter(x => (x.cpa_id || x.id) !== (c.cpa_id || c.id));
+      const arr = JSON.parse(localStorage.getItem('comprobantes') || '[]').filter(
+        (x) => (x.cpa_id || x.id) !== (c.cpa_id || c.id)
+      );
       localStorage.setItem('comprobantes', JSON.stringify(arr));
     } catch (err) {
+      // Error al sincronizar comprobante, mantener en localStorage
     }
   }
 
@@ -290,9 +303,12 @@ export const syncOffline = async () => {
     try {
       await api.post('/pagos/prepagos/', p);
       results.prepagos += 1;
-      const arr = JSON.parse(localStorage.getItem('prepagos') || '[]').filter(x => (x.ppa_id || x.id) !== (p.ppa_id || p.id));
+      const arr = JSON.parse(localStorage.getItem('prepagos') || '[]').filter(
+        (x) => (x.ppa_id || x.id) !== (p.ppa_id || p.id)
+      );
       localStorage.setItem('prepagos', JSON.stringify(arr));
     } catch (err) {
+      // Error al sincronizar prepago, mantener en localStorage
     }
   }
 
@@ -302,9 +318,12 @@ export const syncOffline = async () => {
     try {
       await api.post('/pagos/pagocomprobantes/', pc);
       results.pagocomprobantes += 1;
-      const arr = JSON.parse(localStorage.getItem('pagocomprobantes') || '[]').filter(x => (x.pco_id || x.id) !== (pc.pco_id || pc.id));
+      const arr = JSON.parse(localStorage.getItem('pagocomprobantes') || '[]').filter(
+        (x) => (x.pco_id || x.id) !== (pc.pco_id || pc.id)
+      );
       localStorage.setItem('pagocomprobantes', JSON.stringify(arr));
     } catch (err) {
+      // Error al sincronizar pagocomprobante, mantener en localStorage
     }
   }
 
@@ -314,9 +333,12 @@ export const syncOffline = async () => {
     try {
       await api.post('/pagos/pago-cambios/', pc);
       results.pagocambios += 1;
-      const arr = JSON.parse(localStorage.getItem('pagocambios') || '[]').filter(x => (x.pcp_id || x.id) !== (pc.pcp_id || pc.id));
+      const arr = JSON.parse(localStorage.getItem('pagocambios') || '[]').filter(
+        (x) => (x.pcp_id || x.id) !== (pc.pcp_id || pc.id)
+      );
       localStorage.setItem('pagocambios', JSON.stringify(arr));
     } catch (err) {
+      // Error al sincronizar pagocambio, mantener en localStorage
     }
   }
 

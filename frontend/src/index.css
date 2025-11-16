@@ -3,8 +3,18 @@
 @tailwind utilities;
 
 body {
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+  font-family:
+    'Inter',
+    -apple-system,
+    BlinkMacSystemFont,
+    'Segoe UI',
+    'Roboto',
+    'Oxygen',
+    'Ubuntu',
+    'Cantarell',
+    'Fira Sans',
+    'Droid Sans',
+    'Helvetica Neue',
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -47,7 +57,9 @@ body {
   }
 }
 
-input, textarea, select {
+input,
+textarea,
+select {
   background-color: white !important;
   color: black;
 }
@@ -67,17 +79,27 @@ input, textarea, select {
 /* Inputs placed on a white background should default to dark text for readability. */
 @layer components {
   /* Inputs that have white background directly */
-  input.bg-white, select.bg-white, textarea.bg-white, .input-scout.bg-white {
+  input.bg-white,
+  select.bg-white,
+  textarea.bg-white,
+  .input-scout.bg-white {
     @apply text-gray-900;
   }
 
   /* Inputs inside a white card or element */
-  .bg-white input, .bg-white select, .bg-white textarea, .bg-white .input-scout {
+  .bg-white input,
+  .bg-white select,
+  .bg-white textarea,
+  .bg-white .input-scout {
     @apply text-gray-900;
   }
 
   /* Make placeholder legible on white backgrounds */
-  input.bg-white::placeholder, textarea.bg-white::placeholder, .input-scout.bg-white::placeholder, .bg-white input::placeholder, .bg-white textarea::placeholder {
+  input.bg-white::placeholder,
+  textarea.bg-white::placeholder,
+  .input-scout.bg-white::placeholder,
+  .bg-white input::placeholder,
+  .bg-white textarea::placeholder {
     @apply text-gray-400;
   }
 }

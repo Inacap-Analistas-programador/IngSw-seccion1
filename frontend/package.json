@@ -37,6 +37,7 @@
     "react-dom": "^18.2.0",
     "react-google-places-autocomplete": "^4.1.0",
     "react-helmet": "^6.1.0",
+    "react-icons": "^5.5.0",
     "react-router-dom": "^6.16.0",
     "tailwind-merge": "^1.14.0",
     "tailwindcss-animate": "^1.0.7"
@@ -53,6 +54,7 @@
     "@types/react": "^18.2.15",
     "@types/react-dom": "^18.2.7",
     "@vitejs/plugin-react": "^4.0.3",
+    "@vitest/coverage-v8": "^1.6.1",
     "@vitest/ui": "^1.6.1",
     "autoprefixer": "^10.4.16",
     "eslint": "^8.57.1",

@@ -93,7 +93,7 @@ class PersonaIndividual(models.Model):
 
 class PersonaVehiculo(models.Model):
     pev_id = models.AutoField(primary_key=True)
-    pec_id = models.ForeignKey('personas.PersonaCurso', on_delete=models.CASCADE, db_column='pec_id', null=True, blank=True)
+    pec_id = models.ForeignKey('personas.PersonaCurso', on_delete=models.CASCADE, db_column='pec_id')
     pev_marca = models.CharField(max_length=50)
     pev_modelo = models.CharField(max_length=50)
     pev_patente = models.CharField(max_length=10)

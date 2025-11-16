@@ -1,4 +1,5 @@
 from django.db import models
+from django.contrib.auth.hashers import make_password, check_password
 
 class Usuario(models.Model):
     # usu_id: Identificador único del usuario (clave primaria)
@@ -7,14 +8,14 @@ class Usuario(models.Model):
     pel_id = models.ForeignKey('maestros.Perfil', on_delete=models.CASCADE, db_column='pel_id')
     # usu_username: Nombre de usuario para el inicio de sesión
     usu_username = models.CharField(max_length=100, unique=True)
-    # usu_password: Contraseña del usuario (debe ser hasheada en la aplicación)
-    usu_password = models.CharField(max_length=128) # Django usa max_length=128 para contraseñas hasheadas
+    # usu_password: Contraseña del usuario (hasheada con Django's password hashers)
+    usu_password = models.CharField(max_length=255)  # Increased to 255 for hashed passwords
     # usu_email: Correo electrónico del usuario
-    usu_email = models.EmailField(max_length=100, null=True, blank=True)
+    usu_email = models.EmailField(max_length=100, unique=True)
     # usu_ruta_foto: Ruta al archivo de la foto del perfil del usuario
-    usu_ruta_foto = models.CharField(max_length=255)
+    usu_ruta_foto = models.CharField(max_length=255, blank=True, null=True)
     # usu_vigente: Indica si el usuario está activo (True) o inactivo (False)
-    usu_vigente = models.BooleanField()
+    usu_vigente = models.BooleanField(default=True)
 
     class Meta:
         db_table = 'usuario' # Nombre de la tabla en la base de datos
@@ -23,6 +24,14 @@ class Usuario(models.Model):
 
     def __str__(self):
         return self.usu_username
+
+    def set_password(self, raw_password):
+        """Hash and set the user's password"""
+        self.usu_password = make_password(raw_password)
+
+    def check_password(self, raw_password):
+        """Check if the provided password is correct"""
+        return check_password(raw_password, self.usu_password)
 
 
 from maestros.models import Perfil, Aplicacion

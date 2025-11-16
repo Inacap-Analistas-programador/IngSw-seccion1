@@ -10,7 +10,7 @@ export const useAuth = () => {
     // Verificar si hay un token guardado al montar el componente
     const token = localStorage.getItem(STORAGE_KEYS.AUTH_TOKEN);
     const userData = localStorage.getItem(STORAGE_KEYS.USER_DATA);
-    
+
     if (token && userData) {
       try {
         setUser(JSON.parse(userData));

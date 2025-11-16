@@ -2,7 +2,7 @@ import { Helmet } from 'react-helmet';
 import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/Button';
-import { Calendar, Users, Award, KeyRound } from 'lucide-react';
+import { FaCalendarDays, FaUsers, FaAward, FaKey } from 'react-icons/fa6';
 
 const HomePage = () => {
   const navigate = useNavigate();
@@ -14,7 +14,7 @@ const HomePage = () => {
       description: 'Introducción a los fundamentos del movimiento Scout y metodología educativa.',
       startDate: '15 Enero 2026',
       endDate: '20 Enero 2026',
-      location: 'Centro Scout Nacional'
+      location: 'Centro Scout Nacional',
     },
     {
       id: 2,
@@ -22,7 +22,7 @@ const HomePage = () => {
       description: 'Desarrollo de habilidades de liderazgo y gestión de equipos Scout.',
       startDate: '10 Febrero 2026',
       endDate: '15 Febrero 2026',
-      location: 'Campamento Regional'
+      location: 'Campamento Regional',
     },
     {
       id: 3,
@@ -30,15 +30,18 @@ const HomePage = () => {
       description: 'Técnicas avanzadas de campismo, orientación y supervivencia.',
       startDate: '5 Marzo 2026',
       endDate: '10 Marzo 2026',
-      location: 'Base Scout Cordillera'
-    }
+      location: 'Base Scout Cordillera',
+    },
   ];
 
   return (
     <>
       <Helmet>
         <title>Scout - Plataforma de Formación</title>
-        <meta name="description" content="Plataforma oficial de formación Scout. Inscríbete en nuestros cursos y desarrolla tus habilidades como dirigente Scout." />
+        <meta
+          name="description"
+          content="Plataforma oficial de formación Scout. Inscríbete en nuestros cursos y desarrolla tus habilidades como dirigente Scout."
+        />
       </Helmet>
 
       <div className="min-h-screen bg-white">
@@ -47,19 +50,19 @@ const HomePage = () => {
           <div className="container mx-auto px-4 py-4 flex justify-between items-center">
             <div className="flex items-center space-x-3">
               <div className="w-12 h-12 bg-white rounded-full flex items-center justify-center">
-                <Award className="w-8 h-8 text-[#001558]" />
+                <FaAward className="w-8 h-8 text-[#001558]" />
               </div>
               <span className="text-2xl font-bold">Scout Formación</span>
             </div>
             <div className="flex space-x-3">
-              <Button 
-                onClick={() => navigate('/panel')}
+              <Button
+                onClick={() => navigate('/dashboard')}
                 className="bg-white text-[#001558] hover:bg-primary/5 transition-all duration-300"
               >
                 Panel
               </Button>
-              <Button 
-                onClick={() => navigate('/coordinador/ingreso')}
+              <Button
+                onClick={() => navigate('/coordinador/login')}
                 className="bg-white text-[#001558] hover:bg-primary/5 transition-all duration-300"
               >
                 Ingreso Coordinador
@@ -80,10 +83,11 @@ const HomePage = () => {
                 Bienvenido a la Plataforma Scout
               </h1>
               <p className="text-xl md:text-2xl mb-8 max-w-3xl mx-auto">
-                Desarrolla tus habilidades como dirigente Scout a través de nuestros cursos de formación especializados
+                Desarrolla tus habilidades como dirigente Scout a través de nuestros cursos de
+                formación especializados
               </p>
-              <Button 
-                onClick={() => navigate('/pre-inscripcion')}
+              <Button
+                onClick={() => navigate('/preinscripcion')}
                 size="lg"
                 className="bg-white text-[#001558] hover:bg-primary/5 text-lg px-8 py-6 rounded-full shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:scale-105"
               >
@@ -97,15 +101,20 @@ const HomePage = () => {
                 className="mt-12 max-w-sm mx-auto bg-white/10 backdrop-blur-sm rounded-xl p-6 shadow-lg border border-white/20"
               >
                 <div className="flex items-center justify-center mb-4">
-                  <KeyRound className="w-6 h-6 mr-3 text-primary-foreground" />
+                  <FaKey className="w-6 h-6 mr-3 text-primary-foreground" />
                   <h3 className="text-xl font-semibold text-white">Credenciales de Coordinador</h3>
                 </div>
                 <div className="text-left space-y-2 text-primary-foreground">
-                  <p><span className="font-semibold text-primary-foreground">Correo:</span> coordinador@scout.cl</p>
-                  <p><span className="font-semibold text-primary-foreground">Contraseña:</span> scout2024</p>
+                  <p>
+                    <span className="font-semibold text-primary-foreground">Correo:</span>{' '}
+                    coordinador@scout.cl
+                  </p>
+                  <p>
+                    <span className="font-semibold text-primary-foreground">Contraseña:</span>{' '}
+                    scout2024
+                  </p>
                 </div>
               </motion.div>
-
             </motion.div>
           </div>
         </section>
@@ -136,28 +145,24 @@ const HomePage = () => {
                   >
                     <div className="bg-primary h-2"></div>
                     <div className="p-6">
-                      <h3 className="text-2xl font-bold mb-3 text-[#001558]">
-                        {course.name}
-                      </h3>
-                      <p className="text-gray-600 mb-4 min-h-[60px]">
-                        {course.description}
-                      </p>
+                      <h3 className="text-2xl font-bold mb-3 text-[#001558]">{course.name}</h3>
+                      <p className="text-gray-600 mb-4 min-h-[60px]">{course.description}</p>
                       <div className="space-y-2 text-sm text-gray-700">
                         <div className="flex items-center space-x-2">
-                          <Calendar className="w-4 h-4 text-[#001558]" />
+                          <FaCalendarDays className="w-4 h-4 text-[#001558]" />
                           <span>Inicio: {course.startDate}</span>
                         </div>
                         <div className="flex items-center space-x-2">
-                          <Calendar className="w-4 h-4 text-[#001558]" />
+                          <FaCalendarDays className="w-4 h-4 text-[#001558]" />
                           <span>Término: {course.endDate}</span>
                         </div>
                         <div className="flex items-center space-x-2">
-                          <Users className="w-4 h-4 text-[#001558]" />
+                          <FaUsers className="w-4 h-4 text-[#001558]" />
                           <span>{course.location}</span>
                         </div>
                       </div>
-                      <Button 
-                        onClick={() => navigate('/pre-inscripcion')}
+                      <Button
+                        onClick={() => navigate('/preinscripcion')}
                         className="w-full mt-6 bg-primary hover:bg-primary/90 text-primary-foreground transition-colors duration-300"
                       >
                         Inscribirse
@@ -176,12 +181,14 @@ const HomePage = () => {
             <div className="flex flex-col md:flex-row justify-between items-center">
               <div className="flex items-center space-x-3 mb-4 md:mb-0">
                 <div className="w-10 h-10 bg-white rounded-full flex items-center justify-center">
-                  <Award className="w-6 h-6 text-primary-foreground" />
+                  <FaAward className="w-6 h-6 text-[#001558]" />
                 </div>
                 <span className="text-xl font-bold">Scout Formación</span>
               </div>
               <div className="text-center md:text-right">
-                <p className="text-primary-foreground">© 2025 Scout Formación. Todos los derechos reservados.</p>
+                <p className="text-primary-foreground">
+                  © 2025 Scout Formación. Todos los derechos reservados.
+                </p>
                 <p className="text-primary-foreground text-sm mt-1">Siempre Listo para Servir</p>
               </div>
             </div>

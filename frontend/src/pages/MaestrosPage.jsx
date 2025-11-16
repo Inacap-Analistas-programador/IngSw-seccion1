@@ -41,7 +41,7 @@ const MaestrosPage = () => {
               <div className="flex items-center space-x-4">
                 <Button
                   variant="ghost"
-                  onClick={() => navigate('/panel')}
+                  onClick={() => navigate('/dashboard')}
                   className="text-white hover:bg-scout-azul-medio"
                 >
                   <ChevronLeft className="w-5 h-5 mr-2" />
@@ -65,7 +65,9 @@ const MaestrosPage = () => {
                 className="cursor-pointer hover:shadow-xl hover:scale-105 transition-all duration-300"
                 onClick={() => navigate(maestro.path)}
               >
-                <h2 className="text-xl font-semibold text-scout-azul-oscuro mb-2">{maestro.name}</h2>
+                <h2 className="text-xl font-semibold text-scout-azul-oscuro mb-2">
+                  {maestro.name}
+                </h2>
                 <p className="text-gray-600">Gestionar {maestro.name.toLowerCase()}.</p>
               </Card>
             ))}

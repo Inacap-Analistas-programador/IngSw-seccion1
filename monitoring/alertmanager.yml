@@ -1,0 +1,33 @@
+global:
+  resolve_timeout: 5m
+
+route:
+  group_by: ['alertname', 'severity']
+  group_wait: 10s
+  group_interval: 10s
+  repeat_interval: 12h
+  receiver: 'gic-team'
+
+receivers:
+  - name: 'gic-team'
+    email_configs:
+      - to: 'alerts@gic.scouts.cl'
+        from: 'alertmanager@gic.scouts.cl'
+        smarthost: 'smtp.gmail.com:587'
+        auth_username: 'your_email@gmail.com'
+        auth_password: 'your_password'
+        headers:
+          Subject: '[GIC Alert] {{ .GroupLabels.alertname }}'
+    # Descomentar para habilitar Slack
+    # slack_configs:
+    #   - api_url: 'https://hooks.slack.com/services/YOUR/WEBHOOK/URL'
+    #     channel: '#gic-alerts'
+    #     title: 'GIC Alert: {{ .GroupLabels.alertname }}'
+    #     text: '{{ range .Alerts }}{{ .Annotations.description }}{{ end }}'
+
+inhibit_rules:
+  - source_match:
+      severity: 'critical'
+    target_match:
+      severity: 'warning'
+    equal: ['alertname', 'instance']

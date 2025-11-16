@@ -1,14 +1,14 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { Users, BookOpen, CreditCard, TrendingUp } from 'lucide-react';
+import { FaUsers, FaBook, FaCreditCard, FaChartLine } from 'react-icons/fa6';
 import Card from '@/components/ui/Card';
 
 const DashboardEjecutivo = () => {
   const stats = [
-    { icon: Users, label: 'Total Participantes', value: '156', color: 'bg-blue-500' },
-    { icon: BookOpen, label: 'Cursos Activos', value: '8', color: 'bg-primary' },
-    { icon: CreditCard, label: 'Pagos Pendientes', value: '23', color: 'bg-yellow-500' },
-    { icon: TrendingUp, label: 'Ingresos del Mes', value: '$4,560', color: 'bg-purple-500' },
+    { icon: FaUsers, label: 'Total Participantes', value: '156', color: 'bg-blue-500' },
+    { icon: FaBook, label: 'Cursos Activos', value: '8', color: 'bg-primary' },
+    { icon: FaCreditCard, label: 'Pagos Pendientes', value: '23', color: 'bg-yellow-500' },
+    { icon: FaChartLine, label: 'Ingresos del Mes', value: '$4,560', color: 'bg-purple-500' },
   ];
 
   return (
@@ -23,15 +23,15 @@ const DashboardEjecutivo = () => {
             className="hover:shadow-lg transition-shadow duration-300"
           >
             <Card>
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm text-gray-600">{stat.label}</p>
-                <p className="text-3xl font-bold text-gray-800 mt-2">{stat.value}</p>
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm text-gray-600">{stat.label}</p>
+                  <p className="text-3xl font-bold text-gray-800 mt-2">{stat.value}</p>
+                </div>
+                <div className={`${stat.color} p-3 rounded-lg`}>
+                  <stat.icon className="w-6 h-6 text-white" />
+                </div>
               </div>
-              <div className={`${stat.color} p-3 rounded-lg`}>
-                <stat.icon className="w-6 h-6 text-white" />
-              </div>
-            </div>
             </Card>
           </motion.div>
         ))}

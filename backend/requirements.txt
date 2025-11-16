@@ -1,0 +1,42 @@
+# Django Framework
+Django==5.2.7
+django-cors-headers==4.3.1
+
+# Django REST Framework
+djangorestframework==3.14.0
+djangorestframework-simplejwt==5.3.1
+
+# Database
+# mysqlclient==2.2.4  # Para MySQL en producción - problemas con Python 3.14
+PyMySQL==1.1.1  # Alternativa pura Python compatible con MySQL
+cryptography==41.0.7  # Requerido por PyMySQL para conexiones seguras
+# SQLite viene incluido con Python para desarrollo
+
+# Security & Authentication
+PyJWT==2.8.0
+
+# API Documentation
+drf-yasg==1.21.7
+
+# Environment Variables
+python-decouple==3.8
+
+# Testing
+pytest==7.4.3
+pytest-django==4.7.0
+pytest-cov==4.1.0
+
+# Code Quality
+flake8==6.1.0
+black==23.12.0
+
+# Performance & Caching (opcional pero recomendado)
+redis==5.0.1
+django-redis==5.4.0
+
+# Task Queue (opcional para operaciones asíncronas)
+celery==5.3.4
+
+# Utilities
+python-dateutil==2.8.2
+pillow==12.0.0  # Para manejo de imágenes en perfiles - compatible con Python 3.14

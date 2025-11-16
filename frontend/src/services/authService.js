@@ -20,7 +20,7 @@ class AuthService {
   initSessionMonitoring() {
     // Verificar actividad del usuario
     const events = ['mousedown', 'keydown', 'scroll', 'touchstart'];
-    events.forEach(event => {
+    events.forEach((event) => {
       document.addEventListener(event, () => this.resetSessionTimer(), true);
     });
   }
@@ -32,7 +32,7 @@ class AuthService {
     if (this.sessionTimer) {
       clearTimeout(this.sessionTimer);
     }
-    
+
     if (this.isAuthenticated()) {
       this.sessionTimer = setTimeout(() => {
         this.logout('SESSION_TIMEOUT');
@@ -51,13 +51,13 @@ class AuthService {
     try {
       const payload = this.parseJWT(token);
       const now = Date.now() / 1000;
-      
+
       // Verificar expiración del token
       if (payload.exp && payload.exp < now) {
         this.logout('TOKEN_EXPIRED');
         return false;
       }
-      
+
       return true;
     } catch (error) {
       console.error('Error validating token:', error);
@@ -67,7 +67,7 @@ class AuthService {
 
   /**
    * Parsea un token JWT sin verificar la firma (verificación del backend)
-   * @param {string} token 
+   * @param {string} token
    * @returns {object}
    */
   parseJWT(token) {
@@ -77,7 +77,7 @@ class AuthService {
       const jsonPayload = decodeURIComponent(
         atob(base64)
           .split('')
-          .map(c => '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2))
+          .map((c) => '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2))
           .join('')
       );
       return JSON.parse(jsonPayload);
@@ -88,15 +88,15 @@ class AuthService {
 
   /**
    * Realiza el login del usuario
-   * @param {string} email 
-   * @param {string} password 
+   * @param {string} email
+   * @param {string} password
    * @returns {Promise<object>}
    */
   async login(email, password) {
     // Verificar intentos de login
     const attempts = this.getLoginAttempts(email);
     const lockoutUntil = this.getLockoutTime(email);
-    
+
     if (lockoutUntil && Date.now() < lockoutUntil) {
       const remainingTime = Math.ceil((lockoutUntil - Date.now()) / 60000);
       throw new Error(`Cuenta bloqueada. Intenta en ${remainingTime} minutos.`);
@@ -113,93 +113,55 @@ class AuthService {
     }
 
     try {
-      // TODO: Reemplazar con llamada real a la API
-      // const response = await fetch(`${API_BASE_URL}/api/auth/login`, {
-      //   method: 'POST',
-      //   headers: {
-      //     'Content-Type': 'application/json',
-      //   },
-      //   body: JSON.stringify({ email, password }),
-      // });
-
-      // Simulación temporal para desarrollo (REMOVER EN PRODUCCIÓN)
-      const mockResponse = await this.mockLogin(email, password);
+      const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000';
       
-      if (mockResponse.success) {
+      const response = await fetch(`${API_BASE_URL}/api/auth/login/`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email, password }),
+        credentials: 'include',
+      });
+
+      if (!response.ok) {
+        throw new Error('Credenciales inválidas');
+      }
+
+      const data = await response.json();
+
+      if (data.success) {
         // Limpiar intentos fallidos
         this.clearLoginAttempts(email);
-        
+
         // Almacenar tokens de forma segura
-        sessionStorage.setItem(AUTH_TOKEN_KEY, mockResponse.accessToken);
-        sessionStorage.setItem(REFRESH_TOKEN_KEY, mockResponse.refreshToken);
-        sessionStorage.setItem(USER_DATA_KEY, JSON.stringify(mockResponse.user));
-        
+        sessionStorage.setItem(AUTH_TOKEN_KEY, data.accessToken);
+        sessionStorage.setItem(REFRESH_TOKEN_KEY, data.refreshToken);
+        sessionStorage.setItem(USER_DATA_KEY, JSON.stringify(data.user));
+
         // Iniciar temporizador de sesión
         this.resetSessionTimer();
-        
+
         // Auditar login exitoso
         this.auditLog('LOGIN_SUCCESS', { email, timestamp: new Date().toISOString() });
-        
-        return mockResponse.user;
+
+        return data.user;
       } else {
         throw new Error('Credenciales inválidas');
       }
     } catch (error) {
       // Incrementar intentos fallidos
       this.incrementLoginAttempts(email);
-      
+
       if (this.getLoginAttempts(email) >= MAX_LOGIN_ATTEMPTS) {
         this.setLockoutTime(email, Date.now() + LOCKOUT_TIME);
         this.auditLog('ACCOUNT_LOCKED', { email, reason: 'MAX_ATTEMPTS' });
         throw new Error('Demasiados intentos fallidos. Cuenta bloqueada por 1 hora.');
       }
-      
+
       this.auditLog('LOGIN_FAILED', { email, error: error.message });
       throw error;
     }
-  }
-
-  /**
-   * Mock de login para desarrollo (REMOVER EN PRODUCCIÓN)
-   */
-  async mockLogin(email, password) {
-    // Simular delay de red
-    await new Promise(resolve => setTimeout(resolve, 500));
-    
-    // Credenciales de desarrollo
-    if (email === 'coordinador@scout.cl' && password === 'Scout2024!') {
-      return {
-        success: true,
-        accessToken: this.generateMockToken({
-          user_id: 1,
-          email: email,
-          rol: 'coordinador',
-          exp: Math.floor(Date.now() / 1000) + (15 * 60), // 15 minutos
-        }),
-        refreshToken: this.generateMockToken({
-          user_id: 1,
-          type: 'refresh',
-          exp: Math.floor(Date.now() / 1000) + (7 * 24 * 60 * 60), // 7 días
-        }),
-        user: {
-          id: 1,
-          email: email,
-          name: 'Coordinador Scout',
-          rol: 'coordinador',
-        }
-      };
-    }
-    
-    return { success: false };
-  }
-
-  /**
-   * Genera un token mock para desarrollo
-   */
-  generateMockToken(payload) {
-    const header = btoa(JSON.stringify({ alg: 'RS256', typ: 'JWT' }));
-    const body = btoa(JSON.stringify(payload));
-    return `${header}.${body}.mock_signature`;
   }
 
   /**
@@ -208,24 +170,24 @@ class AuthService {
    */
   logout(reason = 'USER_ACTION') {
     const userData = this.getCurrentUser();
-    
+
     // Limpiar tokens
     sessionStorage.removeItem(AUTH_TOKEN_KEY);
     sessionStorage.removeItem(REFRESH_TOKEN_KEY);
     sessionStorage.removeItem(USER_DATA_KEY);
-    
+
     // Limpiar timer
     if (this.sessionTimer) {
       clearTimeout(this.sessionTimer);
     }
-    
+
     // Auditar logout
-    this.auditLog('LOGOUT', { 
-      user: userData?.email, 
-      reason, 
-      timestamp: new Date().toISOString() 
+    this.auditLog('LOGOUT', {
+      user: userData?.email,
+      reason,
+      timestamp: new Date().toISOString(),
     });
-    
+
     // Redirigir al login si es necesario
     if (reason === 'SESSION_TIMEOUT') {
       window.location.href = '/coordinador/login?reason=timeout';
@@ -256,7 +218,7 @@ class AuthService {
 
   /**
    * Valida formato de email
-   * @param {string} email 
+   * @param {string} email
    * @returns {boolean}
    */
   isValidEmail(email) {
@@ -305,7 +267,7 @@ class AuthService {
       userAgent: navigator.userAgent,
       ip: 'CLIENT_SIDE', // IP se captura en el backend
     };
-    
+
     // Guardar en sessionStorage (límite de 50 logs)
     const logs = this.getAuditLogs();
     logs.push(log);
@@ -313,7 +275,7 @@ class AuthService {
       logs.shift();
     }
     sessionStorage.setItem('gic_audit_logs', JSON.stringify(logs));
-    
+
     // TODO: Enviar al backend para auditoría permanente
     console.log('[AUDIT]', log);
   }

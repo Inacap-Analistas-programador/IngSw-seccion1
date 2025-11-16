@@ -3,7 +3,7 @@ import { Helmet } from 'react-helmet';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/Button';
-import { ChevronLeft, ChevronRight, Check, Award } from 'lucide-react';
+import { FaChevronLeft, FaChevronRight, FaCheck, FaAward } from 'react-icons/fa6';
 // import { useToast } from '@/components/ui/use-toast';
 import Step1PersonalData from '@/components/wizard/Step1PersonalData';
 import Step2ScoutInfo from '@/components/wizard/Step2ScoutInfo';
@@ -18,10 +18,13 @@ const PreRegistrationForm = () => {
   const navigate = useNavigate();
   // const { toast } = useToast();
   const [currentStep, setCurrentStep] = useState(1);
-  
+
   // Move console logs to useEffect to avoid side-effects in render (React Strict Mode friendly)
   useEffect(() => {
-    console.log('✅ Formulario de Pre-inscripción renderizado correctamente, paso actual:', currentStep);
+    console.log(
+      '✅ Formulario de Pre-inscripción renderizado correctamente, paso actual:',
+      currentStep
+    );
   }, [currentStep]);
   const [formData, setFormData] = useState({
     // Paso 1: Datos Personales (llaves en español para coherencia)
@@ -67,7 +70,7 @@ const PreRegistrationForm = () => {
     // Paso 5: Carga de Ficha Médica
     medicalFile: null,
     // Paso 6: Revisión
-    consent: false
+    consent: false,
   });
 
   const totalSteps = 6;
@@ -78,7 +81,7 @@ const PreRegistrationForm = () => {
     { number: 3, title: 'Salud y Alimentación', component: Step3Health },
     { number: 4, title: 'Datos Adicionales', component: Step4AdditionalData },
     { number: 5, title: 'Carga de Ficha Médica', component: Step5MedicalFile },
-    { number: 6, title: 'Revisión y Confirmación', component: Step6Review }
+    { number: 6, title: 'Revisión y Confirmación', component: Step6Review },
   ];
 
   const handleStepClick = (stepNumber) => {
@@ -102,7 +105,7 @@ const PreRegistrationForm = () => {
 
   const handleSubmit = async () => {
     if (!formData.consent) {
-      alert("Debes aceptar los términos y condiciones para continuar.");
+      alert('Debes aceptar los términos y condiciones para continuar.');
       return;
     }
 
@@ -110,7 +113,7 @@ const PreRegistrationForm = () => {
     const newRegistration = {
       id: Date.now(),
       ...formData,
-      submittedAt: new Date().toISOString()
+      submittedAt: new Date().toISOString(),
     };
     existingRegistrations.push(newRegistration);
     localStorage.setItem('preregistrations', JSON.stringify(existingRegistrations));
@@ -153,7 +156,7 @@ const PreRegistrationForm = () => {
       habilitacion2: false,
       verificacion: false,
       historialCapacitaciones: '',
-      fechaCreacion: new Date().toISOString()
+      fechaCreacion: new Date().toISOString(),
     };
 
     try {
@@ -166,7 +169,7 @@ const PreRegistrationForm = () => {
       localStorage.setItem('personas', JSON.stringify(personas));
     }
 
-    alert("¡Pre-inscripción Exitosa! Tu pre-inscripción ha sido registrada correctamente.");
+    alert('¡Pre-inscripción Exitosa! Tu pre-inscripción ha sido registrada correctamente.');
 
     setTimeout(() => {
       navigate('/');
@@ -183,9 +186,12 @@ const PreRegistrationForm = () => {
     <>
       <Helmet>
         <title>Pre-inscripción - Scout Formación</title>
-        <meta name="description" content="Completa tu pre-inscripción para los cursos de formación Scout." />
+        <meta
+          name="description"
+          content="Completa tu pre-inscripción para los cursos de formación Scout."
+        />
       </Helmet>
-      
+
       <div className="min-h-screen bg-gray-50">
         {/* Encabezado */}
         <div className="bg-primary text-primary-foreground shadow-lg">
@@ -193,12 +199,12 @@ const PreRegistrationForm = () => {
             <div className="flex items-center justify-between">
               <div className="flex items-center space-x-3">
                 <div className="w-10 h-10 bg-white rounded-full flex items-center justify-center">
-                  <Award className="w-6 h-6 text-[#001558]" />
+                  <FaAward className="w-6 h-6 text-[#001558]" />
                 </div>
                 <span className="text-xl font-bold">Formulario de Pre-inscripción Scout</span>
               </div>
-              <Button 
-                variant="ghost" 
+              <Button
+                variant="ghost"
                 onClick={() => navigate('/')}
                 className="text-white hover:bg-primary/90"
               >
@@ -215,32 +221,41 @@ const PreRegistrationForm = () => {
               {steps.map((step, index) => (
                 <React.Fragment key={step.number}>
                   <div className="flex flex-col items-center">
-                    <div className={`w-10 h-10 rounded-full flex items-center justify-center font-bold transition-all duration-300 ${
-                      currentStep > step.number 
-                        ? 'bg-primary text-primary-foreground' 
-                        : currentStep === step.number 
-                        ? 'bg-primary text-primary-foreground ring-4 ring-primary/30' 
-                        : 'bg-gray-200 text-gray-500'
-                    }`}>
-                      {currentStep > step.number ? <Check className="w-5 h-5" /> : step.number}
+                    <div
+                      className={`w-10 h-10 rounded-full flex items-center justify-center font-bold transition-all duration-300 ${
+                        currentStep > step.number
+                          ? 'bg-primary text-primary-foreground'
+                          : currentStep === step.number
+                            ? 'bg-primary text-primary-foreground ring-4 ring-primary/30'
+                            : 'bg-gray-200 text-gray-500'
+                      }`}
+                    >
+                      {currentStep > step.number ? <FaCheck className="w-5 h-5" /> : step.number}
                     </div>
-                    <span className={`text-xs mt-2 text-center hidden md:block ${
-                      currentStep >= step.number ? 'text-[#001558] font-semibold' : 'text-gray-500'
-                    }`}>
+                    <span
+                      className={`text-xs mt-2 text-center hidden md:block ${
+                        currentStep >= step.number
+                          ? 'text-[#001558] font-semibold'
+                          : 'text-gray-500'
+                      }`}
+                    >
                       {step.title}
                     </span>
                   </div>
                   {index < steps.length - 1 && (
-                    <div className={`flex-1 h-1 mx-2 transition-all duration-300 ${
-                      currentStep > step.number ? 'bg-primary' : 'bg-gray-200'
-                    }`}></div>
+                    <div
+                      className={`flex-1 h-1 mx-2 transition-all duration-300 ${
+                        currentStep > step.number ? 'bg-primary' : 'bg-gray-200'
+                      }`}
+                    ></div>
                   )}
                 </React.Fragment>
               ))}
             </div>
             <div className="text-center">
               <p className="text-sm text-gray-600">
-                Paso {currentStep} de {totalSteps}: <span className="font-semibold text-[#001558]">{steps[currentStep - 1].title}</span>
+                Paso {currentStep} de {totalSteps}:{' '}
+                <span className="font-semibold text-[#001558]">{steps[currentStep - 1].title}</span>
               </p>
             </div>
           </div>
@@ -262,10 +277,7 @@ const PreRegistrationForm = () => {
                 exit={{ opacity: 0, x: -20 }}
                 transition={{ duration: 0.3 }}
               >
-                <CurrentStepComponent 
-                  formData={formData} 
-                  updateFormData={updateFormData}
-                />
+                <CurrentStepComponent formData={formData} updateFormData={updateFormData} />
               </motion.div>
             </AnimatePresence>
 
@@ -277,7 +289,7 @@ const PreRegistrationForm = () => {
                 variant="outline"
                 className="border border-border text-[#001558] hover:bg-primary/5"
               >
-                <ChevronLeft className="w-4 h-4 mr-2" />
+                <FaChevronLeft className="w-4 h-4 mr-2" />
                 Anterior
               </Button>
 
@@ -287,14 +299,14 @@ const PreRegistrationForm = () => {
                   className="bg-primary hover:bg-primary/90 text-primary-foreground"
                 >
                   Siguiente
-                  <ChevronRight className="w-4 h-4 ml-2" />
+                  <FaChevronRight className="w-4 h-4 ml-2" />
                 </Button>
               ) : (
                 <Button
                   onClick={handleSubmit}
                   className="bg-primary hover:bg-primary/90 text-primary-foreground"
                 >
-                  <Check className="w-4 h-4 mr-2" />
+                  <FaCheck className="w-4 h-4 mr-2" />
                   Enviar Pre-inscripción
                 </Button>
               )}

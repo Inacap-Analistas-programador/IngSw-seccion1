@@ -5,21 +5,21 @@ import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/Button';
 import api from '@/config/api';
 import { personasFromApi } from '@/lib/mappers';
-import { 
-  Plus, 
-  Search, 
-  Filter, 
-  Edit, 
-  Trash2, 
-  User, 
-  Phone, 
-  Mail, 
+import {
+  Plus,
+  Search,
+  Filter,
+  Edit,
+  Trash2,
+  User,
+  Phone,
+  Mail,
   MapPin,
   Calendar,
   Award,
   ChevronLeft,
   Eye,
-  Clock
+  Clock,
 } from 'lucide-react';
 import Card from '@/components/ui/Card';
 
@@ -51,7 +51,7 @@ const PersonasPage = () => {
   const handleDeletePersona = (id) => {
     // This should be implemented to make an API call to delete the persona
     if (window.confirm('¿Está seguro de que desea eliminar esta persona?')) {
-      console.log(`Deleting persona with id: ${id}`);
+      // TODO: Implement API call to delete persona
     }
   };
 
@@ -67,7 +67,10 @@ const PersonasPage = () => {
     <>
       <Helmet>
         <title>Gestión de Personas - Scout Formación</title>
-        <meta name="description" content="Gestión CRUD de personas registradas - Ver, modificar y eliminar registros." />
+        <meta
+          name="description"
+          content="Gestión CRUD de personas registradas - Ver, modificar y eliminar registros."
+        />
       </Helmet>
 
       <div className="min-h-screen bg-gray-50">
@@ -78,7 +81,7 @@ const PersonasPage = () => {
               <div className="flex items-center space-x-4">
                 <Button
                   variant="ghost"
-                  onClick={() => navigate('/panel')}
+                  onClick={() => navigate('/dashboard')}
                   className="text-white hover:bg-scout-azul-medio"
                 >
                   <ChevronLeft className="w-5 h-5 mr-2" />
@@ -106,13 +109,17 @@ const PersonasPage = () => {
                 Lista de Personas ({personas.length})
               </h2>
             </div>
-            
+
             {personas.length === 0 ? (
               <div className="p-12 text-center">
                 <User className="w-16 h-16 text-gray-300 mx-auto mb-4" />
-                <h3 className="text-lg font-medium text-gray-900 mb-2">No hay personas registradas</h3>
-                <p className="text-gray-500 mb-4">Las personas se registran a través del proceso de preinscripción.</p>
-                <Button 
+                <h3 className="text-lg font-medium text-gray-900 mb-2">
+                  No hay personas registradas
+                </h3>
+                <p className="text-gray-500 mb-4">
+                  Las personas se registran a través del proceso de preinscripción.
+                </p>
+                <Button
                   onClick={() => navigate('/preinscripcion')}
                   className="bg-scout-azul-medio hover:bg-scout-azul-oscuro"
                 >
@@ -147,7 +154,7 @@ const PersonasPage = () => {
                   </thead>
                   <tbody className="bg-white divide-y divide-gray-200">
                     {personas.map((persona, index) => (
-                      <motion.tr 
+                      <motion.tr
                         key={persona.id || index}
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
@@ -177,11 +184,13 @@ const PersonasPage = () => {
                           </div>
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap">
-                          <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${
-                            persona.vigente ? 
-                            'bg-green-100 text-green-800' : 
-                            'bg-red-100 text-red-800'
-                          }`}>
+                          <span
+                            className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${
+                              persona.vigente
+                                ? 'bg-green-100 text-green-800'
+                                : 'bg-red-100 text-red-800'
+                            }`}
+                          >
                             {persona.vigente ? 'Activo' : 'Inactivo'}
                           </span>
                         </td>

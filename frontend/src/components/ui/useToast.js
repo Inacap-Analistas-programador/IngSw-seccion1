@@ -1,4 +1,4 @@
-import { useContext } from 'react';
+import React, { useContext } from 'react';
 
 // Should be one of the parents of the component that calls `useToast`.
 const ToastContext = React.createContext(undefined);
@@ -17,7 +17,7 @@ function useToast() {
   const [toasts, setToasts] = useToastState();
 
   function toast(options) {
-    setToasts(currentToasts => [
+    setToasts((currentToasts) => [
       ...currentToasts,
       {
         ...options,

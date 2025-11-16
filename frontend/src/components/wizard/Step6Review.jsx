@@ -14,7 +14,9 @@ const Step6Review = ({ formData, updateFormData }) => {
         <div className="grid md:grid-cols-2 gap-4">
           <div>
             <p className="text-sm text-gray-600">Nombre Completo</p>
-            <p className="font-semibold text-gray-800">{formData.nombreCompleto || 'No especificado'}</p>
+            <p className="font-semibold text-gray-800">
+              {formData.nombreCompleto || 'No especificado'}
+            </p>
           </div>
           <div>
             <p className="text-sm text-gray-600">RUT</p>
@@ -50,15 +52,21 @@ const Step6Review = ({ formData, updateFormData }) => {
           </div>
           <div>
             <p className="text-sm text-gray-600">Rama</p>
-            <p className="font-semibold text-gray-800">{formData.ramaFormacion || 'No especificado'}</p>
+            <p className="font-semibold text-gray-800">
+              {formData.ramaFormacion || 'No especificado'}
+            </p>
           </div>
           <div>
             <p className="text-sm text-gray-600">Tiempo trabajo con NNAJ</p>
-            <p className="font-semibold text-gray-800">{formData.tiempoTrabajoNNAJ || 'No especificado'}</p>
+            <p className="font-semibold text-gray-800">
+              {formData.tiempoTrabajoNNAJ || 'No especificado'}
+            </p>
           </div>
           <div>
             <p className="text-sm text-gray-600">Tiempo trabajo con Adultos</p>
-            <p className="font-semibold text-gray-800">{formData.tiempoTrabajoAdultos || 'No especificado'}</p>
+            <p className="font-semibold text-gray-800">
+              {formData.tiempoTrabajoAdultos || 'No especificado'}
+            </p>
           </div>
         </div>
       </div>
@@ -74,8 +82,8 @@ const Step6Review = ({ formData, updateFormData }) => {
             <Label htmlFor="consent" className="cursor-pointer">
               <span className="font-semibold text-gray-800">Acepto los términos y condiciones</span>
               <p className="text-sm text-gray-600 mt-1">
-                Confirmo que la información proporcionada es correcta y autorizo el uso de mis datos personales 
-                para fines de inscripción en los cursos de formación Scout.
+                Confirmo que la información proporcionada es correcta y autorizo el uso de mis datos
+                personales para fines de inscripción en los cursos de formación Scout.
               </p>
             </Label>
           </div>
