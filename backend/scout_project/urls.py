@@ -53,4 +53,5 @@ urlpatterns = [
     path("api/proveedores/", include("proveedores.urls")),
     path("api/pagos/", include("pagos.urls")),
     path("api/geografia/", include("geografia.urls")),
+    path("api/emails/", include("emails.urls")),
 ]
