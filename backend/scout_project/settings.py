@@ -152,8 +152,11 @@ CORS_ALLOW_HEADERS = [
 ]
 
 # Security settings for production
+# Allow explicit control over SSL redirect via environment variable
+# Default to True only in production (DEBUG=False), but can be overridden
+SECURE_SSL_REDIRECT = config('SECURE_SSL_REDIRECT', default=not DEBUG, cast=bool)
+
 if not DEBUG:
-    SECURE_SSL_REDIRECT = True
     SESSION_COOKIE_SECURE = True
     CSRF_COOKIE_SECURE = True
     SECURE_BROWSER_XSS_FILTER = True

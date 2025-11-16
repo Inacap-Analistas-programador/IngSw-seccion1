@@ -9,6 +9,22 @@ Este archivo contiene comandos para verificar rápidamente que el backend está 
 pip install django==5.2.7 djangorestframework django-cors-headers
 ```
 
+### Configuración del Archivo .env
+
+Para desarrollo local, copia el archivo `.env.development` a `.env`:
+
+```bash
+cd backend
+cp .env.development .env
+```
+
+Este archivo configura:
+- `DJANGO_DEBUG=True` para modo de desarrollo
+- `SECURE_SSL_REDIRECT=False` para evitar redirecciones HTTPS en desarrollo local
+- `CORS_ALLOW_ALL=True` para desarrollo
+
+**IMPORTANTE:** El archivo `.env` no se debe subir al repositorio (está en `.gitignore`).
+
 ## Verificación Rápida (5 minutos)
 
 ### 1. Verificar Configuración Django
