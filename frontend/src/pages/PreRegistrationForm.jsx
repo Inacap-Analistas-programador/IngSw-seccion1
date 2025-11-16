@@ -109,16 +109,6 @@ const PreRegistrationForm = () => {
       return;
     }
 
-    const existingRegistrations = JSON.parse(localStorage.getItem('preregistrations') || '[]');
-    const newRegistration = {
-      id: Date.now(),
-      ...formData,
-      submittedAt: new Date().toISOString(),
-    };
-    existingRegistrations.push(newRegistration);
-    localStorage.setItem('preregistrations', JSON.stringify(existingRegistrations));
-
-    const personas = JSON.parse(localStorage.getItem('personas') || '[]');
     const [nombres, ...apellidos] = (formData.nombreCompleto || '').split(' ');
     const apellidoPaterno = apellidos[0] || '';
     const apellidoMaterno = apellidos.slice(1).join(' ') || '';
@@ -163,17 +153,16 @@ const PreRegistrationForm = () => {
       // Enviar al backend con mapeador para mantener coherencia con la API (per_*)
       await api.post('/personas/', personaToApi(newPersona));
       console.log('Persona enviada al API correctamente');
+      
+      alert('¡Pre-inscripción Exitosa! Tu pre-inscripción ha sido registrada correctamente.');
+      
+      setTimeout(() => {
+        navigate('/');
+      }, 2000);
     } catch (err) {
-      console.warn('API persona POST falló, se guarda en localStorage:', err);
-      personas.push(newPersona);
-      localStorage.setItem('personas', JSON.stringify(personas));
+      console.error('Error al enviar pre-inscripción:', err);
+      alert('Error al enviar la pre-inscripción. Por favor, verifica tu conexión e intenta nuevamente.');
     }
-
-    alert('¡Pre-inscripción Exitosa! Tu pre-inscripción ha sido registrada correctamente.');
-
-    setTimeout(() => {
-      navigate('/');
-    }, 2000);
   };
 
   const updateFormData = (data) => {

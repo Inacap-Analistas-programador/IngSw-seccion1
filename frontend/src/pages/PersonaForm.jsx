@@ -95,22 +95,13 @@ const PersonaForm = () => {
           const mapped = personaFromApi(response.data);
           setFormData(mapped);
         } catch (err) {
-          console.warn('No se pudo obtener persona por API, usando localStorage', err);
-          const personas = JSON.parse(localStorage.getItem('personas') || '[]');
-          const persona = personas.find((p) => p.id === parseInt(id));
-          if (persona) {
-            const mappedPersona = {
-              ...persona,
-              correo: persona.correo || persona.email || '',
-              telefono: persona.telefono || persona.phone || '',
-              tipoTelefono: persona.tipoTelefono || persona.phoneType || 1,
-            };
-            setFormData(mappedPersona);
-          }
+          console.error('Error al obtener persona:', err);
+          alert('No se pudo cargar la información de la persona. Verifica tu conexión.');
+          navigate('/dashboard');
         }
       })();
     }
-  }, [id, isEdit]);
+  }, [id, isEdit, navigate]);
 
   const validateForm = () => {
     const newErrors = {};
@@ -151,53 +142,22 @@ const PersonaForm = () => {
     setLoading(true);
 
     try {
-      const personas = JSON.parse(localStorage.getItem('personas') || '[]');
-
       if (isEdit) {
-        // Intentar actualizar vía API y fallback a localStorage
-        try {
-          await api.put(`/personas/${id}/`, personaToApi({ ...formData, id: parseInt(id) }));
-          console.log('Persona actualizada en API');
-        } catch (err) {
-          console.warn('Fallo al actualizar persona en API, guardando en localStorage', err);
-          const index = personas.findIndex((p) => p.id === parseInt(id));
-          if (index !== -1) {
-            personas[index] = { ...formData, id: parseInt(id) };
-          }
-        }
+        await api.put(`/personas/${id}/`, personaToApi({ ...formData, id: parseInt(id) }));
+        console.log('Persona actualizada en API');
+        navigate('/dashboard');
       } else {
-        // Crear nueva persona por API y fallback
         const newPersona = {
           ...formData,
           id: Date.now(),
         };
-        try {
-          await api.post('/personas/', personaToApi(newPersona));
-          console.log('Persona creada en API');
-        } catch (err) {
-          console.warn('Fallo al crear persona en API, guardando en localStorage', err);
-          personas.push(newPersona);
-
-          // Si es formador, agregar también a la lista de formadores (fallback)
-          if (formData.esFormador) {
-            const formadores = JSON.parse(localStorage.getItem('formadores') || '[]');
-            formadores.push({
-              id: newPersona.id,
-              personaId: newPersona.id,
-              habilitacion1: formData.habilitacion1,
-              habilitacion2: formData.habilitacion2,
-              verificacion: formData.verificacion,
-              historialCapacitaciones: formData.historialCapacitaciones,
-            });
-            localStorage.setItem('formadores', JSON.stringify(formadores));
-          }
-        }
+        await api.post('/personas/', personaToApi(newPersona));
+        console.log('Persona creada en API');
+        navigate('/dashboard');
       }
-
-      localStorage.setItem('personas', JSON.stringify(personas));
-      navigate('/dashboard');
     } catch (error) {
       console.error('Error al guardar persona:', error);
+      alert('Error al guardar la persona. Por favor, verifica tu conexión e intenta nuevamente.');
     } finally {
       setLoading(false);
     }
