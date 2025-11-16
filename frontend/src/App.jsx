@@ -16,6 +16,18 @@ const ProveedorForm = lazy(() => import('@/pages/ProveedorForm'));
 const TestPage = lazy(() => import('@/pages/TestPage'));
 const RegionList = lazy(() => import('@/components/geografia/RegionList'));
 
+// Maestros pages
+const CargosPage = lazy(() => import('@/pages/maestros/CargosPage'));
+const AlimentacionesPage = lazy(() => import('@/pages/maestros/AlimentacionesPage'));
+const ConceptosContablesPage = lazy(() => import('@/pages/maestros/ConceptosContablesPage'));
+const EstadosCivilesPage = lazy(() => import('@/pages/maestros/EstadosCivilesPage'));
+const GruposPage = lazy(() => import('@/pages/maestros/GruposPage'));
+const NivelesPage = lazy(() => import('@/pages/maestros/NivelesPage'));
+const RamasPage = lazy(() => import('@/pages/maestros/RamasPage'));
+const RolesPage = lazy(() => import('@/pages/maestros/RolesPage'));
+const TiposArchivoPage = lazy(() => import('@/pages/maestros/TiposArchivoPage'));
+const TiposCursoPage = lazy(() => import('@/pages/maestros/TiposCursoPage'));
+
 // Loading component
 const PageLoader = () => (
   <div className="flex items-center justify-center min-h-screen">
@@ -133,6 +145,88 @@ function App() {
               element={
                 <ProtectedRoute>
                   <RegionList />
+                </ProtectedRoute>
+              }
+            />
+            
+            {/* Rutas de maestros - protegidas */}
+            <Route
+              path="/maestros/cargos"
+              element={
+                <ProtectedRoute>
+                  <CargosPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/maestros/alimentaciones"
+              element={
+                <ProtectedRoute>
+                  <AlimentacionesPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/maestros/conceptos-contables"
+              element={
+                <ProtectedRoute>
+                  <ConceptosContablesPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/maestros/estados-civiles"
+              element={
+                <ProtectedRoute>
+                  <EstadosCivilesPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/maestros/grupos"
+              element={
+                <ProtectedRoute>
+                  <GruposPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/maestros/niveles"
+              element={
+                <ProtectedRoute>
+                  <NivelesPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/maestros/ramas"
+              element={
+                <ProtectedRoute>
+                  <RamasPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/maestros/roles"
+              element={
+                <ProtectedRoute>
+                  <RolesPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/maestros/tipos-archivo"
+              element={
+                <ProtectedRoute>
+                  <TiposArchivoPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/maestros/tipos-curso"
+              element={
+                <ProtectedRoute>
+                  <TiposCursoPage />
                 </ProtectedRoute>
               }
             />
