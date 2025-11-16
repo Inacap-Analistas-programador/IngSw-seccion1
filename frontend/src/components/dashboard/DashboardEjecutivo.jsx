@@ -8,7 +8,9 @@ import {
   FaUserCheck,
   FaCalendarDays,
 } from 'react-icons/fa6';
-import Card from '@/components/ui/Card';
+import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/Card';
+import { Badge } from '@/components/ui/Badge';
+import StatCard from '@/components/ui/StatCard';
 import { Button } from '@/components/ui/Button';
 import {
   TrendingUp,
@@ -124,21 +126,17 @@ const DashboardEjecutivo = () => {
   ];
 
   const getEstadoBadge = (estado) => {
-    const badges = {
-      activo: 'bg-green-100 text-green-800 border-green-200',
-      inscripcion: 'bg-blue-100 text-blue-800 border-blue-200',
-      completo: 'bg-gray-100 text-gray-800 border-gray-200',
+    const variants = {
+      activo: 'success',
+      inscripcion: 'info',
+      completo: 'default',
     };
     const labels = {
       activo: 'Activo',
       inscripcion: 'En Inscripción',
       completo: 'Completo',
     };
-    return (
-      <span className={`px-3 py-1 rounded-full text-xs font-medium border ${badges[estado]}`}>
-        {labels[estado]}
-      </span>
-    );
+    return <Badge variant={variants[estado]}>{labels[estado]}</Badge>;
   };
 
   return (
@@ -177,141 +175,133 @@ const DashboardEjecutivo = () => {
       {/* Stats Cards with Trends */}
       <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
         {stats.map((stat, index) => (
-          <motion.div
+          <StatCard
             key={stat.label}
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: index * 0.1 }}
-            className="hover:shadow-lg transition-shadow duration-300"
-          >
-            <Card>
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm text-gray-600">{stat.label}</p>
-                  <p className="text-3xl font-bold text-gray-800 mt-2">{stat.value}</p>
-                  <div className="flex items-center gap-1 mt-2">
-                    {stat.trend === 'up' ? (
-                      <TrendingUp className="w-4 h-4 text-green-600" />
-                    ) : (
-                      <TrendingDown className="w-4 h-4 text-green-600" />
-                    )}
-                    <span className="text-sm text-green-600 font-medium">{stat.change}</span>
-                    <span className="text-sm text-gray-500">vs {selectedPeriod} anterior</span>
-                  </div>
-                </div>
-                <div className={`${stat.color} p-3 rounded-lg`}>
-                  <stat.icon className="w-6 h-6 text-white" />
-                </div>
-              </div>
-            </Card>
-          </motion.div>
+            icon={stat.icon}
+            label={stat.label}
+            value={stat.value}
+            change={stat.change}
+            trend={stat.trend}
+            color={stat.color}
+            index={index}
+          />
         ))}
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Recent Courses */}
         <Card>
-          <div className="flex justify-between items-center mb-4">
-            <h2 className="text-xl font-bold text-gray-800">Cursos Próximos</h2>
-            <Button variant="ghost" size="sm">
-              Ver todos
-            </Button>
-          </div>
-          <div className="space-y-3">
-            {recentCourses.map((curso) => (
-              <div
-                key={curso.id}
-                className="p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors"
-              >
-                <div className="flex justify-between items-start mb-2">
-                  <h3 className="font-semibold text-gray-900">{curso.nombre}</h3>
-                  {getEstadoBadge(curso.estado)}
+          <CardHeader className="pb-3">
+            <div className="flex justify-between items-center">
+              <CardTitle className="text-xl">Cursos Próximos</CardTitle>
+              <Button variant="ghost" size="sm">
+                Ver todos
+              </Button>
+            </div>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-3">
+              {recentCourses.map((curso) => (
+                <div
+                  key={curso.id}
+                  className="p-4 border border-gray-200 rounded-lg hover:border-scout-azul-claro hover:bg-scout-azul-muy-claro/30 transition-all duration-200"
+                >
+                  <div className="flex justify-between items-start mb-3">
+                    <h3 className="font-semibold text-gray-900">{curso.nombre}</h3>
+                    {getEstadoBadge(curso.estado)}
+                  </div>
+                  <div className="space-y-2 text-sm text-gray-600">
+                    <div className="flex items-center gap-2">
+                      <Calendar className="w-4 h-4 text-scout-azul-medio" />
+                      <span>{curso.fecha}</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <MapPin className="w-4 h-4 text-scout-azul-medio" />
+                      <span>{curso.lugar}</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <Users className="w-4 h-4 text-scout-azul-medio" />
+                      <span>
+                        {curso.inscritos}/{curso.capacidad} participantes
+                      </span>
+                    </div>
+                  </div>
+                  <div className="mt-3">
+                    <div className="w-full bg-gray-200 rounded-full h-2">
+                      <div
+                        className="bg-gradient-to-r from-scout-azul-medio to-scout-azul-claro h-2 rounded-full transition-all duration-300"
+                        style={{ width: `${(curso.inscritos / curso.capacidad) * 100}%` }}
+                      ></div>
+                    </div>
+                  </div>
                 </div>
-                <div className="space-y-1 text-sm text-gray-600">
-                  <div className="flex items-center gap-2">
-                    <Calendar className="w-4 h-4" />
-                    <span>{curso.fecha}</span>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <MapPin className="w-4 h-4" />
-                    <span>{curso.lugar}</span>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <Users className="w-4 h-4" />
-                    <span>
-                      {curso.inscritos}/{curso.capacidad} participantes
-                    </span>
-                  </div>
-                </div>
-                <div className="mt-3">
-                  <div className="w-full bg-gray-200 rounded-full h-2">
-                    <div
-                      className="bg-blue-600 h-2 rounded-full transition-all duration-300"
-                      style={{ width: `${(curso.inscritos / curso.capacidad) * 100}%` }}
-                    ></div>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
+              ))}
+            </div>
+          </CardContent>
         </Card>
 
         {/* Recent Activity */}
         <Card>
-          <div className="flex justify-between items-center mb-4">
-            <h2 className="text-xl font-bold text-gray-800">Actividad Reciente</h2>
-            <Button variant="ghost" size="sm">
-              <Clock className="w-4 h-4 mr-1" />
-              Actualizar
-            </Button>
-          </div>
-          <div className="space-y-3">
-            {recentActivity.map((activity) => (
-              <motion.div
-                key={activity.id}
-                initial={{ opacity: 0, x: -20 }}
-                animate={{ opacity: 1, x: 0 }}
-                className="flex items-start gap-3 p-3 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors"
-              >
-                <div className={`mt-1 ${activity.color}`}>
-                  <activity.icon className="w-5 h-5" />
-                </div>
-                <div className="flex-1">
-                  <p className="text-sm text-gray-900">{activity.descripcion}</p>
-                  <p className="text-xs text-gray-500 mt-1">{activity.fecha}</p>
-                </div>
-              </motion.div>
-            ))}
-          </div>
+          <CardHeader className="pb-3">
+            <div className="flex justify-between items-center">
+              <CardTitle className="text-xl">Actividad Reciente</CardTitle>
+              <Button variant="ghost" size="sm">
+                <Clock className="w-4 h-4 mr-1" />
+                Actualizar
+              </Button>
+            </div>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-3">
+              {recentActivity.map((activity) => (
+                <motion.div
+                  key={activity.id}
+                  initial={{ opacity: 0, x: -20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  className="flex items-start gap-3 p-3 border border-gray-200 rounded-lg hover:border-scout-azul-claro hover:bg-scout-azul-muy-claro/30 transition-all duration-200"
+                >
+                  <div className={`mt-1 ${activity.color}`}>
+                    <activity.icon className="w-5 h-5" />
+                  </div>
+                  <div className="flex-1">
+                    <p className="text-sm text-gray-900 font-medium">{activity.descripcion}</p>
+                    <p className="text-xs text-gray-500 mt-1">{activity.fecha}</p>
+                  </div>
+                </motion.div>
+              ))}
+            </div>
+          </CardContent>
         </Card>
       </div>
 
       {/* Top Courses */}
       <Card>
-        <h2 className="text-xl font-bold text-gray-800 mb-4">Cursos Más Populares</h2>
-        <div className="space-y-4">
-          {topCourses.map((curso, index) => (
-            <div key={index} className="space-y-2">
-              <div className="flex justify-between items-center">
-                <div className="flex items-center gap-2">
-                  <Award className="w-5 h-5 text-yellow-500" />
-                  <span className="font-medium text-gray-900">{curso.nombre}</span>
+        <CardHeader>
+          <CardTitle className="text-xl">Cursos Más Populares</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="space-y-4">
+            {topCourses.map((curso, index) => (
+              <div key={index} className="space-y-2">
+                <div className="flex justify-between items-center">
+                  <div className="flex items-center gap-2">
+                    <Award className="w-5 h-5 text-scout-dorado-aventura" />
+                    <span className="font-medium text-gray-900">{curso.nombre}</span>
+                  </div>
+                  <span className="text-sm text-gray-600 font-medium">{curso.participantes} participantes</span>
                 </div>
-                <span className="text-sm text-gray-600">{curso.participantes} participantes</span>
-              </div>
-              <div className="w-full bg-gray-200 rounded-full h-3">
-                <div
-                  className="bg-gradient-to-r from-blue-500 to-blue-600 h-3 rounded-full transition-all duration-500"
-                  style={{ width: `${curso.porcentaje}%` }}
-                >
-                  <span className="flex items-center justify-end pr-2 text-xs text-white font-medium h-full">
-                    {curso.porcentaje}%
-                  </span>
+                <div className="w-full bg-gray-200 rounded-full h-3 overflow-hidden">
+                  <div
+                    className="bg-gradient-to-r from-scout-azul-medio to-scout-azul-claro h-3 rounded-full transition-all duration-500 flex items-center justify-end pr-2"
+                    style={{ width: `${curso.porcentaje}%` }}
+                  >
+                    <span className="text-xs text-white font-semibold">{curso.porcentaje}%</span>
+                  </div>
                 </div>
               </div>
-            </div>
-          ))}
-        </div>
+            ))}
+          </div>
+        </CardContent>
       </Card>
     </div>
   );
