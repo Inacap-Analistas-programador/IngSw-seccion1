@@ -15,6 +15,10 @@ from datetime import timedelta
 import os
 from decouple import config, Csv
 
+# Configurar PyMySQL como reemplazo de MySQLdb
+import pymysql
+pymysql.install_as_MySQLdb()
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 

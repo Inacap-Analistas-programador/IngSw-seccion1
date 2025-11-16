@@ -7,7 +7,9 @@ djangorestframework==3.14.0
 djangorestframework-simplejwt==5.3.1
 
 # Database
-mysqlclient==2.2.4  # Para MySQL en producción
+# mysqlclient==2.2.4  # Para MySQL en producción - problemas con Python 3.14
+PyMySQL==1.1.1  # Alternativa pura Python compatible con MySQL
+cryptography==41.0.7  # Requerido por PyMySQL para conexiones seguras
 # SQLite viene incluido con Python para desarrollo
 
 # Security & Authentication
@@ -37,4 +39,4 @@ celery==5.3.4
 
 # Utilities
 python-dateutil==2.8.2
-pillow==10.1.0  # Para manejo de imágenes en perfiles
+pillow==12.0.0  # Para manejo de imágenes en perfiles - compatible con Python 3.14
