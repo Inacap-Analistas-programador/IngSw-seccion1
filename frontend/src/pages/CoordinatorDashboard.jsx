@@ -23,7 +23,7 @@ import Maestros from '@/components/dashboard/Maestros';
 import AcreditacionManual from '@/components/dashboard/AcreditacionManual';
 import VerificadorQR from '@/components/dashboard/VerificadorQR';
 import DashboardEjecutivo from '@/components/dashboard/DashboardEjecutivo';
-import Preinscripcion from '@/components/dashboard/Preinscripcion';
+import Inscripciones from '@/components/dashboard/Preinscripcion';
 import Acreditacion from '@/components/dashboard/Acreditacion';
 import UseCases from '@/pages/UseCases';
 import ProveedoresPage from '@/pages/ProveedoresPage';
@@ -86,9 +86,8 @@ const CoordinatorDashboard = () => {
   const menuItems = [
     { icon: FaChartLine, label: 'Dashboard Ejecutivo', path: `${basePath}/ejecutivo` },
     { icon: FaBook, label: 'Gestión de Cursos', path: `${basePath}/gestion-cursos` },
-    { icon: FaClipboardCheck, label: 'Preinscripción', path: `${basePath}/preinscripcion` },
+    { icon: FaClipboardCheck, label: 'Inscripciones', path: `${basePath}/inscripciones` },
     { icon: FaCreditCard, label: 'Gestión de Pagos', path: `${basePath}/gestion-pagos` },
-    // Persona management moved/removed; link omitted
     { icon: FaEnvelope, label: 'Envío de Correos', path: `${basePath}/envio-correos` },
     { icon: FaAward, label: 'Acreditación', path: `${basePath}/acreditacion` },
     { icon: FaDatabase, label: 'Maestros', path: `${basePath}/maestros` },
@@ -192,9 +191,8 @@ const CoordinatorDashboard = () => {
               <Route path="/ejecutivo" element={<DashboardEjecutivo />} />
               <Route path="/use-cases" element={<UseCases />} />
               <Route path="/gestion-cursos" element={<Cursos />} />
-              <Route path="/preinscripcion" element={<Preinscripcion />} />
+              <Route path="/inscripciones" element={<Inscripciones />} />
               <Route path="/gestion-pagos" element={<Pagos />} />
-              {/* Personas page removed from dashboard (managed in remote repository). */}
               <Route path="/envio-correos" element={<EnvioCorreo />} />
               <Route path="/acreditacion" element={<Acreditacion />} />
               <Route path="/maestros" element={<Maestros />} />

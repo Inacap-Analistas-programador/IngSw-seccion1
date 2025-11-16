@@ -13,63 +13,93 @@ import {
   FileText,
   Filter,
   Download,
+  Edit,
+  Trash2,
 } from 'lucide-react';
 import { useToast } from '@/components/ui/use-toast';
+import preinscripcionService from '@/services/preinscripcionService';
 
-const Preinscripcion = () => {
+const Inscripciones = () => {
   const { toast } = useToast();
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState('todos');
   const [selectedSubmission, setSelectedSubmission] = useState(null);
   const [showDetailModal, setShowDetailModal] = useState(false);
+  const [showEditModal, setShowEditModal] = useState(false);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [submissions, setSubmissions] = useState([]);
 
-  // Mock data - En producción esto vendría de la API
-  const [submissions, setSubmissions] = useState([
-    {
-      id: 1,
-      nombre: 'Juan Pérez González',
-      email: 'juan.perez@email.com',
-      telefono: '+56912345678',
-      fechaEnvio: '2024-01-15 10:30',
-      estado: 'pendiente',
-      curso: 'Formación Básica Scout',
-      edad: 15,
-      grupoScout: 'Grupo Scout San Jorge',
-    },
-    {
-      id: 2,
-      nombre: 'María Silva Rodríguez',
-      email: 'maria.silva@email.com',
-      telefono: '+56923456789',
-      fechaEnvio: '2024-01-14 14:20',
-      estado: 'aprobada',
-      curso: 'Curso de Liderazgo',
-      edad: 17,
-      grupoScout: 'Grupo Scout Santa María',
-    },
-    {
-      id: 3,
-      nombre: 'Carlos Muñoz López',
-      email: 'carlos.munoz@email.com',
-      telefono: '+56934567890',
-      fechaEnvio: '2024-01-13 09:15',
-      estado: 'rechazada',
-      curso: 'Formación Básica Scout',
-      edad: 14,
-      grupoScout: 'Grupo Scout Montaña',
-    },
-    {
-      id: 4,
-      nombre: 'Ana Torres Vargas',
-      email: 'ana.torres@email.com',
-      telefono: '+56945678901',
-      fechaEnvio: '2024-01-12 16:45',
-      estado: 'pendiente',
-      curso: 'Especialidades Scout',
-      edad: 16,
-      grupoScout: 'Grupo Scout Aventura',
-    },
-  ]);
+  const [loading, setLoading] = useState(false);
+  const [submissions, setSubmissions] = useState([]);
+
+  // Load data on mount
+  useEffect(() => {
+    loadSubmissions();
+  }, []);
+
+  const loadSubmissions = async () => {
+    setLoading(true);
+    try {
+      const data = await preinscripcionService.getAll();
+      setSubmissions(data);
+    } catch (error) {
+      toast({
+        title: 'Error',
+        description: 'No se pudieron cargar las inscripciones. Usando datos de ejemplo.',
+        variant: 'destructive',
+      });
+      // Fallback to mock data
+      setSubmissions([
+        {
+          id: 1,
+          nombre: 'Juan Pérez González',
+          email: 'juan.perez@email.com',
+          telefono: '+56912345678',
+          fechaEnvio: '2024-01-15 10:30',
+          estado: 'pendiente',
+          curso: 'Formación Básica Scout',
+          edad: 15,
+          grupoScout: 'Grupo Scout San Jorge',
+        },
+        {
+          id: 2,
+          nombre: 'María Silva Rodríguez',
+          email: 'maria.silva@email.com',
+          telefono: '+56923456789',
+          fechaEnvio: '2024-01-14 14:20',
+          estado: 'aprobada',
+          curso: 'Curso de Liderazgo',
+          edad: 17,
+          grupoScout: 'Grupo Scout Santa María',
+        },
+        {
+          id: 3,
+          nombre: 'Carlos Muñoz López',
+          email: 'carlos.munoz@email.com',
+          telefono: '+56934567890',
+          fechaEnvio: '2024-01-13 09:15',
+          estado: 'rechazada',
+          curso: 'Formación Básica Scout',
+          edad: 14,
+          grupoScout: 'Grupo Scout Montaña',
+        },
+        {
+          id: 4,
+          nombre: 'Ana Torres Vargas',
+          email: 'ana.torres@email.com',
+          telefono: '+56945678901',
+          fechaEnvio: '2024-01-12 16:45',
+          estado: 'pendiente',
+          curso: 'Especialidades Scout',
+          edad: 16,
+          grupoScout: 'Grupo Scout Aventura',
+        },
+      ]);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const stats = [
     {
@@ -121,15 +151,72 @@ const Preinscripcion = () => {
     setShowDetailModal(true);
   };
 
-  const handleUpdateStatus = (id, newStatus) => {
-    setSubmissions((prev) =>
-      prev.map((sub) => (sub.id === id ? { ...sub, estado: newStatus } : sub))
-    );
-    toast({
-      title: 'Estado actualizado',
-      description: `La preinscripción ha sido ${newStatus}.`,
-    });
-    setShowDetailModal(false);
+  const handleUpdateStatus = async (id, newStatus) => {
+    try {
+      await preinscripcionService.updateStatus(id, newStatus);
+      setSubmissions((prev) =>
+        prev.map((sub) => (sub.id === id ? { ...sub, estado: newStatus } : sub))
+      );
+      toast({
+        title: 'Estado actualizado',
+        description: `La inscripción ha sido ${newStatus}.`,
+      });
+      setShowDetailModal(false);
+    } catch (error) {
+      toast({
+        title: 'Error',
+        description: 'No se pudo actualizar el estado.',
+        variant: 'destructive',
+      });
+    }
+  };
+
+  const handleEdit = (submission) => {
+    setSelectedSubmission(submission);
+    setShowEditModal(true);
+  };
+
+  const handleSaveEdit = async (updatedData) => {
+    try {
+      await preinscripcionService.update(selectedSubmission.id, updatedData);
+      setSubmissions((prev) =>
+        prev.map((sub) => (sub.id === selectedSubmission.id ? { ...sub, ...updatedData } : sub))
+      );
+      toast({
+        title: 'Inscripción actualizada',
+        description: 'Los datos han sido guardados correctamente.',
+      });
+      setShowEditModal(false);
+    } catch (error) {
+      toast({
+        title: 'Error',
+        description: 'No se pudo actualizar la inscripción.',
+        variant: 'destructive',
+      });
+    }
+  };
+
+  const handleDeleteConfirm = (submission) => {
+    setSelectedSubmission(submission);
+    setShowDeleteModal(true);
+  };
+
+  const handleDelete = async () => {
+    try {
+      await preinscripcionService.delete(selectedSubmission.id);
+      setSubmissions((prev) => prev.filter((sub) => sub.id !== selectedSubmission.id));
+      toast({
+        title: 'Inscripción eliminada',
+        description: 'La inscripción ha sido eliminada correctamente.',
+      });
+      setShowDeleteModal(false);
+    } catch (error) {
+      toast({
+        title: 'Error',
+        description: 'No se pudo eliminar la inscripción.',
+        variant: 'destructive',
+      });
+    }
   };
 
   const handleExportData = () => {
@@ -216,11 +303,11 @@ const Preinscripcion = () => {
 
       {/* Submissions Table */}
       <Card>
-        <h2 className="text-xl font-bold text-gray-800 mb-4">Envíos de Preinscripción</h2>
+        <h2 className="text-xl font-bold text-gray-800 mb-4">Lista de Inscripciones</h2>
         <div className="overflow-x-auto">
           <table className="w-full">
             <thead>
-              <tr className="border-b border-gray-200">
+              <tr className="border-b border-gray-200 bg-gray-50">
                 <th className="text-left py-3 px-4 text-sm font-semibold text-gray-700">Nombre</th>
                 <th className="text-left py-3 px-4 text-sm font-semibold text-gray-700">Curso</th>
                 <th className="text-left py-3 px-4 text-sm font-semibold text-gray-700">
@@ -251,14 +338,34 @@ const Preinscripcion = () => {
                     <td className="py-3 px-4 text-sm text-gray-700">{submission.fechaEnvio}</td>
                     <td className="py-3 px-4">{getEstadoBadge(submission.estado)}</td>
                     <td className="py-3 px-4">
-                      <Button
-                        onClick={() => handleViewDetails(submission)}
-                        variant="ghost"
-                        size="sm"
-                      >
-                        <Eye className="w-4 h-4 mr-1" />
-                        Ver
-                      </Button>
+                      <div className="flex gap-2">
+                        <Button
+                          onClick={() => handleViewDetails(submission)}
+                          variant="ghost"
+                          size="sm"
+                          title="Ver detalles"
+                        >
+                          <Eye className="w-4 h-4" />
+                        </Button>
+                        <Button
+                          onClick={() => handleEdit(submission)}
+                          variant="ghost"
+                          size="sm"
+                          title="Editar"
+                          className="text-blue-600 hover:text-blue-700"
+                        >
+                          <Edit className="w-4 h-4" />
+                        </Button>
+                        <Button
+                          onClick={() => handleDeleteConfirm(submission)}
+                          variant="ghost"
+                          size="sm"
+                          title="Eliminar"
+                          className="text-red-600 hover:text-red-700"
+                        >
+                          <Trash2 className="w-4 h-4" />
+                        </Button>
+                      </div>
                     </td>
                   </motion.tr>
                 ))
@@ -358,8 +465,144 @@ const Preinscripcion = () => {
           </motion.div>
         </div>
       )}
+
+      {/* Edit Modal */}
+      {showEditModal && selectedSubmission && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm">
+          <motion.div
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            className="bg-white rounded-xl shadow-xl p-6 w-full max-w-2xl mx-4 max-h-[90vh] overflow-y-auto"
+          >
+            <div className="flex justify-between items-center mb-4">
+              <h3 className="text-2xl font-bold text-gray-800">Editar Inscripción</h3>
+              <button
+                onClick={() => setShowEditModal(false)}
+                className="text-gray-500 hover:text-gray-800 text-xl"
+              >
+                ✕
+              </button>
+            </div>
+
+            <div className="space-y-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <label className="text-sm text-gray-600 font-medium">Nombre Completo</label>
+                  <Input
+                    value={selectedSubmission.nombre}
+                    onChange={(e) =>
+                      setSelectedSubmission({ ...selectedSubmission, nombre: e.target.value })
+                    }
+                    className="mt-1"
+                  />
+                </div>
+                <div>
+                  <label className="text-sm text-gray-600 font-medium">Email</label>
+                  <Input
+                    type="email"
+                    value={selectedSubmission.email}
+                    onChange={(e) =>
+                      setSelectedSubmission({ ...selectedSubmission, email: e.target.value })
+                    }
+                    className="mt-1"
+                  />
+                </div>
+                <div>
+                  <label className="text-sm text-gray-600 font-medium">Teléfono</label>
+                  <Input
+                    value={selectedSubmission.telefono}
+                    onChange={(e) =>
+                      setSelectedSubmission({ ...selectedSubmission, telefono: e.target.value })
+                    }
+                    className="mt-1"
+                  />
+                </div>
+                <div>
+                  <label className="text-sm text-gray-600 font-medium">Edad</label>
+                  <Input
+                    type="number"
+                    value={selectedSubmission.edad}
+                    onChange={(e) =>
+                      setSelectedSubmission({ ...selectedSubmission, edad: e.target.value })
+                    }
+                    className="mt-1"
+                  />
+                </div>
+                <div>
+                  <label className="text-sm text-gray-600 font-medium">Curso</label>
+                  <Input
+                    value={selectedSubmission.curso}
+                    onChange={(e) =>
+                      setSelectedSubmission({ ...selectedSubmission, curso: e.target.value })
+                    }
+                    className="mt-1"
+                  />
+                </div>
+                <div>
+                  <label className="text-sm text-gray-600 font-medium">Grupo Scout</label>
+                  <Input
+                    value={selectedSubmission.grupoScout}
+                    onChange={(e) =>
+                      setSelectedSubmission({ ...selectedSubmission, grupoScout: e.target.value })
+                    }
+                    className="mt-1"
+                  />
+                </div>
+              </div>
+
+              <div className="border-t pt-4 mt-6 flex gap-2 justify-end">
+                <Button variant="outline" onClick={() => setShowEditModal(false)}>
+                  Cancelar
+                </Button>
+                <Button onClick={() => handleSaveEdit(selectedSubmission)}>
+                  Guardar Cambios
+                </Button>
+              </div>
+            </div>
+          </motion.div>
+        </div>
+      )}
+
+      {/* Delete Confirmation Modal */}
+      {showDeleteModal && selectedSubmission && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm">
+          <motion.div
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            className="bg-white rounded-xl shadow-xl p-6 w-full max-w-md mx-4"
+          >
+            <div className="flex justify-between items-center mb-4">
+              <h3 className="text-xl font-bold text-gray-800">Confirmar Eliminación</h3>
+              <button
+                onClick={() => setShowDeleteModal(false)}
+                className="text-gray-500 hover:text-gray-800 text-xl"
+              >
+                ✕
+              </button>
+            </div>
+
+            <div className="mb-6">
+              <p className="text-gray-700">
+                ¿Estás seguro de que deseas eliminar la inscripción de{' '}
+                <span className="font-semibold">{selectedSubmission.nombre}</span>?
+              </p>
+              <p className="text-red-600 text-sm mt-2">Esta acción no se puede deshacer.</p>
+            </div>
+
+            <div className="flex gap-2 justify-end">
+              <Button variant="outline" onClick={() => setShowDeleteModal(false)}>
+                Cancelar
+              </Button>
+              <Button variant="destructive" onClick={handleDelete}>
+                <Trash2 className="w-4 h-4 mr-2" />
+                Eliminar
+              </Button>
+            </div>
+          </motion.div>
+        </div>
+      )}
     </div>
   );
 };
 
-export default Preinscripcion;
+export default Inscripciones;
