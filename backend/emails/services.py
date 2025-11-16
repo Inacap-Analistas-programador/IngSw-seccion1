@@ -1,6 +1,3 @@
-import os
-import json
-import base64
 import logging
 from datetime import datetime
 from typing import Dict, List, Optional, Any
@@ -9,7 +6,7 @@ from django.template import Template, Context
 from django.core.mail import EmailMultiAlternatives
 from django.utils import timezone
 from django.db import models
-from .models import EmailTemplate, EmailLog, EmailQueue, EmailConfiguration, EmailAttachment
+from .models import EmailTemplate, EmailLog, EmailQueue, EmailConfiguration
 
 logger = logging.getLogger(__name__)
 
@@ -393,13 +390,13 @@ class EmailTriggerService:
         """Genera URL de Google Maps para la ubicación del curso"""
         if not course.cur_lugar:
             return ''
-        
+
         # Codificar la dirección para URL
         from urllib.parse import quote
-        address = f"{course.cur_lugar}"
+        address = course.cur_lugar
         if course.com_id_lugar:
             address += f", {course.com_id_lugar.com_descripcion}"
-        
+
         return f"https://www.google.com/maps/search/?api=1&query={quote(address)}"
 
     def _get_course_dates(self, course) -> List[Dict]:
