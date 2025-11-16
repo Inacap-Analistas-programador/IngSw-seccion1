@@ -41,58 +41,13 @@ const Inscripciones = () => {
       const data = await preinscripcionService.getAll();
       setSubmissions(data);
     } catch (error) {
+      console.error('Error loading preinscripciones:', error);
       toast({
         title: 'Error',
-        description: 'No se pudieron cargar las inscripciones. Usando datos de ejemplo.',
+        description: 'No se pudieron cargar las inscripciones.',
         variant: 'destructive',
       });
-      // Fallback to mock data
-      setSubmissions([
-        {
-          id: 1,
-          nombre: 'Juan Pérez González',
-          email: 'juan.perez@email.com',
-          telefono: '+56912345678',
-          fechaEnvio: '2024-01-15 10:30',
-          estado: 'pendiente',
-          curso: 'Formación Básica Scout',
-          edad: 15,
-          grupoScout: 'Grupo Scout San Jorge',
-        },
-        {
-          id: 2,
-          nombre: 'María Silva Rodríguez',
-          email: 'maria.silva@email.com',
-          telefono: '+56923456789',
-          fechaEnvio: '2024-01-14 14:20',
-          estado: 'aprobada',
-          curso: 'Curso de Liderazgo',
-          edad: 17,
-          grupoScout: 'Grupo Scout Santa María',
-        },
-        {
-          id: 3,
-          nombre: 'Carlos Muñoz López',
-          email: 'carlos.munoz@email.com',
-          telefono: '+56934567890',
-          fechaEnvio: '2024-01-13 09:15',
-          estado: 'rechazada',
-          curso: 'Formación Básica Scout',
-          edad: 14,
-          grupoScout: 'Grupo Scout Montaña',
-        },
-        {
-          id: 4,
-          nombre: 'Ana Torres Vargas',
-          email: 'ana.torres@email.com',
-          telefono: '+56945678901',
-          fechaEnvio: '2024-01-12 16:45',
-          estado: 'pendiente',
-          curso: 'Especialidades Scout',
-          edad: 16,
-          grupoScout: 'Grupo Scout Aventura',
-        },
-      ]);
+      setSubmissions([]);
     } finally {
       setLoading(false);
     }
