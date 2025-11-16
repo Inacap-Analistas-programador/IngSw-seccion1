@@ -22,28 +22,36 @@ body {
 
 @layer base {
   :root {
-    /* Bright blue theme */
-    --background: 217 40% 10%; /* dark navy base */
-    --foreground: 210 20% 96%; /* near white text */
-    --card: 217 38% 12%;
-    --card-foreground: 210 20% 96%;
-    --popover: 217 38% 12%;
-    --popover-foreground: 210 20% 96%;
-    /* primary: user requested #001558 (deep metallic blue) */
-    /* #001558 -> approx hsl(226 100% 17.3%) */
-    --primary: 226 100% 17.3%; /* #001558 */
-    --primary-foreground: 210 20% 96%;
-    --secondary: 206 90% 36%;
-    --secondary-foreground: 210 20% 98%;
-    --muted: 214 30% 16%;
-    --muted-foreground: 210 20% 80%;
-    --accent: 206 85% 40%;
-    --accent-foreground: 210 20% 98%;
-    --destructive: 355 65% 50%;
-    --destructive-foreground: 210 20% 98%;
-    --border: 210 30% 18%;
-    --input: 213 30% 14%;
-    --ring: 226 95% 36%;
+    /* Scout Corporate Colors with High Contrast */
+    /* Main color #003366 (Scout Blue) */
+    --scout-azul-oscuro: #003366;
+    --scout-azul-medio: #1F4E79;
+    --scout-azul-claro: #4A90E2;
+    --scout-azul-muy-claro: #E8F4FF;
+    --scout-verde-natura: #10B981;
+    --scout-dorado-aventura: #F59E0B;
+    --scout-rojo-alerta: #EF4444;
+    
+    /* Light theme with high contrast */
+    --background: 0 0% 98%; /* Almost white background */
+    --foreground: 210 40% 15%; /* Dark text for high contrast */
+    --card: 0 0% 100%; /* Pure white cards */
+    --card-foreground: 210 40% 15%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 210 40% 15%;
+    --primary: 210 100% 20%; /* #003366 Scout Blue */
+    --primary-foreground: 0 0% 100%;
+    --secondary: 210 80% 30%;
+    --secondary-foreground: 0 0% 100%;
+    --muted: 210 20% 95%;
+    --muted-foreground: 210 15% 40%;
+    --accent: 210 90% 50%;
+    --accent-foreground: 0 0% 100%;
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 210 15% 85%;
+    --input: 210 15% 85%;
+    --ring: 210 100% 50%;
     --radius: 0.5rem;
   }
 }
