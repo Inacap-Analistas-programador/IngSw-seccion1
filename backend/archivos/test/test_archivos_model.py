@@ -89,7 +89,7 @@ def test_archivocurso_creation():
     # Create a more complete mock for Archivo with spec
     mock_arc = MagicMock(spec=['pk', '__str__'])
     mock_arc.pk = 10
-    mock_arc.__str__ = lambda: "Mock Archivo 10"
+    mock_arc.__str__ = MagicMock(return_value="Mock Archivo 10")
     
     # Ensure curso_seccion mock has required attributes
     assert hasattr(mock_curso_seccion, 'pk'), "mock_curso_seccion must have pk attribute"
@@ -110,7 +110,7 @@ def test_archivopersona_creation():
     # Create a more complete mock for Archivo with spec
     mock_arc = MagicMock(spec=['pk', '__str__'])
     mock_arc.pk = 10
-    mock_arc.__str__ = lambda: "Mock Archivo 10"
+    mock_arc.__str__ = MagicMock(return_value="Mock Archivo 10")
 
     # Ensure other mocks have required attributes
     assert hasattr(mock_persona, 'pk'), "mock_persona must have pk attribute"

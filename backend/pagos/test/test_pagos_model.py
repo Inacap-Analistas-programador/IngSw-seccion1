@@ -135,11 +135,11 @@ def test_pagocomprobante_creation():
     # Create mocks with proper specs
     mock_pago = MagicMock(spec=['pk', '__str__'])
     mock_pago.pk = 10
-    mock_pago.__str__ = lambda: "Pago 10"
+    mock_pago.__str__ = MagicMock(return_value="Pago 10")
     
     mock_comprobante = MagicMock(spec=['pk', '__str__'])
     mock_comprobante.pk = 20
-    mock_comprobante.__str__ = lambda: "Comprobante 20"
+    mock_comprobante.__str__ = MagicMock(return_value="Comprobante 20")
     
     pago_comprobante = PagoComprobante(
         pap_id=mock_pago,
@@ -151,7 +151,7 @@ def test_pagocomprobante_creation():
     assert pago_comprobante.pap_id.pk == 10
     assert pago_comprobante.cpa_id is not None
     assert pago_comprobante.cpa_id.pk == 20
-    assert str(pago_comprobante) == f"Pago {mock_pago.pk} con Comprobante {mock_comprobante.pk}"
+    assert str(pago_comprobante) == f"Pago {mock_pago} con Comprobante {mock_comprobante}"
 
 def test_pagocambiopersona_creation():
     # Create mock for persona with proper specs
@@ -159,12 +159,12 @@ def test_pagocambiopersona_creation():
     mock_persona_cambio.pk = 2
     mock_persona_cambio.per_nombres = "Ana"
     mock_persona_cambio.per_apelpat = "Lopez"
-    mock_persona_cambio.__str__ = lambda: "Ana Lopez"
+    mock_persona_cambio.__str__ = MagicMock(return_value="Ana Lopez")
 
     # Create mock for pago persona with proper specs
     mock_pago = MagicMock(spec=['pk', '__str__'])
     mock_pago.pk = 10
-    mock_pago.__str__ = lambda: "Pago 10"
+    mock_pago.__str__ = MagicMock(return_value="Pago 10")
 
     pago_cambio = PagoCambioPersona(
         per_id=mock_persona_cambio,
@@ -178,19 +178,19 @@ def test_pagocambiopersona_creation():
     assert pago_cambio.pap_id.pk == 10
     assert pago_cambio.usu_id == mock_usuario
     assert pago_cambio.pcp_fecha_hora is not None
-    assert str(pago_cambio) == f"Cambio en pago {mock_pago.pk} para {mock_persona_cambio} por {mock_usuario}"
+    assert str(pago_cambio) == f"Cambio en pago {mock_pago} para {mock_persona_cambio} por {mock_usuario}"
 
 def test_prepago_creation():
     # Create mock for curso with proper specs
     mock_curso_prepago = MagicMock(spec=['pk', 'cur_codigo', '__str__'])
     mock_curso_prepago.pk = 2
     mock_curso_prepago.cur_codigo = "C002"
-    mock_curso_prepago.__str__ = lambda: "Curso Mock 2"
+    mock_curso_prepago.__str__ = MagicMock(return_value="Curso Mock 2")
 
     # Create mock for pago persona with proper specs
     mock_pago = MagicMock(spec=['pk', '__str__'])
     mock_pago.pk = 10
-    mock_pago.__str__ = lambda: "Pago 10"
+    mock_pago.__str__ = MagicMock(return_value="Pago 10")
 
     prepago = Prepago(
         per_id=mock_persona,
