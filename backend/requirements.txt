@@ -4,7 +4,7 @@ django-cors-headers==4.3.1
 
 # Django REST Framework
 djangorestframework==3.14.0
-djangorestframework-simplejwt==5.3.1
+djangorestframework-simplejwt==5.5.1
 
 # Database
 # mysqlclient==2.2.4  # Para MySQL en producción - problemas con Python 3.14
