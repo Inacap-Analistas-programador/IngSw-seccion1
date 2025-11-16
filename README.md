@@ -319,38 +319,60 @@ npm run test:coverage
 
 ## 🐳 Deployment en Producción
 
-### Con Docker (Recomendado)
+### 🚀 Inicio Rápido (3 Comandos)
 
 ```bash
 # 1. Configurar variables de entorno
 cp .env.production.example .env
-nano .env  # Editar con valores de producción
+nano .env  # Editar valores críticos (SECRET_KEY, passwords, dominio)
 
-# 2. Ejecutar deployment
+# 2. Desplegar aplicación con verificaciones automáticas
 ./scripts/deploy-production.sh
+
+# 3. (Opcional) Agregar monitoreo completo
+./scripts/start-with-monitoring.sh
 ```
 
-### Docker Compose Manual
+**¡Listo!** Tu aplicación está corriendo de forma segura y optimizada.
+
+**Ver**: 📖 [QUICKSTART_DEPLOYMENT.md](QUICKSTART_DEPLOYMENT.md) para guía rápida de 10 minutos
+
+### 📚 Documentación Completa de Deployment
+
+- **[DEPLOYMENT_PRODUCTION.md](DEPLOYMENT_PRODUCTION.md)** - Guía completa y detallada
+- **[QUICKSTART_DEPLOYMENT.md](QUICKSTART_DEPLOYMENT.md)** - Inicio rápido en 10 minutos
+- **[PRODUCTION_CHECKLIST.md](PRODUCTION_CHECKLIST.md)** - Checklist de verificación
+- **[LOAD_TESTING_GUIDE.md](LOAD_TESTING_GUIDE.md)** - Pruebas de carga y performance
+
+### ✨ Características del Sistema de Deployment
+
+✅ **Seguro**: Non-root containers, rate limiting, SSL/TLS, security headers  
+✅ **Rápido**: Multi-stage builds, Nginx caching, compresión, optimizaciones  
+✅ **Eficaz**: Health checks, rollback automático, monitoreo completo  
+✅ **Resiliente**: Backups automáticos, resource limits, recuperación de fallos  
+
+### Docker Compose - Opciones
 
 ```bash
-# Desarrollo
+# Desarrollo local
 docker-compose -f docker-compose.dev.yml up -d
 
 # Producción
 docker-compose -f docker-compose.prod.yml up -d
+
+# Con monitoreo completo
+./scripts/start-with-monitoring.sh
 ```
 
-### Monitoreo
+### Stack de Monitoreo
 
 ```bash
-# Iniciar stack de monitoreo
-cd monitoring
-docker-compose -f docker-compose.monitoring.yml up -d
-
-# Acceder a:
+# Acceder a herramientas de monitoreo:
 # - Prometheus: http://localhost:9090
-# - Grafana: http://localhost:3001
+# - Grafana: http://localhost:3001 (admin/admin)
 # - Alertmanager: http://localhost:9093
+# - Node Exporter: http://localhost:9100
+# - cAdvisor: http://localhost:8080
 ```
 
 ### Scripts de Mantenimiento
@@ -359,9 +381,48 @@ docker-compose -f docker-compose.monitoring.yml up -d
 # Backup de base de datos
 ./scripts/backup.sh
 
+# Auditoría de seguridad
+./scripts/security-audit.sh
+
 # Verificar rendimiento
 ./scripts/performance-check.sh
+
+# Detener todos los servicios
+./scripts/stop-all.sh
+
+# Rollback a versión anterior
+./scripts/deploy-production.sh --rollback
 ```
+
+### URLs de Acceso
+
+- **Frontend**: http://localhost
+- **API**: http://localhost/api/
+- **Admin Panel**: http://localhost/admin/
+- **API Docs**: http://localhost/api/swagger/
+- **Health Check**: http://localhost/health
+
+### Requisitos del Sistema
+
+**Mínimo (Desarrollo)**:
+- CPU: 2 cores
+- RAM: 4 GB
+- Disco: 20 GB SSD
+
+**Recomendado (Producción)**:
+- CPU: 4+ cores
+- RAM: 8+ GB
+- Disco: 50+ GB SSD
+- Docker 24.0+, Docker Compose 2.20+
+
+### Características de Seguridad
+
+- 🔒 **Non-root containers**: Todos los servicios corren con usuarios no privilegiados
+- 🛡️ **Rate limiting**: Protección contra DDoS (60 req/min API, 5 req/min login)
+- 🔐 **Security headers**: X-Frame-Options, CSP, HSTS, X-Content-Type-Options
+- 📊 **Health checks**: Monitoreo automático de salud de servicios
+- 🔄 **Rollback automático**: Recuperación ante fallos de deployment
+- 💾 **Backups automatizados**: Respaldo diario de base de datos
 
 Ver [DEPLOYMENT_GUIDE.md](DEPLOYMENT_GUIDE.md) para instrucciones completas de deployment.
 
