@@ -100,6 +100,12 @@ pip install -r requirements.txt
 # Aplicar migraciones
 python manage.py migrate
 
+# Poblar base de datos con datos de ejemplo
+python manage.py populate_database
+
+# Verificar población de datos
+python verify_database.py
+
 # Crear superusuario (opcional)
 python manage.py createsuperuser
 
@@ -121,6 +127,26 @@ cp .env.example .env.local
 npm run dev
 ```
 
+## 📊 Base de Datos
+
+El proyecto incluye un comando para poblar la base de datos con datos de ejemplo:
+
+```bash
+cd backend
+python manage.py populate_database
+```
+
+Este comando crea:
+- ✅ **Datos maestros**: Estados civiles, cargos, niveles, ramas, roles, tipos de curso, alimentaciones, etc.
+- ✅ **Geografía chilena**: 5 regiones, 13 provincias, 79 comunas
+- ✅ **Estructura scout**: 4 zonas, 5 distritos, 13 grupos
+- ✅ **Personas**: 15 personas con datos completos
+- ✅ **Cursos**: 5 cursos con secciones y fechas
+- ✅ **Inscripciones**: 50 inscripciones distribuidas en los cursos
+- ✅ **Pagos**: 20 pagos con comprobantes
+
+Ver [DATABASE_POPULATION.md](backend/DATABASE_POPULATION.md) para más detalles.
+
 ## 📚 Documentación
 
 ### Guías Principales
@@ -128,6 +154,7 @@ npm run dev
 - 📖 [Backend Review](BACKEND_REVIEW_SUMMARY.md) - Estado del backend
 - 📖 [Frontend Cleanup](frontend/FRONTEND_CLEANUP_REPORT.md) - Estado del frontend
 - 📖 [Modelo de Datos](modelo_de_datos.md) - Estructura de base de datos
+- 📖 [Población de Base de Datos](backend/DATABASE_POPULATION.md) - Guía para poblar datos
 
 ### Backend
 - 📖 [README Backend](backend/README.md)
