@@ -3,6 +3,8 @@ import { Helmet } from 'react-helmet';
 import { motion } from 'framer-motion';
 import { useNavigate, useParams } from 'react-router-dom';
 import { Button } from '@/components/ui/Button';
+import api from '@/config/api';
+import { personaFromApi, personaToApi } from '@/lib/mappers';
 import {
   Save,
   ChevronLeft,
@@ -33,40 +35,54 @@ const MaestroForm = () => {
   const [errors, setErrors] = useState({});
   const [loading, setLoading] = useState(false);
 
-  // Cargar personas disponibles
+  // Cargar personas disponibles desde API
   useEffect(() => {
-    const storedPersonas = JSON.parse(localStorage.getItem('personas') || '[]');
-    // Filtrar personas que no sean ya formadores (excepto si estamos editando)
-    const formadores = JSON.parse(localStorage.getItem('formadores') || '[]');
-    const personasNoFormadores = storedPersonas.filter(
-      (persona) =>
-        !formadores.some((formador) => formador.personaId === persona.id) ||
-        (isEdit && parseInt(id) === persona.id)
-    );
-    setPersonas(personasNoFormadores);
+    const fetchPersonas = async () => {
+      try {
+        const response = await api.get('/personas/');
+        const mappedPersonas = response.data.map(personaFromApi);
+        // Filtrar personas que no sean formadores (excepto si estamos editando)
+        const personasNoFormadores = mappedPersonas.filter(
+          (persona) => !persona.esFormador || (isEdit && persona.id === parseInt(id))
+        );
+        setPersonas(personasNoFormadores);
+      } catch (error) {
+        console.error('Error al cargar personas:', error);
+        alert('Error al cargar la lista de personas. Verifica tu conexión.');
+      }
+    };
+
+    fetchPersonas();
   }, [id, isEdit]);
 
   // Cargar datos si es edición
   useEffect(() => {
     if (isEdit) {
-      const personas = JSON.parse(localStorage.getItem('personas') || '[]');
-      const formadores = JSON.parse(localStorage.getItem('formadores') || '[]');
+      const fetchPersona = async () => {
+        try {
+          const response = await api.get(`/personas/${id}/`);
+          const persona = personaFromApi(response.data);
 
-      const persona = personas.find((p) => p.id === parseInt(id));
-      const formador = formadores.find((f) => f.personaId === parseInt(id));
+          if (persona && persona.esFormador) {
+            setSelectedPersona(persona);
+            setFormData({
+              personaId: persona.id,
+              habilitacion1: persona.habilitacion1 || false,
+              habilitacion2: persona.habilitacion2 || false,
+              verificacion: persona.verificacion || false,
+              historialCapacitaciones: persona.historialCapacitaciones || '',
+            });
+          }
+        } catch (error) {
+          console.error('Error al cargar formador:', error);
+          alert('Error al cargar los datos del formador.');
+          navigate('/maestros');
+        }
+      };
 
-      if (persona && formador) {
-        setSelectedPersona(persona);
-        setFormData({
-          personaId: persona.id,
-          habilitacion1: formador.habilitacion1 || false,
-          habilitacion2: formador.habilitacion2 || false,
-          verificacion: formador.verificacion || false,
-          historialCapacitaciones: formador.historialCapacitaciones || '',
-        });
-      }
+      fetchPersona();
     }
-  }, [id, isEdit]);
+  }, [id, isEdit, navigate]);
 
   // Actualizar persona seleccionada
   const handlePersonaChange = (personaId) => {
@@ -99,46 +115,26 @@ const MaestroForm = () => {
     setLoading(true);
 
     try {
-      const formadores = JSON.parse(localStorage.getItem('formadores') || '[]');
-      const personas = JSON.parse(localStorage.getItem('personas') || '[]');
+      // Get the full persona data and update it with formador information
+      const response = await api.get(`/personas/${formData.personaId}/`);
+      const persona = personaFromApi(response.data);
 
-      if (isEdit) {
-        // Actualizar formador existente
-        const index = formadores.findIndex((f) => f.personaId === parseInt(id));
-        if (index !== -1) {
-          formadores[index] = {
-            ...formadores[index],
-            ...formData,
-          };
-        }
-      } else {
-        // Crear nuevo formador
-        const newFormador = {
-          id: Date.now(),
-          ...formData,
-        };
-        formadores.push(newFormador);
-      }
+      const updatedPersona = {
+        ...persona,
+        esFormador: true,
+        habilitacion1: formData.habilitacion1,
+        habilitacion2: formData.habilitacion2,
+        verificacion: formData.verificacion,
+        historialCapacitaciones: formData.historialCapacitaciones,
+      };
 
-      // Actualizar persona para marcarla como formador
-      const personaIndex = personas.findIndex((p) => p.id === formData.personaId);
-      if (personaIndex !== -1) {
-        personas[personaIndex] = {
-          ...personas[personaIndex],
-          esFormador: true,
-          habilitacion1: formData.habilitacion1,
-          habilitacion2: formData.habilitacion2,
-          verificacion: formData.verificacion,
-          historialCapacitaciones: formData.historialCapacitaciones,
-        };
-      }
-
-      localStorage.setItem('formadores', JSON.stringify(formadores));
-      localStorage.setItem('personas', JSON.stringify(personas));
-
+      await api.put(`/personas/${formData.personaId}/`, personaToApi(updatedPersona));
+      
+      console.log('Formador actualizado correctamente');
       navigate('/maestros');
     } catch (error) {
       console.error('Error al guardar formador:', error);
+      alert('Error al guardar el formador. Por favor, verifica tu conexión e intenta nuevamente.');
     } finally {
       setLoading(false);
     }
