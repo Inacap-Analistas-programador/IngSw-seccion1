@@ -74,6 +74,10 @@ MIDDLEWARE = [
 
 CORS_ALLOW_ALL_ORIGINS = config('CORS_ALLOW_ALL', default=False, cast=bool) and DEBUG
 
+# Configuración adicional de CORS para evitar problemas con redirects
+CORS_PREFLIGHT_MAX_AGE = 86400  # Cache preflight responses for 24 hours
+CORS_ALLOW_ALL_ORIGINS = CORS_ALLOW_ALL_ORIGINS or DEBUG  # Always allow all origins in DEBUG mode
+
 # Configuración de Django REST Framework
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
@@ -150,6 +154,10 @@ CORS_ALLOW_HEADERS = [
     'x-csrftoken',
     'x-requested-with',
 ]
+
+# Deshabilitar APPEND_SLASH para evitar redirects 301 en API endpoints
+# que causan problemas con CORS preflight requests
+APPEND_SLASH = False
 
 # Security settings for production
 # Allow explicit control over SSL redirect via environment variable
