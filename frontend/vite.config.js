@@ -10,6 +10,28 @@ export default defineConfig({
       '@': path.resolve(__dirname, './src'),
     },
   },
+  test: {
+    globals: true,
+    environment: 'jsdom',
+    setupFiles: './src/test/setup.js',
+    coverage: {
+      provider: 'v8',
+      reporter: ['text', 'json', 'html'],
+      exclude: [
+        'node_modules/',
+        'src/test/',
+        '**/*.test.{js,jsx}',
+        '**/*.spec.{js,jsx}',
+        'tools/',
+        'vite.config.js',
+      ],
+      all: true,
+      lines: 80,
+      functions: 80,
+      branches: 80,
+      statements: 80,
+    },
+  },
   server: {
     port: 3000,
     host: '::',
