@@ -100,6 +100,9 @@ pip install -r requirements.txt
 # Aplicar migraciones
 python manage.py migrate
 
+# Poblar base de datos con datos de ejemplo (recomendado para desarrollo)
+python manage.py seed_database
+
 # Crear superusuario (opcional)
 python manage.py createsuperuser
 
@@ -132,6 +135,7 @@ npm run dev
 ### Backend
 - 📖 [README Backend](backend/README.md)
 - 📖 [Quick Start](backend/QUICK_START.md)
+- 📖 [Database Seeding](backend/DATABASE_SEEDING.md)
 - 📖 [Next Steps](backend/NEXT_STEPS.md)
 - 📖 [Schema Analysis](backend/SCHEMA_ANALYSIS.md)
 
