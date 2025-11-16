@@ -3,7 +3,9 @@ import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
 import { Label } from '@/components/ui/Label';
-import Card from '@/components/ui/Card';
+import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/Card';
+import StatCard from '@/components/ui/StatCard';
+import { Badge } from '@/components/ui/Badge';
 import { useToast } from '@/components/ui/use-toast';
 import {
   Mail,
@@ -130,80 +132,75 @@ const EnvioCorreo = () => {
       {/* Stats Cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
         {stats.map((stat, index) => (
-          <motion.div
+          <StatCard
             key={stat.label}
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.3, delay: index * 0.1 }}
-          >
-            <Card>
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm text-gray-600">{stat.label}</p>
-                  <p className="text-3xl font-bold text-gray-800 mt-1">{stat.value}</p>
-                </div>
-                <div className={`${stat.color} p-3 rounded-lg`}>
-                  <stat.icon className="w-6 h-6 text-white" />
-                </div>
-              </div>
-            </Card>
-          </motion.div>
+            icon={stat.icon}
+            label={stat.label}
+            value={stat.value}
+            color={stat.color}
+            index={index}
+          />
         ))}
       </div>
 
       {/* Actions */}
       <Card>
-        <div className="flex flex-col sm:flex-row gap-4 items-center justify-between">
-          <div>
-            <h2 className="text-xl font-bold text-gray-800">Gestión de Correos</h2>
-            <p className="text-gray-600 text-sm mt-1">
-              Envía comunicaciones masivas a participantes y formadores
-            </p>
+        <CardHeader>
+          <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between">
+            <div>
+              <CardTitle>Gestión de Correos</CardTitle>
+              <p className="text-gray-600 text-sm mt-1">
+                Envía comunicaciones masivas a participantes y formadores
+              </p>
+            </div>
+            <Button
+              onClick={() => setShowComposeModal(true)}
+              className="bg-scout-azul-medio hover:bg-scout-azul-oscuro w-full sm:w-auto"
+            >
+              <Mail className="w-4 h-4 mr-2" />
+              Redactar Correo
+            </Button>
           </div>
-          <Button
-            onClick={() => setShowComposeModal(true)}
-            className="bg-blue-600 hover:bg-blue-700 w-full sm:w-auto"
-          >
-            <Mail className="w-4 h-4 mr-2" />
-            Redactar Correo
-          </Button>
-        </div>
+        </CardHeader>
       </Card>
 
       {/* Email History */}
       <Card>
-        <h2 className="text-xl font-bold text-gray-800 mb-4">Historial de Envíos</h2>
-        <div className="space-y-3">
-          {sentEmails.length > 0 ? (
-            sentEmails.map((email) => (
-              <motion.div
-                key={email.id}
-                initial={{ opacity: 0, x: -20 }}
-                animate={{ opacity: 1, x: 0 }}
-                className="flex items-center justify-between p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors"
-              >
-                <div className="flex items-start gap-4 flex-1">
-                  <div className="bg-blue-100 p-2 rounded-lg">
-                    <Mail className="w-5 h-5 text-blue-600" />
-                  </div>
-                  <div className="flex-1">
-                    <h3 className="font-semibold text-gray-900">{email.asunto}</h3>
-                    <div className="flex flex-wrap gap-4 mt-1 text-sm text-gray-600">
-                      <span className="flex items-center gap-1">
-                        <Users className="w-4 h-4" />
-                        {email.destinatarios} destinatarios
-                      </span>
-                      <span className="flex items-center gap-1">
-                        <Clock className="w-4 h-4" />
-                        {email.fecha}
-                      </span>
-                      <span className="flex items-center gap-1 text-green-600">
-                        <CheckCircle className="w-4 h-4" />
-                        Enviado
-                      </span>
+        <CardHeader>
+          <CardTitle>Historial de Envíos</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="space-y-3">
+            {sentEmails.length > 0 ? (
+              sentEmails.map((email) => (
+                <motion.div
+                  key={email.id}
+                  initial={{ opacity: 0, x: -20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  className="flex items-center justify-between p-4 border border-gray-200 rounded-lg hover:border-scout-azul-claro hover:bg-scout-azul-muy-claro/30 transition-all duration-200"
+                >
+                  <div className="flex items-start gap-4 flex-1">
+                    <div className="bg-scout-azul-muy-claro p-2 rounded-lg">
+                      <Mail className="w-5 h-5 text-scout-azul-medio" />
+                    </div>
+                    <div className="flex-1">
+                      <h3 className="font-semibold text-gray-900">{email.asunto}</h3>
+                      <div className="flex flex-wrap gap-4 mt-1 text-sm text-gray-600">
+                        <span className="flex items-center gap-1">
+                          <Users className="w-4 h-4" />
+                          {email.destinatarios} destinatarios
+                        </span>
+                        <span className="flex items-center gap-1">
+                          <Clock className="w-4 h-4" />
+                          {email.fecha}
+                        </span>
+                        <Badge variant="success" className="flex items-center gap-1">
+                          <CheckCircle className="w-3 h-3" />
+                          Enviado
+                        </Badge>
+                      </div>
                     </div>
                   </div>
-                </div>
                 <div className="flex gap-2">
                   <Button
                     variant="ghost"
@@ -234,7 +231,8 @@ const EnvioCorreo = () => {
               <p>No hay correos enviados todavía</p>
             </div>
           )}
-        </div>
+          </div>
+        </CardContent>
       </Card>
 
       {/* Compose Modal */}
