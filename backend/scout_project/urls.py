@@ -54,4 +54,5 @@ urlpatterns = [
     path("api/pagos/", include("pagos.urls")),
     path("api/geografia/", include("geografia.urls")),
     path("api/emails/", include("emails.urls")),
+    path("api/", include("preinscripcion.urls")),
 ]
