@@ -280,7 +280,6 @@ class EmailTriggerService:
     def send_registration_confirmation(self, user, verification_token: str):
         """Envía correo de confirmación de registro"""
         context = {
-            'user': user,
             'username': user.usu_username,
             'email': user.usu_email,
             'verification_token': verification_token,
@@ -301,7 +300,6 @@ class EmailTriggerService:
     def send_account_verification(self, user):
         """Envía correo de verificación exitosa"""
         context = {
-            'user': user,
             'username': user.usu_username,
             'login_url': f"{settings.FRONTEND_URL}/login",
         }
@@ -336,8 +334,7 @@ class EmailTriggerService:
             }
 
         context = {
-            'user': user,
-            'course': course,
+            'username': user.usu_username,
             'course_name': course.cur_descripcion,
             'course_code': course.cur_codigo,
             'location': location_data,
@@ -368,8 +365,7 @@ class EmailTriggerService:
     def send_event_qr_code(self, user, event, qr_code_data: bytes):
         """Envía código QR para evento"""
         context = {
-            'user': user,
-            'event': event,
+            'username': user.usu_username,
             'event_name': event.get('name', ''),
             'event_date': event.get('date', ''),
             'location': event.get('location', ''),
