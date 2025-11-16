@@ -39,6 +39,19 @@ echo -e "${BLUE}📦 Configurando Backend Django...${NC}"
 
 cd "$PROJECT_ROOT/backend"
 
+# Configurar archivo .env para desarrollo
+if [ ! -f ".env" ]; then
+    if [ -f ".env.development" ]; then
+        echo "Copiando configuración de desarrollo..."
+        cp .env.development .env
+        echo -e "${GREEN}✓ Archivo .env configurado para desarrollo${NC}"
+    else
+        echo -e "${YELLOW}⚠ Advertencia: .env.development no encontrado${NC}"
+    fi
+else
+    echo -e "${GREEN}✓ Archivo .env existente${NC}"
+fi
+
 # Verificar si existe requirements.txt
 if [ ! -f "requirements.txt" ]; then
     echo -e "${YELLOW}⚠ requirements.txt no encontrado${NC}"
@@ -53,8 +66,23 @@ if [ ! -f "db.sqlite3" ]; then
     echo "Aplicando migraciones..."
     python manage.py migrate
     echo -e "${GREEN}✓ Base de datos creada${NC}"
+    
+    echo "Creando usuarios de prueba..."
+    python manage.py create_test_users
+    echo -e "${GREEN}✓ Usuarios de prueba creados${NC}"
 else
     echo -e "${GREEN}✓ Base de datos existente${NC}"
+    
+    # Verificar si existen usuarios de prueba
+    USER_COUNT=$(python manage.py shell -c "from usuarios.models import Usuario; print(Usuario.objects.filter(usu_email__in=['admin@test.com', 'coordinador@test.com', 'dirigente@test.com']).count())" 2>/dev/null | tail -1)
+    
+    if [ "$USER_COUNT" -lt "3" ]; then
+        echo "Creando usuarios de prueba faltantes..."
+        python manage.py create_test_users
+        echo -e "${GREEN}✓ Usuarios de prueba verificados${NC}"
+    else
+        echo -e "${GREEN}✓ Usuarios de prueba existentes${NC}"
+    fi
 fi
 
 # Iniciar backend en background
@@ -108,6 +136,11 @@ echo ""
 echo -e "${BLUE}Frontend React:${NC}"
 echo "  URL: http://localhost:3000"
 echo "  Log: tail -f /tmp/vite.log"
+echo ""
+echo -e "${BLUE}Credenciales de prueba:${NC}"
+echo "  admin@test.com / Admin123!"
+echo "  coordinador@test.com / Coord123!"
+echo "  dirigente@test.com / Dirig123!"
 echo ""
 echo -e "${BLUE}Para detener los servidores:${NC}"
 echo "  kill $DJANGO_PID  # Backend"
