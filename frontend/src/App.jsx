@@ -4,6 +4,7 @@ import ProtectedRoute from '@/components/auth/ProtectedRoute';
 
 // Lazy load pages for code splitting
 const HomePage = lazy(() => import('@/pages/HomePage'));
+const ModernHomePage = lazy(() => import('@/pages/ModernHomePage'));
 const PreRegistrationForm = lazy(() => import('@/pages/PreRegistrationForm'));
 const CoordinatorLogin = lazy(() => import('@/pages/CoordinatorLogin'));
 const CoordinatorDashboard = lazy(() => import('@/pages/CoordinatorDashboard'));
@@ -15,6 +16,8 @@ const ProveedoresPage = lazy(() => import('@/pages/ProveedoresPage'));
 const ProveedorForm = lazy(() => import('@/pages/ProveedorForm'));
 const TestPage = lazy(() => import('@/pages/TestPage'));
 const RegionList = lazy(() => import('@/components/geografia/RegionList'));
+const GoogleMapsDemo = lazy(() => import('@/pages/GoogleMapsDemo'));
+const EmailSystemDemo = lazy(() => import('@/pages/EmailSystemDemo'));
 
 // Maestros pages
 const CargosPage = lazy(() => import('@/pages/maestros/CargosPage'));
@@ -47,9 +50,14 @@ function App() {
         <Suspense fallback={<PageLoader />}>
           <Routes>
             {/* Rutas públicas */}
-            <Route path="/" element={<HomePage />} />
+            <Route path="/" element={<ModernHomePage />} />
+            <Route path="/home-old" element={<HomePage />} />
             <Route path="/preinscripcion" element={<PreRegistrationForm />} />
             <Route path="/coordinador/login" element={<CoordinatorLogin />} />
+            
+            {/* Demo pages - públicas */}
+            <Route path="/demo/google-maps" element={<GoogleMapsDemo />} />
+            <Route path="/demo/email-system" element={<EmailSystemDemo />} />
             
             {/* Rutas del dashboard - protegidas */}
             <Route
