@@ -3,9 +3,14 @@ import MaestrosList from '@/components/maestros/MaestrosList';
 
 const NivelesPage = () => {
   const fields = [
-    { key: 'descripcion', label: 'Descripción', type: 'text', fullWidth: true },
+    { key: 'niv_descripcion', label: 'Descripción', type: 'text', fullWidth: true },
     {
-      key: 'vigente',
+      key: 'niv_orden',
+      label: 'Orden',
+      type: 'number',
+    },
+    {
+      key: 'niv_vigente',
       label: 'Vigente',
       type: 'select',
       options: [
@@ -16,7 +21,7 @@ const NivelesPage = () => {
     },
   ];
 
-  return <MaestrosList maestroType="nivel" title="Niveles" fields={fields} />;
+  return <MaestrosList maestroType="niveles" title="Niveles" fields={fields} idField="niv_id" />;
 };
 
 export default NivelesPage;

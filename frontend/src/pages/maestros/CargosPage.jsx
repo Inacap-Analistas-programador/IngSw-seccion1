@@ -3,9 +3,9 @@ import MaestrosList from '@/components/maestros/MaestrosList';
 
 const CargosPage = () => {
   const fields = [
-    { key: 'descripcion', label: 'Descripción', type: 'text', fullWidth: true },
+    { key: 'car_descripcion', label: 'Descripción', type: 'text', fullWidth: true },
     {
-      key: 'vigente',
+      key: 'car_vigente',
       label: 'Vigente',
       type: 'select',
       options: [
@@ -16,7 +16,7 @@ const CargosPage = () => {
     },
   ];
 
-  return <MaestrosList maestroType="cargo" title="Cargos" fields={fields} />;
+  return <MaestrosList maestroType="cargos" title="Cargos" fields={fields} idField="car_id" />;
 };
 
 export default CargosPage;

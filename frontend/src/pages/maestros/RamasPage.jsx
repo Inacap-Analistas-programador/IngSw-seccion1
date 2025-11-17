@@ -3,9 +3,9 @@ import MaestrosList from '@/components/maestros/MaestrosList';
 
 const RamasPage = () => {
   const fields = [
-    { key: 'descripcion', label: 'Descripción', type: 'text', fullWidth: true },
+    { key: 'ram_descripcion', label: 'Descripción', type: 'text', fullWidth: true },
     {
-      key: 'vigente',
+      key: 'ram_vigente',
       label: 'Vigente',
       type: 'select',
       options: [
@@ -16,7 +16,7 @@ const RamasPage = () => {
     },
   ];
 
-  return <MaestrosList maestroType="rama" title="Ramas Scout" fields={fields} />;
+  return <MaestrosList maestroType="ramas" title="Ramas Scout" fields={fields} idField="ram_id" />;
 };
 
 export default RamasPage;
