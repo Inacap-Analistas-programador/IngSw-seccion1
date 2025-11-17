@@ -15,7 +15,7 @@ const DashboardHome = () => {
     <div className="space-y-6">
       <div>
         <h1 className="text-3xl font-bold text-gray-800">Dashboard</h1>
-        <p className="text-gray-600 mt-2">Bienvenido al panel de administración Scout</p>
+        <p className="text-gray-600 mt-2">Bienvenido al panel de administración</p>
       </div>
 
       <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">

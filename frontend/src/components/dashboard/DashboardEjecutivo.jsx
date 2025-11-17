@@ -64,12 +64,12 @@ const DashboardEjecutivo = () => {
   const recentCourses = [
     {
       id: 1,
-      nombre: 'Formación Básica Scout',
+      nombre: 'Formación Básica',
       fecha: '2024-02-15',
       inscritos: 45,
       capacidad: 50,
       estado: 'activo',
-      lugar: 'Centro Scout Regional',
+      lugar: 'Centro Regional',
     },
     {
       id: 2,
@@ -78,16 +78,16 @@ const DashboardEjecutivo = () => {
       inscritos: 30,
       capacidad: 35,
       estado: 'activo',
-      lugar: 'Campamento Base',
+      lugar: 'Sala de Capacitación',
     },
     {
       id: 3,
-      nombre: 'Especialidades Scout',
+      nombre: 'Especialidades Técnicas',
       fecha: '2024-02-25',
       inscritos: 28,
       capacidad: 40,
       estado: 'inscripcion',
-      lugar: 'Sede Nacional',
+      lugar: 'Sede Principal',
     },
   ];
 
@@ -119,10 +119,10 @@ const DashboardEjecutivo = () => {
   ];
 
   const topCourses = [
-    { nombre: 'Formación Básica Scout', participantes: 145, porcentaje: 92 },
+    { nombre: 'Formación Básica', participantes: 145, porcentaje: 92 },
     { nombre: 'Curso de Liderazgo', participantes: 98, porcentaje: 78 },
-    { nombre: 'Especialidades Scout', participantes: 87, porcentaje: 69 },
-    { nombre: 'Técnicas de Campamento', participantes: 65, porcentaje: 52 },
+    { nombre: 'Especialidades Técnicas', participantes: 87, porcentaje: 69 },
+    { nombre: 'Técnicas de Gestión', participantes: 65, porcentaje: 52 },
   ];
 
   const getEstadoBadge = (estado) => {
