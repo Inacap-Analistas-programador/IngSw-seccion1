@@ -20,8 +20,6 @@ import Cursos from '@/components/dashboard/Cursos';
 import Pagos from '@/components/dashboard/Pagos';
 import EnvioCorreo from '@/components/dashboard/EnvioCorreo';
 import Maestros from '@/components/dashboard/Maestros';
-import AcreditacionManual from '@/components/dashboard/AcreditacionManual';
-import VerificadorQR from '@/components/dashboard/VerificadorQR';
 import DashboardEjecutivo from '@/components/dashboard/DashboardEjecutivo';
 import Inscripciones from '@/components/dashboard/Preinscripcion';
 import Acreditacion from '@/components/dashboard/Acreditacion';
