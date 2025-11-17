@@ -34,18 +34,16 @@ if __name__ == '__main__':
     os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'scout_project.settings')
     django.setup()
 
-from django.contrib.auth import get_user_model
 from geografia.models import Region, Provincia, Comuna, Zona, Distrito, Grupo
 from maestros.models import (
     EstadoCivil, Cargo, Nivel, Rama, Rol, 
-    TipoArchivo, TipoCurso, Alimentacion, ConceptoContable
+    TipoArchivo, TipoCurso, Alimentacion, ConceptoContable, Perfil
 )
-from personas.models import Persona
-from cursos.models import Curso, CursoUsuario
+from usuarios.models import Usuario
+from personas.models import Persona, PersonaCurso
+from cursos.models import Curso, CursoSeccion
 from proveedores.models import Proveedor
 from pagos.models import PagoPersona, ComprobantePago
-
-User = get_user_model()
 
 
 def seed_geografia():
@@ -203,6 +201,19 @@ def seed_maestros():
     """Seed tablas maestras"""
     print("📋 Seeding tablas maestras...")
     
+    # Perfiles de usuario
+    perfiles = [
+        "Administrador", "Coordinador", "Dirigente", 
+        "Instructor", "Participante", "Observador"
+    ]
+    for nombre in perfiles:
+        obj, created = Perfil.objects.get_or_create(
+            pel_descripcion=nombre,
+            defaults={'pel_vigente': True}
+        )
+        if created:
+            print(f"  ✓ Perfil: {nombre}")
+    
     # Estados civiles
     estados_civiles = [
         "Soltero/a", "Casado/a", "Viudo/a", 
@@ -354,83 +365,87 @@ def seed_usuarios():
     """Seed usuarios de prueba"""
     print("👥 Seeding usuarios...")
     
+    # Obtener perfiles
+    perfil_admin = Perfil.objects.get(pel_descripcion="Administrador")
+    perfil_coordinador = Perfil.objects.get(pel_descripcion="Coordinador")
+    perfil_dirigente = Perfil.objects.get(pel_descripcion="Dirigente")
+    perfil_instructor = Perfil.objects.get(pel_descripcion="Instructor")
+    perfil_participante = Perfil.objects.get(pel_descripcion="Participante")
+    
     # Usuario administrador
-    if not User.objects.filter(username='admin').exists():
-        admin = User.objects.create_superuser(
-            username='admin',
-            email='admin@scouts.cl',
-            password='admin123',
-            usu_nombre='Administrador',
-            usu_apellido_paterno='Sistema',
-            usu_apellido_materno='GIC',
-            is_staff=True,
-            is_superuser=True
+    if not Usuario.objects.filter(usu_username='admin').exists():
+        admin = Usuario.objects.create(
+            usu_username='admin',
+            usu_email='admin@scouts.cl',
+            pel_id=perfil_admin,
+            usu_vigente=True
         )
+        admin.set_password('admin123')
+        admin.save()
         print(f"  ✓ Usuario Admin: admin / admin123")
     
     # Usuario coordinador
-    if not User.objects.filter(username='coordinador').exists():
-        coordinador = User.objects.create_user(
-            username='coordinador',
-            email='coordinador@scouts.cl',
-            password='coord123',
-            usu_nombre='María José',
-            usu_apellido_paterno='González',
-            usu_apellido_materno='Silva',
-            is_staff=True
+    if not Usuario.objects.filter(usu_username='coordinador').exists():
+        coordinador = Usuario.objects.create(
+            usu_username='coordinador',
+            usu_email='coordinador@scouts.cl',
+            pel_id=perfil_coordinador,
+            usu_vigente=True
         )
+        coordinador.set_password('coord123')
+        coordinador.save()
         print(f"  ✓ Usuario Coordinador: coordinador / coord123")
     
     # Usuario dirigente
-    if not User.objects.filter(username='dirigente').exists():
-        dirigente = User.objects.create_user(
-            username='dirigente',
-            email='dirigente@scouts.cl',
-            password='dirigente123',
-            usu_nombre='Carlos Alberto',
-            usu_apellido_paterno='Muñoz',
-            usu_apellido_materno='Torres'
+    if not Usuario.objects.filter(usu_username='dirigente').exists():
+        dirigente = Usuario.objects.create(
+            usu_username='dirigente',
+            usu_email='dirigente@scouts.cl',
+            pel_id=perfil_dirigente,
+            usu_vigente=True
         )
+        dirigente.set_password('dirigente123')
+        dirigente.save()
         print(f"  ✓ Usuario Dirigente: dirigente / dirigente123")
     
     # Usuarios instructores
     instructores_data = [
-        {"username": "instructor1", "nombre": "Patricia", "paterno": "Rodríguez", "materno": "Fernández"},
-        {"username": "instructor2", "nombre": "Juan Pablo", "paterno": "Soto", "materno": "Vargas"},
-        {"username": "instructor3", "nombre": "Andrea", "paterno": "López", "materno": "Martínez"},
+        {"username": "instructor1", "email": "instructor1@scouts.cl"},
+        {"username": "instructor2", "email": "instructor2@scouts.cl"},
+        {"username": "instructor3", "email": "instructor3@scouts.cl"},
     ]
     
     for data in instructores_data:
-        if not User.objects.filter(username=data["username"]).exists():
-            user = User.objects.create_user(
-                username=data["username"],
-                email=f"{data['username']}@scouts.cl",
-                password='instructor123',
-                usu_nombre=data["nombre"],
-                usu_apellido_paterno=data["paterno"],
-                usu_apellido_materno=data["materno"]
+        if not Usuario.objects.filter(usu_username=data["username"]).exists():
+            user = Usuario.objects.create(
+                usu_username=data["username"],
+                usu_email=data["email"],
+                pel_id=perfil_instructor,
+                usu_vigente=True
             )
+            user.set_password('instructor123')
+            user.save()
             print(f"  ✓ Usuario Instructor: {data['username']} / instructor123")
     
     # Usuarios participantes
     participantes_data = [
-        {"username": "participante1", "nombre": "Roberto", "paterno": "Fuentes", "materno": "Pérez"},
-        {"username": "participante2", "nombre": "Claudia", "paterno": "Ramírez", "materno": "Jiménez"},
-        {"username": "participante3", "nombre": "Diego", "paterno": "Castro", "materno": "Morales"},
-        {"username": "participante4", "nombre": "Valentina", "paterno": "Hernández", "materno": "Rojas"},
-        {"username": "participante5", "nombre": "Felipe", "paterno": "Silva", "materno": "Contreras"},
+        {"username": "participante1", "email": "participante1@scouts.cl"},
+        {"username": "participante2", "email": "participante2@scouts.cl"},
+        {"username": "participante3", "email": "participante3@scouts.cl"},
+        {"username": "participante4", "email": "participante4@scouts.cl"},
+        {"username": "participante5", "email": "participante5@scouts.cl"},
     ]
     
     for data in participantes_data:
-        if not User.objects.filter(username=data["username"]).exists():
-            user = User.objects.create_user(
-                username=data["username"],
-                email=f"{data['username']}@scouts.cl",
-                password='participante123',
-                usu_nombre=data["nombre"],
-                usu_apellido_paterno=data["paterno"],
-                usu_apellido_materno=data["materno"]
+        if not Usuario.objects.filter(usu_username=data["username"]).exists():
+            user = Usuario.objects.create(
+                usu_username=data["username"],
+                usu_email=data["email"],
+                pel_id=perfil_participante,
+                usu_vigente=True
             )
+            user.set_password('participante123')
+            user.save()
             print(f"  ✓ Usuario Participante: {data['username']} / participante123")
     
     print("✓ Usuarios completados\n")
@@ -444,63 +459,117 @@ def seed_personas():
     estado_civil_casado = EstadoCivil.objects.get(esc_descripcion="Casado/a")
     comuna_santiago = Comuna.objects.get(com_descripcion="Santiago")
     comuna_providencia = Comuna.objects.get(com_descripcion="Providencia")
-    grupo = Grupo.objects.first()
     
     # Crear personas para usuarios existentes
-    users_data = [
+    personas_data = [
         {
-            "user": User.objects.get(username='coordinador'),
-            "rut": "12345678-9",
-            "sexo": "F",
-            "fecha_nacimiento": "1985-03-15",
+            "username": "coordinador",
+            "nombres": "María José",
+            "apelpat": "González",
+            "apelmat": "Silva",
+            "run": 12345678,
+            "dv": "9",
+            "fecha_nac": datetime(1985, 3, 15),
             "direccion": "Avenida Libertador Bernardo O'Higgins 1234",
-            "telefono": "+56912345678",
-            "email_personal": "mj.gonzalez@gmail.com",
+            "tipo_fono": 1,
+            "fono": "+56912345678",
+            "email": "mj.gonzalez@gmail.com",
+            "apodo": "MJ",
             "estado_civil": estado_civil_casado,
             "comuna": comuna_providencia
         },
         {
-            "user": User.objects.get(username='dirigente'),
-            "rut": "98765432-1",
-            "sexo": "M",
-            "fecha_nacimiento": "1988-07-20",
+            "username": "dirigente",
+            "nombres": "Carlos Alberto",
+            "apelpat": "Muñoz",
+            "apelmat": "Torres",
+            "run": 98765432,
+            "dv": "1",
+            "fecha_nac": datetime(1988, 7, 20),
             "direccion": "Calle Agustinas 567",
-            "telefono": "+56987654321",
-            "email_personal": "c.munoz@gmail.com",
+            "tipo_fono": 1,
+            "fono": "+56987654321",
+            "email": "c.munoz@gmail.com",
+            "apodo": "Carlos",
             "estado_civil": estado_civil_soltero,
             "comuna": comuna_santiago
         },
         {
-            "user": User.objects.get(username='instructor1'),
-            "rut": "11223344-5",
-            "sexo": "F",
-            "fecha_nacimiento": "1990-11-10",
+            "username": "instructor1",
+            "nombres": "Patricia",
+            "apelpat": "Rodríguez",
+            "apelmat": "Fernández",
+            "run": 11223344,
+            "dv": "5",
+            "fecha_nac": datetime(1990, 11, 10),
             "direccion": "Pasaje Los Almendros 890",
-            "telefono": "+56911223344",
-            "email_personal": "p.rodriguez@gmail.com",
+            "tipo_fono": 1,
+            "fono": "+56911223344",
+            "email": "p.rodriguez@gmail.com",
+            "apodo": "Paty",
+            "estado_civil": estado_civil_soltero,
+            "comuna": comuna_providencia
+        },
+        {
+            "username": "instructor2",
+            "nombres": "Juan Pablo",
+            "apelpat": "Soto",
+            "apelmat": "Vargas",
+            "run": 22334455,
+            "dv": "6",
+            "fecha_nac": datetime(1987, 5, 25),
+            "direccion": "Avenida Matta 456",
+            "tipo_fono": 1,
+            "fono": "+56922334455",
+            "email": "jp.soto@gmail.com",
+            "apodo": "JP",
+            "estado_civil": estado_civil_casado,
+            "comuna": comuna_santiago
+        },
+        {
+            "username": "instructor3",
+            "nombres": "Andrea",
+            "apelpat": "López",
+            "apelmat": "Martínez",
+            "run": 33445566,
+            "dv": "7",
+            "fecha_nac": datetime(1992, 8, 30),
+            "direccion": "Calle Moneda 789",
+            "tipo_fono": 1,
+            "fono": "+56933445566",
+            "email": "a.lopez@gmail.com",
+            "apodo": "Andy",
             "estado_civil": estado_civil_soltero,
             "comuna": comuna_providencia
         }
     ]
     
-    for data in users_data:
-        persona, created = Persona.objects.get_or_create(
-            usu_id=data["user"],
-            defaults={
-                'per_rut': data["rut"],
-                'per_sexo': data["sexo"],
-                'per_fecha_nacimiento': data["fecha_nacimiento"],
-                'per_direccion': data["direccion"],
-                'per_telefono': data["telefono"],
-                'per_email': data["email_personal"],
-                'esc_id': data["estado_civil"],
-                'com_id': data["comuna"],
-                'gru_id': grupo,
-                'per_vigente': True
-            }
-        )
-        if created:
-            print(f"  ✓ Persona: {data['user'].usu_nombre} {data['user'].usu_apellido_paterno}")
+    for data in personas_data:
+        try:
+            usuario = Usuario.objects.get(usu_username=data["username"])
+            persona, created = Persona.objects.get_or_create(
+                usu_id=usuario,
+                defaults={
+                    'per_nombres': data["nombres"],
+                    'per_apelpat': data["apelpat"],
+                    'per_apelmat': data["apelmat"],
+                    'per_run': data["run"],
+                    'per_dv': data["dv"],
+                    'per_fecha_nac': data["fecha_nac"],
+                    'per_direccion': data["direccion"],
+                    'per_tipo_fono': data["tipo_fono"],
+                    'per_fono': data["fono"],
+                    'per_email': data["email"],
+                    'per_apodo': data["apodo"],
+                    'esc_id': data["estado_civil"],
+                    'com_id': data["comuna"],
+                    'per_vigente': True
+                }
+            )
+            if created:
+                print(f"  ✓ Persona: {data['nombres']} {data['apelpat']}")
+        except Usuario.DoesNotExist:
+            print(f"  ⚠ Usuario {data['username']} no encontrado, saltando persona")
     
     print("✓ Personas completadas\n")
 
@@ -823,9 +892,9 @@ def main():
         seed_usuarios()
         seed_personas()
         seed_proveedores()
-        seed_cursos()
-        seed_inscripciones()
-        seed_pagos()
+        # seed_cursos()  # TODO: Needs to be fixed to match actual Curso model schema
+        # seed_inscripciones()  # TODO: Needs to be fixed to use PersonaCurso instead of CursoUsuario
+        # seed_pagos()  # TODO: Needs to be fixed to use PagoPersona
         
         print("="*70)
         print("✅ Database seeding completado exitosamente!")
@@ -847,12 +916,12 @@ def main():
         print(f"  Zonas: {Zona.objects.count()}")
         print(f"  Distritos: {Distrito.objects.count()}")
         print(f"  Grupos: {Grupo.objects.count()}")
-        print(f"  Usuarios: {User.objects.count()}")
+        print(f"  Usuarios: {Usuario.objects.count()}")
         print(f"  Personas: {Persona.objects.count()}")
         print(f"  Proveedores: {Proveedor.objects.count()}")
         print(f"  Cursos: {Curso.objects.count()}")
-        print(f"  Inscripciones: {CursoUsuario.objects.count()}")
-        print(f"  Pagos: {Pago.objects.count()}")
+        print(f"  Inscripciones: {PersonaCurso.objects.count()}")
+        print(f"  Pagos: {PagoPersona.objects.count()}")
         print()
         
     except Exception as e:
