@@ -18,6 +18,7 @@ const lazyRetry = (componentImport) =>
   );
 
 const HomePage = lazyRetry(() => import('@/pages/HomePage'));
+const CursosPublicPage = lazyRetry(() => import('@/pages/CursosPublicPage'));
 const PreRegistrationForm = lazyRetry(() => import('@/pages/PreRegistrationForm'));
 const CoordinatorLogin = lazyRetry(() => import('@/pages/CoordinatorLogin'));
 const CoordinatorDashboard = lazyRetry(() => import('@/pages/CoordinatorDashboard'));
@@ -74,6 +75,7 @@ function App() {
             <Routes>
             {/* Rutas públicas */}
             <Route path="/" element={<HomePage />} />
+            <Route path="/cursos" element={<CursosPublicPage />} />
             <Route path="/preinscripcion" element={<PreRegistrationForm />} />
             <Route path="/coordinador/login" element={<CoordinatorLogin />} />
             
