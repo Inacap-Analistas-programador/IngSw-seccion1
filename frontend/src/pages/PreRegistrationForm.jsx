@@ -36,7 +36,7 @@ const PreRegistrationForm = () => {
     comuna: '',
     telefono: '',
     tipoTelefono: '',
-    // Paso 2: Información Scout
+    // Paso 2: Información de Organización
     rol: '',
     grupo: '',
     ramaFormacion: '',
@@ -77,7 +77,7 @@ const PreRegistrationForm = () => {
 
   const steps = [
     { number: 1, title: 'Datos Personales', component: Step1PersonalData },
-    { number: 2, title: 'Información Scout', component: Step2ScoutInfo },
+    { number: 2, title: 'Información de Organización', component: Step2ScoutInfo },
     { number: 3, title: 'Salud y Alimentación', component: Step3Health },
     { number: 4, title: 'Datos Adicionales', component: Step4AdditionalData },
     { number: 5, title: 'Carga de Ficha Médica', component: Step5MedicalFile },
