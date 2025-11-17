@@ -1,3 +1,7 @@
 from django.contrib import admin
+from .models import Archivo, ArchivoCurso, ArchivoPersona
 
-# Register your models here.
+
+admin.site.register(Archivo)
+admin.site.register(ArchivoCurso)
+admin.site.register(ArchivoPersona)
