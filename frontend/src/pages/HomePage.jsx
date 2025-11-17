@@ -112,6 +112,20 @@ const HomePage = () => {
             </div>
             <div className="flex space-x-3">
               <Button
+                onClick={() => navigate('/cursos')}
+                className="bg-white/10 text-white hover:bg-white/20 backdrop-blur-sm border border-white/20 transition-all duration-300"
+              >
+                <FaBook className="w-4 h-4 mr-2" />
+                Cursos
+              </Button>
+              <Button
+                onClick={() => navigate('/perfil')}
+                className="bg-white/10 text-white hover:bg-white/20 backdrop-blur-sm border border-white/20 transition-all duration-300"
+              >
+                <FaUsers className="w-4 h-4 mr-2" />
+                Mi Perfil
+              </Button>
+              <Button
                 onClick={() => navigate('/preinscripcion')}
                 className="bg-white text-blue-900 hover:bg-gray-100 transition-all duration-300 shadow-md hover:shadow-lg"
               >
