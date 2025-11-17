@@ -10,9 +10,9 @@ const Step2ScoutInfo = ({ formData, updateFormData }) => {
   return (
     <div className="space-y-6">
       <div>
-        <h2 className="text-2xl font-bold text-[#001558] mb-2">Información Scout</h2>
+        <h2 className="text-2xl font-bold text-blue-900 mb-2">Información de Organización</h2>
         <p className="text-gray-600">
-          Completa tu información relacionada con el movimiento Scout.
+          Completa tu información organizacional (opcional para inscripción individual).
         </p>
       </div>
 
@@ -43,12 +43,12 @@ const Step2ScoutInfo = ({ formData, updateFormData }) => {
 
         {formData.esIndividual !== 'si' && (
           <div className="space-y-2">
-            <Label htmlFor="grupo">Grupo Scout *</Label>
+            <Label htmlFor="grupo">Organización / Grupo *</Label>
             <Input
               id="grupo"
               value={formData.grupo}
               onChange={(e) => handleChange('grupo', e.target.value)}
-              placeholder="Nombre del grupo"
+              placeholder="Nombre de la organización o grupo"
             />
           </div>
         )}
@@ -144,9 +144,9 @@ const Step2ScoutInfo = ({ formData, updateFormData }) => {
         </div>
       </div>
 
-      {formData.esFormador === 'si' && (
+        {formData.esFormador === 'si' && (
         <div className="space-y-4">
-          <h3 className="text-lg font-semibold text-[#001558]">Información de Formador</h3>
+          <h3 className="text-lg font-semibold text-blue-900">Información de Formador</h3>
           <div className="grid md:grid-cols-2 gap-4">
             <div className="space-y-2">
               <Label htmlFor="habilitacion1">Habilitación 1</Label>
