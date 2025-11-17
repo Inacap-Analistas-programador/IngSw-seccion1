@@ -3,7 +3,7 @@ import { Helmet } from 'react-helmet';
 import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/Button';
-import api from '@/config/api';
+import personasService from '@/services/personasService';
 import { personasFromApi } from '@/lib/mappers';
 import {
   Plus,
@@ -28,30 +28,48 @@ const PersonasPage = () => {
   const [personas, setPersonas] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [deleting, setDeleting] = useState(null);
+
+  const fetchPersonas = async () => {
+    try {
+      setLoading(true);
+      const response = await personasService.getAll();
+      setPersonas(personasFromApi(response.data));
+      setError(null);
+    } catch (error) {
+      console.error('Error fetching personas:', error);
+      setError(error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
-    const fetchPersonas = async () => {
-      try {
-        const response = await api.get('/personas/');
-        setPersonas(personasFromApi(response.data));
-        setLoading(false);
-      } catch (error) {
-        setError(error);
-        setLoading(false);
-      }
-    };
-
     fetchPersonas();
   }, []);
+
+  const handleViewPersona = (id) => {
+    navigate(`/personas/ver/${id}`);
+  };
 
   const handleEditPersona = (id) => {
     navigate(`/personas/editar/${id}`);
   };
 
-  const handleDeletePersona = (id) => {
-    // This should be implemented to make an API call to delete the persona
-    if (window.confirm('¿Está seguro de que desea eliminar esta persona?')) {
-      // TODO: Implement API call to delete persona
+  const handleDeletePersona = async (id) => {
+    if (window.confirm('¿Está seguro de que desea eliminar esta persona? Esta acción no se puede deshacer.')) {
+      try {
+        setDeleting(id);
+        await personasService.delete(id);
+        // Refresh the list after deletion
+        await fetchPersonas();
+        alert('Persona eliminada exitosamente');
+      } catch (error) {
+        console.error('Error deleting persona:', error);
+        alert('Error al eliminar la persona. Por favor, intenta nuevamente.');
+      } finally {
+        setDeleting(null);
+      }
     }
   };
 
@@ -199,6 +217,15 @@ const PersonasPage = () => {
                             <Button
                               variant="ghost"
                               size="sm"
+                              onClick={() => handleViewPersona(persona.id)}
+                              className="text-scout-azul-medio hover:text-scout-azul-oscuro"
+                              title="Ver Detalles"
+                            >
+                              <Eye className="w-4 h-4" />
+                            </Button>
+                            <Button
+                              variant="ghost"
+                              size="sm"
                               onClick={() => handleEditPersona(persona.id)}
                               className="text-scout-azul-medio hover:text-scout-azul-oscuro"
                               title="Editar"
@@ -211,8 +238,13 @@ const PersonasPage = () => {
                               onClick={() => handleDeletePersona(persona.id)}
                               className="text-red-600 hover:text-red-800"
                               title="Eliminar"
+                              disabled={deleting === persona.id}
                             >
-                              <Trash2 className="w-4 h-4" />
+                              {deleting === persona.id ? (
+                                <Clock className="w-4 h-4 animate-spin" />
+                              ) : (
+                                <Trash2 className="w-4 h-4" />
+                              )}
                             </Button>
                           </div>
                         </td>

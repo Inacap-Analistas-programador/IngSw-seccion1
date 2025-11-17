@@ -58,13 +58,40 @@ class TestPersonaAPI:
     
     def test_list_personas_unauthorized(self, api_client):
         """Test listar personas sin autenticación"""
-        response = api_client.get('/api/personas/')
+        response = api_client.get('/api/personas/personas/')
         
         AssertionHelpers.assert_valid_api_response(
             response,
             [status.HTTP_401_UNAUTHORIZED, status.HTTP_403_FORBIDDEN,
              status.HTTP_404_NOT_FOUND]
         )
+    
+    def test_create_persona_public(self, api_client, test_usuario, 
+                                   test_geografia, test_estado_civil):
+        """Test crear persona sin autenticación (pre-inscripción pública)"""
+        data = {
+            'usu_id': test_usuario.usu_id,
+            'esc_id': test_estado_civil.esc_id,
+            'com_id': test_geografia['comuna'].com_id,
+            'per_run': '11111111-1',
+            'per_nombres': 'Juan',
+            'per_apelpat': 'Pérez',
+            'per_apelmat': 'González',
+            'per_sexo': 'M',
+            'per_fnac': '1990-01-01',
+            'per_email': 'juan.perez@test.com',
+            'per_fono': '123456789',
+            'per_vigente': True
+        }
+        
+        # Should allow public creation for pre-registration
+        response = api_client.post('/api/personas/personas/', data)
+        
+        AssertionHelpers.assert_valid_api_response(
+            response,
+            [status.HTTP_201_CREATED]
+        )
+        assert response.data['per_nombres'] == 'Juan'
 
 
 @pytest.mark.django_db
