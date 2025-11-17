@@ -23,6 +23,7 @@ import Maestros from '@/components/dashboard/Maestros';
 import DashboardEjecutivo from '@/components/dashboard/DashboardEjecutivo';
 import Inscripciones from '@/components/dashboard/Preinscripcion';
 import Acreditacion from '@/components/dashboard/Acreditacion';
+import Personas from '@/components/dashboard/Personas';
 
 import ProveedoresPage from '@/pages/ProveedoresPage';
 // import Breadcrumb from '@/components/Breadcrumb';
@@ -85,7 +86,7 @@ const CoordinatorDashboard = () => {
     { icon: FaChartLine, label: 'Dashboard', path: `${basePath}/ejecutivo` },
     { icon: FaDatabase, label: 'Maestros', path: `${basePath}/maestros` },
     { icon: FaBook, label: 'Cursos', path: `${basePath}/gestion-cursos` },
-    { icon: FaUsers, label: 'Personas', path: '/personas' },
+    { icon: FaUsers, label: 'Personas', path: `${basePath}/personas` },
     { icon: FaCreditCard, label: 'Pagos', path: `${basePath}/gestion-pagos` },
     { icon: FaAward, label: 'Acreditaciones', path: `${basePath}/acreditacion` },
   ];
@@ -198,6 +199,7 @@ const CoordinatorDashboard = () => {
 
               <Route path="/gestion-cursos" element={<Cursos />} />
               <Route path="/inscripciones" element={<Inscripciones />} />
+              <Route path="/personas" element={<Personas />} />
               <Route path="/gestion-pagos" element={<Pagos />} />
               <Route path="/envio-correos" element={<EnvioCorreo />} />
               <Route path="/acreditacion" element={<Acreditacion />} />
