@@ -222,6 +222,43 @@ const CursosPublicPage = () => {
                     <span className="text-sm text-gray-600">{curso.cur_lugar}</span>
                   </div>
 
+                  {/* Fechas del Curso */}
+                  {curso.fechas && curso.fechas.length > 0 && (
+                    <div className="flex items-start">
+                      <FaCalendar className="w-4 h-4 text-gray-400 mt-1 mr-2 flex-shrink-0" />
+                      <div className="text-sm text-gray-600 space-y-1">
+                        {curso.fechas.map((fecha, idx) => (
+                          <div key={idx}>
+                            <span className="font-medium">
+                              {new Date(fecha.cuf_fecha_inicio).toLocaleDateString('es-CL', {
+                                day: '2-digit',
+                                month: '2-digit',
+                                year: 'numeric',
+                              })}
+                            </span>
+                            {' - '}
+                            <span>
+                              {new Date(fecha.cuf_fecha_termino).toLocaleDateString('es-CL', {
+                                day: '2-digit',
+                                month: '2-digit',
+                                year: 'numeric',
+                              })}
+                            </span>
+                            <span className="ml-2 text-xs text-gray-500">
+                              (
+                              {fecha.cuf_tipo === 1
+                                ? 'Presencial'
+                                : fecha.cuf_tipo === 2
+                                  ? 'Online'
+                                  : 'Híbrido'}
+                              )
+                            </span>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
                   <div className="flex items-center">
                     <FaClock className="w-4 h-4 text-gray-400 mr-2" />
                     <span
