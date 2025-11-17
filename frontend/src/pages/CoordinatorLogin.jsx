@@ -66,8 +66,8 @@ const CoordinatorLogin = () => {
   return (
     <>
       <Helmet>
-        <title>Login Coordinador - Scout Formación</title>
-        <meta name="description" content="Acceso para coordinadores de la plataforma Scout." />
+        <title>Login Admin - GIC Platform</title>
+        <meta name="description" content="Acceso para administradores de la plataforma GIC." />
       </Helmet>
 
       <div className="min-h-screen bg-gradient-to-br from-primary to-primary/90 flex items-center justify-center p-4">
@@ -82,8 +82,8 @@ const CoordinatorLogin = () => {
               <div className="w-16 h-16 bg-white rounded-full flex items-center justify-center mx-auto mb-4">
                 <FaAward className="w-10 h-10 text-[#001558]" />
               </div>
-              <h1 className="text-3xl font-bold">Portal Coordinador</h1>
-              <p className="text-primary-foreground mt-2">Scout Formación</p>
+              <h1 className="text-3xl font-bold">Portal Administrativo</h1>
+              <p className="text-primary-foreground mt-2">GIC Platform</p>
             </div>
 
             <form onSubmit={handleLogin} className="p-8 space-y-6">

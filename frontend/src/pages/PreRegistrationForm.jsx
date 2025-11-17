@@ -174,10 +174,10 @@ const PreRegistrationForm = () => {
   return (
     <>
       <Helmet>
-        <title>Pre-inscripción - Scout Formación</title>
+        <title>Pre-inscripción - GIC Platform</title>
         <meta
           name="description"
-          content="Completa tu pre-inscripción para los cursos de formación Scout."
+          content="Completa tu pre-inscripción para los cursos de capacitación."
         />
       </Helmet>
 
@@ -190,7 +190,7 @@ const PreRegistrationForm = () => {
                 <div className="w-10 h-10 bg-white rounded-full flex items-center justify-center">
                   <FaAward className="w-6 h-6 text-[#001558]" />
                 </div>
-                <span className="text-xl font-bold">Formulario de Pre-inscripción Scout</span>
+                <span className="text-xl font-bold">Formulario de Pre-inscripción</span>
               </div>
               <Button
                 variant="ghost"
