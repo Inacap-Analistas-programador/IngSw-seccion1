@@ -14,6 +14,7 @@ import {
   FaRocket,
   FaMobileAlt,
   FaCheck,
+  FaBook,
 } from 'react-icons/fa';
 
 const HomePage = () => {
