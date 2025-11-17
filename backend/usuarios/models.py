@@ -32,6 +32,30 @@ class Usuario(models.Model):
     def check_password(self, raw_password):
         """Check if the provided password is correct"""
         return check_password(raw_password, self.usu_password)
+    
+    @property
+    def is_authenticated(self):
+        """
+        Always return True for authenticated Usuario instances.
+        This is required by Django's permission system.
+        """
+        return True
+    
+    @property
+    def is_anonymous(self):
+        """
+        Always return False for Usuario instances (they are authenticated users).
+        This is required by Django's permission system.
+        """
+        return False
+    
+    @property
+    def is_active(self):
+        """
+        Return the value of usu_vigente field.
+        This is required by Django's permission system.
+        """
+        return self.usu_vigente
 
 
 from maestros.models import Perfil, Aplicacion

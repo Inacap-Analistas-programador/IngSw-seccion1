@@ -84,7 +84,7 @@ CORS_ALLOW_ALL_ORIGINS = CORS_ALLOW_ALL_ORIGINS or DEBUG  # Always allow all ori
 # Configuración de Django REST Framework
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
-        'rest_framework_simplejwt.authentication.JWTAuthentication',
+        'usuarios.authentication.UsuarioJWTAuthentication',
         'rest_framework.authentication.SessionAuthentication',
     ],
     'DEFAULT_PERMISSION_CLASSES': [
@@ -113,9 +113,9 @@ REST_FRAMEWORK = {
 SIMPLE_JWT = {
     'ACCESS_TOKEN_LIFETIME': timedelta(minutes=15),  # Reducido de 60 a 15 minutos para mayor seguridad
     'REFRESH_TOKEN_LIFETIME': timedelta(days=7),
-    'ROTATE_REFRESH_TOKENS': True,
-    'BLACKLIST_AFTER_ROTATION': True,
-    'UPDATE_LAST_LOGIN': True,
+    'ROTATE_REFRESH_TOKENS': False,  # Disabled - requires Django User model
+    'BLACKLIST_AFTER_ROTATION': False,  # Disabled - requires Django User model
+    'UPDATE_LAST_LOGIN': False,  # Disabled - requires Django User model
     'ALGORITHM': 'HS256',
     'SIGNING_KEY': SECRET_KEY,
     'AUTH_HEADER_TYPES': ('Bearer',),
@@ -272,9 +272,9 @@ AUTH_PASSWORD_VALIDATORS = [
 # Configuración de seguridad de contraseñas adicional
 PASSWORD_RESET_TIMEOUT = 3600  # 1 hora para reset de contraseña
 PASSWORD_HASHERS = [
-    'django.contrib.auth.hashers.Argon2PasswordHasher',  # Más seguro que PBKDF2
-    'django.contrib.auth.hashers.PBKDF2PasswordHasher',
+    'django.contrib.auth.hashers.PBKDF2PasswordHasher',  # Django default, always available
     'django.contrib.auth.hashers.PBKDF2SHA1PasswordHasher',
+    'django.contrib.auth.hashers.Argon2PasswordHasher',  # Más seguro pero requiere django[argon2]
     'django.contrib.auth.hashers.BCryptSHA256PasswordHasher',
 ]
 
