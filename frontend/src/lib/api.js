@@ -421,28 +421,6 @@ export const getComprobantes = async () => {
   }
 };
 
-// Personas API
-export const getPersonas = async () => {
-  try {
-    const response = await api.get('/personas/');
-    return response.data;
-  } catch (error) {
-    console.error('Error fetching personas:', error);
-    throw error;
-  }
-};
-
-// Concepto Contable (maestros)
-export const getConceptosContables = async () => {
-  try {
-    const response = await api.get('/maestros/conceptos-contables/');
-    return response.data;
-  } catch (error) {
-    console.error('Error fetching conceptos contables:', error);
-    throw error;
-  }
-};
-
 export const createComprobante = async (payload) => {
   try {
     const response = await api.post('/pagos/comprobantes/', payload);
