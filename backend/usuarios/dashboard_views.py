@@ -36,6 +36,36 @@ def dashboard_stats(request):
 
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
+def dashboard_payment_stats(request):
+    """
+    Get payment statistics for dashboard
+    """
+    today = datetime.now()
+    current_month_start = today.replace(day=1, hour=0, minute=0, second=0, microsecond=0)
+    
+    # Total income this month (estado = 2 is completed/confirmed)
+    ingresos_mes = Pago.objects.filter(
+        pag_estado=2,
+        pag_fecha_pago__gte=current_month_start
+    ).aggregate(total=Sum('pag_monto'))['total'] or 0
+    
+    # Pending payments count
+    pagos_pendientes = Pago.objects.filter(pag_estado=1).count()
+    
+    # Count of courses with confirmed payments
+    cursos_pagados = Pago.objects.filter(
+        pag_estado=2
+    ).values('cur_id').distinct().count()
+    
+    return Response({
+        'total_ingresos': float(ingresos_mes),
+        'pagos_pendientes': pagos_pendientes,
+        'cursos_pagados': cursos_pagados
+    })
+
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
 def dashboard_recent_courses(request):
     """
     Get recent courses with enrollment data
