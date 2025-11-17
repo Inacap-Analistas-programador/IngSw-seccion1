@@ -1,6 +1,5 @@
 from django.utils import timezone
 from unittest.mock import MagicMock
-from typing import Optional, Any
 from datetime import datetime
 
 # Mocking foreign key dependencies
@@ -49,8 +48,38 @@ mock_zona.zon_descripcion = "Zona Central"
 
 # --- Mocking the Models from the 'personas' app ---
 
+
 class Persona:
-    def __init__(self, per_id=1, esc_id=None, com_id=None, usu_id=None, per_fecha_hora=None, per_run=12345678, per_dv="9", per_apelpat="Perez", per_apelmat="Perez", per_nombres="Juan", per_email="juan.perez@example.com", per_fecha_nac=None, per_direccion="Calle Falsa 123", per_tipo_fono=2, per_fono="987654321", per_alergia_enfermedad="", per_limitacion="", per_nom_emergencia="Maria Lopez", per_fono_emergencia="912345678", per_otros="", per_num_mmaa=0, per_profesion="Ingeniero", per_tiempo_nnaj="1 año", per_tiempo_adulto="5 años", per_religion="Católica", per_apodo="Juanito", per_foto=None, per_vigente=True):
+    def __init__(
+            self,
+            per_id=1,
+            esc_id=None,
+            com_id=None,
+            usu_id=None,
+            per_fecha_hora=None,
+            per_run=12345678,
+            per_dv="9",
+            per_apelpat="Perez",
+            per_apelmat="Perez",
+            per_nombres="Juan",
+            per_email="juan.perez@example.com",
+            per_fecha_nac=None,
+            per_direccion="Calle Falsa 123",
+            per_tipo_fono=2,
+            per_fono="987654321",
+            per_alergia_enfermedad="",
+            per_limitacion="",
+            per_nom_emergencia="Maria Lopez",
+            per_fono_emergencia="912345678",
+            per_otros="",
+            per_num_mmaa=0,
+            per_profesion="Ingeniero",
+            per_tiempo_nnaj="1 año",
+            per_tiempo_adulto="5 años",
+            per_religion="Católica",
+            per_apodo="Juanito",
+            per_foto=None,
+            per_vigente=True):
         self.per_id = per_id
         self.esc_id = esc_id
         self.com_id = com_id
@@ -83,6 +112,7 @@ class Persona:
     def __str__(self):
         return f"{self.per_nombres} {self.per_apelpat}"
 
+
 class PersonaGrupo:
     def __init__(self, peg_id=1, gru_id=None, per_id=None, peg_vigente=True):
         self.peg_id = peg_id
@@ -93,6 +123,7 @@ class PersonaGrupo:
     def __str__(self):
         return f"{self.per_id} en {self.gru_id}"
 
+
 class PersonaNivel:
     def __init__(self, pen_id=1, per_id=None, niv_id=None, ram_id=None):
         self.pen_id = pen_id
@@ -102,6 +133,7 @@ class PersonaNivel:
 
     def __str__(self):
         return f"{self.per_id} - {self.niv_id} ({self.ram_id})"
+
 
 class PersonaFormador:
     def __init__(self, pef_id=1, per_id=None, pef_hab_1=False, pef_hab_2=False, pef_verif=False, pef_historial=""):
@@ -115,6 +147,7 @@ class PersonaFormador:
     def __str__(self):
         return f"Formador: {self.per_id}"
 
+
 class PersonaIndividual:
     def __init__(self, pei_id=1, per_id=None, car_id=None, dis_id=None, zon_id=None, pei_vigente=True):
         self.pei_id = pei_id
@@ -126,6 +159,7 @@ class PersonaIndividual:
 
     def __str__(self):
         return f"Individual: {self.per_id} - Cargo: {self.car_id}"
+
 
 class PersonaVehiculo:
     def __init__(self, pev_id=1, per_id=None, pev_marca="Toyota", pev_modelo="Corolla", pev_patente="AB1234"):
@@ -139,6 +173,7 @@ class PersonaVehiculo:
         return f"{self.pev_marca} {self.pev_modelo} ({self.pev_patente})"
 
 # --- Actual Test Cases ---
+
 
 def test_persona_creation():
     persona = Persona(
@@ -175,14 +210,15 @@ def test_persona_creation():
     assert persona.per_fono_emergencia == "955667788"
     assert persona.per_profesion == "Doctora"
     assert persona.per_apodo == "Anita"
-    assert persona.per_vigente == True
+    assert persona.per_vigente
     assert persona.per_fecha_hora is not None
     assert str(persona) == "Ana Lopez"
+
 
 def test_personagrupo_creation():
     mock_persona_grupo = MagicMock()
     mock_persona_grupo.pk = 5
-    mock_persona_grupo.__str__.return_value = "Persona Mock en Grupo Mock" # type: ignore
+    mock_persona_grupo.__str__.return_value = "Persona Mock en Grupo Mock"  # type: ignore
 
     persona_grupo = PersonaGrupo(
         gru_id=mock_grupo,
@@ -192,13 +228,14 @@ def test_personagrupo_creation():
     assert isinstance(persona_grupo, PersonaGrupo)
     assert persona_grupo.gru_id == mock_grupo
     assert persona_grupo.per_id == mock_persona
-    assert persona_grupo.peg_vigente == True
+    assert persona_grupo.peg_vigente
     assert str(persona_grupo) == f"{mock_persona} en {mock_grupo}"
+
 
 def test_personanivel_creation():
     mock_persona_nivel = MagicMock()
     mock_persona_nivel.pk = 6
-    mock_persona_nivel.__str__.return_value = "Persona Mock - Nivel Mock (Rama Mock)" # type: ignore
+    mock_persona_nivel.__str__.return_value = "Persona Mock - Nivel Mock (Rama Mock)"  # type: ignore
 
     persona_nivel = PersonaNivel(
         per_id=mock_persona,
@@ -211,10 +248,11 @@ def test_personanivel_creation():
     assert persona_nivel.ram_id == mock_rama
     assert str(persona_nivel) == f"{mock_persona} - {mock_nivel} ({mock_rama})"
 
+
 def test_personatformador_creation():
     mock_persona_formador = MagicMock()
     mock_persona_formador.pk = 7
-    mock_persona_formador.__str__.return_value = "Formador: Persona Mock" # type: ignore
+    mock_persona_formador.__str__.return_value = "Formador: Persona Mock"  # type: ignore
 
     persona_formador = PersonaFormador(
         per_id=mock_persona,
@@ -224,11 +262,12 @@ def test_personatformador_creation():
     )
     assert isinstance(persona_formador, PersonaFormador)
     assert persona_formador.per_id == mock_persona
-    assert persona_formador.pef_hab_1 == True
-    assert persona_formador.pef_hab_2 == False
-    assert persona_formador.pef_verif == True
+    assert persona_formador.pef_hab_1
+    assert persona_formador.pef_hab_2 is False
+    assert persona_formador.pef_verif
     assert persona_formador.pef_historial == "Capacitación en primeros auxilios"
     assert str(persona_formador) == f"Formador: {mock_persona}"
+
 
 def test_personaindividual_creation():
     persona_individual = PersonaIndividual(
@@ -243,8 +282,9 @@ def test_personaindividual_creation():
     assert persona_individual.car_id == mock_cargo
     assert persona_individual.dis_id == mock_distrito
     assert persona_individual.zon_id == mock_zona
-    assert persona_individual.pei_vigente == True
+    assert persona_individual.pei_vigente
     assert str(persona_individual) == f"Individual: {mock_persona} - Cargo: {mock_cargo}"
+
 
 def test_personavehiculo_creation():
     persona_vehiculo = PersonaVehiculo(
@@ -258,7 +298,10 @@ def test_personavehiculo_creation():
     assert persona_vehiculo.pev_marca == "Ford"
     assert persona_vehiculo.pev_modelo == "Explorer"
     assert persona_vehiculo.pev_patente == "CD4567"
-    assert str(persona_vehiculo) == f"{persona_vehiculo.pev_marca} {persona_vehiculo.pev_modelo} ({persona_vehiculo.pev_patente})"
+    assert str(persona_vehiculo) == f"{
+        persona_vehiculo.pev_marca} {
+        persona_vehiculo.pev_modelo} ({
+            persona_vehiculo.pev_patente})"
 
 # Note: In a real Django project, you would import the actual models like:
 # from ..models import Persona, PersonaGrupo, PersonaNivel, PersonaFormador, PersonaIndividual, PersonaVehiculo

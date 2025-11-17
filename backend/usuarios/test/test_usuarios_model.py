@@ -1,21 +1,28 @@
-from django.utils import timezone
 from unittest.mock import MagicMock
 
 # Mocking foreign key dependencies
 mock_perfil = MagicMock()
 mock_perfil.pk = 1
 mock_perfil.pel_descripcion = "Administrador"
-mock_perfil.__str__.return_value = "Administrador" # type: ignore
+mock_perfil.__str__.return_value = "Administrador"  # type: ignore
 
 mock_aplicacion = MagicMock()
 mock_aplicacion.pk = 1
 mock_aplicacion.apl_descripcion = "Usuarios"
-mock_aplicacion.__str__.return_value = "Usuarios" # type: ignore
+mock_aplicacion.__str__.return_value = "Usuarios"  # type: ignore
 
 # --- Mocking the Models from the 'usuarios' app ---
 
+
 class Usuario:
-    def __init__(self, usu_id=1, pel_id=None, usu_username="testuser", usu_password="hashed_password", usu_ruta_foto="/path/to/photo.jpg", usu_vigente=True):
+    def __init__(
+            self,
+            usu_id=1,
+            pel_id=None,
+            usu_username="testuser",
+            usu_password="hashed_password",
+            usu_ruta_foto="/path/to/photo.jpg",
+            usu_vigente=True):
         self.usu_id = usu_id
         self.pel_id = pel_id
         self.usu_username = usu_username
@@ -26,6 +33,7 @@ class Usuario:
     def __str__(self):
         return self.usu_username
 
+
 class Perfil:
     def __init__(self, pel_id=1, pel_descripcion="Default Profile", pel_vigente=True):
         self.pel_id = pel_id
@@ -34,6 +42,7 @@ class Perfil:
 
     def __str__(self):
         return self.pel_descripcion
+
 
 class Aplicacion:
     def __init__(self, apl_id=1, apl_descripcion="App Module", apl_vigente=True):
@@ -44,8 +53,17 @@ class Aplicacion:
     def __str__(self):
         return self.apl_descripcion
 
+
 class PerfilAplicacion:
-    def __init__(self, pea_id=1, pel_id=None, apl_id=None, pea_ingresar=True, pea_modificar=False, pea_eliminar=False, pea_consultar=True):
+    def __init__(
+            self,
+            pea_id=1,
+            pel_id=None,
+            apl_id=None,
+            pea_ingresar=True,
+            pea_modificar=False,
+            pea_eliminar=False,
+            pea_consultar=True):
         self.pea_id = pea_id
         self.pel_id = pel_id
         self.apl_id = apl_id
@@ -59,6 +77,7 @@ class PerfilAplicacion:
 
 # --- Actual Test Cases ---
 
+
 def test_usuario_creation():
     usuario = Usuario(
         pel_id=mock_perfil,
@@ -69,9 +88,10 @@ def test_usuario_creation():
     )
     assert isinstance(usuario, Usuario)
     assert usuario.usu_username == "testuser1"
-    assert usuario.usu_vigente == True
+    assert usuario.usu_vigente
     assert usuario.pel_id == mock_perfil
     assert str(usuario) == "testuser1"
+
 
 def test_perfil_creation():
     perfil = Perfil(
@@ -80,8 +100,9 @@ def test_perfil_creation():
     )
     assert isinstance(perfil, Perfil)
     assert perfil.pel_descripcion == "Editor"
-    assert perfil.pel_vigente == False
+    assert perfil.pel_vigente is False
     assert str(perfil) == "Editor"
+
 
 def test_aplicacion_creation():
     aplicacion = Aplicacion(
@@ -90,8 +111,9 @@ def test_aplicacion_creation():
     )
     assert isinstance(aplicacion, Aplicacion)
     assert aplicacion.apl_descripcion == "Reporting Module"
-    assert aplicacion.apl_vigente == True
+    assert aplicacion.apl_vigente
     assert str(aplicacion) == "Reporting Module"
+
 
 def test_perfilaplicacion_creation():
     perfil_app = PerfilAplicacion(
@@ -105,8 +127,8 @@ def test_perfilaplicacion_creation():
     assert isinstance(perfil_app, PerfilAplicacion)
     assert perfil_app.pel_id == mock_perfil
     assert perfil_app.apl_id == mock_aplicacion
-    assert perfil_app.pea_ingresar == True
-    assert perfil_app.pea_eliminar == False
+    assert perfil_app.pea_ingresar
+    assert perfil_app.pea_eliminar is False
     # Testing __str__ method requires mocks to have __str__ or relevant attributes.
     # For simplicity, we'll assume the default mock representation is acceptable for now.
     # If a specific string format is required, mocks need to be configured accordingly.

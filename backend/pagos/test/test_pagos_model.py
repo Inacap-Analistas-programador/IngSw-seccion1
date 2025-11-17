@@ -1,6 +1,5 @@
 from django.utils import timezone
 from unittest.mock import MagicMock
-from typing import Optional, Any
 from datetime import datetime
 
 # Mocking foreign key dependencies
@@ -17,11 +16,11 @@ mock_persona.per_apelpat = "Perez"
 mock_curso = MagicMock()
 mock_curso.pk = 1
 mock_curso.cur_codigo = "C001"
-mock_curso.__str__.return_value = "Curso Mock" # type: ignore
+mock_curso.__str__.return_value = "Curso Mock"  # type: ignore
 
 mock_persona_curso = MagicMock()
 mock_persona_curso.pk = 1
-mock_persona_curso.__str__.return_value = "PersonaCurso Mock" # type: ignore
+mock_persona_curso.__str__.return_value = "PersonaCurso Mock"  # type: ignore
 
 mock_concepto_contable = MagicMock()
 mock_concepto_contable.pk = 1
@@ -29,8 +28,18 @@ mock_concepto_contable.coc_descripcion = "Matricula"
 
 # --- Mocking the Models from the 'pagos' app ---
 
+
 class PagoPersona:
-    def __init__(self, pap_id=1, per_id=None, cur_id=None, usu_id=None, pap_fecha_hora=None, pap_tipo=1, pap_valor=100.0, pap_observacion=""):
+    def __init__(
+            self,
+            pap_id=1,
+            per_id=None,
+            cur_id=None,
+            usu_id=None,
+            pap_fecha_hora=None,
+            pap_tipo=1,
+            pap_valor=100.0,
+            pap_observacion=""):
         self.pap_id = pap_id
         self.per_id = per_id
         self.cur_id = cur_id
@@ -43,8 +52,18 @@ class PagoPersona:
     def __str__(self):
         return f"Pago {self.pap_id} de {self.per_id} por {self.pap_valor}"
 
+
 class ComprobantePago:
-    def __init__(self, cpa_id=1, usu_id=None, pec_id=None, coc_id=None, cpa_fecha_hora=None, cpa_fecha=None, cpa_numero=1000, cpa_valor=100.0):
+    def __init__(
+            self,
+            cpa_id=1,
+            usu_id=None,
+            pec_id=None,
+            coc_id=None,
+            cpa_fecha_hora=None,
+            cpa_fecha=None,
+            cpa_numero=1000,
+            cpa_valor=100.0):
         self.cpa_id = cpa_id
         self.usu_id = usu_id
         self.pec_id = pec_id
@@ -57,6 +76,7 @@ class ComprobantePago:
     def __str__(self):
         return f"Comprobante {self.cpa_numero} ({self.cpa_valor})"
 
+
 class PagoComprobante:
     def __init__(self, pco_id=1, pap_id=None, cpa_id=None):
         self.pco_id = pco_id
@@ -65,6 +85,7 @@ class PagoComprobante:
 
     def __str__(self):
         return f"Pago {self.pap_id} con Comprobante {self.cpa_id}"
+
 
 class PagoCambioPersona:
     def __init__(self, pcp_id=1, per_id=None, pap_id=None, usu_id=None, pcp_fecha_hora=None):
@@ -77,8 +98,17 @@ class PagoCambioPersona:
     def __str__(self):
         return f"Cambio en pago {self.pap_id} para {self.per_id} por {self.usu_id}"
 
+
 class Prepago:
-    def __init__(self, ppa_id=1, per_id=None, cur_id=None, pap_id=None, ppa_valor=100.0, ppa_observacion="", ppa_vigente=True):
+    def __init__(
+            self,
+            ppa_id=1,
+            per_id=None,
+            cur_id=None,
+            pap_id=None,
+            ppa_valor=100.0,
+            ppa_observacion="",
+            ppa_vigente=True):
         self.ppa_id = ppa_id
         self.per_id = per_id
         self.cur_id = cur_id
@@ -92,12 +122,13 @@ class Prepago:
 
 # --- Actual Test Cases ---
 
+
 def test_pagopersona_creation():
     pago = PagoPersona(
         per_id=mock_persona,
         cur_id=mock_curso,
         usu_id=mock_usuario,
-        pap_tipo=1, # Ingreso
+        pap_tipo=1,  # Ingreso
         pap_valor=150.50,
         pap_observacion="Pago de matrícula"
     )
@@ -110,6 +141,7 @@ def test_pagopersona_creation():
     assert pago.pap_observacion == "Pago de matrícula"
     assert pago.pap_fecha_hora is not None
     assert str(pago) == f"Pago {pago.pap_id} de {mock_persona} por {pago.pap_valor}"
+
 
 def test_comprobantepago_creation():
     fecha_comprobante = datetime.now().date()
@@ -131,27 +163,29 @@ def test_comprobantepago_creation():
     assert comprobante.cpa_fecha_hora is not None
     assert str(comprobante) == f"Comprobante {comprobante.cpa_numero} ({comprobante.cpa_valor})"
 
+
 def test_pagocomprobante_creation():
     # Create mocks with proper specs
     mock_pago = MagicMock(spec=['pk', '__str__'])
     mock_pago.pk = 10
     mock_pago.__str__ = MagicMock(return_value="Pago 10")
-    
+
     mock_comprobante = MagicMock(spec=['pk', '__str__'])
     mock_comprobante.pk = 20
     mock_comprobante.__str__ = MagicMock(return_value="Comprobante 20")
-    
+
     pago_comprobante = PagoComprobante(
         pap_id=mock_pago,
         cpa_id=mock_comprobante
     )
-    
+
     assert isinstance(pago_comprobante, PagoComprobante)
     assert pago_comprobante.pap_id is not None
     assert pago_comprobante.pap_id.pk == 10
     assert pago_comprobante.cpa_id is not None
     assert pago_comprobante.cpa_id.pk == 20
     assert str(pago_comprobante) == f"Pago {mock_pago} con Comprobante {mock_comprobante}"
+
 
 def test_pagocambiopersona_creation():
     # Create mock for persona with proper specs
@@ -171,7 +205,7 @@ def test_pagocambiopersona_creation():
         pap_id=mock_pago,
         usu_id=mock_usuario
     )
-    
+
     assert isinstance(pago_cambio, PagoCambioPersona)
     assert pago_cambio.per_id == mock_persona_cambio
     assert pago_cambio.pap_id is not None
@@ -179,6 +213,7 @@ def test_pagocambiopersona_creation():
     assert pago_cambio.usu_id == mock_usuario
     assert pago_cambio.pcp_fecha_hora is not None
     assert str(pago_cambio) == f"Cambio en pago {mock_pago} para {mock_persona_cambio} por {mock_usuario}"
+
 
 def test_prepago_creation():
     # Create mock for curso with proper specs
@@ -200,7 +235,7 @@ def test_prepago_creation():
         ppa_observacion="Prepago para curso avanzado",
         ppa_vigente=True
     )
-    
+
     assert isinstance(prepago, Prepago)
     assert prepago.per_id == mock_persona
     assert prepago.cur_id == mock_curso_prepago
@@ -208,8 +243,10 @@ def test_prepago_creation():
     assert prepago.pap_id.pk == 10
     assert prepago.ppa_valor == 200.0
     assert prepago.ppa_observacion == "Prepago para curso avanzado"
-    assert prepago.ppa_vigente == True
-    assert str(prepago) == f"Prepago {prepago.ppa_id} de {mock_persona} por {prepago.ppa_valor} para {mock_curso_prepago}"
+    assert prepago.ppa_vigente
+    assert str(prepago) == f"Prepago {
+        prepago.ppa_id} de {mock_persona} por {
+        prepago.ppa_valor} para {mock_curso_prepago}"
 
 # Note: In a real Django project, you would import the actual models like:
 # from ..models import PagoPersona, ComprobantePago, PagoComprobante, PagoCambioPersona, Prepago
