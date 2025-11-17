@@ -177,14 +177,14 @@ def dashboard_executive_stats(request):
     # Current month stats
     current_personas = Persona.objects.filter(
         per_vigente=True,
-        usu_id__usu_fecha_creacion__gte=current_month_start
+        per_fecha_hora__gte=current_month_start
     ).count()
     
     # Previous month stats
     previous_personas = Persona.objects.filter(
         per_vigente=True,
-        usu_id__usu_fecha_creacion__gte=last_month_start,
-        usu_id__usu_fecha_creacion__lt=current_month_start
+        per_fecha_hora__gte=last_month_start,
+        per_fecha_hora__lt=current_month_start
     ).count()
     
     # Calculate trend
