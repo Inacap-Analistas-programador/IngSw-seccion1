@@ -52,13 +52,34 @@ class TestCursoViewSetAPI:
         )
     
     def test_list_cursos_unauthorized(self, api_client):
-        """Test listar cursos sin autenticación"""
-        response = api_client.get('/api/cursos/')
+        """Test listar cursos sin autenticación - ahora permitido para catálogo público"""
+        response = api_client.get('/api/cursos/cursos/')
+        
+        # Listado de cursos ahora es público para permitir pre-inscripciones
+        AssertionHelpers.assert_valid_api_response(
+            response,
+            [status.HTTP_200_OK]
+        )
+    
+    def test_create_curso_unauthorized(self, api_client, test_tipo_curso):
+        """Test crear curso sin autenticación - debe fallar"""
+        data = {
+            'tcu_id': test_tipo_curso.tcu_id,
+            'cur_nom': 'Curso Test',
+            'cur_desc': 'Descripción test',
+            'cur_fecini': '2024-01-01',
+            'cur_fecfin': '2024-01-02',
+            'cur_cupo': 20,
+            'cur_costo': 50000,
+            'cur_vigente': True
+        }
+        
+        # Should not allow creation without authentication
+        response = api_client.post('/api/cursos/cursos/', data)
         
         AssertionHelpers.assert_valid_api_response(
             response,
-            [status.HTTP_401_UNAUTHORIZED, status.HTTP_403_FORBIDDEN, 
-             status.HTTP_404_NOT_FOUND]
+            [status.HTTP_401_UNAUTHORIZED, status.HTTP_403_FORBIDDEN]
         )
 
 

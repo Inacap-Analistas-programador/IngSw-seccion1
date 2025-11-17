@@ -1,5 +1,5 @@
 from rest_framework import viewsets
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAuthenticated, AllowAny
 from .models import (
     Persona,
     PersonaGrupo,
@@ -26,6 +26,14 @@ class PersonaViewSet(viewsets.ModelViewSet):
     queryset = Persona.objects.all()
     serializer_class = PersonaSerializer
     permission_classes = [IsAuthenticated]
+    
+    def get_permissions(self):
+        """
+        Allow public POST for pre-registration, require authentication for other operations
+        """
+        if self.action == 'create':
+            return [AllowAny()]
+        return [IsAuthenticated()]
 
 
 class PersonaGrupoViewSet(viewsets.ModelViewSet):

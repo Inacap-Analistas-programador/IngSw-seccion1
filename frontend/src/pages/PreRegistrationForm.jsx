@@ -11,7 +11,7 @@ import Step3Health from '@/components/wizard/Step3Health';
 import Step4AdditionalData from '@/components/wizard/Step4AdditionalData';
 import Step5MedicalFile from '@/components/wizard/Step5MedicalFile';
 import Step6Review from '@/components/wizard/Step6Review';
-import api from '@/config/api';
+import personasService from '@/services/personasService';
 import { personaToApi } from '@/lib/mappers';
 
 const PreRegistrationForm = () => {
@@ -151,7 +151,7 @@ const PreRegistrationForm = () => {
 
     try {
       // Enviar al backend con mapeador para mantener coherencia con la API (per_*)
-      await api.post('/personas/', personaToApi(newPersona));
+      await personasService.create(personaToApi(newPersona));
       console.log('Persona enviada al API correctamente');
       
       alert('¡Pre-inscripción Exitosa! Tu pre-inscripción ha sido registrada correctamente.');
@@ -161,7 +161,8 @@ const PreRegistrationForm = () => {
       }, 2000);
     } catch (err) {
       console.error('Error al enviar pre-inscripción:', err);
-      alert('Error al enviar la pre-inscripción. Por favor, verifica tu conexión e intenta nuevamente.');
+      const errorMessage = err.response?.data?.message || err.message || 'Error desconocido';
+      alert(`Error al enviar la pre-inscripción: ${errorMessage}. Por favor, verifica tu conexión e intenta nuevamente.`);
     }
   };
 
