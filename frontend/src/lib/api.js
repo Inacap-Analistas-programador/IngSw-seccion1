@@ -566,3 +566,5 @@ export const deletePrepago = async (id) => {
   }
 };
 
+
+export default api;
