@@ -25,7 +25,7 @@ import VerificadorQR from '@/components/dashboard/VerificadorQR';
 import DashboardEjecutivo from '@/components/dashboard/DashboardEjecutivo';
 import Inscripciones from '@/components/dashboard/Preinscripcion';
 import Acreditacion from '@/components/dashboard/Acreditacion';
-import UseCases from '@/pages/UseCases';
+
 import ProveedoresPage from '@/pages/ProveedoresPage';
 // import Breadcrumb from '@/components/Breadcrumb';
 
@@ -200,7 +200,7 @@ const CoordinatorDashboard = () => {
             </div>
             <Routes>
               <Route path="/ejecutivo" element={<DashboardEjecutivo />} />
-              <Route path="/use-cases" element={<UseCases />} />
+
               <Route path="/gestion-cursos" element={<Cursos />} />
               <Route path="/inscripciones" element={<Inscripciones />} />
               <Route path="/gestion-pagos" element={<Pagos />} />

@@ -1,3 +1,11 @@
 from django.contrib import admin
+from .models import (
+    Preinscripcion, PreinscripcionEstadoLog,
+    CupoConfiguracion, Documento
+)
 
-# Register your models here.
+
+admin.site.register(Preinscripcion)
+admin.site.register(PreinscripcionEstadoLog)
+admin.site.register(CupoConfiguracion)
+admin.site.register(Documento)
