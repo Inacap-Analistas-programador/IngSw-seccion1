@@ -43,8 +43,8 @@ const HomePage = () => {
     },
     {
       icon: <FaCalendar className="w-8 h-8" />,
-      title: 'Administración de Cursos',
-      description: 'Planificación y seguimiento de cursos y actividades',
+      title: 'Catálogo de Cursos',
+      description: 'Explora y selecciona cursos disponibles para inscribirte',
       color: 'from-orange-500 to-orange-600',
       demo: '/cursos',
     },
