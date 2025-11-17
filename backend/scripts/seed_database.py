@@ -626,114 +626,52 @@ def seed_cursos():
     """Seed cursos con datos realistas"""
     print("📚 Seeding cursos...")
     
+    # Get required foreign keys
     tipo_basico = TipoCurso.objects.get(tcu_descripcion="Curso de Formación Básica")
-    tipo_intermedio = TipoCurso.objects.get(tcu_descripcion="Curso de Formación Intermedia")
-    tipo_avanzado = TipoCurso.objects.get(tcu_descripcion="Curso de Formación Avanzada")
     tipo_taller = TipoCurso.objects.get(tcu_descripcion="Taller Especializado")
     
-    nivel_basico = Nivel.objects.get(niv_descripcion="Nivel Básico")
-    nivel_intermedio = Nivel.objects.get(niv_descripcion="Nivel Intermedio")
-    nivel_avanzado = Nivel.objects.get(niv_descripcion="Nivel Avanzado")
+    cargo_director = Cargo.objects.get(car_descripcion="Director de Curso")
     
-    rama_scouts = Rama.objects.get(ram_descripcion="Scouts")
-    rama_pioneros = Rama.objects.get(ram_descripcion="Pioneros")
-    rama_adultos = Rama.objects.get(ram_descripcion="Adultos")
+    # Get a persona to be the responsible
+    persona_responsable = Persona.objects.first()
+    usuario_responsable = Usuario.objects.get(usu_username='coordinador')
     
-    grupo = Grupo.objects.first()
+    comuna_santiago = Comuna.objects.get(com_descripcion="Santiago")
+    comuna_providencia = Comuna.objects.get(com_descripcion="Providencia")
     
     # Fechas para los cursos
-    hoy = datetime.now().date()
+    hoy = timezone.now()
     
     cursos_data = [
         {
             "codigo": "CFB-2024-001",
-            "nombre": "Curso de Formación Básica - Marzo 2024",
-            "descripcion": "Curso introductorio para nuevos dirigentes scouts. Incluye fundamentos del método scout, pedagogía scout y primeros auxilios básicos.",
-            "fecha_inicio": hoy + timedelta(days=30),
-            "fecha_termino": hoy + timedelta(days=32),
-            "fecha_inicio_inscripcion": hoy,
-            "fecha_termino_inscripcion": hoy + timedelta(days=25),
-            "cupo": 30,
-            "precio": Decimal("45000.00"),
-            "tipo": tipo_basico,
-            "nivel": nivel_basico,
-            "rama": rama_adultos,
-            "lugar": "Centro Scout Regional - Santiago Centro"
+            "descripcion": "Curso Formación Básica",
+            "observacion": "Curso introductorio para nuevos dirigentes scouts",
+            "fecha_solicitud": hoy,
+            "cuota_con_almuerzo": Decimal("45000.00"),
+            "cuota_sin_almuerzo": Decimal("35000.00"),
+            "modalidad": 1,  # Presencial
+            "tipo_curso": 1,  # Formación
+            "lugar": "Centro Scout Regional - Santiago Centro",
+            "estado": 1,  # Activo
+            "administra": 1,  # Nacional
+            "comuna": comuna_santiago,
+            "tipo": tipo_basico
         },
         {
-            "codigo": "CFI-2024-002",
-            "nombre": "Curso de Formación Intermedia - Abril 2024",
-            "descripcion": "Profundización en técnicas scout, liderazgo de equipo, planificación de actividades y gestión de proyectos educativos.",
-            "fecha_inicio": hoy + timedelta(days=45),
-            "fecha_termino": hoy + timedelta(days=48),
-            "fecha_inicio_inscripcion": hoy,
-            "fecha_termino_inscripcion": hoy + timedelta(days=40),
-            "cupo": 25,
-            "precio": Decimal("65000.00"),
-            "tipo": tipo_intermedio,
-            "nivel": nivel_intermedio,
-            "rama": rama_adultos,
-            "lugar": "Campamento La Esperanza - Cajón del Maipo"
-        },
-        {
-            "codigo": "CFA-2024-003",
-            "nombre": "Curso de Formación Avanzada - Mayo 2024",
-            "descripcion": "Curso para formadores de formadores. Metodología de enseñanza, evaluación de competencias y desarrollo curricular en el movimiento scout.",
-            "fecha_inicio": hoy + timedelta(days=60),
-            "fecha_termino": hoy + timedelta(days=64),
-            "fecha_inicio_inscripcion": hoy + timedelta(days=5),
-            "fecha_termino_inscripcion": hoy + timedelta(days=55),
-            "cupo": 20,
-            "precio": Decimal("85000.00"),
-            "tipo": tipo_avanzado,
-            "nivel": nivel_avanzado,
-            "rama": rama_adultos,
-            "lugar": "Centro de Formación Nacional - Pirque"
-        },
-        {
-            "codigo": "TAL-2024-004",
-            "nombre": "Taller de Técnicas de Campamento",
-            "descripcion": "Técnicas avanzadas de campamento: construcciones scout, cocina al aire libre, orientación y supervivencia en la naturaleza.",
-            "fecha_inicio": hoy + timedelta(days=20),
-            "fecha_termino": hoy + timedelta(days=21),
-            "fecha_inicio_inscripcion": hoy,
-            "fecha_termino_inscripcion": hoy + timedelta(days=15),
-            "cupo": 15,
-            "precio": Decimal("25000.00"),
-            "tipo": tipo_taller,
-            "nivel": nivel_intermedio,
-            "rama": rama_pioneros,
-            "lugar": "Campamento Scout - Melipilla"
-        },
-        {
-            "codigo": "TAL-2024-005",
-            "nombre": "Taller de Primeros Auxilios Avanzados",
-            "descripcion": "Certificación en primeros auxilios avanzados para actividades scout. RCP, manejo de trauma y emergencias en terreno.",
-            "fecha_inicio": hoy + timedelta(days=15),
-            "fecha_termino": hoy + timedelta(days=16),
-            "fecha_inicio_inscripcion": hoy,
-            "fecha_termino_inscripcion": hoy + timedelta(days=10),
-            "cupo": 20,
-            "precio": Decimal("35000.00"),
-            "tipo": tipo_taller,
-            "nivel": nivel_basico,
-            "rama": rama_adultos,
-            "lugar": "Cruz Roja Chilena - Santiago"
-        },
-        {
-            "codigo": "CFB-2024-006",
-            "nombre": "Curso Básico para Dirigentes de Scouts",
-            "descripcion": "Formación específica para dirigentes de la rama scouts (11-14 años). Psicología del desarrollo, juegos y dinámicas para esta edad.",
-            "fecha_inicio": hoy + timedelta(days=35),
-            "fecha_termino": hoy + timedelta(days=37),
-            "fecha_inicio_inscripcion": hoy,
-            "fecha_termino_inscripcion": hoy + timedelta(days=30),
-            "cupo": 30,
-            "precio": Decimal("42000.00"),
-            "tipo": tipo_basico,
-            "nivel": nivel_basico,
-            "rama": rama_scouts,
-            "lugar": "Sede Nacional - Providencia"
+            "codigo": "TAL-2024-002",
+            "descripcion": "Taller Técnicas de Campamento",
+            "observacion": "Técnicas avanzadas de campamento y construcciones scout",
+            "fecha_solicitud": hoy,
+            "cuota_con_almuerzo": Decimal("25000.00"),
+            "cuota_sin_almuerzo": Decimal("20000.00"),
+            "modalidad": 1,  # Presencial
+            "tipo_curso": 4,  # Taller
+            "lugar": "Campamento Scout - Melipilla",
+            "estado": 1,  # Activo
+            "administra": 2,  # Regional
+            "comuna": comuna_providencia,
+            "tipo": tipo_taller
         }
     ]
     
@@ -741,24 +679,36 @@ def seed_cursos():
         curso, created = Curso.objects.get_or_create(
             cur_codigo=data["codigo"],
             defaults={
-                'cur_nombre': data["nombre"],
-                'cur_descripcion': data["descripcion"],
-                'cur_fecha_inicio': data["fecha_inicio"],
-                'cur_fecha_termino': data["fecha_termino"],
-                'cur_fecha_inicio_inscripcion': data["fecha_inicio_inscripcion"],
-                'cur_fecha_termino_inscripcion': data["fecha_termino_inscripcion"],
-                'cur_cupo': data["cupo"],
-                'cur_precio': data["precio"],
+                'usu_id': usuario_responsable,
                 'tcu_id': data["tipo"],
-                'niv_id': data["nivel"],
-                'ram_id': data["rama"],
-                'gru_id': grupo,
+                'per_id_responsable': persona_responsable,
+                'car_id_responsable': cargo_director,
+                'com_id_lugar': data["comuna"],
+                'cur_fecha_solicitud': data["fecha_solicitud"],
+                'cur_descripcion': data["descripcion"],
+                'cur_observacion': data["observacion"],
+                'cur_administra': data["administra"],
+                'cur_cuota_con_almuerzo': data["cuota_con_almuerzo"],
+                'cur_cuota_sin_almuerzo': data["cuota_sin_almuerzo"],
+                'cur_modalidad': data["modalidad"],
+                'cur_tipo_curso': data["tipo_curso"],
                 'cur_lugar': data["lugar"],
-                'cur_vigente': True
+                'cur_estado': data["estado"]
             }
         )
         if created:
-            print(f"  ✓ Curso: {data['nombre']}")
+            print(f"  ✓ Curso: {data['descripcion']}")
+            
+            # Create a section for each course
+            seccion, sec_created = CursoSeccion.objects.get_or_create(
+                cur_id=curso,
+                cus_seccion=1,
+                defaults={
+                    'cus_cant_participante': 30
+                }
+            )
+            if sec_created:
+                print(f"    ✓ Sección 1 creada para {data['descripcion']}")
     
     print("✓ Cursos completados\n")
 
@@ -768,69 +718,58 @@ def seed_inscripciones():
     print("✍️ Seeding inscripciones...")
     
     rol_participante = Rol.objects.get(rol_descripcion="Participante")
-    rol_instructor = Rol.objects.get(rol_descripcion="Instructor")
+    alimentacion = Alimentacion.objects.first()
     
-    # Asignar instructores a cursos
-    cursos = Curso.objects.all()
-    instructores = [
-        User.objects.get(username='instructor1'),
-        User.objects.get(username='instructor2'),
-        User.objects.get(username='instructor3'),
+    # Get personas (only those that have been created)
+    personas = list(Persona.objects.all())
+    
+    if not personas:
+        print("  ⚠ No hay personas creadas, saltando inscripciones")
+        return
+    
+    # Get curso sections
+    secciones = CursoSeccion.objects.all()
+    
+    if not secciones:
+        print("  ⚠ No hay secciones de curso creadas, saltando inscripciones")
+        return
+    
+    # Create at least 2 inscriptions
+    inscripciones_data = [
+        {
+            "persona": personas[0],
+            "seccion": secciones[0],
+            "rol": rol_participante,
+            "alimentacion": alimentacion,
+            "registro": True,
+            "acreditado": False,
+            "observacion": "Inscripción regular"
+        },
+        {
+            "persona": personas[1] if len(personas) > 1 else personas[0],
+            "seccion": secciones[0],
+            "rol": rol_participante,
+            "alimentacion": alimentacion,
+            "registro": True,
+            "acreditado": False,
+            "observacion": "Inscripción regular"
+        }
     ]
     
-    for i, curso in enumerate(cursos):
-        instructor = instructores[i % len(instructores)]
-        inscripcion, created = CursoUsuario.objects.get_or_create(
-            cur_id=curso,
-            usu_id=instructor,
+    for data in inscripciones_data:
+        inscripcion, created = PersonaCurso.objects.get_or_create(
+            per_id=data["persona"],
+            cus_id=data["seccion"],
             defaults={
-                'rol_id': rol_instructor,
-                'cuu_fecha_inscripcion': datetime.now(),
-                'cuu_vigente': True
+                'rol_id': data["rol"],
+                'ali_id': data["alimentacion"],
+                'pec_registro': data["registro"],
+                'pec_acreditado': data["acreditado"],
+                'pec_observacion': data["observacion"]
             }
         )
         if created:
-            print(f"  ✓ Instructor asignado a {curso.cur_nombre}")
-    
-    # Inscribir participantes en algunos cursos
-    participantes = [
-        User.objects.get(username='participante1'),
-        User.objects.get(username='participante2'),
-        User.objects.get(username='participante3'),
-        User.objects.get(username='participante4'),
-        User.objects.get(username='participante5'),
-    ]
-    
-    # Inscribir todos los participantes en el primer curso
-    primer_curso = Curso.objects.first()
-    for participante in participantes:
-        inscripcion, created = CursoUsuario.objects.get_or_create(
-            cur_id=primer_curso,
-            usu_id=participante,
-            defaults={
-                'rol_id': rol_participante,
-                'cuu_fecha_inscripcion': datetime.now(),
-                'cuu_vigente': True
-            }
-        )
-        if created:
-            print(f"  ✓ {participante.usu_nombre} inscrito en {primer_curso.cur_nombre}")
-    
-    # Inscribir algunos en otros cursos
-    segundo_curso = Curso.objects.all()[1] if Curso.objects.count() > 1 else None
-    if segundo_curso:
-        for participante in participantes[:3]:
-            inscripcion, created = CursoUsuario.objects.get_or_create(
-                cur_id=segundo_curso,
-                usu_id=participante,
-                defaults={
-                    'rol_id': rol_participante,
-                    'cuu_fecha_inscripcion': datetime.now(),
-                    'cuu_vigente': True
-                }
-            )
-            if created:
-                print(f"  ✓ {participante.usu_nombre} inscrito en {segundo_curso.cur_nombre}")
+            print(f"  ✓ {data['persona'].per_nombres} {data['persona'].per_apelpat} inscrito en {data['seccion'].cur_id.cur_descripcion}")
     
     print("✓ Inscripciones completadas\n")
 
@@ -839,38 +778,31 @@ def seed_pagos():
     """Seed pagos para inscripciones"""
     print("💳 Seeding pagos...")
     
-    concepto_inscripcion = ConceptoContable.objects.get(coc_descripcion="Inscripción al Curso")
-    concepto_material = ConceptoContable.objects.get(coc_descripcion="Material Didáctico")
+    # Get inscriptions
+    inscripciones = PersonaCurso.objects.all()
     
-    # Obtener inscripciones de participantes
-    inscripciones = CursoUsuario.objects.filter(
-        rol_id__rol_descripcion="Participante"
-    )
+    if not inscripciones:
+        print("  ⚠ No hay inscripciones creadas, saltando pagos")
+        return
     
-    for inscripcion in inscripciones:
-        # Crear pago principal
-        pago, created = Pago.objects.get_or_create(
-            cuu_id=inscripcion,
+    # Get a user to register the payment
+    usuario_coordinador = Usuario.objects.get(usu_username='coordinador')
+    
+    # Create at least 2 payments
+    for i, inscripcion in enumerate(inscripciones[:2]):
+        pago, created = PagoPersona.objects.get_or_create(
+            per_id=inscripcion.per_id,
+            cur_id=inscripcion.cus_id.cur_id,
             defaults={
-                'pag_fecha': datetime.now(),
-                'pag_monto': inscripcion.cur_id.cur_precio,
-                'pag_estado': 'pagado',
-                'pag_metodo': 'transferencia',
-                'pag_comprobante': f'COMP-{inscripcion.cuu_id:06d}',
-                'pag_vigente': True
+                'usu_id': usuario_coordinador,
+                'pap_fecha_hora': timezone.now(),
+                'pap_tipo': 1,  # Ingreso
+                'pap_valor': inscripcion.cus_id.cur_id.cur_cuota_con_almuerzo,
+                'pap_observacion': f'Pago de inscripción a {inscripcion.cus_id.cur_id.cur_descripcion}'
             }
         )
-        
         if created:
-            # Crear detalle de pago
-            DetallePago.objects.create(
-                pag_id=pago,
-                coc_id=concepto_inscripcion,
-                dpa_monto=inscripcion.cur_id.cur_precio,
-                dpa_descripcion=f"Inscripción a {inscripcion.cur_id.cur_nombre}",
-                dpa_vigente=True
-            )
-            print(f"  ✓ Pago registrado para {inscripcion.usu_id.usu_nombre} - ${inscripcion.cur_id.cur_precio}")
+            print(f"  ✓ Pago registrado para {inscripcion.per_id.per_nombres} {inscripcion.per_id.per_apelpat} - ${pago.pap_valor}")
     
     print("✓ Pagos completados\n")
 
@@ -888,9 +820,9 @@ def main():
         seed_usuarios()
         seed_personas()
         seed_proveedores()
-        # seed_cursos()  # TODO: Needs to be fixed to match actual Curso model schema
-        # seed_inscripciones()  # TODO: Needs to be fixed to use PersonaCurso instead of CursoUsuario
-        # seed_pagos()  # TODO: Needs to be fixed to use PagoPersona
+        seed_cursos()
+        seed_inscripciones()
+        seed_pagos()
         
         print("="*70)
         print("✅ Database seeding completado exitosamente!")
