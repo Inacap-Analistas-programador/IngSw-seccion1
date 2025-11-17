@@ -29,9 +29,6 @@ const MaestrosPage = lazyRetry(() => import('@/pages/MaestrosPage'));
 const MaestroForm = lazyRetry(() => import('@/pages/MaestroForm'));
 const ProveedoresPage = lazyRetry(() => import('@/pages/ProveedoresPage'));
 const ProveedorForm = lazyRetry(() => import('@/pages/ProveedorForm'));
-const TestPage = lazyRetry(() => import('@/pages/TestPage'));
-const GoogleMapsDemo = lazyRetry(() => import('@/pages/GoogleMapsDemo'));
-const EmailSystemDemo = lazyRetry(() => import('@/pages/EmailSystemDemo'));
 
 // Geografia pages
 const RegionesPage = lazyRetry(() => import('@/pages/geografia/RegionesPage'));
@@ -80,10 +77,6 @@ function App() {
             <Route path="/perfil" element={<UserProfilePage />} />
             <Route path="/preinscripcion" element={<PreRegistrationForm />} />
             <Route path="/coordinador/login" element={<CoordinatorLogin />} />
-            
-            {/* Demo pages - públicas */}
-            <Route path="/demo/google-maps" element={<GoogleMapsDemo />} />
-            <Route path="/demo/email-system" element={<EmailSystemDemo />} />
             
             {/* Rutas del dashboard - protegidas */}
             <Route
@@ -297,16 +290,6 @@ function App() {
               element={
                 <ProtectedRoute>
                   <TiposCursoPage />
-                </ProtectedRoute>
-              }
-            />
-            
-            {/* Ruta de prueba - protegida */}
-            <Route
-              path="/prueba"
-              element={
-                <ProtectedRoute>
-                  <TestPage />
                 </ProtectedRoute>
               }
             />
