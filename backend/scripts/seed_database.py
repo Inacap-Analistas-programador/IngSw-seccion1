@@ -27,6 +27,7 @@ import sys
 import django
 from datetime import datetime, timedelta
 from decimal import Decimal
+from django.utils import timezone
 
 # Configurar Django
 if __name__ == '__main__':
@@ -469,7 +470,7 @@ def seed_personas():
             "apelmat": "Silva",
             "run": 12345678,
             "dv": "9",
-            "fecha_nac": datetime(1985, 3, 15),
+            "fecha_nac": timezone.make_aware(datetime(1985, 3, 15)),
             "direccion": "Avenida Libertador Bernardo O'Higgins 1234",
             "tipo_fono": 1,
             "fono": "+56912345678",
@@ -485,7 +486,7 @@ def seed_personas():
             "apelmat": "Torres",
             "run": 98765432,
             "dv": "1",
-            "fecha_nac": datetime(1988, 7, 20),
+            "fecha_nac": timezone.make_aware(datetime(1988, 7, 20)),
             "direccion": "Calle Agustinas 567",
             "tipo_fono": 1,
             "fono": "+56987654321",
@@ -501,7 +502,7 @@ def seed_personas():
             "apelmat": "Fernández",
             "run": 11223344,
             "dv": "5",
-            "fecha_nac": datetime(1990, 11, 10),
+            "fecha_nac": timezone.make_aware(datetime(1990, 11, 10)),
             "direccion": "Pasaje Los Almendros 890",
             "tipo_fono": 1,
             "fono": "+56911223344",
@@ -517,7 +518,7 @@ def seed_personas():
             "apelmat": "Vargas",
             "run": 22334455,
             "dv": "6",
-            "fecha_nac": datetime(1987, 5, 25),
+            "fecha_nac": timezone.make_aware(datetime(1987, 5, 25)),
             "direccion": "Avenida Matta 456",
             "tipo_fono": 1,
             "fono": "+56922334455",
@@ -533,7 +534,7 @@ def seed_personas():
             "apelmat": "Martínez",
             "run": 33445566,
             "dv": "7",
-            "fecha_nac": datetime(1992, 8, 30),
+            "fecha_nac": timezone.make_aware(datetime(1992, 8, 30)),
             "direccion": "Calle Moneda 789",
             "tipo_fono": 1,
             "fono": "+56933445566",
@@ -580,48 +581,43 @@ def seed_proveedores():
     
     proveedores_data = [
         {
-            "razon_social": "Centro de Convenciones Scouts Chile",
-            "rut": "76543210-9",
+            "descripcion": "Centro de Convenciones Scouts Chile",
             "direccion": "Avenida Vicuña Mackenna 456",
-            "telefono": "+56222334455",
-            "email": "contacto@centroconvencionesscouts.cl"
+            "celular1": "+56222334455",
+            "celular2": "+56922334455"
         },
         {
-            "razon_social": "Catering y Alimentación Scout Ltda.",
-            "rut": "78901234-5",
+            "descripcion": "Catering y Alimentación Scout Ltda.",
             "direccion": "Calle Matucana 789",
-            "telefono": "+56223344556",
-            "email": "ventas@cateringscout.cl"
+            "celular1": "+56223344556",
+            "celular2": "+56923344556"
         },
         {
-            "razon_social": "Librería y Materiales Didácticos",
-            "rut": "77665544-3",
+            "descripcion": "Librería y Materiales Didácticos",
             "direccion": "Avenida Providencia 1234",
-            "telefono": "+56224455667",
-            "email": "pedidos@libreriascout.cl"
+            "celular1": "+56224455667",
+            "celular2": "+56924455667"
         },
         {
-            "razon_social": "Transporte y Logística Scouts",
-            "rut": "79988776-6",
+            "descripcion": "Transporte y Logística Scouts",
             "direccion": "Calle San Diego 567",
-            "telefono": "+56225566778",
-            "email": "reservas@transportescout.cl"
+            "celular1": "+56225566778",
+            "celular2": "+56925566778"
         }
     ]
     
     for data in proveedores_data:
         proveedor, created = Proveedor.objects.get_or_create(
-            pro_razon_social=data["razon_social"],
+            prv_descripcion=data["descripcion"],
             defaults={
-                'pro_rut': data["rut"],
-                'pro_direccion': data["direccion"],
-                'pro_telefono': data["telefono"],
-                'pro_email': data["email"],
-                'pro_vigente': True
+                'prv_direccion': data["direccion"],
+                'prv_celular1': data["celular1"],
+                'prv_celular2': data["celular2"],
+                'prv_vigente': True
             }
         )
         if created:
-            print(f"  ✓ Proveedor: {data['razon_social']}")
+            print(f"  ✓ Proveedor: {data['descripcion']}")
     
     print("✓ Proveedores completados\n")
 
