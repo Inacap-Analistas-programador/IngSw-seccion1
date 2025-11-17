@@ -34,7 +34,10 @@ const PersonasPage = () => {
     try {
       setLoading(true);
       const response = await personasService.getAll();
-      setPersonas(personasFromApi(response.data));
+      // The httpClient returns the JSON directly, not wrapped in a data property
+      // Handle paginated response - response.results contains the array
+      const personasData = response.results || response || [];
+      setPersonas(personasFromApi(personasData));
       setError(null);
     } catch (error) {
       console.error('Error fetching personas:', error);
