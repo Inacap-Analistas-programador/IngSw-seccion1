@@ -14,6 +14,10 @@ import {
   FaAward,
   FaDatabase,
   FaTruck,
+  FaChevronDown,
+  FaChevronRight,
+  FaCircleUser,
+  FaToolbox,
 } from 'react-icons/fa6';
 import authService from '@/services/authService';
 import Cursos from '@/components/dashboard/Cursos';
@@ -24,6 +28,7 @@ import DashboardEjecutivo from '@/components/dashboard/DashboardEjecutivo';
 import Inscripciones from '@/components/dashboard/Preinscripcion';
 import Acreditacion from '@/components/dashboard/Acreditacion';
 import Personas from '@/components/dashboard/Personas';
+import UserProfilePage from '@/pages/UserProfilePage';
 
 import ProveedoresPage from '@/pages/ProveedoresPage';
 // import Breadcrumb from '@/components/Breadcrumb';
@@ -33,6 +38,7 @@ const CoordinatorDashboard = () => {
   const location = useLocation();
   const [coordinator, setCoordinator] = useState(null);
   const [sidebarOpen, setSidebarOpen] = useState(window.innerWidth >= 1024);
+  const [maestrosExpanded, setMaestrosExpanded] = useState(false);
 
   // Move render-time console logging into an effect so it's only a side effect
   useEffect(() => {
@@ -84,11 +90,18 @@ const CoordinatorDashboard = () => {
 
   const menuItems = [
     { icon: FaChartLine, label: 'Dashboard', path: `${basePath}/ejecutivo` },
-    { icon: FaDatabase, label: 'Maestros', path: `${basePath}/maestros` },
     { icon: FaBook, label: 'Cursos', path: `${basePath}/gestion-cursos` },
     { icon: FaUsers, label: 'Personas', path: `${basePath}/personas` },
     { icon: FaCreditCard, label: 'Pagos', path: `${basePath}/gestion-pagos` },
     { icon: FaAward, label: 'Acreditaciones', path: `${basePath}/acreditacion` },
+  ];
+
+  const maestrosSubItems = [
+    { icon: FaToolbox, label: 'Visor de Atributos', path: `${basePath}/maestros` },
+    { icon: FaUsers, label: 'Gestión de Personas', path: `${basePath}/personas` },
+    { icon: FaCreditCard, label: 'Gestión de Pagos', path: `${basePath}/gestion-pagos` },
+    { icon: FaAward, label: 'Gestión de Acreditación', path: `${basePath}/acreditacion` },
+    { icon: FaCircleUser, label: 'Administración de Perfil', path: `${basePath}/perfil` },
   ];
 
   if (!coordinator) {
@@ -98,13 +111,18 @@ const CoordinatorDashboard = () => {
   const getPageTitle = () => {
     const currentPath = location.pathname;
     const activeItem = menuItems.find((item) => item.path === currentPath);
-    return activeItem ? activeItem.label : 'Dashboard';
+    if (activeItem) return activeItem.label;
+    
+    const activeMaestrosItem = maestrosSubItems.find((item) => item.path === currentPath);
+    if (activeMaestrosItem) return activeMaestrosItem.label;
+    
+    return 'GIC';
   };
 
   return (
     <>
       <Helmet>
-        <title>{getPageTitle()} - Panel Administrativo</title>
+        <title>{getPageTitle()} - GIC</title>
         <meta name="description" content="Panel de administración de la plataforma GIC." />
       </Helmet>
 
@@ -117,7 +135,7 @@ const CoordinatorDashboard = () => {
         >
           <div className="flex items-center justify-center h-20 border-b border-white/10 px-6">
             <FaAward className="w-8 h-8 mr-3 text-white" />
-            <span className="text-xl font-bold text-white">Panel Administrativo</span>
+            <span className="text-xl font-bold text-white">GIC</span>
           </div>
           <nav className="p-3 space-y-1 h-full overflow-y-auto">
             {menuItems.map((item) => {
@@ -142,6 +160,50 @@ const CoordinatorDashboard = () => {
                 </Button>
               );
             })}
+            
+            {/* Maestros Toolbox with subcategories */}
+            <div className="border-t border-white/10 mt-2 pt-2">
+              <Button
+                onClick={() => setMaestrosExpanded(!maestrosExpanded)}
+                variant="ghost"
+                className="w-full justify-start text-base py-6 transition-all duration-200 hover:bg-white/10"
+              >
+                <FaDatabase className="w-5 h-5 mr-3" />
+                Maestros
+                {maestrosExpanded ? (
+                  <FaChevronDown className="w-4 h-4 ml-auto" />
+                ) : (
+                  <FaChevronRight className="w-4 h-4 ml-auto" />
+                )}
+              </Button>
+              
+              {maestrosExpanded && (
+                <div className="ml-4 mt-1 space-y-1">
+                  {maestrosSubItems.map((item) => {
+                    const isActive = location.pathname === item.path;
+                    return (
+                      <Button
+                        key={item.path}
+                        onClick={() => {
+                          navigate(item.path);
+                          if (window.innerWidth < 1024) {
+                            setSidebarOpen(false);
+                          }
+                        }}
+                        variant="ghost"
+                        className={`w-full justify-start text-sm py-4 transition-all duration-200 hover:bg-white/10 hover:translate-x-1 ${
+                          isActive ? 'bg-white/15 shadow-lg' : ''
+                        }`}
+                      >
+                        <item.icon className="w-4 h-4 mr-3" />
+                        {item.label}
+                        {isActive && <div className="ml-auto w-1.5 h-1.5 rounded-full bg-white" />}
+                      </Button>
+                    );
+                  })}
+                </div>
+              )}
+            </div>
           </nav>
         </aside>
 
@@ -160,7 +222,7 @@ const CoordinatorDashboard = () => {
                   <FaBars className="w-6 h-6" />
                 </Button>
                 {/* <Breadcrumb /> */}
-                <span className="text-lg font-semibold text-gray-800">Panel Administrativo</span>
+                <span className="text-lg font-semibold text-gray-800">GIC</span>
               </div>
               <div className="flex items-center space-x-3">
                 <div className="hidden md:flex items-center px-3 py-2 bg-blue-50 rounded-lg">
@@ -190,10 +252,6 @@ const CoordinatorDashboard = () => {
           </nav>
 
           <main className="flex-1 p-6 lg:p-8 bg-gray-50">
-            <div className="mb-6">
-              <h1 className="text-3xl font-bold text-gray-900">{getPageTitle()}</h1>
-              <p className="text-sm text-gray-500 mt-1">Gestión y administración de la plataforma</p>
-            </div>
             <Routes>
               <Route path="/ejecutivo" element={<DashboardEjecutivo />} />
 
@@ -205,6 +263,7 @@ const CoordinatorDashboard = () => {
               <Route path="/acreditacion" element={<Acreditacion />} />
               <Route path="/maestros" element={<Maestros />} />
               <Route path="/proveedores" element={<ProveedoresPage />} />
+              <Route path="/perfil" element={<UserProfilePage />} />
               {/* Fallback route */}
               <Route path="/" element={<Navigate to="ejecutivo" replace />} />
             </Routes>
