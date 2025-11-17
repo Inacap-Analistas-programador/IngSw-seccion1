@@ -9,20 +9,6 @@ const Personas = () => {
 
   return (
     <div className="space-y-6">
-      <div className="flex justify-between items-center">
-        <div>
-          <h1 className="text-3xl font-bold text-gray-800">Personas</h1>
-          <p className="text-gray-600 mt-2">Gestión CRUD de personas registradas</p>
-        </div>
-        <Button
-          onClick={() => navigate('/personas')}
-          className="bg-blue-600 hover:bg-blue-700"
-        >
-          <ExternalLink className="w-4 h-4 mr-2" />
-          Ver Lista CRUD
-        </Button>
-      </div>
-
       <Card>
         <div className="text-center py-12">
           <Users className="w-16 h-16 text-blue-600 mx-auto mb-4" />
