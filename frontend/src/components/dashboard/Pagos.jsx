@@ -38,7 +38,6 @@ const Pagos = () => {
   if (error) {
     return (
       <div className="p-6">
-        <h1 className="text-3xl font-bold mb-6">Módulo de Pagos</h1>
         <div className="p-4 text-red-600 bg-red-50 rounded-lg">
           <p className="font-semibold">Error al cargar el módulo de pagos</p>
           <p className="text-sm mt-1">{error}</p>
@@ -58,8 +57,6 @@ const Pagos = () => {
 
   return (
     <div className="p-6">
-      <h1 className="text-3xl font-bold mb-6">Módulo de Pagos</h1>
-
       <div className="bg-white p-6 rounded-lg shadow-md mb-6">
         <DashboardPagos />
       </div>
