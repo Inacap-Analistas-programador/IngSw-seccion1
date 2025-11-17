@@ -2,62 +2,81 @@ import api from '../config/api';
 
 const API_URL = '/geografia'; // Base URL for geografia endpoints
 
+const geografiaService = {
+  // Generic CRUD operations
+  getList: async (geografiaType) => {
+    try {
+      const response = await api.get(`${API_URL}/${geografiaType}/`);
+      return response.data;
+    } catch (error) {
+      console.error(`Error fetching ${geografiaType}:`, error);
+      throw error;
+    }
+  },
+
+  getById: async (geografiaType, id) => {
+    try {
+      const response = await api.get(`${API_URL}/${geografiaType}/${id}/`);
+      return response.data;
+    } catch (error) {
+      console.error(`Error fetching ${geografiaType} by id:`, error);
+      throw error;
+    }
+  },
+
+  create: async (geografiaType, data) => {
+    try {
+      const response = await api.post(`${API_URL}/${geografiaType}/`, data);
+      return response.data;
+    } catch (error) {
+      console.error(`Error creating ${geografiaType}:`, error);
+      throw error;
+    }
+  },
+
+  update: async (geografiaType, id, data) => {
+    try {
+      const response = await api.put(`${API_URL}/${geografiaType}/${id}/`, data);
+      return response.data;
+    } catch (error) {
+      console.error(`Error updating ${geografiaType}:`, error);
+      throw error;
+    }
+  },
+
+  delete: async (geografiaType, id) => {
+    try {
+      await api.delete(`${API_URL}/${geografiaType}/${id}/`);
+    } catch (error) {
+      console.error(`Error deleting ${geografiaType}:`, error);
+      throw error;
+    }
+  },
+};
+
+// Legacy exports for backward compatibility
 export const getRegiones = async () => {
-  try {
-    const response = await api.get(`${API_URL}/regiones/`);
-    return response.data;
-  } catch (error) {
-    console.error('Error fetching regiones:', error);
-    throw error;
-  }
+  return geografiaService.getList('regiones');
 };
 
 export const getProvincias = async () => {
-  try {
-    const response = await api.get(`${API_URL}/provincias/`);
-    return response.data;
-  } catch (error) {
-    console.error('Error fetching provincias:', error);
-    throw error;
-  }
+  return geografiaService.getList('provincias');
 };
 
 export const getComunas = async () => {
-  try {
-    const response = await api.get(`${API_URL}/comunas/`);
-    return response.data;
-  } catch (error) {
-    console.error('Error fetching comunas:', error);
-    throw error;
-  }
+  return geografiaService.getList('comunas');
 };
 
 export const getZonas = async () => {
-  try {
-    const response = await api.get(`${API_URL}/zonas/`);
-    return response.data;
-  } catch (error) {
-    console.error('Error fetching zonas:', error);
-    throw error;
-  }
+  return geografiaService.getList('zonas');
 };
 
 export const getDistritos = async () => {
-  try {
-    const response = await api.get(`${API_URL}/distritos/`);
-    return response.data;
-  } catch (error) {
-    console.error('Error fetching distritos:', error);
-    throw error;
-  }
+  return geografiaService.getList('distritos');
 };
 
 export const getGrupos = async () => {
-  try {
-    const response = await api.get(`${API_URL}/grupos/`);
-    return response.data;
-  } catch (error) {
-    console.error('Error fetching grupos:', error);
-    throw error;
-  }
+  return geografiaService.getList('grupos');
 };
+
+export default geografiaService;

@@ -14,16 +14,22 @@ const MaestroForm = lazy(() => import('@/pages/MaestroForm'));
 const ProveedoresPage = lazy(() => import('@/pages/ProveedoresPage'));
 const ProveedorForm = lazy(() => import('@/pages/ProveedorForm'));
 const TestPage = lazy(() => import('@/pages/TestPage'));
-const RegionList = lazy(() => import('@/components/geografia/RegionList'));
 const GoogleMapsDemo = lazy(() => import('@/pages/GoogleMapsDemo'));
 const EmailSystemDemo = lazy(() => import('@/pages/EmailSystemDemo'));
+
+// Geografia pages
+const RegionesPage = lazy(() => import('@/pages/geografia/RegionesPage'));
+const ProvinciasPage = lazy(() => import('@/pages/geografia/ProvinciasPage'));
+const ComunasPage = lazy(() => import('@/pages/geografia/ComunasPage'));
+const ZonasPage = lazy(() => import('@/pages/geografia/ZonasPage'));
+const DistritosPage = lazy(() => import('@/pages/geografia/DistritosPage'));
+const GruposPage = lazy(() => import('@/pages/geografia/GruposPage'));
 
 // Maestros pages
 const CargosPage = lazy(() => import('@/pages/maestros/CargosPage'));
 const AlimentacionesPage = lazy(() => import('@/pages/maestros/AlimentacionesPage'));
 const ConceptosContablesPage = lazy(() => import('@/pages/maestros/ConceptosContablesPage'));
 const EstadosCivilesPage = lazy(() => import('@/pages/maestros/EstadosCivilesPage'));
-const GruposPage = lazy(() => import('@/pages/maestros/GruposPage'));
 const NivelesPage = lazy(() => import('@/pages/maestros/NivelesPage'));
 const RamasPage = lazy(() => import('@/pages/maestros/RamasPage'));
 const RolesPage = lazy(() => import('@/pages/maestros/RolesPage'));
@@ -150,7 +156,47 @@ function App() {
               path="/geografia/regiones"
               element={
                 <ProtectedRoute>
-                  <RegionList />
+                  <RegionesPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/geografia/provincias"
+              element={
+                <ProtectedRoute>
+                  <ProvinciasPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/geografia/comunas"
+              element={
+                <ProtectedRoute>
+                  <ComunasPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/geografia/zonas"
+              element={
+                <ProtectedRoute>
+                  <ZonasPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/geografia/distritos"
+              element={
+                <ProtectedRoute>
+                  <DistritosPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/geografia/grupos"
+              element={
+                <ProtectedRoute>
+                  <GruposPage />
                 </ProtectedRoute>
               }
             />
@@ -185,14 +231,6 @@ function App() {
               element={
                 <ProtectedRoute>
                   <EstadosCivilesPage />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/maestros/grupos"
-              element={
-                <ProtectedRoute>
-                  <GruposPage />
                 </ProtectedRoute>
               }
             />
