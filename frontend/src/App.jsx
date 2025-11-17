@@ -90,7 +90,9 @@ function App() {
               path="/coordinador/dashboard/*"
               element={
                 <ProtectedRoute>
-                  <CoordinatorDashboard />
+                  <ErrorBoundary>
+                    <CoordinatorDashboard />
+                  </ErrorBoundary>
                 </ProtectedRoute>
               }
             />
@@ -98,7 +100,9 @@ function App() {
               path="/dashboard/*"
               element={
                 <ProtectedRoute>
-                  <CoordinatorDashboard />
+                  <ErrorBoundary>
+                    <CoordinatorDashboard />
+                  </ErrorBoundary>
                 </ProtectedRoute>
               }
             />

@@ -273,7 +273,7 @@ const HomePage = () => {
                     </h3>
                     <p className="text-gray-600 mb-4">{feature.description}</p>
                     {feature.demo && (
-                      <span className="text-scout-azul-oscuro font-medium group-hover:underline">
+                      <span className="text-blue-700 font-medium group-hover:underline">
                         Ver demo →
                       </span>
                     )}
@@ -311,7 +311,7 @@ const HomePage = () => {
                   transition={{ delay: index * 0.05 }}
                   className="bg-gradient-to-br from-gray-50 to-white border border-gray-200 rounded-xl p-6 text-center hover:shadow-lg transition-all"
                 >
-                  <div className="text-2xl font-bold text-scout-azul-oscuro mb-2">
+                  <div className="text-2xl font-bold text-blue-700 mb-2">
                     {tech.name}
                   </div>
                   <div className="text-sm text-gray-600">{tech.description}</div>
@@ -322,7 +322,7 @@ const HomePage = () => {
         </section>
 
         {/* CTA Section */}
-        <section className="py-20 bg-gradient-to-br from-scout-azul-oscuro to-scout-azul-medio text-white">
+        <section className="py-20 bg-gradient-to-br from-blue-900 to-blue-700 text-white">
           <div className="container mx-auto px-4 text-center">
             <motion.div
               initial={{ opacity: 0, y: 20 }}
@@ -333,12 +333,12 @@ const HomePage = () => {
                 ¿Listo para empezar?
               </h2>
               <p className="text-xl mb-8 max-w-2xl mx-auto text-white/90">
-                Únete a la plataforma de gestión más completa para organizaciones Scout
+                Únete a la plataforma de gestión más completa para tu organización
               </p>
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
                 <Button
                   onClick={() => navigate('/preinscripcion')}
-                  className="bg-white text-scout-azul-oscuro hover:bg-gray-100 transition-all duration-300 shadow-xl hover:shadow-2xl text-lg px-8 py-4"
+                  className="bg-white text-blue-900 hover:bg-gray-100 transition-all duration-300 shadow-xl hover:shadow-2xl text-lg px-8 py-4"
                 >
                   Inscribirse Ahora
                 </Button>
@@ -361,8 +361,7 @@ const HomePage = () => {
               <div>
                 <h3 className="text-xl font-bold mb-4">GIC Platform</h3>
                 <p className="text-gray-400">
-                  Sistema de Gestión Integral de Cursos para la Asociación de Guías y Scouts
-                  de Chile
+                  Sistema de Gestión Integral de Cursos
                 </p>
               </div>
               <div>
@@ -417,7 +416,7 @@ const HomePage = () => {
               </div>
             </div>
             <div className="border-t border-gray-800 mt-8 pt-8 text-center text-gray-400">
-              <p>© 2024 GIC Platform - Asociación de Guías y Scouts de Chile</p>
+              <p>© 2024 GIC Platform - Gestión Integral de Cursos</p>
             </div>
           </div>
         </footer>
