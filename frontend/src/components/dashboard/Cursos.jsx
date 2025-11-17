@@ -44,6 +44,7 @@ const Cursos = () => {
     regionId: '',
     comunaId: '',
     administra: '1',
+    fechas: [], // Array de fechas múltiples para el curso
   });
 
   // Datos de regiones y comunas de Chile
@@ -139,6 +140,37 @@ const Cursos = () => {
     }
   };
 
+  // Funciones para manejar fechas múltiples
+  const handleAddFecha = () => {
+    setCourseData((prev) => ({
+      ...prev,
+      fechas: [
+        ...prev.fechas,
+        {
+          fecha_inicio: '',
+          fecha_termino: '',
+          tipo: '1', // 1: Presencial, 2: Online, 3: Híbrido
+        },
+      ],
+    }));
+  };
+
+  const handleRemoveFecha = (index) => {
+    setCourseData((prev) => ({
+      ...prev,
+      fechas: prev.fechas.filter((_, i) => i !== index),
+    }));
+  };
+
+  const handleFechaChange = (index, field, value) => {
+    setCourseData((prev) => ({
+      ...prev,
+      fechas: prev.fechas.map((fecha, i) =>
+        i === index ? { ...fecha, [field]: value } : fecha
+      ),
+    }));
+  };
+
   const validateCourseData = () => {
     const newErrors = {};
 
@@ -190,6 +222,7 @@ const Cursos = () => {
       regionId: courseData.regionId,
       regionNombre: regionesComunas[courseData.regionId]?.nombre || '',
       comunaId: courseData.comunaId,
+      fechas: courseData.fechas, // Incluir fechas múltiples
     };
 
     // Agregar el nuevo curso a la lista
@@ -238,6 +271,7 @@ const Cursos = () => {
       regionId: course.regionId || '',
       comunaId: course.comunaId || '',
       administra: '1',
+      fechas: course.fechas || [], // Incluir fechas existentes
     });
     setShowEditForm(true);
   };
@@ -272,6 +306,7 @@ const Cursos = () => {
       regionId: courseData.regionId,
       regionNombre: regionesComunas[courseData.regionId]?.nombre || '',
       comunaId: courseData.comunaId,
+      fechas: courseData.fechas, // Incluir fechas actualizadas
     };
 
     setCourses((prev) =>
@@ -415,6 +450,7 @@ const Cursos = () => {
       regionId: '',
       comunaId: '',
       administra: '1',
+      fechas: [], // Limpiar fechas múltiples
     });
     setComunasDisponibles([]);
     setErrors({});
@@ -596,6 +632,85 @@ const Cursos = () => {
                     )}
                   </div>
                 </div>
+              </div>
+
+              {/* Fechas Múltiples del Curso */}
+              <div className="space-y-4">
+                <div className="flex items-center justify-between">
+                  <h3 className="text-lg font-semibold text-gray-800 flex items-center">
+                    <Calendar className="h-5 w-5 mr-2" />
+                    Fechas del Curso
+                  </h3>
+                  <Button type="button" onClick={handleAddFecha} size="sm" variant="outline">
+                    + Agregar Fecha
+                  </Button>
+                </div>
+                {courseData.fechas.length === 0 ? (
+                  <p className="text-sm text-gray-500 italic">
+                    No hay fechas adicionales. Haz clic en &quot;Agregar Fecha&quot; para añadir períodos al curso.
+                  </p>
+                ) : (
+                  <div className="space-y-3">
+                    {courseData.fechas.map((fecha, index) => (
+                      <div
+                        key={index}
+                        className="p-4 border border-gray-200 rounded-lg bg-gray-50 space-y-3"
+                      >
+                        <div className="flex items-center justify-between mb-2">
+                          <span className="text-sm font-medium text-gray-700">
+                            Fecha {index + 1}
+                          </span>
+                          <Button
+                            type="button"
+                            onClick={() => handleRemoveFecha(index)}
+                            size="sm"
+                            variant="outline"
+                            className="text-red-600 hover:text-red-700 hover:bg-red-50"
+                          >
+                            Eliminar
+                          </Button>
+                        </div>
+                        <div className="grid md:grid-cols-3 gap-3">
+                          <div className="space-y-2">
+                            <Label htmlFor={`fecha_inicio_${index}`}>Fecha Inicio *</Label>
+                            <Input
+                              id={`fecha_inicio_${index}`}
+                              type="datetime-local"
+                              value={fecha.fecha_inicio}
+                              onChange={(e) =>
+                                handleFechaChange(index, 'fecha_inicio', e.target.value)
+                              }
+                            />
+                          </div>
+                          <div className="space-y-2">
+                            <Label htmlFor={`fecha_termino_${index}`}>Fecha Término *</Label>
+                            <Input
+                              id={`fecha_termino_${index}`}
+                              type="datetime-local"
+                              value={fecha.fecha_termino}
+                              onChange={(e) =>
+                                handleFechaChange(index, 'fecha_termino', e.target.value)
+                              }
+                            />
+                          </div>
+                          <div className="space-y-2">
+                            <Label htmlFor={`tipo_${index}`}>Tipo *</Label>
+                            <select
+                              id={`tipo_${index}`}
+                              value={fecha.tipo}
+                              onChange={(e) => handleFechaChange(index, 'tipo', e.target.value)}
+                              className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
+                            >
+                              <option value="1">Presencial</option>
+                              <option value="2">Online</option>
+                              <option value="3">Híbrido</option>
+                            </select>
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
               </div>
 
               {/* Ubicación */}
@@ -862,6 +977,38 @@ const Cursos = () => {
                   </div>
                 </div>
 
+                {/* Fechas Múltiples */}
+                {selectedCourse.fechas && selectedCourse.fechas.length > 0 && (
+                  <div className="space-y-4 md:col-span-2">
+                    <h3 className="text-lg font-semibold text-gray-800">Fechas del Curso</h3>
+                    <div className="space-y-2">
+                      {selectedCourse.fechas.map((fecha, idx) => (
+                        <div
+                          key={idx}
+                          className="p-3 bg-gray-50 rounded-lg border border-gray-200"
+                        >
+                          <p>
+                            <span className="font-medium">Inicio:</span>{' '}
+                            {formatDate(fecha.fecha_inicio)}
+                          </p>
+                          <p>
+                            <span className="font-medium">Término:</span>{' '}
+                            {formatDate(fecha.fecha_termino)}
+                          </p>
+                          <p>
+                            <span className="font-medium">Tipo:</span>{' '}
+                            {fecha.tipo === '1'
+                              ? 'Presencial'
+                              : fecha.tipo === '2'
+                                ? 'Online'
+                                : 'Híbrido'}
+                          </p>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
                 <div className="space-y-4">
                   <h3 className="text-lg font-semibold text-gray-800">Ubicación</h3>
                   <div className="space-y-2">
@@ -1087,6 +1234,85 @@ const Cursos = () => {
                     />
                   </div>
                 </div>
+              </div>
+
+              {/* Fechas Múltiples del Curso */}
+              <div className="space-y-4">
+                <div className="flex items-center justify-between">
+                  <h3 className="text-lg font-semibold text-gray-800 flex items-center">
+                    <Calendar className="h-5 w-5 mr-2" />
+                    Fechas del Curso
+                  </h3>
+                  <Button type="button" onClick={handleAddFecha} size="sm" variant="outline">
+                    + Agregar Fecha
+                  </Button>
+                </div>
+                {courseData.fechas.length === 0 ? (
+                  <p className="text-sm text-gray-500 italic">
+                    No hay fechas adicionales. Haz clic en &quot;Agregar Fecha&quot; para añadir períodos al curso.
+                  </p>
+                ) : (
+                  <div className="space-y-3">
+                    {courseData.fechas.map((fecha, index) => (
+                      <div
+                        key={index}
+                        className="p-4 border border-gray-200 rounded-lg bg-gray-50 space-y-3"
+                      >
+                        <div className="flex items-center justify-between mb-2">
+                          <span className="text-sm font-medium text-gray-700">
+                            Fecha {index + 1}
+                          </span>
+                          <Button
+                            type="button"
+                            onClick={() => handleRemoveFecha(index)}
+                            size="sm"
+                            variant="outline"
+                            className="text-red-600 hover:text-red-700 hover:bg-red-50"
+                          >
+                            Eliminar
+                          </Button>
+                        </div>
+                        <div className="grid md:grid-cols-3 gap-3">
+                          <div className="space-y-2">
+                            <Label htmlFor={`fecha_inicio_edit_${index}`}>Fecha Inicio *</Label>
+                            <Input
+                              id={`fecha_inicio_edit_${index}`}
+                              type="datetime-local"
+                              value={fecha.fecha_inicio}
+                              onChange={(e) =>
+                                handleFechaChange(index, 'fecha_inicio', e.target.value)
+                              }
+                            />
+                          </div>
+                          <div className="space-y-2">
+                            <Label htmlFor={`fecha_termino_edit_${index}`}>Fecha Término *</Label>
+                            <Input
+                              id={`fecha_termino_edit_${index}`}
+                              type="datetime-local"
+                              value={fecha.fecha_termino}
+                              onChange={(e) =>
+                                handleFechaChange(index, 'fecha_termino', e.target.value)
+                              }
+                            />
+                          </div>
+                          <div className="space-y-2">
+                            <Label htmlFor={`tipo_edit_${index}`}>Tipo *</Label>
+                            <select
+                              id={`tipo_edit_${index}`}
+                              value={fecha.tipo}
+                              onChange={(e) => handleFechaChange(index, 'tipo', e.target.value)}
+                              className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
+                            >
+                              <option value="1">Presencial</option>
+                              <option value="2">Online</option>
+                              <option value="3">Híbrido</option>
+                            </select>
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
               </div>
 
               {/* Ubicación */}
@@ -1531,8 +1757,22 @@ const Cursos = () => {
                           <p className="text-xs text-gray-500 truncate">{course.lugar}</p>
                         </div>
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                        {formatDate(course.fechaHora)}
+                      <td className="px-6 py-4 text-sm text-gray-900">
+                        {course.fechas && course.fechas.length > 0 ? (
+                          <div className="space-y-1">
+                            {course.fechas.map((fecha, idx) => (
+                              <div key={idx} className="text-xs">
+                                <span className="font-medium">
+                                  {formatDate(fecha.fecha_inicio)}
+                                </span>
+                                {' - '}
+                                <span>{formatDate(fecha.fecha_termino)}</span>
+                              </div>
+                            ))}
+                          </div>
+                        ) : (
+                          formatDate(course.fechaHora)
+                        )}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                         <span className="inline-flex px-2 py-1 text-xs rounded-full bg-blue-100 text-blue-800">
