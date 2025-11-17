@@ -1,3 +1,23 @@
-from django.shortcuts import render
+from rest_framework import viewsets
+from rest_framework.permissions import IsAuthenticated
+from .models import Archivo, ArchivoCurso, ArchivoPersona
+from .serializers import ArchivoSerializer, ArchivoCursoSerializer, ArchivoPersonaSerializer
 
-# Create your views here.
+
+class ArchivoViewSet(viewsets.ModelViewSet):
+    queryset = Archivo.objects.all()
+    serializer_class = ArchivoSerializer
+    permission_classes = [IsAuthenticated]
+
+
+class ArchivoCursoViewSet(viewsets.ModelViewSet):
+    queryset = ArchivoCurso.objects.all()
+    serializer_class = ArchivoCursoSerializer
+    permission_classes = [IsAuthenticated]
+
+
+class ArchivoPersonaViewSet(viewsets.ModelViewSet):
+    queryset = ArchivoPersona.objects.all()
+    serializer_class = ArchivoPersonaSerializer
+    permission_classes = [IsAuthenticated]
+
