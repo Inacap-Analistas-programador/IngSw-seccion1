@@ -5,8 +5,12 @@ import pytest
 from rest_framework.test import APIClient
 from django.test import override_settings
 from django.contrib.auth.models import User
+from datetime import datetime
+from decimal import Decimal
+
 from usuarios.models import Usuario
-from maestros.models import Perfil
+from maestros.models import Perfil, TipoCurso
+from geografia.models import Region, Provincia, Comuna
 
 
 @pytest.fixture
@@ -66,6 +70,40 @@ def admin_user(db):
         password='adminpass123'
     )
     return user
+
+
+@pytest.fixture
+def test_geografia(db):
+    """Fixture para crear geografía básica (región, provincia, comuna)"""
+    region = Region.objects.create(
+        reg_descripcion='Región de Prueba',
+        reg_vigente=True
+    )
+    provincia = Provincia.objects.create(
+        reg_id=region,
+        pro_descripcion='Provincia de Prueba',
+        pro_vigente=True
+    )
+    comuna = Comuna.objects.create(
+        pro_id=provincia,
+        com_descripcion='Comuna de Prueba',
+        com_vigente=True
+    )
+    return {
+        'region': region,
+        'provincia': provincia,
+        'comuna': comuna
+    }
+
+
+@pytest.fixture
+def test_tipo_curso(db):
+    """Fixture para crear tipo de curso"""
+    tipo_curso = TipoCurso.objects.create(
+        tic_descripcion='Curso de Prueba',
+        tic_vigente=True
+    )
+    return tipo_curso
 
 
 @pytest.fixture(autouse=True)
