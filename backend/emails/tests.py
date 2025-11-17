@@ -74,7 +74,7 @@ class EmailServiceTest(TestCase):
         subject, html_content, text_content = self.email_service.render_template(
             self.template, context
         )
-        
+
         self.assertEqual(subject, 'Hello John')
         self.assertIn('Hello John', html_content)
         self.assertIn('Hello John', text_content)
@@ -87,7 +87,7 @@ class EmailServiceTest(TestCase):
             html_content='<p>Test Content</p>',
             text_content='Test Content'
         )
-        
+
         self.assertEqual(email_log.recipient_email, 'test@example.com')
         self.assertEqual(email_log.status, 'sent')
         self.assertEqual(len(mail.outbox), 1)
@@ -100,7 +100,7 @@ class EmailServiceTest(TestCase):
             recipient_email='test@example.com',
             context={'name': 'Jane'}
         )
-        
+
         self.assertEqual(email_log.recipient_email, 'test@example.com')
         self.assertEqual(email_log.status, 'sent')
         self.assertEqual(len(mail.outbox), 1)
@@ -114,7 +114,7 @@ class EmailServiceTest(TestCase):
             context_data={'name': 'Bob'},
             priority=3
         )
-        
+
         self.assertEqual(email_queue.recipient_email, 'test@example.com')
         self.assertEqual(email_queue.priority, 3)
         self.assertFalse(email_queue.is_processed)
@@ -125,7 +125,7 @@ class EmailTriggerServiceTest(TestCase):
 
     def setUp(self):
         self.trigger_service = EmailTriggerService()
-        
+
         # Crear perfil y usuario de prueba
         self.perfil = Perfil.objects.create(
             pel_descripcion='Test Profile',
@@ -137,7 +137,7 @@ class EmailTriggerServiceTest(TestCase):
             usu_email='test@example.com',
             usu_vigente=True
         )
-        
+
         # Crear plantillas necesarias
         EmailTemplate.objects.create(
             template_name='registration_confirmation',
@@ -146,7 +146,7 @@ class EmailTriggerServiceTest(TestCase):
             html_content='<p>Hello {{ username }}, verify: {{ verification_url }}</p>',
             is_active=True
         )
-        
+
         EmailTemplate.objects.create(
             template_name='account_verification',
             template_type='verification',
@@ -162,7 +162,7 @@ class EmailTriggerServiceTest(TestCase):
             user=self.user,
             verification_token=token
         )
-        
+
         self.assertEqual(email_log.recipient_email, 'test@example.com')
         self.assertEqual(email_log.status, 'sent')
         self.assertEqual(len(mail.outbox), 1)
@@ -170,7 +170,7 @@ class EmailTriggerServiceTest(TestCase):
     def test_send_account_verification(self):
         """Test envío de verificación de cuenta"""
         email_log = self.trigger_service.send_account_verification(user=self.user)
-        
+
         self.assertEqual(email_log.recipient_email, 'test@example.com')
         self.assertEqual(email_log.status, 'sent')
         self.assertEqual(len(mail.outbox), 1)
@@ -183,7 +183,7 @@ class QRCodeUtilsTest(TestCase):
         """Test generación de código QR"""
         data = {'test': 'data', 'user_id': 123}
         qr_bytes = generate_qr_code(data)
-        
+
         self.assertIsInstance(qr_bytes, bytes)
         self.assertGreater(len(qr_bytes), 0)
 
@@ -210,7 +210,7 @@ class EmailConfigurationModelTest(TestCase):
             description='Test configuration',
             is_active=True
         )
-        
+
         self.assertEqual(config.config_key, 'TEST_CONFIG')
         self.assertEqual(config.config_value, 'test_value')
         self.assertTrue(config.is_active)
@@ -236,7 +236,7 @@ class EmailQueueModelTest(TestCase):
             context_data={'name': 'Test'},
             priority=2
         )
-        
+
         self.assertEqual(queue.recipient_email, 'test@example.com')
         self.assertEqual(queue.priority, 2)
         self.assertFalse(queue.is_processed)
@@ -255,8 +255,7 @@ class EmailQueueModelTest(TestCase):
             context_data={},
             priority=4
         )
-        
+
         first_in_queue = EmailQueue.objects.first()
         self.assertEqual(first_in_queue.priority, 4)
         self.assertEqual(first_in_queue.recipient_email, 'high@example.com')
-

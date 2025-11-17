@@ -1,11 +1,18 @@
-from django.utils import timezone
-from unittest.mock import MagicMock
-from typing import Optional, Any
+
 
 # --- Mocking the Models from the 'proveedores' app ---
 
+
 class Proveedor:
-    def __init__(self, prv_id=1, prv_descripcion="Proveedor Ejemplo", prv_celular1="987654321", prv_celular2=None, prv_direccion="Dirección del Proveedor", prv_observacion="Notas sobre el proveedor", prv_vigente=True):
+    def __init__(
+            self,
+            prv_id=1,
+            prv_descripcion="Proveedor Ejemplo",
+            prv_celular1="987654321",
+            prv_celular2=None,
+            prv_direccion="Dirección del Proveedor",
+            prv_observacion="Notas sobre el proveedor",
+            prv_vigente=True):
         self.prv_id = prv_id
         self.prv_descripcion = prv_descripcion
         self.prv_celular1 = prv_celular1
@@ -19,6 +26,7 @@ class Proveedor:
 
 # --- Actual Test Cases ---
 
+
 def test_proveedor_creation():
     proveedor = Proveedor(
         prv_descripcion="Proveedor de Materiales",
@@ -30,7 +38,7 @@ def test_proveedor_creation():
     assert proveedor.prv_descripcion == "Proveedor de Materiales"
     assert proveedor.prv_celular1 == "911112222"
     assert proveedor.prv_direccion == "Av. Principal 456"
-    assert proveedor.prv_vigente == True
+    assert proveedor.prv_vigente
     assert str(proveedor) == "Proveedor de Materiales"
 
 # Note: In a real Django project, you would import the actual models like:

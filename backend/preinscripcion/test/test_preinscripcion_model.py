@@ -1,5 +1,4 @@
-from django.test import TestCase
-from unittest.mock import MagicMock
+
 
 # The 'preinscripcion' app's models.py is empty, so no tests can be written for it.
 
