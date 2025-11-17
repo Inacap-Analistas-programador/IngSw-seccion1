@@ -43,7 +43,7 @@ from maestros.models import (
 from personas.models import Persona
 from cursos.models import Curso, CursoUsuario
 from proveedores.models import Proveedor
-from pagos.models import Pago, DetallePago
+from pagos.models import PagoPersona, ComprobantePago
 
 User = get_user_model()
 
