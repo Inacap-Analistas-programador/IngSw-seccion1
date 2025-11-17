@@ -101,7 +101,7 @@ pip install -r requirements.txt
 python manage.py migrate
 
 # Poblar base de datos con datos de ejemplo (recomendado para desarrollo)
-python manage.py seed_database
+python scripts/seed_database.py
 
 # Crear superusuario (opcional)
 python manage.py createsuperuser
