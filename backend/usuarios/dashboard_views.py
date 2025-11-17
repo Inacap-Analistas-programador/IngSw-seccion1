@@ -5,7 +5,7 @@ from django.db.models import Count, Q, Sum
 from datetime import datetime, timedelta
 from personas.models import Persona, PersonaCurso, PersonaEstadoCurso
 from cursos.models import Curso, CursoSeccion
-from pagos.models import Pago
+from pagos.models import PagoPersona
 
 
 @api_view(['GET'])
@@ -20,8 +20,8 @@ def dashboard_stats(request):
     # Get active courses (estado = 1 is active)
     cursos_activos = Curso.objects.filter(cur_estado=1).count()
     
-    # Get pending payments (estado = 1 is pending)
-    pagos_pendientes = Pago.objects.filter(pag_estado=1).count()
+    # Get total payments (using PagoPersona model)
+    pagos_pendientes = PagoPersona.objects.all().count()
     
     # Get total inscriptions
     inscripciones_totales = PersonaCurso.objects.filter(pec_registro=True).count()
@@ -43,19 +43,17 @@ def dashboard_payment_stats(request):
     today = datetime.now()
     current_month_start = today.replace(day=1, hour=0, minute=0, second=0, microsecond=0)
     
-    # Total income this month (estado = 2 is completed/confirmed)
-    ingresos_mes = Pago.objects.filter(
-        pag_estado=2,
-        pag_fecha_pago__gte=current_month_start
-    ).aggregate(total=Sum('pag_monto'))['total'] or 0
+    # Total income this month (tipo = 1 is Ingreso)
+    ingresos_mes = PagoPersona.objects.filter(
+        pap_tipo=1,
+        pap_fecha_hora__gte=current_month_start
+    ).aggregate(total=Sum('pap_valor'))['total'] or 0
     
     # Pending payments count
-    pagos_pendientes = Pago.objects.filter(pag_estado=1).count()
+    pagos_pendientes = PagoPersona.objects.all().count()
     
-    # Count of courses with confirmed payments
-    cursos_pagados = Pago.objects.filter(
-        pag_estado=2
-    ).values('cur_id').distinct().count()
+    # Count of courses with payments
+    cursos_pagados = PagoPersona.objects.values('cur_id').distinct().count()
     
     return Response({
         'total_ingresos': float(ingresos_mes),
@@ -131,14 +129,14 @@ def dashboard_recent_activity(request):
             })
     
     # Get recent payments
-    recent_payments = Pago.objects.select_related('per_id').order_by('-pag_fecha_pago')[:5]
+    recent_payments = PagoPersona.objects.select_related('per_id').order_by('-pap_fecha_hora')[:5]
     
     for pago in recent_payments:
         if pago.per_id:
             nombre_completo = f"{pago.per_id.per_nombres} {pago.per_id.per_apelpat}"
-            monto = f"${pago.pag_monto:,.0f}" if pago.pag_monto else "$0"
+            monto = f"${pago.pap_valor:,.0f}" if pago.pap_valor else "$0"
             activities.append({
-                'id': f'pago_{pago.pag_id}',
+                'id': f'pago_{pago.pap_id}',
                 'tipo': 'pago',
                 'descripcion': f'Pago confirmado: {nombre_completo} - {monto}',
                 'fecha': 'Reciente',
@@ -205,23 +203,23 @@ def dashboard_executive_stats(request):
     if previous_cursos > 0:
         curso_trend = ((current_cursos - previous_cursos) / previous_cursos) * 100
     
-    # Pagos pendientes trend
-    pagos_pendientes = Pago.objects.filter(pag_estado=1).count()
-    pagos_completados = Pago.objects.filter(pag_estado=2).count()
+    # Pagos trend
+    pagos_pendientes = PagoPersona.objects.all().count()
+    pagos_completados = PagoPersona.objects.filter(pap_tipo=1).count()
     
     pago_trend = -5 if pagos_pendientes > 0 else 0
     
-    # Ingresos del mes
-    ingresos_mes = Pago.objects.filter(
-        pag_estado=2,
-        pag_fecha_pago__gte=current_month_start
-    ).aggregate(total=Sum('pag_monto'))['total'] or 0
+    # Ingresos del mes (tipo = 1 is Ingreso)
+    ingresos_mes = PagoPersona.objects.filter(
+        pap_tipo=1,
+        pap_fecha_hora__gte=current_month_start
+    ).aggregate(total=Sum('pap_valor'))['total'] or 0
     
-    ingresos_mes_anterior = Pago.objects.filter(
-        pag_estado=2,
-        pag_fecha_pago__gte=last_month_start,
-        pag_fecha_pago__lt=current_month_start
-    ).aggregate(total=Sum('pag_monto'))['total'] or 0
+    ingresos_mes_anterior = PagoPersona.objects.filter(
+        pap_tipo=1,
+        pap_fecha_hora__gte=last_month_start,
+        pap_fecha_hora__lt=current_month_start
+    ).aggregate(total=Sum('pap_valor'))['total'] or 0
     
     ingreso_trend = 0
     if ingresos_mes_anterior > 0:
