@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import {
   FaUsers,
@@ -13,117 +13,70 @@ import { Badge } from '@/components/ui/Badge';
 import StatCard from '@/components/ui/StatCard';
 import { Button } from '@/components/ui/Button';
 import {
-  TrendingUp,
-  TrendingDown,
   Calendar,
-  Award,
   Clock,
   MapPin,
   Users,
-  BookOpen,
 } from 'lucide-react';
+import api from '@/lib/api';
 
 const DashboardEjecutivo = () => {
   const [selectedPeriod, setSelectedPeriod] = useState('mes');
+  const [stats, setStats] = useState([]);
+  const [recentCourses, setRecentCourses] = useState([]);
+  const [recentActivity, setRecentActivity] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-  const stats = [
-    {
-      icon: FaUsers,
-      label: 'Total Participantes',
-      value: '156',
-      change: '+12%',
-      trend: 'up',
-      color: 'bg-blue-500',
-    },
-    {
-      icon: FaBook,
-      label: 'Cursos Activos',
-      value: '8',
-      change: '+2',
-      trend: 'up',
-      color: 'bg-primary',
-    },
-    {
-      icon: FaCreditCard,
-      label: 'Pagos Pendientes',
-      value: '23',
-      change: '-5%',
-      trend: 'down',
-      color: 'bg-yellow-500',
-    },
-    {
-      icon: FaChartLine,
-      label: 'Ingresos del Mes',
-      value: '$4,560,000',
-      change: '+18%',
-      trend: 'up',
-      color: 'bg-purple-500',
-    },
-  ];
+  useEffect(() => {
+    loadDashboardData();
+  }, [selectedPeriod]);
 
-  const recentCourses = [
-    {
-      id: 1,
-      nombre: 'Formación Básica',
-      fecha: '2024-02-15',
-      inscritos: 45,
-      capacidad: 50,
-      estado: 'activo',
-      lugar: 'Centro Regional',
-    },
-    {
-      id: 2,
-      nombre: 'Curso de Liderazgo',
-      fecha: '2024-02-20',
-      inscritos: 30,
-      capacidad: 35,
-      estado: 'activo',
-      lugar: 'Sala de Capacitación',
-    },
-    {
-      id: 3,
-      nombre: 'Especialidades Técnicas',
-      fecha: '2024-02-25',
-      inscritos: 28,
-      capacidad: 40,
-      estado: 'inscripcion',
-      lugar: 'Sede Principal',
-    },
-  ];
+  const loadDashboardData = async () => {
+    try {
+      setLoading(true);
+      
+      // Load all dashboard data in parallel
+      const [statsData, coursesData, activityData] = await Promise.all([
+        api.get('/usuarios/dashboard/executive-stats/').then(r => r.data),
+        api.get('/usuarios/dashboard/recent-courses/').then(r => r.data),
+        api.get('/usuarios/dashboard/recent-activity/').then(r => r.data)
+      ]);
 
-  const recentActivity = [
-    {
-      id: 1,
-      tipo: 'inscripcion',
-      descripcion: 'Nueva inscripción: Juan Pérez - Formación Básica',
-      fecha: 'Hace 2 horas',
-      icon: FaUserCheck,
-      color: 'text-green-600',
-    },
-    {
-      id: 2,
-      tipo: 'pago',
-      descripcion: 'Pago confirmado: María Silva - $25,000',
-      fecha: 'Hace 4 horas',
-      icon: FaCreditCard,
-      color: 'text-blue-600',
-    },
-    {
-      id: 3,
-      tipo: 'curso',
-      descripcion: 'Nuevo curso creado: Campamento de Verano',
-      fecha: 'Hace 6 horas',
-      icon: FaCalendarDays,
-      color: 'text-purple-600',
-    },
-  ];
+      // Map stats to include icons
+      const statsWithIcons = statsData.stats.map((stat) => {
+        let icon;
+        switch (stat.label) {
+          case 'Total Participantes':
+            icon = FaUsers;
+            break;
+          case 'Cursos Activos':
+            icon = FaBook;
+            break;
+          case 'Pagos Pendientes':
+            icon = FaCreditCard;
+            break;
+          case 'Ingresos del Mes':
+            icon = FaChartLine;
+            break;
+          default:
+            icon = FaBook;
+        }
+        return { ...stat, icon };
+      });
 
-  const topCourses = [
-    { nombre: 'Formación Básica', participantes: 145, porcentaje: 92 },
-    { nombre: 'Curso de Liderazgo', participantes: 98, porcentaje: 78 },
-    { nombre: 'Especialidades Técnicas', participantes: 87, porcentaje: 69 },
-    { nombre: 'Técnicas de Gestión', participantes: 65, porcentaje: 52 },
-  ];
+      setStats(statsWithIcons);
+      setRecentCourses(coursesData);
+      setRecentActivity(activityData);
+    } catch (error) {
+      console.error('Error loading dashboard data:', error);
+      // Set default empty arrays on error
+      setStats([]);
+      setRecentCourses([]);
+      setRecentActivity([]);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const getEstadoBadge = (estado) => {
     const variants = {
@@ -136,7 +89,16 @@ const DashboardEjecutivo = () => {
       inscripcion: 'En Inscripción',
       completo: 'Completo',
     };
-    return <Badge variant={variants[estado]}>{labels[estado]}</Badge>;
+    return <Badge variant={variants[estado] || 'default'}>{labels[estado] || 'Desconocido'}</Badge>;
+  };
+
+  const getIconComponent = (iconName) => {
+    const icons = {
+      FaUserCheck,
+      FaCreditCard,
+      FaCalendarDays,
+    };
+    return icons[iconName] || FaCalendarDays;
   };
 
   return (
@@ -174,18 +136,38 @@ const DashboardEjecutivo = () => {
 
       {/* Stats Cards with Trends */}
       <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
-        {stats.map((stat, index) => (
-          <StatCard
-            key={stat.label}
-            icon={stat.icon}
-            label={stat.label}
-            value={stat.value}
-            change={stat.change}
-            trend={stat.trend}
-            color={stat.color}
-            index={index}
-          />
-        ))}
+        {loading ? (
+          // Loading skeletons
+          [1, 2, 3, 4].map((i) => (
+            <Card key={i}>
+              <div className="animate-pulse">
+                <div className="h-4 bg-gray-200 rounded w-1/2 mb-2"></div>
+                <div className="h-8 bg-gray-200 rounded w-3/4"></div>
+              </div>
+            </Card>
+          ))
+        ) : stats.length > 0 ? (
+          stats.map((stat, index) => (
+            <StatCard
+              key={stat.label}
+              icon={stat.icon}
+              label={stat.label}
+              value={stat.value}
+              change={stat.change}
+              trend={stat.trend}
+              color={stat.color}
+              index={index}
+            />
+          ))
+        ) : (
+          <div className="col-span-4">
+            <Card>
+              <CardContent>
+                <p className="text-gray-500 text-center py-4">No hay datos disponibles</p>
+              </CardContent>
+            </Card>
+          </div>
+        )}
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
@@ -200,43 +182,60 @@ const DashboardEjecutivo = () => {
             </div>
           </CardHeader>
           <CardContent>
-            <div className="space-y-3">
-              {recentCourses.map((curso) => (
-                <div
-                  key={curso.id}
-                  className="p-4 border border-gray-200 rounded-lg hover:border-scout-azul-claro hover:bg-scout-azul-muy-claro/30 transition-all duration-200"
-                >
-                  <div className="flex justify-between items-start mb-3">
-                    <h3 className="font-semibold text-gray-900">{curso.nombre}</h3>
-                    {getEstadoBadge(curso.estado)}
+            {loading ? (
+              <div className="space-y-3">
+                {[1, 2, 3].map((i) => (
+                  <div key={i} className="animate-pulse">
+                    <div className="h-4 bg-gray-200 rounded w-3/4 mb-2"></div>
+                    <div className="h-3 bg-gray-200 rounded w-1/2"></div>
                   </div>
-                  <div className="space-y-2 text-sm text-gray-600">
-                    <div className="flex items-center gap-2">
-                      <Calendar className="w-4 h-4 text-scout-azul-medio" />
-                      <span>{curso.fecha}</span>
+                ))}
+              </div>
+            ) : recentCourses.length > 0 ? (
+              <div className="space-y-3">
+                {recentCourses.map((curso) => (
+                  <div
+                    key={curso.id}
+                    className="p-4 border border-gray-200 rounded-lg hover:border-scout-azul-claro hover:bg-scout-azul-muy-claro/30 transition-all duration-200"
+                  >
+                    <div className="flex justify-between items-start mb-3">
+                      <h3 className="font-semibold text-gray-900">{curso.nombre}</h3>
+                      {getEstadoBadge(curso.estado)}
                     </div>
-                    <div className="flex items-center gap-2">
-                      <MapPin className="w-4 h-4 text-scout-azul-medio" />
-                      <span>{curso.lugar}</span>
+                    <div className="space-y-2 text-sm text-gray-600">
+                      {curso.fecha && (
+                        <div className="flex items-center gap-2">
+                          <Calendar className="w-4 h-4 text-scout-azul-medio" />
+                          <span>{curso.fecha}</span>
+                        </div>
+                      )}
+                      {curso.lugar && (
+                        <div className="flex items-center gap-2">
+                          <MapPin className="w-4 h-4 text-scout-azul-medio" />
+                          <span>{curso.lugar}</span>
+                        </div>
+                      )}
+                      <div className="flex items-center gap-2">
+                        <Users className="w-4 h-4 text-scout-azul-medio" />
+                        <span>
+                          {curso.inscritos}/{curso.capacidad} participantes
+                        </span>
+                      </div>
                     </div>
-                    <div className="flex items-center gap-2">
-                      <Users className="w-4 h-4 text-scout-azul-medio" />
-                      <span>
-                        {curso.inscritos}/{curso.capacidad} participantes
-                      </span>
+                    <div className="mt-3">
+                      <div className="w-full bg-gray-200 rounded-full h-2">
+                        <div
+                          className="bg-gradient-to-r from-scout-azul-medio to-scout-azul-claro h-2 rounded-full transition-all duration-300"
+                          style={{ width: `${(curso.inscritos / curso.capacidad) * 100}%` }}
+                        ></div>
+                      </div>
                     </div>
                   </div>
-                  <div className="mt-3">
-                    <div className="w-full bg-gray-200 rounded-full h-2">
-                      <div
-                        className="bg-gradient-to-r from-scout-azul-medio to-scout-azul-claro h-2 rounded-full transition-all duration-300"
-                        style={{ width: `${(curso.inscritos / curso.capacidad) * 100}%` }}
-                      ></div>
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
+                ))}
+              </div>
+            ) : (
+              <p className="text-gray-500 text-center py-4">No hay cursos próximos</p>
+            )}
           </CardContent>
         </Card>
 
@@ -245,64 +244,50 @@ const DashboardEjecutivo = () => {
           <CardHeader className="pb-3">
             <div className="flex justify-between items-center">
               <CardTitle className="text-xl">Actividad Reciente</CardTitle>
-              <Button variant="ghost" size="sm">
+              <Button variant="ghost" size="sm" onClick={loadDashboardData}>
                 <Clock className="w-4 h-4 mr-1" />
                 Actualizar
               </Button>
             </div>
           </CardHeader>
           <CardContent>
-            <div className="space-y-3">
-              {recentActivity.map((activity) => (
-                <motion.div
-                  key={activity.id}
-                  initial={{ opacity: 0, x: -20 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  className="flex items-start gap-3 p-3 border border-gray-200 rounded-lg hover:border-scout-azul-claro hover:bg-scout-azul-muy-claro/30 transition-all duration-200"
-                >
-                  <div className={`mt-1 ${activity.color}`}>
-                    <activity.icon className="w-5 h-5" />
+            {loading ? (
+              <div className="space-y-3">
+                {[1, 2, 3].map((i) => (
+                  <div key={i} className="animate-pulse">
+                    <div className="h-4 bg-gray-200 rounded w-3/4 mb-2"></div>
+                    <div className="h-3 bg-gray-200 rounded w-1/2"></div>
                   </div>
-                  <div className="flex-1">
-                    <p className="text-sm text-gray-900 font-medium">{activity.descripcion}</p>
-                    <p className="text-xs text-gray-500 mt-1">{activity.fecha}</p>
-                  </div>
-                </motion.div>
-              ))}
-            </div>
+                ))}
+              </div>
+            ) : recentActivity.length > 0 ? (
+              <div className="space-y-3">
+                {recentActivity.map((activity) => {
+                  const IconComponent = getIconComponent(activity.icon);
+                  return (
+                    <motion.div
+                      key={activity.id}
+                      initial={{ opacity: 0, x: -20 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      className="flex items-start gap-3 p-3 border border-gray-200 rounded-lg hover:border-scout-azul-claro hover:bg-scout-azul-muy-claro/30 transition-all duration-200"
+                    >
+                      <div className={`mt-1 ${activity.color}`}>
+                        <IconComponent className="w-5 h-5" />
+                      </div>
+                      <div className="flex-1">
+                        <p className="text-sm text-gray-900 font-medium">{activity.descripcion}</p>
+                        <p className="text-xs text-gray-500 mt-1">{activity.fecha}</p>
+                      </div>
+                    </motion.div>
+                  );
+                })}
+              </div>
+            ) : (
+              <p className="text-gray-500 text-center py-4">No hay actividad reciente</p>
+            )}
           </CardContent>
         </Card>
       </div>
-
-      {/* Top Courses */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="text-xl">Cursos Más Populares</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="space-y-4">
-            {topCourses.map((curso, index) => (
-              <div key={index} className="space-y-2">
-                <div className="flex justify-between items-center">
-                  <div className="flex items-center gap-2">
-                    <Award className="w-5 h-5 text-scout-dorado-aventura" />
-                    <span className="font-medium text-gray-900">{curso.nombre}</span>
-                  </div>
-                  <span className="text-sm text-gray-600 font-medium">{curso.participantes} participantes</span>
-                </div>
-                <div className="w-full bg-gray-200 rounded-full h-3 overflow-hidden">
-                  <div
-                    className="bg-gradient-to-r from-scout-azul-medio to-scout-azul-claro h-3 rounded-full transition-all duration-500 flex items-center justify-end pr-2"
-                    style={{ width: `${curso.porcentaje}%` }}
-                  >
-                    <span className="text-xs text-white font-semibold">{curso.porcentaje}%</span>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-        </CardContent>
-      </Card>
     </div>
   );
 };
