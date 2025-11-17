@@ -43,8 +43,8 @@ const CoordinatorDashboard = () => {
     if (!storedCoordinator) {
       // Para desarrollo, creamos un coordinador por defecto
       const defaultCoordinator = {
-        correo: 'coordinador@scout.cl',
-        name: 'Coordinador Scout',
+        correo: 'admin@gic.cl',
+        name: 'Administrador',
         loginTime: new Date().toISOString(),
       };
       localStorage.setItem('coordinator', JSON.stringify(defaultCoordinator));
@@ -82,15 +82,12 @@ const CoordinatorDashboard = () => {
         : '/dashboard';
 
   const menuItems = [
-    { icon: FaChartLine, label: 'Dashboard Ejecutivo', path: `${basePath}/ejecutivo` },
-    { icon: FaBook, label: 'Gestión de Cursos', path: `${basePath}/gestion-cursos` },
-    { icon: FaClipboardCheck, label: 'Inscripciones', path: `${basePath}/inscripciones` },
-    { icon: FaCreditCard, label: 'Gestión de Pagos', path: `${basePath}/gestion-pagos` },
-    { icon: FaEnvelope, label: 'Envío de Correos', path: `${basePath}/envio-correos` },
-    { icon: FaAward, label: 'Acreditación', path: `${basePath}/acreditacion` },
+    { icon: FaChartLine, label: 'Dashboard', path: `${basePath}/ejecutivo` },
     { icon: FaDatabase, label: 'Maestros', path: `${basePath}/maestros` },
-    { icon: FaTruck, label: 'Proveedores', path: '/proveedores' },
-    { icon: FaChartLine, label: 'Casos de Uso', path: `${basePath}/use-cases` },
+    { icon: FaBook, label: 'Cursos', path: `${basePath}/gestion-cursos` },
+    { icon: FaUsers, label: 'Personas', path: '/personas' },
+    { icon: FaCreditCard, label: 'Pagos', path: `${basePath}/gestion-pagos` },
+    { icon: FaAward, label: 'Acreditaciones', path: `${basePath}/acreditacion` },
   ];
 
   if (!coordinator) {
@@ -106,20 +103,20 @@ const CoordinatorDashboard = () => {
   return (
     <>
       <Helmet>
-        <title>{getPageTitle()} - Scout Formación</title>
-        <meta name="description" content="Panel de administración para coordinadores Scout." />
+        <title>{getPageTitle()} - Panel Administrativo</title>
+        <meta name="description" content="Panel de administración de la plataforma GIC." />
       </Helmet>
 
       <div className="min-h-screen bg-gray-50 flex">
         {/* Sidebar */}
         <aside
-          className={`fixed lg:static inset-y-0 left-0 z-40 w-64 bg-gradient-to-b from-scout-azul-oscuro to-scout-azul-medio text-white shadow-2xl transform transition-transform duration-300 ease-in-out ${
+          className={`fixed lg:static inset-y-0 left-0 z-40 w-64 bg-gradient-to-b from-blue-900 to-blue-700 text-white shadow-2xl transform transition-transform duration-300 ease-in-out ${
             sidebarOpen ? 'translate-x-0' : '-translate-x-full'
           }`}
         >
           <div className="flex items-center justify-center h-20 border-b border-white/10 px-6">
             <FaAward className="w-8 h-8 mr-3 text-white" />
-            <span className="text-xl font-bold text-white">Scout Admin</span>
+            <span className="text-xl font-bold text-white">Panel Administrativo</span>
           </div>
           <nav className="p-3 space-y-1 h-full overflow-y-auto">
             {menuItems.map((item) => {
@@ -162,11 +159,11 @@ const CoordinatorDashboard = () => {
                   <FaBars className="w-6 h-6" />
                 </Button>
                 {/* <Breadcrumb /> */}
-                <span className="text-lg font-semibold text-gray-800">Dashboard Scout</span>
+                <span className="text-lg font-semibold text-gray-800">Panel Administrativo</span>
               </div>
               <div className="flex items-center space-x-3">
-                <div className="hidden md:flex items-center px-3 py-2 bg-scout-azul-muy-claro rounded-lg">
-                  <span className="text-sm text-scout-azul-oscuro">
+                <div className="hidden md:flex items-center px-3 py-2 bg-blue-50 rounded-lg">
+                  <span className="text-sm text-blue-900">
                     Bienvenido, <span className="font-semibold">{coordinator.name}</span>
                   </span>
                 </div>
@@ -174,7 +171,7 @@ const CoordinatorDashboard = () => {
                   onClick={() => navigate('/')}
                   variant="outline"
                   size="sm"
-                  className="text-scout-azul-medio border-scout-azul-claro hover:bg-scout-azul-muy-claro"
+                  className="text-blue-600 border-blue-300 hover:bg-blue-50"
                 >
                   Inicio
                 </Button>

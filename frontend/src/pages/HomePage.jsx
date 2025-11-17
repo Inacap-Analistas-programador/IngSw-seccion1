@@ -88,13 +88,13 @@ const HomePage = () => {
         <title>GIC - Plataforma de Gestión Integral de Cursos</title>
         <meta
           name="description"
-          content="Sistema completo de gestión para cursos Scout. Google Maps, emails automatizados, gestión de personas y mucho más."
+          content="Sistema completo de gestión de cursos. Google Maps, emails automatizados, gestión de personas y mucho más."
         />
       </Helmet>
 
       <div className="min-h-screen bg-white">
         {/* Navigation */}
-        <nav className="bg-gradient-to-r from-scout-azul-oscuro via-scout-azul-medio to-scout-azul-claro text-white shadow-lg sticky top-0 z-50 backdrop-blur-sm bg-opacity-95">
+        <nav className="bg-gradient-to-r from-blue-900 via-blue-700 to-blue-600 text-white shadow-lg sticky top-0 z-50 backdrop-blur-sm bg-opacity-95">
           <div className="container mx-auto px-4 py-4 flex justify-between items-center">
             <div className="flex items-center space-x-3">
               <motion.div
@@ -103,7 +103,7 @@ const HomePage = () => {
                 transition={{ duration: 1, ease: 'easeInOut' }}
                 className="w-12 h-12 bg-white rounded-full flex items-center justify-center shadow-md"
               >
-                <FaAward className="w-7 h-7 text-scout-azul-oscuro" />
+                <FaAward className="w-7 h-7 text-blue-900" />
               </motion.div>
               <div>
                 <span className="text-2xl font-bold block">GIC Platform</span>
@@ -113,23 +113,23 @@ const HomePage = () => {
             <div className="flex space-x-3">
               <Button
                 onClick={() => navigate('/preinscripcion')}
-                className="bg-white text-scout-azul-oscuro hover:bg-scout-azul-muy-claro transition-all duration-300 shadow-md hover:shadow-lg"
+                className="bg-white text-blue-900 hover:bg-gray-100 transition-all duration-300 shadow-md hover:shadow-lg"
               >
-                Preinscripción
+                Inscribirse
               </Button>
               <Button
                 onClick={() => navigate('/coordinador/login')}
                 className="bg-white/10 text-white hover:bg-white/20 backdrop-blur-sm border border-white/20 transition-all duration-300"
               >
                 <FaKey className="w-4 h-4 mr-2" />
-                Acceso
+                Acceso Admin
               </Button>
             </div>
           </div>
         </nav>
 
         {/* Hero Section */}
-        <section className="relative bg-gradient-to-br from-scout-azul-oscuro via-scout-azul-medio to-scout-azul-claro text-white py-24 overflow-hidden">
+        <section className="relative bg-gradient-to-br from-blue-900 via-blue-700 to-blue-600 text-white py-24 overflow-hidden">
           {/* Animated background */}
           <div className="absolute inset-0 opacity-10">
             <motion.div
@@ -168,7 +168,7 @@ const HomePage = () => {
                 Plataforma GIC
               </h1>
               <p className="text-xl md:text-2xl mb-4 max-w-3xl mx-auto text-white/95 font-medium">
-                Sistema completo de gestión de cursos Scout
+                Sistema completo de gestión de cursos y capacitaciones
               </p>
               <p className="text-lg md:text-xl mb-10 max-w-3xl mx-auto text-white/80">
                 Google Maps • Emails Automatizados • Gestión de Personas • API REST Completa
@@ -176,7 +176,7 @@ const HomePage = () => {
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
                 <Button
                   onClick={() => navigate('/preinscripcion')}
-                  className="bg-white text-scout-azul-oscuro hover:bg-gray-100 transition-all duration-300 shadow-xl hover:shadow-2xl text-lg px-8 py-4"
+                  className="bg-white text-blue-900 hover:bg-gray-100 transition-all duration-300 shadow-xl hover:shadow-2xl text-lg px-8 py-4"
                 >
                   <FaRocket className="inline-block mr-2" />
                   Comenzar Ahora
@@ -205,10 +205,10 @@ const HomePage = () => {
                   transition={{ delay: index * 0.1 }}
                   className="text-center"
                 >
-                  <div className="text-scout-azul-oscuro mb-2 flex justify-center">
+                  <div className="text-blue-900 mb-2 flex justify-center">
                     {stat.icon && <div className="text-4xl">{stat.icon}</div>}
                   </div>
-                  <div className="text-4xl font-bold text-scout-azul-oscuro mb-2">
+                  <div className="text-4xl font-bold text-blue-900 mb-2">
                     {stat.number}
                   </div>
                   <div className="text-gray-600">{stat.label}</div>

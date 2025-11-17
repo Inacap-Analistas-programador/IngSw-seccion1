@@ -1,59 +1,77 @@
 import React, { lazy, Suspense } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import ProtectedRoute from '@/components/auth/ProtectedRoute';
+import ErrorBoundary from '@/components/ErrorBoundary';
 
-// Lazy load pages for code splitting
-const HomePage = lazy(() => import('@/pages/HomePage'));
-const PreRegistrationForm = lazy(() => import('@/pages/PreRegistrationForm'));
-const CoordinatorLogin = lazy(() => import('@/pages/CoordinatorLogin'));
-const CoordinatorDashboard = lazy(() => import('@/pages/CoordinatorDashboard'));
-const PersonasPage = lazy(() => import('@/pages/PersonasPage'));
-const PersonaForm = lazy(() => import('@/pages/PersonaForm'));
-const MaestrosPage = lazy(() => import('@/pages/MaestrosPage'));
-const MaestroForm = lazy(() => import('@/pages/MaestroForm'));
-const ProveedoresPage = lazy(() => import('@/pages/ProveedoresPage'));
-const ProveedorForm = lazy(() => import('@/pages/ProveedorForm'));
-const TestPage = lazy(() => import('@/pages/TestPage'));
-const GoogleMapsDemo = lazy(() => import('@/pages/GoogleMapsDemo'));
-const EmailSystemDemo = lazy(() => import('@/pages/EmailSystemDemo'));
+// Lazy load pages for code splitting with retry logic
+const lazyRetry = (componentImport) =>
+  lazy(() =>
+    componentImport().catch((error) => {
+      console.error('Error loading component, retrying...', error);
+      // Retry after 1 second
+      return new Promise((resolve) => {
+        setTimeout(() => {
+          resolve(componentImport());
+        }, 1000);
+      });
+    })
+  );
+
+const HomePage = lazyRetry(() => import('@/pages/HomePage'));
+const PreRegistrationForm = lazyRetry(() => import('@/pages/PreRegistrationForm'));
+const CoordinatorLogin = lazyRetry(() => import('@/pages/CoordinatorLogin'));
+const CoordinatorDashboard = lazyRetry(() => import('@/pages/CoordinatorDashboard'));
+const PersonasPage = lazyRetry(() => import('@/pages/PersonasPage'));
+const PersonaForm = lazyRetry(() => import('@/pages/PersonaForm'));
+const MaestrosPage = lazyRetry(() => import('@/pages/MaestrosPage'));
+const MaestroForm = lazyRetry(() => import('@/pages/MaestroForm'));
+const ProveedoresPage = lazyRetry(() => import('@/pages/ProveedoresPage'));
+const ProveedorForm = lazyRetry(() => import('@/pages/ProveedorForm'));
+const TestPage = lazyRetry(() => import('@/pages/TestPage'));
+const GoogleMapsDemo = lazyRetry(() => import('@/pages/GoogleMapsDemo'));
+const EmailSystemDemo = lazyRetry(() => import('@/pages/EmailSystemDemo'));
 
 // Geografia pages
-const RegionesPage = lazy(() => import('@/pages/geografia/RegionesPage'));
-const ProvinciasPage = lazy(() => import('@/pages/geografia/ProvinciasPage'));
-const ComunasPage = lazy(() => import('@/pages/geografia/ComunasPage'));
-const ZonasPage = lazy(() => import('@/pages/geografia/ZonasPage'));
-const DistritosPage = lazy(() => import('@/pages/geografia/DistritosPage'));
-const GruposPage = lazy(() => import('@/pages/geografia/GruposPage'));
+const RegionesPage = lazyRetry(() => import('@/pages/geografia/RegionesPage'));
+const ProvinciasPage = lazyRetry(() => import('@/pages/geografia/ProvinciasPage'));
+const ComunasPage = lazyRetry(() => import('@/pages/geografia/ComunasPage'));
+const ZonasPage = lazyRetry(() => import('@/pages/geografia/ZonasPage'));
+const DistritosPage = lazyRetry(() => import('@/pages/geografia/DistritosPage'));
+const GruposPage = lazyRetry(() => import('@/pages/geografia/GruposPage'));
 
 // Maestros pages
-const CargosPage = lazy(() => import('@/pages/maestros/CargosPage'));
-const AlimentacionesPage = lazy(() => import('@/pages/maestros/AlimentacionesPage'));
-const ConceptosContablesPage = lazy(() => import('@/pages/maestros/ConceptosContablesPage'));
-const EstadosCivilesPage = lazy(() => import('@/pages/maestros/EstadosCivilesPage'));
-const NivelesPage = lazy(() => import('@/pages/maestros/NivelesPage'));
-const RamasPage = lazy(() => import('@/pages/maestros/RamasPage'));
-const RolesPage = lazy(() => import('@/pages/maestros/RolesPage'));
-const TiposArchivoPage = lazy(() => import('@/pages/maestros/TiposArchivoPage'));
-const TiposCursoPage = lazy(() => import('@/pages/maestros/TiposCursoPage'));
+const CargosPage = lazyRetry(() => import('@/pages/maestros/CargosPage'));
+const AlimentacionesPage = lazyRetry(() => import('@/pages/maestros/AlimentacionesPage'));
+const ConceptosContablesPage = lazyRetry(() => import('@/pages/maestros/ConceptosContablesPage'));
+const EstadosCivilesPage = lazyRetry(() => import('@/pages/maestros/EstadosCivilesPage'));
+const NivelesPage = lazyRetry(() => import('@/pages/maestros/NivelesPage'));
+const RamasPage = lazyRetry(() => import('@/pages/maestros/RamasPage'));
+const RolesPage = lazyRetry(() => import('@/pages/maestros/RolesPage'));
+const TiposArchivoPage = lazyRetry(() => import('@/pages/maestros/TiposArchivoPage'));
+const TiposCursoPage = lazyRetry(() => import('@/pages/maestros/TiposCursoPage'));
 
 // Loading component
 const PageLoader = () => (
-  <div className="flex items-center justify-center min-h-screen">
-    <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-scout-azul-oscuro"></div>
+  <div className="flex items-center justify-center min-h-screen bg-gray-50">
+    <div className="text-center">
+      <div className="animate-spin rounded-full h-16 w-16 border-b-4 border-blue-600 mx-auto mb-4"></div>
+      <p className="text-gray-600 text-lg">Cargando...</p>
+    </div>
   </div>
 );
 
 function App() {
   return (
-    <Router
-      future={{
-        v7_startTransition: true,
-        v7_relativeSplatPath: true,
-      }}
-    >
-      <div className="min-h-screen">
-        <Suspense fallback={<PageLoader />}>
-          <Routes>
+    <ErrorBoundary>
+      <Router
+        future={{
+          v7_startTransition: true,
+          v7_relativeSplatPath: true,
+        }}
+      >
+        <div className="min-h-screen">
+          <Suspense fallback={<PageLoader />}>
+            <Routes>
             {/* Rutas públicas */}
             <Route path="/" element={<HomePage />} />
             <Route path="/preinscripcion" element={<PreRegistrationForm />} />
@@ -291,6 +309,7 @@ function App() {
         </Suspense>
       </div>
     </Router>
+    </ErrorBoundary>
   );
 }
 
