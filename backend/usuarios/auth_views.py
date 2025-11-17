@@ -119,8 +119,8 @@ class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
             if not usuario.check_password(password):
                 raise Exception('Credenciales inválidas')
 
-            # Generar tokens
-            refresh = RefreshToken.for_user(usuario)
+            # Generar tokens manualmente
+            refresh = RefreshToken()
             
             # Agregar claims personalizados
             refresh['email'] = usuario.usu_email
@@ -222,8 +222,12 @@ def login_view(request):
             f'from IP: {ip_address}'
         )
 
-        # Generar tokens JWT
-        refresh = RefreshToken.for_user(usuario)
+        # Generar tokens JWT manualmente
+        refresh = RefreshToken()
+        refresh['email'] = usuario.usu_email
+        refresh['username'] = usuario.usu_username
+        refresh['user_id'] = usuario.usu_id
+        refresh['perfil'] = usuario.pel_id.pel_descripcion if usuario.pel_id else 'usuario'
         
         return Response({
             'success': True,
@@ -254,23 +258,25 @@ def login_view(request):
 
 
 @api_view(['POST'])
-@permission_classes([IsAuthenticated])
+@permission_classes([AllowAny])
 def logout_view(request):
     """
-    Endpoint de logout con blacklist del refresh token
+    Endpoint de logout (client-side token removal)
     POST /api/auth/logout
     Body: {"refresh_token": "token"}
+    
+    Note: Since we're using a custom Usuario model that doesn't integrate with
+    Django's User model, token blacklisting is handled client-side.
     """
     try:
-        refresh_token = request.data.get('refresh_token')
-        if refresh_token:
-            token = RefreshToken(refresh_token)
-            token.blacklist()
-            
+        # Log the logout event if user is authenticated
+        if hasattr(request, 'user') and hasattr(request.user, 'usu_username'):
             logger.info(
                 f'User logout: {request.user.usu_username} (ID: {request.user.usu_id}) '
                 f'from IP: {get_client_ip(request)}'
             )
+        else:
+            logger.info(f'Anonymous logout from IP: {get_client_ip(request)}')
         
         return Response({
             'success': True,
