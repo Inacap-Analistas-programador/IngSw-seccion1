@@ -10,7 +10,10 @@ const GestionPagos = () => {
     const fetchPagos = async () => {
       try {
         const response = await api.get('/pagos/pagopersonas/');
-        setPagos(response.data);
+        // Handle paginated response from Django REST Framework
+        const data = response.data;
+        const pagosArray = Array.isArray(data) ? data : (data.results || []);
+        setPagos(pagosArray);
         setError(null);
       } catch (err) {
         console.error('Error fetching pagos:', err);
