@@ -3,9 +3,9 @@ import MaestrosList from '@/components/maestros/MaestrosList';
 
 const ConceptosContablesPage = () => {
   const fields = [
-    { key: 'descripcion', label: 'Descripción', type: 'text', fullWidth: true },
+    { key: 'coc_descripcion', label: 'Descripción', type: 'text', fullWidth: true },
     {
-      key: 'vigente',
+      key: 'coc_vigente',
       label: 'Vigente',
       type: 'select',
       options: [
@@ -17,7 +17,7 @@ const ConceptosContablesPage = () => {
   ];
 
   return (
-    <MaestrosList maestroType="concepto-contable" title="Conceptos Contables" fields={fields} />
+    <MaestrosList maestroType="conceptos-contables" title="Conceptos Contables" fields={fields} idField="coc_id" />
   );
 };
 

@@ -3,9 +3,9 @@ import MaestrosList from '@/components/maestros/MaestrosList';
 
 const TiposArchivoPage = () => {
   const fields = [
-    { key: 'descripcion', label: 'Descripción', type: 'text', fullWidth: true },
+    { key: 'tar_descripcion', label: 'Descripción', type: 'text', fullWidth: true },
     {
-      key: 'vigente',
+      key: 'tar_vigente',
       label: 'Vigente',
       type: 'select',
       options: [
@@ -16,7 +16,7 @@ const TiposArchivoPage = () => {
     },
   ];
 
-  return <MaestrosList maestroType="tipo-archivo" title="Tipos de Archivo" fields={fields} />;
+  return <MaestrosList maestroType="tipos-archivo" title="Tipos de Archivo" fields={fields} idField="tar_id" />;
 };
 
 export default TiposArchivoPage;

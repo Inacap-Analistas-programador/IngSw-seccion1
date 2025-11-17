@@ -3,9 +3,9 @@ import MaestrosList from '@/components/maestros/MaestrosList';
 
 const AlimentacionesPage = () => {
   const fields = [
-    { key: 'descripcion', label: 'Descripción', type: 'text', fullWidth: true },
+    { key: 'ali_descripcion', label: 'Descripción', type: 'text', fullWidth: true },
     {
-      key: 'tipo',
+      key: 'ali_tipo',
       label: 'Tipo',
       type: 'select',
       options: [
@@ -16,7 +16,7 @@ const AlimentacionesPage = () => {
       ],
     },
     {
-      key: 'vigente',
+      key: 'ali_vigente',
       label: 'Vigente',
       type: 'select',
       options: [
@@ -27,7 +27,7 @@ const AlimentacionesPage = () => {
     },
   ];
 
-  return <MaestrosList maestroType="alimentacion" title="Alimentación" fields={fields} />;
+  return <MaestrosList maestroType="alimentaciones" title="Alimentación" fields={fields} idField="ali_id" />;
 };
 
 export default AlimentacionesPage;

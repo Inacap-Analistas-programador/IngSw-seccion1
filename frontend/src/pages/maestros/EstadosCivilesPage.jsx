@@ -3,9 +3,9 @@ import MaestrosList from '@/components/maestros/MaestrosList';
 
 const EstadosCivilesPage = () => {
   const fields = [
-    { key: 'descripcion', label: 'Descripción', type: 'text', fullWidth: true },
+    { key: 'esc_descripcion', label: 'Descripción', type: 'text', fullWidth: true },
     {
-      key: 'vigente',
+      key: 'esc_vigente',
       label: 'Vigente',
       type: 'select',
       options: [
@@ -16,7 +16,7 @@ const EstadosCivilesPage = () => {
     },
   ];
 
-  return <MaestrosList maestroType="estado-civil" title="Estados Civiles" fields={fields} />;
+  return <MaestrosList maestroType="estados-civiles" title="Estados Civiles" fields={fields} idField="esc_id" />;
 };
 
 export default EstadosCivilesPage;

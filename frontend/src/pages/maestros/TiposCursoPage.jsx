@@ -3,9 +3,19 @@ import MaestrosList from '@/components/maestros/MaestrosList';
 
 const TiposCursoPage = () => {
   const fields = [
-    { key: 'descripcion', label: 'Descripción', type: 'text', fullWidth: true },
+    { key: 'tcu_descripcion', label: 'Descripción', type: 'text', fullWidth: true },
     {
-      key: 'vigente',
+      key: 'tcu_tipo',
+      label: 'Tipo',
+      type: 'number',
+    },
+    {
+      key: 'tcu_cant_participante',
+      label: 'Cantidad Participantes',
+      type: 'number',
+    },
+    {
+      key: 'tcu_vigente',
       label: 'Vigente',
       type: 'select',
       options: [
@@ -16,7 +26,7 @@ const TiposCursoPage = () => {
     },
   ];
 
-  return <MaestrosList maestroType="tipo-curso" title="Tipos de Curso" fields={fields} />;
+  return <MaestrosList maestroType="tipos-curso" title="Tipos de Curso" fields={fields} idField="tcu_id" />;
 };
 
 export default TiposCursoPage;

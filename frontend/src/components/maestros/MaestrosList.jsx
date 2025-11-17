@@ -8,7 +8,7 @@ import { Search, Plus, Edit, Trash2, ChevronLeft, Database } from 'lucide-react'
 import { useToast } from '@/components/ui/use-toast';
 import maestrosService from '@/services/maestrosService';
 
-const MaestrosList = ({ maestroType, title, fields }) => {
+const MaestrosList = ({ maestroType, title, fields, idField = 'id' }) => {
   const navigate = useNavigate();
   const { toast } = useToast();
   const [searchTerm, setSearchTerm] = useState('');
@@ -59,8 +59,10 @@ const MaestrosList = ({ maestroType, title, fields }) => {
   const handleSave = async () => {
     try {
       if (isEdit) {
-        await maestrosService.update(maestroType, currentItem.id, currentItem);
-        setItems((prev) => prev.map((item) => (item.id === currentItem.id ? currentItem : item)));
+        await maestrosService.update(maestroType, currentItem[idField], currentItem);
+        setItems((prev) =>
+          prev.map((item) => (item[idField] === currentItem[idField] ? currentItem : item))
+        );
         toast({
           title: 'Actualizado',
           description: 'El registro ha sido actualizado correctamente.',
@@ -90,8 +92,8 @@ const MaestrosList = ({ maestroType, title, fields }) => {
 
   const handleDelete = async () => {
     try {
-      await maestrosService.delete(maestroType, currentItem.id);
-      setItems((prev) => prev.filter((item) => item.id !== currentItem.id));
+      await maestrosService.delete(maestroType, currentItem[idField]);
+      setItems((prev) => prev.filter((item) => item[idField] !== currentItem[idField]));
       toast({
         title: 'Eliminado',
         description: 'El registro ha sido eliminado correctamente.',
@@ -190,7 +192,7 @@ const MaestrosList = ({ maestroType, title, fields }) => {
                 ) : filteredItems.length > 0 ? (
                   filteredItems.map((item) => (
                     <motion.tr
-                      key={item.id}
+                      key={item[idField]}
                       initial={{ opacity: 0 }}
                       animate={{ opacity: 1 }}
                       className="border-b border-gray-100 hover:bg-gray-50 transition-colors"
