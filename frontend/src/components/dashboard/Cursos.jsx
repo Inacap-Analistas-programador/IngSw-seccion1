@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import Card from '@/components/ui/Card';
 import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
@@ -8,6 +9,7 @@ import { useToast } from '@/components/ui/use-toast';
 
 const Cursos = () => {
   const { toast } = useToast();
+  const navigate = useNavigate();
   const [showCreateForm, setShowCreateForm] = useState(false);
   const [showViewModal, setShowViewModal] = useState(false);
   const [showEditForm, setShowEditForm] = useState(false);
@@ -40,6 +42,14 @@ const Cursos = () => {
     comunaId: '',
     administra: '1',
     fechas: [], // Array de fechas múltiples para el curso
+    secciones: [], // Array de secciones del curso
+    coordinadores: [], // Array de coordinadores del curso
+    formadores: [], // Array de formadores del curso
+    alimentacionRegistrada: false, // Indica si hay alimentación registrada
+    directoresFormadoresCompleto: false, // Indica si todos los directores/formadores están registrados
+    pagosPendientes: false, // Indica si hay pagos pendientes
+    totalFormadoresPorSeccion: {}, // Total de formadores por cada sección
+    alimentacion: [], // Lista de alimentación del curso
   });
 
   const handleInputChange = (field, value) => {
