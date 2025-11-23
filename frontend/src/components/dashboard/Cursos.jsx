@@ -23,6 +23,76 @@ const Cursos = () => {
     tipoCurso: '',
   });
   const [errors, setErrors] = useState({});
+
+  // Función para agregar curso de ejemplo con todos los datos
+  const agregarCursoEjemplo = () => {
+    const cursoEjemplo = {
+      id: courses.length + 1,
+      codigo: `FORM${(courses.length + 1).toString().padStart(3, '0')}`,
+      descripcion: 'Curso de Formación Scout - Nivel Básico',
+      fechaHora: new Date().toISOString().slice(0, 16),
+      fechaSolicitud: new Date().toISOString().slice(0, 16),
+      lugar: 'Centro Scout Regional - Santiago',
+      coordLatitud: '-33.4489',
+      coordLongitud: '-70.6693',
+      cuotaConAlmuerzo: 25000,
+      cuotaSinAlmuerzo: 15000,
+      modalidad: '1',
+      tipoCurso: '1',
+      estado: '1',
+      observacion: 'Curso inicial para formadores scouts. Incluye material didáctico y certificación.',
+      responsable: 'Juan Pérez',
+      cargo: 'Coordinador',
+      comunaId: 'Santiago',
+      fechas: [
+        {
+          fecha_inicio: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString().slice(0, 16),
+          fecha_termino: new Date(Date.now() + 9 * 24 * 60 * 60 * 1000).toISOString().slice(0, 16),
+          tipo: '1',
+        },
+        {
+          fecha_inicio: new Date(Date.now() + 14 * 24 * 60 * 60 * 1000).toISOString().slice(0, 16),
+          fecha_termino: new Date(Date.now() + 16 * 24 * 60 * 60 * 1000).toISOString().slice(0, 16),
+          tipo: '1',
+        },
+      ],
+      secciones: [
+        { id: 1, numero: 1, rama: 'Manada', cantParticipantes: 15 },
+        { id: 2, numero: 2, rama: 'Tropa', cantParticipantes: 20 },
+        { id: 3, numero: 3, rama: 'Comunidad', cantParticipantes: 12 },
+      ],
+      coordinadores: [
+        { id: 1, nombre: 'María González', cargo: 'Coordinador General' },
+        { id: 2, nombre: 'Carlos López', cargo: 'Coordinador de Logística' },
+      ],
+      formadores: [
+        { id: 1, nombre: 'Ana Martínez', rol: 'Instructor Principal', seccionId: 1, esDirector: true },
+        { id: 2, nombre: 'Pedro Ramírez', rol: 'Instructor', seccionId: 1, esDirector: false },
+        { id: 3, nombre: 'Laura Fernández', rol: 'Instructor Principal', seccionId: 2, esDirector: true },
+        { id: 4, nombre: 'Jorge Silva', rol: 'Instructor', seccionId: 2, esDirector: false },
+        { id: 5, nombre: 'Sofía Torres', rol: 'Instructor', seccionId: 2, esDirector: false },
+        { id: 6, nombre: 'Diego Vargas', rol: 'Instructor Principal', seccionId: 3, esDirector: false },
+      ],
+      alimentacionRegistrada: true,
+      directoresFormadoresCompleto: true,
+      pagosPendientes: false,
+      totalFormadoresPorSeccion: { 1: 2, 2: 3, 3: 1 },
+      alimentacion: [
+        { id: 1, fecha: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString().slice(0, 16), tiempo: 'Almuerzo', descripcion: 'Almuerzo día 1 - Menú completo', cantidadAdicional: 5, vigente: true },
+        { id: 2, fecha: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString().slice(0, 16), tiempo: 'Once', descripcion: 'Once día 1 - Café y snacks', cantidadAdicional: 3, vigente: true },
+        { id: 3, fecha: new Date(Date.now() + 8 * 24 * 60 * 60 * 1000).toISOString().slice(0, 16), tiempo: 'Desayuno', descripcion: 'Desayuno día 2', cantidadAdicional: 0, vigente: true },
+        { id: 4, fecha: new Date(Date.now() + 8 * 24 * 60 * 60 * 1000).toISOString().slice(0, 16), tiempo: 'Almuerzo', descripcion: 'Almuerzo día 2 - Menú vegetariano disponible', cantidadAdicional: 2, vigente: true },
+      ],
+    };
+
+    setCourses((prev) => [...prev, cursoEjemplo]);
+    toast({
+      title: 'Curso de ejemplo agregado',
+      description: 'Se ha agregado un curso con datos de ejemplo completos',
+      variant: 'default',
+    });
+  };
+
   const [courseData, setCourseData] = useState({
     codigo: '',
     descripcion: '',
@@ -409,6 +479,40 @@ const Cursos = () => {
       style: 'currency',
       currency: 'CLP',
     }).format(amount);
+  };
+
+  // Calcular estadísticas totales de un curso
+  const calcularEstadisticasCurso = (course) => {
+    const totalParticipantes = course.secciones?.reduce((sum, seccion) => sum + (seccion.cantParticipantes || 0), 0) || 0;
+    const totalCoordinadores = course.coordinadores?.length || 0;
+    const totalDirectores = course.formadores?.filter(f => f.esDirector)?.length || 0;
+    const totalFormadores = course.formadores?.length || 0;
+    const formadoresPorSeccion = course.totalFormadoresPorSeccion || {};
+    
+    if (Object.keys(formadoresPorSeccion).length === 0 && course.formadores) {
+      course.formadores.forEach(formador => {
+        const seccionId = formador.seccionId;
+        if (!formadoresPorSeccion[seccionId]) formadoresPorSeccion[seccionId] = 0;
+        formadoresPorSeccion[seccionId]++;
+      });
+    }
+    
+    const directores = course.formadores?.filter(f => f.esDirector) || [];
+    const formadoresRegulares = course.formadores?.filter(f => !f.esDirector) || [];
+    
+    return {
+      totalParticipantes,
+      totalCoordinadores,
+      totalDirectores,
+      totalFormadores,
+      formadoresPorSeccion,
+      totalSecciones: course.secciones?.length || 0,
+      alimentacionRegistrada: course.alimentacionRegistrada || false,
+      directoresFormadoresCompleto: course.directoresFormadoresCompleto || false,
+      pagosPendientes: course.pagosPendientes || false,
+      directores,
+      formadoresRegulares,
+    };
   };
 
   return (
