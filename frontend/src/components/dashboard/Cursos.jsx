@@ -37,9 +37,9 @@ const Cursos = () => {
       coordLongitud: '-70.6693',
       cuotaConAlmuerzo: 25000,
       cuotaSinAlmuerzo: 15000,
-      modalidad: '1',
-      tipoCurso: '1',
-      estado: '1',
+      modalidad: '1', // Presencial
+      tipoCurso: '1', // Presencial
+      estado: '1', // Activo
       observacion: 'Curso inicial para formadores scouts. Incluye material didáctico y certificación.',
       responsable: 'Juan Pérez',
       cargo: 'Coordinador',
@@ -57,31 +57,123 @@ const Cursos = () => {
         },
       ],
       secciones: [
-        { id: 1, numero: 1, rama: 'Manada', cantParticipantes: 15 },
-        { id: 2, numero: 2, rama: 'Tropa', cantParticipantes: 20 },
-        { id: 3, numero: 3, rama: 'Comunidad', cantParticipantes: 12 },
+        {
+          id: 1,
+          numero: 1,
+          rama: 'Manada',
+          cantParticipantes: 15,
+        },
+        {
+          id: 2,
+          numero: 2,
+          rama: 'Tropa',
+          cantParticipantes: 20,
+        },
+        {
+          id: 3,
+          numero: 3,
+          rama: 'Comunidad',
+          cantParticipantes: 12,
+        },
       ],
       coordinadores: [
-        { id: 1, nombre: 'María González', cargo: 'Coordinador General' },
-        { id: 2, nombre: 'Carlos López', cargo: 'Coordinador de Logística' },
+        {
+          id: 1,
+          nombre: 'María González',
+          cargo: 'Coordinador General',
+        },
+        {
+          id: 2,
+          nombre: 'Carlos López',
+          cargo: 'Coordinador de Logística',
+        },
       ],
       formadores: [
-        { id: 1, nombre: 'Ana Martínez', rol: 'Instructor Principal', seccionId: 1, esDirector: true },
-        { id: 2, nombre: 'Pedro Ramírez', rol: 'Instructor', seccionId: 1, esDirector: false },
-        { id: 3, nombre: 'Laura Fernández', rol: 'Instructor Principal', seccionId: 2, esDirector: true },
-        { id: 4, nombre: 'Jorge Silva', rol: 'Instructor', seccionId: 2, esDirector: false },
-        { id: 5, nombre: 'Sofía Torres', rol: 'Instructor', seccionId: 2, esDirector: false },
-        { id: 6, nombre: 'Diego Vargas', rol: 'Instructor Principal', seccionId: 3, esDirector: false },
+        {
+          id: 1,
+          nombre: 'Ana Martínez',
+          rol: 'Instructor Principal',
+          seccionId: 1,
+          esDirector: true,
+        },
+        {
+          id: 2,
+          nombre: 'Pedro Ramírez',
+          rol: 'Instructor',
+          seccionId: 1,
+          esDirector: false,
+        },
+        {
+          id: 3,
+          nombre: 'Laura Fernández',
+          rol: 'Instructor Principal',
+          seccionId: 2,
+          esDirector: true,
+        },
+        {
+          id: 4,
+          nombre: 'Jorge Silva',
+          rol: 'Instructor',
+          seccionId: 2,
+          esDirector: false,
+        },
+        {
+          id: 5,
+          nombre: 'Sofía Torres',
+          rol: 'Instructor',
+          seccionId: 2,
+          esDirector: false,
+        },
+        {
+          id: 6,
+          nombre: 'Diego Vargas',
+          rol: 'Instructor Principal',
+          seccionId: 3,
+          esDirector: false,
+        },
       ],
-      alimentacionRegistrada: true,
-      directoresFormadoresCompleto: true,
-      pagosPendientes: false,
-      totalFormadoresPorSeccion: { 1: 2, 2: 3, 3: 1 },
+      // Nuevos campos agregados
+      alimentacionRegistrada: true, // Indica si hay alimentación registrada
+      directoresFormadoresCompleto: true, // Indica si todos los directores/formadores están registrados
+      pagosPendientes: false, // Indica si hay pagos pendientes
+      totalFormadoresPorSeccion: {
+        1: 2, // Sección 1 tiene 2 formadores
+        2: 3, // Sección 2 tiene 3 formadores
+        3: 1, // Sección 3 tiene 1 formador
+      },
       alimentacion: [
-        { id: 1, fecha: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString().slice(0, 16), tiempo: 'Almuerzo', descripcion: 'Almuerzo día 1 - Menú completo', cantidadAdicional: 5, vigente: true },
-        { id: 2, fecha: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString().slice(0, 16), tiempo: 'Once', descripcion: 'Once día 1 - Café y snacks', cantidadAdicional: 3, vigente: true },
-        { id: 3, fecha: new Date(Date.now() + 8 * 24 * 60 * 60 * 1000).toISOString().slice(0, 16), tiempo: 'Desayuno', descripcion: 'Desayuno día 2', cantidadAdicional: 0, vigente: true },
-        { id: 4, fecha: new Date(Date.now() + 8 * 24 * 60 * 60 * 1000).toISOString().slice(0, 16), tiempo: 'Almuerzo', descripcion: 'Almuerzo día 2 - Menú vegetariano disponible', cantidadAdicional: 2, vigente: true },
+        {
+          id: 1,
+          fecha: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString().slice(0, 16),
+          tiempo: 'Almuerzo',
+          descripcion: 'Almuerzo día 1 - Menú completo',
+          cantidadAdicional: 5,
+          vigente: true,
+        },
+        {
+          id: 2,
+          fecha: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString().slice(0, 16),
+          tiempo: 'Once',
+          descripcion: 'Once día 1 - Café y snacks',
+          cantidadAdicional: 3,
+          vigente: true,
+        },
+        {
+          id: 3,
+          fecha: new Date(Date.now() + 8 * 24 * 60 * 60 * 1000).toISOString().slice(0, 16),
+          tiempo: 'Desayuno',
+          descripcion: 'Desayuno día 2',
+          cantidadAdicional: 0,
+          vigente: true,
+        },
+        {
+          id: 4,
+          fecha: new Date(Date.now() + 8 * 24 * 60 * 60 * 1000).toISOString().slice(0, 16),
+          tiempo: 'Almuerzo',
+          descripcion: 'Almuerzo día 2 - Menú vegetariano disponible',
+          cantidadAdicional: 2,
+          vigente: true,
+        },
       ],
     };
 
@@ -483,23 +575,41 @@ const Cursos = () => {
 
   // Calcular estadísticas totales de un curso
   const calcularEstadisticasCurso = (course) => {
-    const totalParticipantes = course.secciones?.reduce((sum, seccion) => sum + (seccion.cantParticipantes || 0), 0) || 0;
+    // Total de participantes (suma de todas las secciones)
+    const totalParticipantes = course.secciones?.reduce(
+      (sum, seccion) => sum + (seccion.cantParticipantes || 0),
+      0
+    ) || 0;
+
+    // Total de coordinadores
     const totalCoordinadores = course.coordinadores?.length || 0;
+
+    // Total de directores (formadores marcados como directores)
     const totalDirectores = course.formadores?.filter(f => f.esDirector)?.length || 0;
+
+    // Total de formadores
     const totalFormadores = course.formadores?.length || 0;
+
+    // Total de formadores por sección
     const formadoresPorSeccion = course.totalFormadoresPorSeccion || {};
-    
+
+    // Si no está precalculado, calcularlo
     if (Object.keys(formadoresPorSeccion).length === 0 && course.formadores) {
       course.formadores.forEach(formador => {
         const seccionId = formador.seccionId;
-        if (!formadoresPorSeccion[seccionId]) formadoresPorSeccion[seccionId] = 0;
+        if (!formadoresPorSeccion[seccionId]) {
+          formadoresPorSeccion[seccionId] = 0;
+        }
         formadoresPorSeccion[seccionId]++;
       });
     }
-    
+
+    // Lista de directores
     const directores = course.formadores?.filter(f => f.esDirector) || [];
+
+    // Lista de formadores (no directores)
     const formadoresRegulares = course.formadores?.filter(f => !f.esDirector) || [];
-    
+
     return {
       totalParticipantes,
       totalCoordinadores,
@@ -517,6 +627,79 @@ const Cursos = () => {
 
   return (
     <div className="space-y-6">
+      {/* Resumen de estadísticas */}
+      {courses.length > 0 && (
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+          <Card>
+            <div className="p-4">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm font-medium text-gray-600">Total de Cursos</p>
+                  <p className="text-2xl font-bold text-primary">{courses.length}</p>
+                </div>
+                <div className="h-12 w-12 bg-blue-100 rounded-full flex items-center justify-center">
+                  <Calendar className="h-6 w-6 text-blue-600" />
+                </div>
+              </div>
+            </div>
+          </Card>
+
+          <Card>
+            <div className="p-4">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm font-medium text-gray-600">Cursos Activos</p>
+                  <p className="text-2xl font-bold text-green-600">
+                    {courses.filter(c => c.estado === '1' || c.estado === '3').length}
+                  </p>
+                </div>
+                <div className="h-12 w-12 bg-green-100 rounded-full flex items-center justify-center">
+                  <Filter className="h-6 w-6 text-green-600" />
+                </div>
+              </div>
+            </div>
+          </Card>
+
+          <Card>
+            <div className="p-4">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm font-medium text-gray-600">Total Participantes</p>
+                  <p className="text-2xl font-bold text-purple-600">
+                    {courses.reduce((sum, course) => {
+                      const stats = calcularEstadisticasCurso(course);
+                      return sum + stats.totalParticipantes;
+                    }, 0)}
+                  </p>
+                </div>
+                <div className="h-12 w-12 bg-purple-100 rounded-full flex items-center justify-center">
+                  <MapPin className="h-6 w-6 text-purple-600" />
+                </div>
+              </div>
+            </div>
+          </Card>
+
+          <Card>
+            <div className="p-4">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm font-medium text-gray-600">Total Coordinadores</p>
+                  <p className="text-2xl font-bold text-orange-600">
+                    {courses.reduce((sum, course) => {
+                      const stats = calcularEstadisticasCurso(course);
+                      return sum + stats.totalCoordinadores;
+                    }, 0)}
+                  </p>
+                </div>
+                <div className="h-12 w-12 bg-orange-100 rounded-full flex items-center justify-center">
+                  <Settings className="h-6 w-6 text-orange-600" />
+                </div>
+              </div>
+            </div>
+          </Card>
+        </div>
+      )}
+
       {/* Modal de Creación de Curso */}
       {showCreateForm && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
@@ -902,6 +1085,122 @@ const Cursos = () => {
             </div>
 
             <div className="p-6 space-y-6">
+              {/* Estadísticas del Curso */}
+              {(() => {
+                const stats = calcularEstadisticasCurso(selectedCourse);
+                return (
+                  <>
+                    <div className="bg-gradient-to-r from-blue-50 to-purple-50 p-6 rounded-lg border border-blue-200">
+                      <h3 className="text-lg font-semibold text-gray-800 mb-4 flex items-center">
+                        <Filter className="h-5 w-5 mr-2" />
+                        Estadísticas del Curso
+                      </h3>
+                      <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
+                        <button
+                          onClick={() => {
+                            setShowViewModal(false);
+                            navigate('/dashboard/gestion-participantes', { state: { cursoId: selectedCourse.id, cursoNombre: selectedCourse.descripcion } });
+                          }}
+                          className="text-center hover:bg-blue-100 p-3 rounded-lg transition-colors cursor-pointer"
+                        >
+                          <p className="text-3xl font-bold text-blue-600">{stats.totalParticipantes}</p>
+                          <p className="text-sm text-gray-600 mt-1">Total Participantes</p>
+                          <p className="text-xs text-blue-500 mt-1">Click para ver lista</p>
+                        </button>
+                        <div className="text-center">
+                          <p className="text-3xl font-bold text-green-600">{stats.totalCoordinadores}</p>
+                          <p className="text-sm text-gray-600 mt-1">Coordinadores</p>
+                        </div>
+                        <div className="text-center">
+                          <p className="text-3xl font-bold text-purple-600">{stats.totalDirectores}</p>
+                          <p className="text-sm text-gray-600 mt-1">Directores</p>
+                        </div>
+                        <div className="text-center">
+                          <p className="text-3xl font-bold text-orange-600">{stats.totalSecciones}</p>
+                          <p className="text-sm text-gray-600 mt-1">Secciones</p>
+                        </div>
+                        <div className="text-center">
+                          <p className="text-3xl font-bold text-pink-600">{stats.totalFormadores}</p>
+                          <p className="text-sm text-gray-600 mt-1">Total Formadores</p>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Indicadores de Estado */}
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                      <div className={`p-4 rounded-lg border-2 ${stats.alimentacionRegistrada ? 'bg-green-50 border-green-300' : 'bg-red-50 border-red-300'}`}>
+                        <div className="flex items-center justify-between">
+                          <div>
+                            <p className="text-sm font-medium text-gray-700">Alimentación</p>
+                            <p className={`text-lg font-bold ${stats.alimentacionRegistrada ? 'text-green-700' : 'text-red-700'}`}>
+                              {stats.alimentacionRegistrada ? 'Registrada' : 'No Registrada'}
+                            </p>
+                          </div>
+                          <div className={`h-10 w-10 rounded-full flex items-center justify-center ${stats.alimentacionRegistrada ? 'bg-green-200' : 'bg-red-200'}`}>
+                            <span className="text-xl">{stats.alimentacionRegistrada ? '✓' : '✗'}</span>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div className={`p-4 rounded-lg border-2 ${stats.directoresFormadoresCompleto ? 'bg-green-50 border-green-300' : 'bg-yellow-50 border-yellow-300'}`}>
+                        <div className="flex items-center justify-between">
+                          <div>
+                            <p className="text-sm font-medium text-gray-700">Dir./Formadores</p>
+                            <p className={`text-lg font-bold ${stats.directoresFormadoresCompleto ? 'text-green-700' : 'text-yellow-700'}`}>
+                              {stats.directoresFormadoresCompleto ? 'Completo' : 'Incompleto'}
+                            </p>
+                          </div>
+                          <div className={`h-10 w-10 rounded-full flex items-center justify-center ${stats.directoresFormadoresCompleto ? 'bg-green-200' : 'bg-yellow-200'}`}>
+                            <span className="text-xl">{stats.directoresFormadoresCompleto ? '✓' : '!'}</span>
+                          </div>
+                        </div>
+                      </div>
+
+                      <button
+                        onClick={() => {
+                          if (stats.pagosPendientes) {
+                            setShowViewModal(false);
+                            navigate('/dashboard/gestion-pagos', { state: { cursoId: selectedCourse.id, cursoNombre: selectedCourse.descripcion, soloNoPagados: true } });
+                          }
+                        }}
+                        disabled={!stats.pagosPendientes}
+                        className={`p-4 rounded-lg border-2 w-full text-left ${stats.pagosPendientes ? 'bg-red-50 border-red-300 hover:bg-red-100 cursor-pointer' : 'bg-green-50 border-green-300 cursor-default'} transition-colors`}
+                      >
+                        <div className="flex items-center justify-between">
+                          <div>
+                            <p className="text-sm font-medium text-gray-700">Pagos Pendientes</p>
+                            <p className={`text-lg font-bold ${stats.pagosPendientes ? 'text-red-700' : 'text-green-700'}`}>
+                              {stats.pagosPendientes ? 'Sí' : 'No'}
+                            </p>
+                            {stats.pagosPendientes && (
+                              <p className="text-xs text-red-500 mt-1">Click para ver lista</p>
+                            )}
+                          </div>
+                          <div className={`h-10 w-10 rounded-full flex items-center justify-center ${stats.pagosPendientes ? 'bg-red-200' : 'bg-green-200'}`}>
+                            <span className="text-xl">{stats.pagosPendientes ? '!' : '✓'}</span>
+                          </div>
+                        </div>
+                      </button>
+                    </div>
+
+                    {/* Total de Formadores por Sección */}
+                    {Object.keys(stats.formadoresPorSeccion).length > 0 && (
+                      <div className="bg-gray-50 p-4 rounded-lg border border-gray-200">
+                        <h4 className="text-md font-semibold text-gray-800 mb-3">Formadores por Sección</h4>
+                        <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+                          {Object.entries(stats.formadoresPorSeccion).map(([seccionId, total]) => (
+                            <div key={seccionId} className="bg-white p-3 rounded border border-gray-300 text-center">
+                              <p className="text-2xl font-bold text-blue-600">{total}</p>
+                              <p className="text-xs text-gray-600">Sección {seccionId}</p>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+                  </>
+                );
+              })()}
+
               <div className="grid md:grid-cols-2 gap-6">
                 <div className="space-y-4">
                   <h3 className="text-lg font-semibold text-gray-800">Información Básica</h3>
@@ -972,19 +1271,31 @@ const Cursos = () => {
 
                 <div className="space-y-4">
                   <h3 className="text-lg font-semibold text-gray-800">Configuración</h3>
-                  <div className="space-y-2">
-                    <p>
-                      <span className="font-medium">Modalidad:</span>{' '}
-                      {getModalidadName(selectedCourse.modalidad)}
-                    </p>
-                    <p>
-                      <span className="font-medium">Cuota con almuerzo:</span>{' '}
-                      {formatCurrency(selectedCourse.cuotaConAlmuerzo)}
-                    </p>
-                    <p>
-                      <span className="font-medium">Cuota sin almuerzo:</span>{' '}
-                      {formatCurrency(selectedCourse.cuotaSinAlmuerzo)}
-                    </p>
+                  <div className="space-y-3">
+                    <div className="flex items-center space-x-2">
+                      <span className="font-medium">Modalidad:</span>
+                      <span className="inline-flex px-3 py-1 text-sm rounded-full bg-blue-100 text-blue-800">
+                        {getModalidadName(selectedCourse.modalidad)}
+                      </span>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <span className="font-medium">Tipo de Curso:</span>
+                      <span className="inline-flex px-3 py-1 text-sm rounded-full bg-green-100 text-green-800">
+                        {getTipoCursoName(selectedCourse.tipoCurso)}
+                      </span>
+                    </div>
+                    <div className="bg-green-50 p-3 rounded-lg border border-green-200">
+                      <p className="text-sm font-medium text-green-800">Cuota con almuerzo:</p>
+                      <p className="text-xl font-bold text-green-700">
+                        {formatCurrency(selectedCourse.cuotaConAlmuerzo)}
+                      </p>
+                    </div>
+                    <div className="bg-orange-50 p-3 rounded-lg border border-orange-200">
+                      <p className="text-sm font-medium text-orange-800">Cuota sin almuerzo:</p>
+                      <p className="text-xl font-bold text-orange-700">
+                        {formatCurrency(selectedCourse.cuotaSinAlmuerzo)}
+                      </p>
+                    </div>
                   </div>
                 </div>
 
@@ -1008,6 +1319,152 @@ const Cursos = () => {
                   </div>
                 </div>
               </div>
+
+              {/* Detalle de Secciones */}
+              {selectedCourse.secciones && selectedCourse.secciones.length > 0 && (
+                <div className="space-y-4">
+                  <h3 className="text-lg font-semibold text-gray-800">Secciones del Curso</h3>
+                  <div className="grid gap-3">
+                    {selectedCourse.secciones.map((seccion, idx) => {
+                      const formadoresSeccion = selectedCourse.formadores?.filter(
+                        f => f.seccionId === seccion.id
+                      ) || [];
+                      return (
+                        <div key={idx} className="p-4 bg-blue-50 rounded-lg border border-blue-200">
+                          <div className="flex items-center justify-between mb-2">
+                            <h4 className="font-semibold text-blue-900">
+                              Sección {seccion.numero} - {seccion.rama || 'Sin rama'}
+                            </h4>
+                            <span className="px-3 py-1 bg-blue-200 text-blue-900 rounded-full text-sm font-medium">
+                              {seccion.cantParticipantes || 0} participantes
+                            </span>
+                          </div>
+                          {formadoresSeccion.length > 0 && (
+                            <div className="mt-2">
+                              <p className="text-sm font-medium text-gray-700 mb-1">Formadores:</p>
+                              <div className="flex flex-wrap gap-2">
+                                {formadoresSeccion.map((formador, fIdx) => (
+                                  <span
+                                    key={fIdx}
+                                    className={`px-2 py-1 text-xs rounded ${formador.esDirector
+                                      ? 'bg-purple-100 text-purple-800 font-semibold'
+                                      : 'bg-gray-100 text-gray-800'
+                                      }`}
+                                  >
+                                    {formador.nombre}
+                                    {formador.esDirector && ' (Director)'}
+                                    {formador.rol && ` - ${formador.rol}`}
+                                  </span>
+                                ))}
+                              </div>
+                            </div>
+                          )}
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+              )}
+
+              {/* Coordinadores del Curso */}
+              {selectedCourse.coordinadores && selectedCourse.coordinadores.length > 0 && (
+                <div className="space-y-4">
+                  <h3 className="text-lg font-semibold text-gray-800">Coordinadores del Curso</h3>
+                  <div className="grid md:grid-cols-2 gap-3">
+                    {selectedCourse.coordinadores.map((coordinador, idx) => (
+                      <div key={idx} className="p-3 bg-green-50 rounded-lg border border-green-200">
+                        <p className="font-medium text-green-900">{coordinador.nombre}</p>
+                        <p className="text-sm text-green-700">{coordinador.cargo}</p>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* Directores del Curso */}
+              {(() => {
+                const stats = calcularEstadisticasCurso(selectedCourse);
+                return stats.directores.length > 0 && (
+                  <div className="space-y-4">
+                    <h3 className="text-lg font-semibold text-gray-800 flex items-center">
+                      <span className="mr-2">🎯</span>
+                      Directores del Curso ({stats.directores.length})
+                    </h3>
+                    <div className="grid md:grid-cols-2 gap-3">
+                      {stats.directores.map((director, idx) => (
+                        <div key={idx} className="p-3 bg-purple-50 rounded-lg border border-purple-200">
+                          <p className="font-medium text-purple-900">{director.nombre}</p>
+                          <p className="text-sm text-purple-700">{director.rol}</p>
+                          {director.seccionId && (
+                            <p className="text-xs text-purple-600 mt-1">Sección {director.seccionId}</p>
+                          )}
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                );
+              })()}
+
+              {/* Formadores del Curso */}
+              {(() => {
+                const stats = calcularEstadisticasCurso(selectedCourse);
+                return stats.formadoresRegulares.length > 0 && (
+                  <div className="space-y-4">
+                    <h3 className="text-lg font-semibold text-gray-800 flex items-center">
+                      <span className="mr-2">👥</span>
+                      Formadores del Curso ({stats.formadoresRegulares.length})
+                    </h3>
+                    <div className="grid md:grid-cols-3 gap-3">
+                      {stats.formadoresRegulares.map((formador, idx) => (
+                        <div key={idx} className="p-3 bg-blue-50 rounded-lg border border-blue-200">
+                          <p className="font-medium text-blue-900">{formador.nombre}</p>
+                          <p className="text-sm text-blue-700">{formador.rol}</p>
+                          {formador.seccionId && (
+                            <p className="text-xs text-blue-600 mt-1">Sección {formador.seccionId}</p>
+                          )}
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                );
+              })()}
+
+              {/* Alimentación del Curso */}
+              {selectedCourse.alimentacion && selectedCourse.alimentacion.length > 0 && (
+                <div className="space-y-4">
+                  <h3 className="text-lg font-semibold text-gray-800 flex items-center">
+                    <span className="mr-2">🍽️</span>
+                    Alimentación del Curso ({selectedCourse.alimentacion.length} servicios)
+                  </h3>
+                  <div className="max-h-64 overflow-y-auto border border-gray-200 rounded-lg">
+                    <div className="grid gap-2 p-3">
+                      {selectedCourse.alimentacion.map((alimentacion, idx) => (
+                        <div key={idx} className={`p-3 rounded-lg border ${alimentacion.vigente ? 'bg-teal-50 border-teal-200' : 'bg-gray-50 border-gray-200'}`}>
+                          <div className="flex items-start justify-between">
+                            <div className="flex-1">
+                              <div className="flex items-center gap-2">
+                                <p className="font-medium text-teal-900">{alimentacion.tiempo}</p>
+                                {!alimentacion.vigente && (
+                                  <span className="text-xs px-2 py-1 bg-gray-300 text-gray-700 rounded">No vigente</span>
+                                )}
+                              </div>
+                              <p className="text-sm text-gray-700 mt-1">{alimentacion.descripcion}</p>
+                              <div className="flex items-center gap-4 mt-2 text-xs text-gray-600">
+                                <span>📅 {formatDate(alimentacion.fecha)}</span>
+                                {alimentacion.cantidadAdicional > 0 && (
+                                  <span className="px-2 py-1 bg-orange-100 text-orange-700 rounded">
+                                    +{alimentacion.cantidadAdicional} adicionales
+                                  </span>
+                                )}
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              )}
 
               {selectedCourse.observacion && (
                 <div className="space-y-2">
@@ -1355,9 +1812,14 @@ const Cursos = () => {
           <h2 className="text-xl font-semibold text-gray-800">
             Cursos Disponibles ({filteredCourses.length} de {courses.length})
           </h2>
-          <Button onClick={() => setShowCreateForm(true)} className="bg-primary hover:bg-primary">
-            Nuevo Curso
-          </Button>
+          <div className="flex gap-2">
+            <Button onClick={agregarCursoEjemplo} variant="outline" className="border-dashed">
+              + Curso de Ejemplo
+            </Button>
+            <Button onClick={() => setShowCreateForm(true)} className="bg-primary hover:bg-primary">
+              Nuevo Curso
+            </Button>
+          </div>
         </div>
 
         {/* Filtros */}
@@ -1459,7 +1921,10 @@ const Cursos = () => {
                     Cuotas
                   </th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b">
-                    Responsable
+                    Participantes
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b">
+                    Equipo
                   </th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b">
                     Estado
@@ -1472,6 +1937,7 @@ const Cursos = () => {
               <tbody className="bg-white divide-y divide-gray-200">
                 {filteredCourses.map((course) => {
                   const estadoInfo = getEstadoName(course.estado);
+                  const stats = calcularEstadisticasCurso(course);
                   return (
                     <tr key={course.id} className="hover:bg-gray-50">
                       <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
@@ -1506,18 +1972,27 @@ const Cursos = () => {
                         </span>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                        {getModalidadName(course.modalidad)}
+                        <span className="inline-flex px-2 py-1 text-xs rounded-full bg-green-100 text-green-800">
+                          {getModalidadName(course.modalidad)}
+                        </span>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                        <div className="text-xs">
-                          <p>Con almuerzo: {formatCurrency(course.cuotaConAlmuerzo)}</p>
-                          <p>Sin almuerzo: {formatCurrency(course.cuotaSinAlmuerzo)}</p>
+                        <div className="text-xs space-y-1">
+                          <p className="font-medium text-green-700">Con: {formatCurrency(course.cuotaConAlmuerzo)}</p>
+                          <p className="font-medium text-orange-700">Sin: {formatCurrency(course.cuotaSinAlmuerzo)}</p>
                         </div>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                        <div>
-                          <p className="font-medium">{course.responsable}</p>
-                          <p className="text-xs text-gray-500">{course.cargo}</p>
+                        <div className="text-xs space-y-1">
+                          <p className="font-semibold text-blue-700">{stats.totalParticipantes} personas</p>
+                          <p className="text-gray-500">{stats.totalSecciones} {stats.totalSecciones === 1 ? 'sección' : 'secciones'}</p>
+                        </div>
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                        <div className="text-xs space-y-1">
+                          <p><span className="font-medium">Coord:</span> {stats.totalCoordinadores}</p>
+                          <p><span className="font-medium">Dir:</span> {stats.totalDirectores}</p>
+                          <p><span className="font-medium">Form:</span> {course.formadores?.length || 0}</p>
                         </div>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
