@@ -143,6 +143,14 @@ const Cursos = () => {
       coordLongitud: courseData.coordLongitud,
       comunaId: courseData.comunaId,
       fechas: courseData.fechas, // Incluir fechas múltiples
+      secciones: courseData.secciones, // Incluir secciones
+      coordinadores: courseData.coordinadores, // Incluir coordinadores
+      formadores: courseData.formadores, // Incluir formadores
+      alimentacionRegistrada: courseData.alimentacionRegistrada,
+      directoresFormadoresCompleto: courseData.directoresFormadoresCompleto,
+      pagosPendientes: courseData.pagosPendientes,
+      totalFormadoresPorSeccion: courseData.totalFormadoresPorSeccion,
+      alimentacion: courseData.alimentacion,
     };
 
     // Agregar el nuevo curso a la lista
@@ -184,6 +192,14 @@ const Cursos = () => {
       comunaId: course.comunaId,
       administra: '1',
       fechas: course.fechas || [], // Incluir fechas existentes
+      secciones: course.secciones || [], // Incluir secciones existentes
+      coordinadores: course.coordinadores || [], // Incluir coordinadores existentes
+      formadores: course.formadores || [], // Incluir formadores existentes
+      alimentacionRegistrada: course.alimentacionRegistrada || false,
+      directoresFormadoresCompleto: course.directoresFormadoresCompleto || false,
+      pagosPendientes: course.pagosPendientes || false,
+      totalFormadoresPorSeccion: course.totalFormadoresPorSeccion || {},
+      alimentacion: course.alimentacion || [],
     });
     setShowEditForm(true);
   };
@@ -217,6 +233,14 @@ const Cursos = () => {
       coordLongitud: courseData.coordLongitud,
       comunaId: courseData.comunaId,
       fechas: courseData.fechas, // Incluir fechas actualizadas
+      secciones: courseData.secciones, // Incluir secciones actualizadas
+      coordinadores: courseData.coordinadores, // Incluir coordinadores actualizados
+      formadores: courseData.formadores, // Incluir formadores actualizados
+      alimentacionRegistrada: courseData.alimentacionRegistrada,
+      directoresFormadoresCompleto: courseData.directoresFormadoresCompleto,
+      pagosPendientes: courseData.pagosPendientes,
+      totalFormadoresPorSeccion: courseData.totalFormadoresPorSeccion,
+      alimentacion: courseData.alimentacion,
     };
 
     setCourses((prev) =>
@@ -290,6 +314,14 @@ const Cursos = () => {
       comunaId: '',
       administra: '1',
       fechas: [], // Limpiar fechas múltiples
+      secciones: [], // Limpiar secciones
+      coordinadores: [], // Limpiar coordinadores
+      formadores: [], // Limpiar formadores
+      alimentacionRegistrada: false,
+      directoresFormadoresCompleto: false,
+      pagosPendientes: false,
+      totalFormadoresPorSeccion: {},
+      alimentacion: [],
     });
     setErrors({});
     setShowCreateForm(false);
