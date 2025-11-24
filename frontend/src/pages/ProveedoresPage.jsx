@@ -5,7 +5,7 @@ import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/Button';
 import api from '@/config/api';
 import { proveedoresFromApi } from '@/lib/mappers';
-import { ChevronLeft, Truck, Plus, Edit, Trash2 } from 'lucide-react';
+import { ChevronLeft, Truck, Plus, Edit, Trash2, Eye, Ban, CheckCircle } from 'lucide-react';
 
 const ProveedoresPage = () => {
   const navigate = useNavigate();
@@ -14,7 +14,7 @@ const ProveedoresPage = () => {
   const [error, setError] = useState(null);
 
   const handleDeleteProveedor = async (id) => {
-    if (!window.confirm('¿Está seguro de que desea eliminar este proveedor?')) return;
+    if (!window.confirm('¿ESTÁ SEGURO DE QUE DESEA ELIMINAR ESTE PROVEEDOR? ESTA ACCIÓN NO SE PUEDE DESHACER.')) return;
 
     try {
       await api.delete(`/proveedores/${id}/`);
@@ -25,11 +25,40 @@ const ProveedoresPage = () => {
       localStorage.setItem('proveedores', JSON.stringify(filtered));
     } catch (err) {
       console.warn('Error eliminando proveedor en API, actualizando localStorage', err);
+      const errorMessage = err.response?.data?.message || err.message || '';
+      const isCascadeError = errorMessage.includes('referencia') || 
+                            errorMessage.includes('relacionado') || 
+                            errorMessage.includes('constraint') ||
+                            errorMessage.includes('foreign key');
+      
+      if (isCascadeError) {
+        alert('NO SE PUEDE ELIMINAR EL PROVEEDOR PORQUE ESTÁ SIENDO UTILIZADO EN OTROS REGISTROS DEL SISTEMA.');
+        return;
+      }
       // fallback
       const proveedoresLocal = JSON.parse(localStorage.getItem('proveedores') || '[]');
       const filtered = proveedoresLocal.filter((p) => p.id !== id);
       localStorage.setItem('proveedores', JSON.stringify(filtered));
       setProveedores(filtered);
+    }
+  };
+
+  const handleToggleStatus = async (proveedor) => {
+    const newStatus = !proveedor.vigente;
+    const actionText = newStatus ? 'ACTIVAR' : 'ANULAR';
+    
+    if (!window.confirm(`¿ESTÁ SEGURO DE QUE DESEA ${actionText} ESTE PROVEEDOR? ESTA ACCIÓN NO SE PUEDE DESHACER.`)) {
+      return;
+    }
+
+    try {
+      await api.patch(`/proveedores/${proveedor.id}/`, { vigente: newStatus });
+      setProveedores((prev) =>
+        prev.map((p) => (p.id === proveedor.id ? { ...p, vigente: newStatus } : p))
+      );
+    } catch (err) {
+      console.warn('Error actualizando proveedor en API', err);
+      alert(`ERROR AL ${actionText} EL PROVEEDOR. POR FAVOR, INTENTA NUEVAMENTE.`);
     }
   };
 
@@ -49,11 +78,11 @@ const ProveedoresPage = () => {
   }, []);
 
   if (loading) {
-    return <div>Cargando...</div>;
+    return <div>CARGANDO...</div>;
   }
 
   if (error) {
-    return <div>Ocurrió un error: {String(error.message || error)}</div>;
+    return <div>OCURRIÓ UN ERROR: {String(error.message || error)}</div>;
   }
 
   return (
@@ -75,14 +104,14 @@ const ProveedoresPage = () => {
                   className="text-white hover:bg-scout-azul-medio"
                 >
                   <ChevronLeft className="w-5 h-5 mr-2" />
-                  Volver
+                  VOLVER
                 </Button>
                 <div>
                   <div className="flex items-center space-x-3">
                     <Truck className="w-8 h-8" />
-                    <h1 className="text-2xl font-bold">Gestión de Proveedores</h1>
+                    <h1 className="text-2xl font-bold">GESTIÓN DE PROVEEDORES</h1>
                   </div>
-                  <p className="text-white/80 text-sm mt-1">Ver y modificar proveedores</p>
+                  <p className="text-white/80 text-sm mt-1">VER Y MODIFICAR PROVEEDORES</p>
                 </div>
               </div>
             </div>
@@ -95,16 +124,16 @@ const ProveedoresPage = () => {
             <div className="flex items-center justify-between mb-4">
               <div>
                 <h1 className="text-2xl font-bold text-gray-900">
-                  Lista de Proveedores ({proveedores.length})
+                  LISTA DE PROVEEDORES ({proveedores.length})
                 </h1>
                 <p className="text-muted-foreground mt-1">
-                  Ver y administrar proveedores registrados
+                  VER Y ADMINISTRAR PROVEEDORES REGISTRADOS
                 </p>
               </div>
               <div className="flex items-center gap-2">
                 <Button variant="default" onClick={() => navigate('/proveedores/nuevo')}>
                   <Plus className="w-5 h-5 mr-2" />
-                  Nuevo Proveedor
+                  NUEVO PROVEEDOR
                 </Button>
               </div>
             </div>
@@ -113,14 +142,14 @@ const ProveedoresPage = () => {
               <div className="p-12 text-center">
                 <Truck className="w-16 h-16 text-gray-300 mx-auto mb-4" />
                 <h3 className="text-lg font-medium text-gray-900 mb-2">
-                  No hay proveedores registrados
+                  NO HAY PROVEEDORES REGISTRADOS
                 </h3>
                 <Button
                   onClick={() => navigate('/proveedores/nuevo')}
                   className="bg-scout-azul-medio hover:bg-scout-azul-oscuro"
                 >
                   <Plus className="w-5 h-5 mr-2" />
-                  Agregar Proveedor
+                  AGREGAR PROVEEDOR
                 </Button>
               </div>
             ) : (
@@ -129,19 +158,19 @@ const ProveedoresPage = () => {
                   <thead className="bg-gray-50">
                     <tr>
                       <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        Descripción
+                        DESCRIPCIÓN
                       </th>
                       <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        Celular 1
+                        CELULAR 1
                       </th>
                       <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        Dirección
+                        DIRECCIÓN
                       </th>
                       <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        Estado
+                        ESTADO
                       </th>
                       <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        Acciones
+                        ACCIONES
                       </th>
                     </tr>
                   </thead>
@@ -173,7 +202,7 @@ const ProveedoresPage = () => {
                                 : 'bg-red-100 text-red-800'
                             }`}
                           >
-                            {proveedor.vigente ? 'Activo' : 'Inactivo'}
+                            {proveedor.vigente ? 'ACTIVO' : 'INACTIVO'}
                           </span>
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
@@ -181,18 +210,31 @@ const ProveedoresPage = () => {
                             <Button
                               variant="ghost"
                               size="sm"
+                              onClick={() => navigate(`/proveedores/ver/${proveedor.id}`)}
+                              title="VER"
+                              className="text-gray-600 hover:text-gray-700 hover:bg-gray-100"
+                            >
+                              <Eye className="w-4 h-4" />
+                            </Button>
+                            <Button
+                              variant="ghost"
+                              size="sm"
                               onClick={() => navigate(`/proveedores/editar/${proveedor.id}`)}
-                              title="Editar"
+                              title="EDITAR"
+                              className="text-blue-600 hover:text-blue-700 hover:bg-blue-50"
                             >
                               <Edit className="w-4 h-4" />
                             </Button>
                             <Button
                               variant="ghost"
                               size="sm"
-                              onClick={() => handleDeleteProveedor(proveedor.id)}
-                              title="Eliminar"
+                              onClick={() => handleToggleStatus(proveedor)}
+                              title={proveedor.vigente ? 'ANULAR' : 'ACTIVAR'}
+                              className={proveedor.vigente 
+                                ? 'text-red-600 hover:text-red-700 hover:bg-red-50' 
+                                : 'text-green-600 hover:text-green-700 hover:bg-green-50'}
                             >
-                              <Trash2 className="w-4 h-4" />
+                              {proveedor.vigente ? <Ban className="w-4 h-4" /> : <CheckCircle className="w-4 h-4" />}
                             </Button>
                           </div>
                         </td>
