@@ -21,6 +21,8 @@ class PreinscripcionSerializer(serializers.ModelSerializer):
             'id', 'persona', 'curso', 'estado', 'rama', 'grupo_asignado',
             'cuota_asignada', 'habilitado_por', 'habilitado_fecha',
             'confirmado_por_pago', 'en_lista_espera', 'motivo_rechazo',
+            # Vehicle fields
+            'vehiculo', 'vehiculo_marca', 'vehiculo_modelo', 'vehiculo_patente',
             'version_optimistic_lock', 'created_at', 'updated_at',
             # Display fields
             'persona_nombre', 'persona_email', 'persona_telefono',
