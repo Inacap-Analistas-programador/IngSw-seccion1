@@ -30,7 +30,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = config('DJANGO_SECRET_KEY', default="django-insecure--ygw7o^qbch5z3prtxi_+%dxny^p3k9=l6_!*p_y*j__a3%0-y")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = config('DJANGO_DEBUG', default=False, cast=bool)
+DEBUG = True
 
 ALLOWED_HOSTS = ['localhost', '127.0.0.1']
 

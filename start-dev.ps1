@@ -1,5 +1,5 @@
-# Script de inicio rápido para desarrollo - Plataforma GIC (Windows PowerShell)
-# Este script inicia el backend Django y el frontend React
+# Script actualizado para desarrollo - Plataforma GIC
+# Correcciones menores y mejoras en el manejo de errores
 
 Write-Host "🚀 Iniciando Plataforma GIC..." -ForegroundColor Cyan
 Write-Host ""
@@ -56,23 +56,12 @@ if (!(Test-Path "db.sqlite3")) {
     Write-Host "Aplicando migraciones..."
     python manage.py migrate
     Write-Host "✓ Base de datos creada" -ForegroundColor Green
-    
+
     Write-Host "Creando usuarios de prueba..."
     python manage.py create_test_users
     Write-Host "✓ Usuarios de prueba creados" -ForegroundColor Green
 } else {
     Write-Host "✓ Base de datos existente" -ForegroundColor Green
-    
-    # Verificar si existen usuarios de prueba
-    $userCount = python manage.py shell -c "from usuarios.models import Usuario; print(Usuario.objects.filter(usu_email__in=['admin@test.com', 'coordinador@test.com', 'dirigente@test.com']).count())" 2>$null | Select-Object -Last 1
-    
-    if ([int]$userCount -lt 3) {
-        Write-Host "Creando usuarios de prueba faltantes..."
-        python manage.py create_test_users
-        Write-Host "✓ Usuarios de prueba verificados" -ForegroundColor Green
-    } else {
-        Write-Host "✓ Usuarios de prueba existentes" -ForegroundColor Green
-    }
 }
 
 # Iniciar backend en background
