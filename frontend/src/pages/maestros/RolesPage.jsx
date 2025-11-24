@@ -3,25 +3,15 @@ import MaestrosList from '@/components/maestros/MaestrosList';
 
 const RolesPage = () => {
   const fields = [
-    { key: 'rol_descripcion', label: 'Descripción', type: 'text', fullWidth: true },
+    { key: 'rol_descripcion', label: 'DESCRIPCIÓN', type: 'text', fullWidth: true },
     {
       key: 'rol_tipo',
-      label: 'Tipo',
+      label: 'TIPO',
       type: 'number',
-    },
-    {
-      key: 'rol_vigente',
-      label: 'Vigente',
-      type: 'select',
-      options: [
-        { value: 'true', label: 'Sí' },
-        { value: 'false', label: 'No' },
-      ],
-      render: (value) => (value ? 'Sí' : 'No'),
     },
   ];
 
-  return <MaestrosList maestroType="roles" title="Roles" fields={fields} idField="rol_id" />;
+  return <MaestrosList maestroType="roles" title="ROLES" fields={fields} idField="rol_id" statusField="rol_vigente" />;
 };
 
 export default RolesPage;

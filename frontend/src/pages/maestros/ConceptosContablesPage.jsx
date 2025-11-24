@@ -3,21 +3,11 @@ import MaestrosList from '@/components/maestros/MaestrosList';
 
 const ConceptosContablesPage = () => {
   const fields = [
-    { key: 'coc_descripcion', label: 'Descripción', type: 'text', fullWidth: true },
-    {
-      key: 'coc_vigente',
-      label: 'Vigente',
-      type: 'select',
-      options: [
-        { value: 'true', label: 'Sí' },
-        { value: 'false', label: 'No' },
-      ],
-      render: (value) => (value ? 'Sí' : 'No'),
-    },
+    { key: 'coc_descripcion', label: 'DESCRIPCIÓN', type: 'text', fullWidth: true },
   ];
 
   return (
-    <MaestrosList maestroType="conceptos-contables" title="Conceptos Contables" fields={fields} idField="coc_id" />
+    <MaestrosList maestroType="conceptos-contables" title="CONCEPTOS CONTABLES" fields={fields} idField="coc_id" statusField="coc_vigente" />
   );
 };
 

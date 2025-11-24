@@ -3,31 +3,21 @@ import MaestrosList from '@/components/maestros/MaestrosList';
 
 const AlimentacionesPage = () => {
   const fields = [
-    { key: 'ali_descripcion', label: 'Descripción', type: 'text', fullWidth: true },
+    { key: 'ali_descripcion', label: 'DESCRIPCIÓN', type: 'text', fullWidth: true },
     {
       key: 'ali_tipo',
-      label: 'Tipo',
+      label: 'TIPO',
       type: 'select',
       options: [
-        { value: '1', label: 'Desayuno' },
-        { value: '2', label: 'Almuerzo' },
-        { value: '3', label: 'Cena' },
-        { value: '4', label: 'Colación' },
+        { value: '1', label: 'DESAYUNO' },
+        { value: '2', label: 'ALMUERZO' },
+        { value: '3', label: 'CENA' },
+        { value: '4', label: 'COLACIÓN' },
       ],
-    },
-    {
-      key: 'ali_vigente',
-      label: 'Vigente',
-      type: 'select',
-      options: [
-        { value: 'true', label: 'Sí' },
-        { value: 'false', label: 'No' },
-      ],
-      render: (value) => (value ? 'Sí' : 'No'),
     },
   ];
 
-  return <MaestrosList maestroType="alimentaciones" title="Alimentación" fields={fields} idField="ali_id" />;
+  return <MaestrosList maestroType="alimentaciones" title="ALIMENTACIÓN" fields={fields} idField="ali_id" statusField="ali_vigente" />;
 };
 
 export default AlimentacionesPage;

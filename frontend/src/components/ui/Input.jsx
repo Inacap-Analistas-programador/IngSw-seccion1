@@ -1,7 +1,18 @@
 import React from 'react';
 import { cn } from '@/lib/utils';
 
-const Input = React.forwardRef(({ className, type, error, ...props }, ref) => {
+const Input = React.forwardRef(({ className, type, error, onChange, ...props }, ref) => {
+  const handleChange = (e) => {
+    // Transform text input to uppercase, except for email and password fields
+    if (type !== 'email' && type !== 'password' && type !== 'number' && type !== 'date') {
+      const upperValue = e.target.value.toUpperCase();
+      e.target.value = upperValue;
+    }
+    if (onChange) {
+      onChange(e);
+    }
+  };
+
   return (
     <input
       type={type}
@@ -16,6 +27,7 @@ const Input = React.forwardRef(({ className, type, error, ...props }, ref) => {
         className
       )}
       ref={ref}
+      onChange={handleChange}
       {...props}
     />
   );
