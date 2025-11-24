@@ -1,32 +1,42 @@
 import React, { useState, useEffect } from 'react';
 import api from '../../config/api';
+import RegistrarPagoModal from './RegistrarPagoModal';
 
 const GestionPagos = () => {
   const [pagos, setPagos] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const fetchPagos = async () => {
+    try {
+      setLoading(true);
+      const response = await api.get('/pagos/pagopersonas/');
+      // Handle paginated response from Django REST Framework
+      const data = response.data;
+      const pagosArray = Array.isArray(data) ? data : (data.results || []);
+      setPagos(pagosArray);
+      setError(null);
+    } catch (err) {
+      console.error('Error fetching pagos:', err);
+      setError(err);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
-    const fetchPagos = async () => {
-      try {
-        const response = await api.get('/pagos/pagopersonas/');
-        // Handle paginated response from Django REST Framework
-        const data = response.data;
-        const pagosArray = Array.isArray(data) ? data : (data.results || []);
-        setPagos(pagosArray);
-        setError(null);
-      } catch (err) {
-        console.error('Error fetching pagos:', err);
-        setError(err);
-      } finally {
-        setLoading(false);
-      }
-    };
-
     fetchPagos();
   }, []);
 
-  if (loading) {
+  const handleOpenModal = () => setIsModalOpen(true);
+  const handleCloseModal = () => setIsModalOpen(false);
+
+  const handlePagoRegistrado = () => {
+    fetchPagos();
+  };
+
+  if (loading && pagos.length === 0) {
     return (
       <div className="flex items-center justify-center p-8">
         <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
@@ -35,7 +45,7 @@ const GestionPagos = () => {
     );
   }
 
-  if (error) {
+  if (error && pagos.length === 0) {
     return (
       <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
         <p className="text-yellow-800">
@@ -52,9 +62,18 @@ const GestionPagos = () => {
     <div>
       <h2 className="text-2xl font-bold mb-4">Gestión de Pagos</h2>
 
-      <button className="bg-green-500 text-white px-4 py-2 rounded-md mb-4 hover:bg-green-600 transition-colors">
+      <button
+        onClick={handleOpenModal}
+        className="bg-green-500 text-white px-4 py-2 rounded-md mb-4 hover:bg-green-600 transition-colors"
+      >
         Registrar Nuevo Pago
       </button>
+
+      <RegistrarPagoModal
+        isOpen={isModalOpen}
+        onClose={handleCloseModal}
+        onSuccess={handlePagoRegistrado}
+      />
 
       {pagos.length === 0 ? (
         <div className="bg-blue-50 border border-blue-200 rounded-lg p-6 text-center">

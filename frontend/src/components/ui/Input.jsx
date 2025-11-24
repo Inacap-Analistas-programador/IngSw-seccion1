@@ -1,10 +1,10 @@
 import React from 'react';
 import { cn } from '@/lib/utils';
 
-const Input = React.forwardRef(({ className, type, error, onChange, ...props }, ref) => {
+const Input = React.forwardRef(({ className, type, error, onChange, noTransform, ...props }, ref) => {
   const handleChange = (e) => {
-    // Transform text input to uppercase, except for email and password fields
-    if (type !== 'email' && type !== 'password' && type !== 'number' && type !== 'date') {
+    // Transform text input to uppercase, except for email, password, and fields with noTransform prop
+    if (!noTransform && type !== 'email' && type !== 'password' && type !== 'number' && type !== 'date') {
       const upperValue = e.target.value.toUpperCase();
       e.target.value = upperValue;
     }
@@ -28,6 +28,7 @@ const Input = React.forwardRef(({ className, type, error, onChange, ...props }, 
       )}
       ref={ref}
       onChange={handleChange}
+      data-no-transform={noTransform ? 'true' : undefined}
       {...props}
     />
   );

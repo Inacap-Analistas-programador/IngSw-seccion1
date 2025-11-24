@@ -57,8 +57,8 @@ def check_failed_login_attempts(email, ip_address):
     email_attempts = cache.get(email_key, 0)
     ip_attempts = cache.get(ip_key, 0)
     
-    # Bloquear si hay más de 5 intentos en 15 minutos
-    MAX_ATTEMPTS = 5
+    # Bloquear si hay más de 20 intentos en 1 minuto (ajustado para desarrollo)
+    MAX_ATTEMPTS = 20
     if email_attempts >= MAX_ATTEMPTS or ip_attempts >= MAX_ATTEMPTS:
         return (True, max(email_attempts, ip_attempts))
     
@@ -70,8 +70,8 @@ def record_failed_login(email, ip_address):
     email_key = f"login_attempts_email_{email}"
     ip_key = f"login_attempts_ip_{ip_address}"
     
-    # Incrementar contadores con expiración de 15 minutos
-    LOCKOUT_DURATION = 900  # 15 minutos
+    # Incrementar contadores con expiración de 1 minuto (ajustado para desarrollo)
+    LOCKOUT_DURATION = 60  # 1 minuto
     
     email_attempts = cache.get(email_key, 0)
     cache.set(email_key, email_attempts + 1, LOCKOUT_DURATION)

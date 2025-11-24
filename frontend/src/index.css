@@ -114,17 +114,18 @@ select {
 
 /* Force uppercase for text inputs (except email and password) */
 @layer components {
-  input[type='text'],
-  input[type='search'],
-  input:not([type]),
-  textarea,
-  .input-scout:not([type='email']):not([type='password']) {
+  input[type='text']:not([data-no-transform]),
+  input[type='search']:not([data-no-transform]),
+  input:not([type]):not([data-no-transform]),
+  textarea:not([data-no-transform]),
+  .input-scout:not([type='email']):not([type='password']):not([data-no-transform]) {
     text-transform: uppercase;
   }
 
   /* Keep lowercase for email and password fields */
   input[type='email'],
-  input[type='password'] {
+  input[type='password'],
+  input[data-no-transform] {
     text-transform: none;
   }
 }

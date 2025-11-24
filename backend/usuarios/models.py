@@ -17,6 +17,11 @@ class Usuario(models.Model):
     # usu_vigente: Indica si el usuario está activo (True) o inactivo (False)
     usu_vigente = models.BooleanField(default=True)
 
+    # Django authentication fields
+    USERNAME_FIELD = 'usu_email'
+    EMAIL_FIELD = 'usu_email'
+    REQUIRED_FIELDS = ['usu_username']
+
     class Meta:
         db_table = 'usuario' # Nombre de la tabla en la base de datos
         verbose_name = 'Usuario'

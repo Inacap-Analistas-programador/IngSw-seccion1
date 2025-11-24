@@ -1,27 +1,70 @@
-
 import os
 import django
-from django.contrib.auth import get_user_model
 import getpass
 
 # Configura Django
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'scout_project.settings')
 django.setup()
 
-User = get_user_model()
+from usuarios.models import Usuario
+from maestros.models import Perfil
 
-username = os.environ.get('ADMIN_USERNAME', 'admin')
-email = os.environ.get('ADMIN_EMAIL', 'admin@example.com')
-password = os.environ.get('ADMIN_PASSWORD')
+def create_admin_user():
+    """
+    Crea un usuario administrador con el perfil 'Administrador'.
+    """
+    # Obtener o crear el perfil de Administrador
+    try:
+        admin_perfil, created = Perfil.objects.get_or_create(
+            pel_descripcion='Administrador',
+            defaults={'pel_vigente': True}
+        )
+        if created:
+            print(f"Perfil 'Administrador' creado con éxito.")
+    except Exception as e:
+        print(f"Error al obtener o crear el perfil 'Administrador': {e}")
+        return
 
-if not password:
-    print("ADVERTENCIA: No se encontró ADMIN_PASSWORD en variables de entorno.")
-    print("Para uso seguro en producción, configure: export ADMIN_PASSWORD='su_password_seguro'")
-    password = getpass.getpass("Ingrese password para superusuario (development only): ") or 'change_me_in_production'
+    # Obtener credenciales del entorno
+    username = os.environ.get('ADMIN_USERNAME')
+    email = os.environ.get('ADMIN_EMAIL')
+    password = os.environ.get('ADMIN_PASSWORD')
 
-if not User.objects.filter(username=username).exists():
-    User.objects.create_superuser(username, email, password)
-    print(f"Superusuario '{username}' creado con éxito.")
-    print("IMPORTANTE: Cambie el password inmediatamente si está en producción.")
-else:
-    print(f"El superusuario '{username}' ya existe.")
+    # Si las variables de entorno no están, solicitarlas
+    if not all([username, email, password]):
+        print("Variables de entorno no encontradas. Solicitando datos interactivamente.")
+        username = input("Ingrese nombre de usuario para el administrador: ")
+        email = input("Ingrese email para el administrador: ")
+        password = getpass.getpass("Ingrese password para el administrador: ")
+
+    # Validar que los campos no estén vacíos
+    if not all([username, email, password]):
+        print("Error: Todos los campos (username, email, password) son requeridos.")
+        return
+
+    # Verificar si el usuario ya existe
+    if Usuario.objects.filter(usu_username=username).exists():
+        print(f"El usuario '{username}' ya existe.")
+        return
+    
+    if Usuario.objects.filter(usu_email=email).exists():
+        print(f"El email '{email}' ya está en uso.")
+        return
+
+    # Crear el nuevo usuario administrador
+    try:
+        user = Usuario(
+            usu_username=username,
+            usu_email=email,
+            pel_id=admin_perfil,
+            usu_vigente=True
+        )
+        user.set_password(password)
+        user.save()
+        print(f"Usuario administrador '{username}' creado con éxito.")
+        print("Ahora puede iniciar sesión con estas credenciales.")
+    except Exception as e:
+        print(f"Error al crear el usuario administrador: {e}")
+
+if __name__ == '__main__':
+    create_admin_user()

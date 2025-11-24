@@ -37,6 +37,8 @@ ALLOWED_HOSTS = config('DJANGO_ALLOWED_HOSTS', default='localhost,127.0.0.1', ca
 
 # Application definition
 
+AUTH_USER_MODEL = 'usuarios.Usuario'
+
 INSTALLED_APPS = [
     "django.contrib.admin",
     "django.contrib.auth",

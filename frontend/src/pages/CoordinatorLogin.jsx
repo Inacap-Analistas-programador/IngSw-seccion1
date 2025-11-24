@@ -5,16 +5,17 @@ import { useNavigate, useSearchParams } from 'react-router-dom';
 import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
 import { Label } from '@/components/ui/Label';
-import { FaAward, FaLock, FaEnvelope, FaCircleExclamation } from 'react-icons/fa6';
+import { FaAward, FaLock, FaEnvelope, FaCircleExclamation, FaEye, FaEyeSlash } from 'react-icons/fa6';
 import { useToast } from '@/components/ui/use-toast';
 import authService from '@/services/authService';
 
 const CoordinatorLogin = () => {
   const navigate = useNavigate();
-  const toast = useToast();
+  const { toast } = useToast();
   const [searchParams] = useSearchParams();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
@@ -121,15 +122,29 @@ const CoordinatorLogin = () => {
                   <FaLock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
                   <Input
                     id="contrasena"
-                    type="password"
+                    type={showPassword ? "text" : "password"}
                     placeholder="••••••••"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
-                    className="pl-10 border-gray-300 focus:border-primary focus:ring-primary/30"
+                    className="pl-10 pr-10 border-gray-300 focus:border-primary focus:ring-primary/30"
                     required
                     minLength={8}
                     disabled={loading}
+                    noTransform
                   />
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword(!showPassword)}
+                    className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors focus:outline-none"
+                    disabled={loading}
+                    aria-label={showPassword ? "Ocultar contraseña" : "Mostrar contraseña"}
+                  >
+                    {showPassword ? (
+                      <FaEyeSlash className="w-5 h-5" />
+                    ) : (
+                      <FaEye className="w-5 h-5" />
+                    )}
+                  </button>
                 </div>
               </div>
 
