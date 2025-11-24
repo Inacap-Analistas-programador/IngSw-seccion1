@@ -24,167 +24,6 @@ const Cursos = () => {
   });
   const [errors, setErrors] = useState({});
 
-  // Función para agregar curso de ejemplo con todos los datos
-  const agregarCursoEjemplo = () => {
-    const cursoEjemplo = {
-      id: courses.length + 1,
-      codigo: `FORM${(courses.length + 1).toString().padStart(3, '0')}`,
-      descripcion: 'Curso de Formación Scout - Nivel Básico',
-      fechaHora: new Date().toISOString().slice(0, 16),
-      fechaSolicitud: new Date().toISOString().slice(0, 16),
-      lugar: 'Centro Scout Regional - Santiago',
-      coordLatitud: '-33.4489',
-      coordLongitud: '-70.6693',
-      cuotaConAlmuerzo: 25000,
-      cuotaSinAlmuerzo: 15000,
-      modalidad: '1', // Presencial
-      tipoCurso: '1', // Presencial
-      estado: '1', // Activo
-      observacion: 'Curso inicial para formadores scouts. Incluye material didáctico y certificación.',
-      responsable: 'Juan Pérez',
-      cargo: 'Coordinador',
-      comunaId: 'Santiago',
-      fechas: [
-        {
-          fecha_inicio: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString().slice(0, 16),
-          fecha_termino: new Date(Date.now() + 9 * 24 * 60 * 60 * 1000).toISOString().slice(0, 16),
-          tipo: '1',
-        },
-        {
-          fecha_inicio: new Date(Date.now() + 14 * 24 * 60 * 60 * 1000).toISOString().slice(0, 16),
-          fecha_termino: new Date(Date.now() + 16 * 24 * 60 * 60 * 1000).toISOString().slice(0, 16),
-          tipo: '1',
-        },
-      ],
-      secciones: [
-        {
-          id: 1,
-          numero: 1,
-          rama: 'Manada',
-          cantParticipantes: 15,
-        },
-        {
-          id: 2,
-          numero: 2,
-          rama: 'Tropa',
-          cantParticipantes: 20,
-        },
-        {
-          id: 3,
-          numero: 3,
-          rama: 'Comunidad',
-          cantParticipantes: 12,
-        },
-      ],
-      coordinadores: [
-        {
-          id: 1,
-          nombre: 'María González',
-          cargo: 'Coordinador General',
-        },
-        {
-          id: 2,
-          nombre: 'Carlos López',
-          cargo: 'Coordinador de Logística',
-        },
-      ],
-      formadores: [
-        {
-          id: 1,
-          nombre: 'Ana Martínez',
-          rol: 'Instructor Principal',
-          seccionId: 1,
-          esDirector: true,
-        },
-        {
-          id: 2,
-          nombre: 'Pedro Ramírez',
-          rol: 'Instructor',
-          seccionId: 1,
-          esDirector: false,
-        },
-        {
-          id: 3,
-          nombre: 'Laura Fernández',
-          rol: 'Instructor Principal',
-          seccionId: 2,
-          esDirector: true,
-        },
-        {
-          id: 4,
-          nombre: 'Jorge Silva',
-          rol: 'Instructor',
-          seccionId: 2,
-          esDirector: false,
-        },
-        {
-          id: 5,
-          nombre: 'Sofía Torres',
-          rol: 'Instructor',
-          seccionId: 2,
-          esDirector: false,
-        },
-        {
-          id: 6,
-          nombre: 'Diego Vargas',
-          rol: 'Instructor Principal',
-          seccionId: 3,
-          esDirector: false,
-        },
-      ],
-      // Nuevos campos agregados
-      alimentacionRegistrada: true, // Indica si hay alimentación registrada
-      directoresFormadoresCompleto: true, // Indica si todos los directores/formadores están registrados
-      pagosPendientes: false, // Indica si hay pagos pendientes
-      totalFormadoresPorSeccion: {
-        1: 2, // Sección 1 tiene 2 formadores
-        2: 3, // Sección 2 tiene 3 formadores
-        3: 1, // Sección 3 tiene 1 formador
-      },
-      alimentacion: [
-        {
-          id: 1,
-          fecha: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString().slice(0, 16),
-          tiempo: 'Almuerzo',
-          descripcion: 'Almuerzo día 1 - Menú completo',
-          cantidadAdicional: 5,
-          vigente: true,
-        },
-        {
-          id: 2,
-          fecha: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString().slice(0, 16),
-          tiempo: 'Once',
-          descripcion: 'Once día 1 - Café y snacks',
-          cantidadAdicional: 3,
-          vigente: true,
-        },
-        {
-          id: 3,
-          fecha: new Date(Date.now() + 8 * 24 * 60 * 60 * 1000).toISOString().slice(0, 16),
-          tiempo: 'Desayuno',
-          descripcion: 'Desayuno día 2',
-          cantidadAdicional: 0,
-          vigente: true,
-        },
-        {
-          id: 4,
-          fecha: new Date(Date.now() + 8 * 24 * 60 * 60 * 1000).toISOString().slice(0, 16),
-          tiempo: 'Almuerzo',
-          descripcion: 'Almuerzo día 2 - Menú vegetariano disponible',
-          cantidadAdicional: 2,
-          vigente: true,
-        },
-      ],
-    };
-
-    setCourses((prev) => [...prev, cursoEjemplo]);
-    toast({
-      title: 'Curso de ejemplo agregado',
-      description: 'Se ha agregado un curso con datos de ejemplo completos',
-      variant: 'default',
-    });
-  };
-
   const [courseData, setCourseData] = useState({
     codigo: '',
     descripcion: '',
@@ -976,9 +815,6 @@ const Cursos = () => {
                       className={`flex h-10 w-full rounded-md border bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 ${errors.responsableId ? 'border-red-500' : 'border-input'}`}
                     >
                       <option value="">Seleccionar responsable</option>
-                      <option value="1">Juan Pérez</option>
-                      <option value="2">María González</option>
-                      <option value="3">Carlos López</option>
                       {/* Aquí irían las personas desde la BD */}
                     </select>
                     {errors.responsableId && (
@@ -1781,14 +1617,6 @@ const Cursos = () => {
                 <div className="mx-auto flex-shrink-0 flex items-center justify-center h-12 w-12 rounded-full bg-red-100">
                   <X className="h-6 w-6 text-red-600" />
                 </div>
-              </div>
-              <div className="text-center">
-                <h3 className="text-lg font-medium text-gray-900 mb-2">Eliminar Curso</h3>
-                <p className="text-sm text-gray-500 mb-4">
-                  ¿Estás seguro de que deseas eliminar el curso "{selectedCourse.descripcion}" con
-                  código "{selectedCourse.codigo}"?
-                </p>
-                <p className="text-sm text-red-600 mb-6">Esta acción no se puede deshacer.</p>
               </div>
               <div className="flex justify-center space-x-4">
                 <Button onClick={() => setShowDeleteModal(false)} variant="outline">
