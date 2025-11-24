@@ -20,6 +20,8 @@ import {
   ChevronLeft,
   Eye,
   Clock,
+  Ban,
+  CheckCircle,
 } from 'lucide-react';
 import Card from '@/components/ui/Card';
 
@@ -60,28 +62,57 @@ const PersonasPage = () => {
   };
 
   const handleDeletePersona = async (id) => {
-    if (window.confirm('¿Está seguro de que desea eliminar esta persona? Esta acción no se puede deshacer.')) {
+    if (window.confirm('¿ESTÁ SEGURO DE QUE DESEA ELIMINAR ESTA PERSONA? ESTA ACCIÓN NO SE PUEDE DESHACER.')) {
       try {
         setDeleting(id);
         await personasService.delete(id);
         // Refresh the list after deletion
         await fetchPersonas();
-        alert('Persona eliminada exitosamente');
+        alert('PERSONA ELIMINADA EXITOSAMENTE');
       } catch (error) {
         console.error('Error deleting persona:', error);
-        alert('Error al eliminar la persona. Por favor, intenta nuevamente.');
+        const errorMessage = error.response?.data?.message || error.message || '';
+        const isCascadeError = errorMessage.includes('referencia') || 
+                              errorMessage.includes('relacionado') || 
+                              errorMessage.includes('constraint') ||
+                              errorMessage.includes('foreign key');
+        
+        alert(isCascadeError 
+          ? 'NO SE PUEDE ELIMINAR LA PERSONA PORQUE ESTÁ SIENDO UTILIZADA EN OTROS REGISTROS DEL SISTEMA.'
+          : 'ERROR AL ELIMINAR LA PERSONA. POR FAVOR, INTENTA NUEVAMENTE.');
       } finally {
         setDeleting(null);
       }
     }
   };
 
+  const handleToggleStatus = async (persona) => {
+    const newStatus = !persona.vigente;
+    const actionText = newStatus ? 'ACTIVAR' : 'ANULAR';
+    
+    if (!window.confirm(`¿ESTÁ SEGURO DE QUE DESEA ${actionText} ESTA PERSONA? ESTA ACCIÓN NO SE PUEDE DESHACER.`)) {
+      return;
+    }
+
+    try {
+      setDeleting(persona.id);
+      await personasService.update(persona.id, { ...persona, vigente: newStatus });
+      await fetchPersonas();
+      alert(`PERSONA ${newStatus ? 'ACTIVADA' : 'ANULADA'} EXITOSAMENTE`);
+    } catch (error) {
+      console.error('Error updating persona status:', error);
+      alert(`ERROR AL ${newStatus ? 'ACTIVAR' : 'ANULAR'} LA PERSONA. POR FAVOR, INTENTA NUEVAMENTE.`);
+    } finally {
+      setDeleting(null);
+    }
+  };
+
   if (loading) {
-    return <div>Cargando...</div>;
+    return <div>CARGANDO...</div>;
   }
 
   if (error) {
-    return <div>Ocurrió un error: {String(error.message || error)}</div>;
+    return <div>OCURRIÓ UN ERROR: {String(error.message || error)}</div>;
   }
 
   return (
@@ -106,15 +137,15 @@ const PersonasPage = () => {
                   className="text-white hover:bg-scout-azul-medio"
                 >
                   <ChevronLeft className="w-5 h-5 mr-2" />
-                  Volver
+                  VOLVER
                 </Button>
                 <div>
                   <div className="flex items-center space-x-3">
                     <User className="w-8 h-8" />
-                    <h1 className="text-2xl font-bold">Gestión de Personas</h1>
+                    <h1 className="text-2xl font-bold">GESTIÓN DE PERSONAS</h1>
                   </div>
                   <p className="text-white/80 text-sm mt-1">
-                    Ver, modificar y eliminar personas registradas
+                    VER, MODIFICAR Y ELIMINAR PERSONAS REGISTRADAS
                   </p>
                 </div>
               </div>
@@ -127,7 +158,7 @@ const PersonasPage = () => {
           <Card>
             <div className="p-6 border-b border-gray-200">
               <h2 className="text-xl font-semibold text-scout-azul-oscuro">
-                Lista de Personas ({personas.length})
+                LISTA DE PERSONAS ({personas.length})
               </h2>
             </div>
 
@@ -135,17 +166,17 @@ const PersonasPage = () => {
               <div className="p-12 text-center">
                 <User className="w-16 h-16 text-gray-300 mx-auto mb-4" />
                 <h3 className="text-lg font-medium text-gray-900 mb-2">
-                  No hay personas registradas
+                  NO HAY PERSONAS REGISTRADAS
                 </h3>
                 <p className="text-gray-500 mb-4">
-                  Las personas se registran a través del proceso de preinscripción.
+                  LAS PERSONAS SE REGISTRAN A TRAVÉS DEL PROCESO DE PREINSCRIPCIÓN.
                 </p>
                 <Button
                   onClick={() => navigate('/preinscripcion')}
                   className="bg-scout-azul-medio hover:bg-scout-azul-oscuro"
                 >
                   <Plus className="w-5 h-5 mr-2" />
-                  Ir a Preinscripción
+                  IR A PREINSCRIPCIÓN
                 </Button>
               </div>
             ) : (
@@ -154,22 +185,22 @@ const PersonasPage = () => {
                   <thead className="bg-gray-50">
                     <tr>
                       <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        Nombre
+                        NOMBRE
                       </th>
                       <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                         RUT
                       </th>
                       <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        Correo
+                        CORREO
                       </th>
                       <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        Teléfono
+                        TELÉFONO
                       </th>
                       <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        Estado
+                        ESTADO
                       </th>
                       <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        Acciones
+                        ACCIONES
                       </th>
                     </tr>
                   </thead>
@@ -212,7 +243,7 @@ const PersonasPage = () => {
                                 : 'bg-red-100 text-red-800'
                             }`}
                           >
-                            {persona.vigente ? 'Activo' : 'Inactivo'}
+                            {persona.vigente ? 'ACTIVO' : 'INACTIVO'}
                           </span>
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
@@ -221,8 +252,8 @@ const PersonasPage = () => {
                               variant="ghost"
                               size="sm"
                               onClick={() => handleViewPersona(persona.id)}
-                              className="text-scout-azul-medio hover:text-scout-azul-oscuro"
-                              title="Ver Detalles"
+                              className="text-gray-600 hover:text-gray-700 hover:bg-gray-100"
+                              title="VER"
                             >
                               <Eye className="w-4 h-4" />
                             </Button>
@@ -230,23 +261,27 @@ const PersonasPage = () => {
                               variant="ghost"
                               size="sm"
                               onClick={() => handleEditPersona(persona.id)}
-                              className="text-scout-azul-medio hover:text-scout-azul-oscuro"
-                              title="Editar"
+                              className="text-blue-600 hover:text-blue-700 hover:bg-blue-50"
+                              title="EDITAR"
                             >
                               <Edit className="w-4 h-4" />
                             </Button>
                             <Button
                               variant="ghost"
                               size="sm"
-                              onClick={() => handleDeletePersona(persona.id)}
-                              className="text-red-600 hover:text-red-800"
-                              title="Eliminar"
+                              onClick={() => handleToggleStatus(persona)}
+                              className={persona.vigente 
+                                ? 'text-red-600 hover:text-red-700 hover:bg-red-50' 
+                                : 'text-green-600 hover:text-green-700 hover:bg-green-50'}
+                              title={persona.vigente ? 'ANULAR' : 'ACTIVAR'}
                               disabled={deleting === persona.id}
                             >
                               {deleting === persona.id ? (
                                 <Clock className="w-4 h-4 animate-spin" />
+                              ) : persona.vigente ? (
+                                <Ban className="w-4 h-4" />
                               ) : (
-                                <Trash2 className="w-4 h-4" />
+                                <CheckCircle className="w-4 h-4" />
                               )}
                             </Button>
                           </div>
