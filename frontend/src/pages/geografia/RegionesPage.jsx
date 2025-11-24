@@ -3,25 +3,16 @@ import GeografiaList from '@/components/geografia/GeografiaList';
 
 const RegionesPage = () => {
   const fields = [
-    { key: 'reg_descripcion', label: 'Descripción', type: 'text', fullWidth: true },
-    {
-      key: 'reg_vigente',
-      label: 'Vigente',
-      type: 'select',
-      options: [
-        { value: 'true', label: 'Sí' },
-        { value: 'false', label: 'No' },
-      ],
-      render: (value) => (value ? 'Sí' : 'No'),
-    },
+    { key: 'reg_descripcion', label: 'DESCRIPCIÓN', type: 'text', fullWidth: true },
   ];
 
   return (
     <GeografiaList
       geografiaType="regiones"
-      title="Regiones"
+      title="REGIONES"
       fields={fields}
       idField="reg_id"
+      statusField="reg_vigente"
     />
   );
 };

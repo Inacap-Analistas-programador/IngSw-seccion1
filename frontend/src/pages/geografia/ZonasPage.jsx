@@ -3,35 +3,26 @@ import GeografiaList from '@/components/geografia/GeografiaList';
 
 const ZonasPage = () => {
   const fields = [
-    { key: 'zon_descripcion', label: 'Descripción', type: 'text', fullWidth: true },
+    { key: 'zon_descripcion', label: 'DESCRIPCIÓN', type: 'text', fullWidth: true },
     {
       key: 'zon_unilateral',
-      label: 'Unilateral',
+      label: 'UNILATERAL',
       type: 'select',
       options: [
-        { value: 'true', label: 'Sí' },
-        { value: 'false', label: 'No' },
+        { value: 'true', label: 'SÍ' },
+        { value: 'false', label: 'NO' },
       ],
-      render: (value) => (value ? 'Sí' : 'No'),
-    },
-    {
-      key: 'zon_vigente',
-      label: 'Vigente',
-      type: 'select',
-      options: [
-        { value: 'true', label: 'Sí' },
-        { value: 'false', label: 'No' },
-      ],
-      render: (value) => (value ? 'Sí' : 'No'),
+      render: (value) => (value ? 'SÍ' : 'NO'),
     },
   ];
 
   return (
     <GeografiaList
       geografiaType="zonas"
-      title="Zonas"
+      title="ZONAS"
       fields={fields}
       idField="zon_id"
+      statusField="zon_vigente"
     />
   );
 };

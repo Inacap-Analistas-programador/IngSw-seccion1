@@ -1,14 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import Card from '@/components/ui/Card';
 import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
-import { Search, Plus, Edit, Trash2, ChevronLeft, MapPin } from 'lucide-react';
+import { Search, Plus, Edit, Trash2, ChevronLeft, MapPin, Eye, Ban, CheckCircle } from 'lucide-react';
 import { useToast } from '@/components/ui/use-toast';
 import geografiaService from '@/services/geografiaService';
 
-const GeografiaList = ({ geografiaType, title, fields, idField = 'id' }) => {
+const MaestrosList = ({ maestroType, title, fields, idField = 'id', statusField = 'vigente' }) => {
   const navigate = useNavigate();
   const { toast } = useToast();
   const [searchTerm, setSearchTerm] = useState('');
@@ -16,17 +16,18 @@ const GeografiaList = ({ geografiaType, title, fields, idField = 'id' }) => {
   const [loading, setLoading] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [showViewModal, setShowViewModal] = useState(false);
   const [currentItem, setCurrentItem] = useState(null);
   const [isEdit, setIsEdit] = useState(false);
 
   useEffect(() => {
     loadItems();
-  }, [geografiaType]);
+  }, [maestroType]);
 
   const loadItems = async () => {
     setLoading(true);
     try {
-      const data = await geografiaService.getList(geografiaType);
+      const data = await geografiaService.getList(maestroType);
       setItems(data);
     } catch (error) {
       toast({
@@ -40,12 +41,17 @@ const GeografiaList = ({ geografiaType, title, fields, idField = 'id' }) => {
   };
 
   const handleCreate = () => {
-    setCurrentItem(
-      fields.reduce((acc, field) => {
+    // Initialize with empty values for all fields except status
+    const newItem = fields.reduce((acc, field) => {
+      // Skip status field - it will be set automatically on backend
+      if (field.key !== statusField && !field.key.includes('vigente') && !field.key.includes('estado')) {
         acc[field.key] = '';
-        return acc;
-      }, {})
-    );
+      }
+      return acc;
+    }, {});
+    // Set status as ACTIVE by default (will be handled on backend)
+    newItem[statusField] = true;
+    setCurrentItem(newItem);
     setIsEdit(false);
     setShowModal(true);
   };
@@ -56,10 +62,42 @@ const GeografiaList = ({ geografiaType, title, fields, idField = 'id' }) => {
     setShowModal(true);
   };
 
+  const handleView = (item) => {
+    setCurrentItem({ ...item });
+    setShowViewModal(true);
+  };
+
+  const handleToggleStatus = async (item) => {
+    const newStatus = !item[statusField];
+    const actionText = newStatus ? 'ACTIVAR' : 'ANULAR';
+    
+    if (!window.confirm(`¿Está seguro de que desea ${actionText} este registro? ESTA ACCIÓN NO SE PUEDE DESHACER.`)) {
+      return;
+    }
+
+    try {
+      const updatedItem = { ...item, [statusField]: newStatus };
+      await geografiaService.update(maestroType, item[idField], updatedItem);
+      setItems((prev) =>
+        prev.map((i) => (i[idField] === item[idField] ? updatedItem : i))
+      );
+      toast({
+        title: newStatus ? 'Activado' : 'Anulado',
+        description: `El registro ha sido ${newStatus ? 'activado' : 'anulado'} correctamente.`,
+      });
+    } catch (error) {
+      toast({
+        title: 'Error',
+        description: `No se pudo ${newStatus ? 'activar' : 'anular'} el registro.`,
+        variant: 'destructive',
+      });
+    }
+  };
+
   const handleSave = async () => {
     try {
       if (isEdit) {
-        await geografiaService.update(geografiaType, currentItem[idField], currentItem);
+        await geografiaService.update(maestroType, currentItem[idField], currentItem);
         setItems((prev) =>
           prev.map((item) => (item[idField] === currentItem[idField] ? currentItem : item))
         );
@@ -68,7 +106,7 @@ const GeografiaList = ({ geografiaType, title, fields, idField = 'id' }) => {
           description: 'El registro ha sido actualizado correctamente.',
         });
       } else {
-        const newItem = await geografiaService.create(geografiaType, currentItem);
+        const newItem = await geografiaService.create(maestroType, currentItem);
         setItems((prev) => [...prev, newItem]);
         toast({
           title: 'Creado',
@@ -92,7 +130,7 @@ const GeografiaList = ({ geografiaType, title, fields, idField = 'id' }) => {
 
   const handleDelete = async () => {
     try {
-      await geografiaService.delete(geografiaType, currentItem[idField]);
+      await geografiaService.delete(maestroType, currentItem[idField]);
       setItems((prev) => prev.filter((item) => item[idField] !== currentItem[idField]));
       toast({
         title: 'Eliminado',
@@ -100,9 +138,18 @@ const GeografiaList = ({ geografiaType, title, fields, idField = 'id' }) => {
       });
       setShowDeleteModal(false);
     } catch (error) {
+      // Handle cascade deletion errors
+      const errorMessage = error.response?.data?.message || error.message || 'No se pudo eliminar el registro.';
+      const isCascadeError = errorMessage.includes('referencia') || 
+                            errorMessage.includes('relacionado') || 
+                            errorMessage.includes('constraint') ||
+                            errorMessage.includes('foreign key');
+      
       toast({
         title: 'Error',
-        description: 'No se pudo eliminar el registro.',
+        description: isCascadeError 
+          ? 'No se puede eliminar el registro porque está siendo utilizado en otros registros del sistema.'
+          : errorMessage,
         variant: 'destructive',
       });
     }
@@ -125,11 +172,11 @@ const GeografiaList = ({ geografiaType, title, fields, idField = 'id' }) => {
             <div className="flex items-center space-x-4">
               <Button
                 variant="ghost"
-                onClick={() => navigate('/maestros')}
+                onClick={() => navigate('/geografia')}
                 className="text-white hover:bg-primary/90"
               >
                 <ChevronLeft className="w-5 h-5 mr-2" />
-                Volver
+                VOLVER
               </Button>
               <div className="flex items-center space-x-3">
                 <MapPin className="w-8 h-8" />
@@ -141,7 +188,7 @@ const GeografiaList = ({ geografiaType, title, fields, idField = 'id' }) => {
               className="bg-white text-primary hover:bg-gray-100"
             >
               <Plus className="w-4 h-4 mr-2" />
-              Nuevo
+              NUEVO
             </Button>
           </div>
         </div>
@@ -155,7 +202,7 @@ const GeografiaList = ({ geografiaType, title, fields, idField = 'id' }) => {
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
             <Input
               type="text"
-              placeholder="Buscar..."
+              placeholder="BUSCAR..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               className="pl-10"
@@ -186,7 +233,7 @@ const GeografiaList = ({ geografiaType, title, fields, idField = 'id' }) => {
                 {loading ? (
                   <tr>
                     <td colSpan={fields.length + 1} className="text-center py-8 text-gray-500">
-                      Cargando...
+                      CARGANDO...
                     </td>
                   </tr>
                 ) : filteredItems.length > 0 ? (
@@ -199,28 +246,39 @@ const GeografiaList = ({ geografiaType, title, fields, idField = 'id' }) => {
                     >
                       {fields.map((field) => (
                         <td key={field.key} className="py-3 px-4 text-sm text-gray-700">
-                          {field.render ? field.render(item[field.key], item) : item[field.key]}
+                          {field.render ? field.render(item[field.key]) : item[field.key]}
                         </td>
                       ))}
                       <td className="py-3 px-4">
                         <div className="flex gap-2">
                           <Button
+                            onClick={() => handleView(item)}
+                            variant="ghost"
+                            size="sm"
+                            title="VER"
+                            className="text-gray-600 hover:text-gray-700 hover:bg-gray-100"
+                          >
+                            <Eye className="w-4 h-4" />
+                          </Button>
+                          <Button
                             onClick={() => handleEdit(item)}
                             variant="ghost"
                             size="sm"
-                            title="Editar"
-                            className="text-blue-600 hover:text-blue-700"
+                            title="EDITAR"
+                            className="text-blue-600 hover:text-blue-700 hover:bg-blue-50"
                           >
                             <Edit className="w-4 h-4" />
                           </Button>
                           <Button
-                            onClick={() => handleDeleteConfirm(item)}
+                            onClick={() => handleToggleStatus(item)}
                             variant="ghost"
                             size="sm"
-                            title="Eliminar"
-                            className="text-red-600 hover:text-red-700"
+                            title={item[statusField] ? 'ANULAR' : 'ACTIVAR'}
+                            className={item[statusField] 
+                              ? 'text-red-600 hover:text-red-700 hover:bg-red-50' 
+                              : 'text-green-600 hover:text-green-700 hover:bg-green-50'}
                           >
-                            <Trash2 className="w-4 h-4" />
+                            {item[statusField] ? <Ban className="w-4 h-4" /> : <CheckCircle className="w-4 h-4" />}
                           </Button>
                         </div>
                       </td>
@@ -229,7 +287,7 @@ const GeografiaList = ({ geografiaType, title, fields, idField = 'id' }) => {
                 ) : (
                   <tr>
                     <td colSpan={fields.length + 1} className="text-center py-8 text-gray-500">
-                      No se encontraron registros
+                      NO SE ENCONTRARON REGISTROS
                     </td>
                   </tr>
                 )}
@@ -249,7 +307,7 @@ const GeografiaList = ({ geografiaType, title, fields, idField = 'id' }) => {
           >
             <div className="flex justify-between items-center mb-4">
               <h3 className="text-2xl font-bold text-gray-800">
-                {isEdit ? 'Editar' : 'Nuevo'} {title}
+                {isEdit ? 'EDITAR' : 'NUEVO'} {title.toUpperCase()}
               </h3>
               <button
                 onClick={() => setShowModal(false)}
@@ -261,16 +319,24 @@ const GeografiaList = ({ geografiaType, title, fields, idField = 'id' }) => {
 
             <div className="space-y-4">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                {fields.map((field) => (
+                {fields
+                  .filter(field => 
+                    // Exclude status field from forms as per requirements
+                    field.key !== statusField && 
+                    !field.key.includes('vigente') && 
+                    !field.key.includes('estado')
+                  )
+                  .map((field) => (
                   <div key={field.key} className={field.fullWidth ? 'md:col-span-2' : ''}>
                     <label className="text-sm text-gray-600 font-medium">{field.label}</label>
                     {field.type === 'textarea' ? (
                       <textarea
                         value={currentItem[field.key] || ''}
-                        onChange={(e) =>
-                          setCurrentItem({ ...currentItem, [field.key]: e.target.value })
-                        }
-                        className="w-full mt-1 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        onChange={(e) => {
+                          const upperValue = e.target.value.toUpperCase();
+                          setCurrentItem({ ...currentItem, [field.key]: upperValue });
+                        }}
+                        className="w-full mt-1 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 uppercase"
                         rows={3}
                       />
                     ) : field.type === 'select' ? (
@@ -281,7 +347,7 @@ const GeografiaList = ({ geografiaType, title, fields, idField = 'id' }) => {
                         }
                         className="w-full mt-1 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                       >
-                        <option value="">Seleccionar...</option>
+                        <option value="">SELECCIONAR...</option>
                         {field.options?.map((opt) => (
                           <option key={opt.value} value={opt.value}>
                             {opt.label}
@@ -304,9 +370,9 @@ const GeografiaList = ({ geografiaType, title, fields, idField = 'id' }) => {
 
               <div className="border-t pt-4 mt-6 flex gap-2 justify-end">
                 <Button variant="outline" onClick={() => setShowModal(false)}>
-                  Cancelar
+                  CANCELAR
                 </Button>
-                <Button onClick={handleSave}>Guardar</Button>
+                <Button onClick={handleSave}>GUARDAR</Button>
               </div>
             </div>
           </motion.div>
@@ -322,7 +388,7 @@ const GeografiaList = ({ geografiaType, title, fields, idField = 'id' }) => {
             className="bg-white rounded-xl shadow-xl p-6 w-full max-w-md mx-4"
           >
             <div className="flex justify-between items-center mb-4">
-              <h3 className="text-xl font-bold text-gray-800">Confirmar Eliminación</h3>
+              <h3 className="text-xl font-bold text-gray-800">CONFIRMAR ELIMINACIÓN</h3>
               <button
                 onClick={() => setShowDeleteModal(false)}
                 className="text-gray-500 hover:text-gray-800 text-xl"
@@ -333,19 +399,59 @@ const GeografiaList = ({ geografiaType, title, fields, idField = 'id' }) => {
 
             <div className="mb-6">
               <p className="text-gray-700">
-                ¿Estás seguro de que deseas eliminar este registro?
+                ¿ESTÁ SEGURO DE QUE DESEA ELIMINAR ESTE REGISTRO?
               </p>
-              <p className="text-red-600 text-sm mt-2">Esta acción no se puede deshacer.</p>
+              <p className="text-red-600 font-bold text-sm mt-2">ESTA ACCIÓN NO SE PUEDE DESHACER.</p>
             </div>
 
             <div className="flex gap-2 justify-end">
               <Button variant="outline" onClick={() => setShowDeleteModal(false)}>
-                Cancelar
+                CANCELAR
               </Button>
               <Button variant="destructive" onClick={handleDelete}>
                 <Trash2 className="w-4 h-4 mr-2" />
-                Eliminar
+                ELIMINAR
               </Button>
+            </div>
+          </motion.div>
+        </div>
+      )}
+
+      {/* View Modal */}
+      {showViewModal && currentItem && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm">
+          <motion.div
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            className="bg-white rounded-xl shadow-xl p-6 w-full max-w-2xl mx-4 max-h-[90vh] overflow-y-auto"
+          >
+            <div className="flex justify-between items-center mb-4">
+              <h3 className="text-2xl font-bold text-gray-800">VER {title}</h3>
+              <button
+                onClick={() => setShowViewModal(false)}
+                className="text-gray-500 hover:text-gray-800 text-xl"
+              >
+                ✕
+              </button>
+            </div>
+
+            <div className="space-y-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {fields.map((field) => (
+                  <div key={field.key} className={field.fullWidth ? 'md:col-span-2' : ''}>
+                    <label className="text-sm text-gray-600 font-medium uppercase">{field.label}</label>
+                    <div className="mt-1 px-3 py-2 bg-gray-50 border border-gray-200 rounded-md text-sm text-gray-900">
+                      {field.render ? field.render(currentItem[field.key]) : currentItem[field.key] || '-'}
+                    </div>
+                  </div>
+                ))}
+              </div>
+
+              <div className="border-t pt-4 mt-6 flex gap-2 justify-end">
+                <Button variant="outline" onClick={() => setShowViewModal(false)}>
+                  CERRAR
+                </Button>
+              </div>
             </div>
           </motion.div>
         </div>
@@ -354,4 +460,4 @@ const GeografiaList = ({ geografiaType, title, fields, idField = 'id' }) => {
   );
 };
 
-export default GeografiaList;
+export default MaestrosList;
