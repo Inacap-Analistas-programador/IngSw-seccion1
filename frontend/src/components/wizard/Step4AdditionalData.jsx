@@ -29,7 +29,7 @@ const Step4AdditionalData = ({ formData, updateFormData }) => {
           </select>
         </div>
 
-        {formData.vehicle === 'si' && (
+        {formData.vehiculo === 'si' && (
           <>
             <div className="space-y-2">
               <Label htmlFor="vehiculoMarca">Marca del Vehículo</Label>
@@ -62,36 +62,6 @@ const Step4AdditionalData = ({ formData, updateFormData }) => {
             </div>
           </>
         )}
-
-        <div className="space-y-2">
-          <Label htmlFor="profesion">Profesión u Oficio</Label>
-          <Input
-            id="profesion"
-            value={formData.profesion}
-            onChange={(e) => handleChange('profesion', e.target.value)}
-            placeholder="Tu profesión u oficio"
-          />
-        </div>
-
-        <div className="space-y-2">
-          <Label htmlFor="religion">Religión</Label>
-          <Input
-            id="religion"
-            value={formData.religion}
-            onChange={(e) => handleChange('religion', e.target.value)}
-            placeholder="Tu religión (opcional)"
-          />
-        </div>
-
-        <div className="space-y-2">
-          <Label htmlFor="numeroMMAA">Número MMAA</Label>
-          <Input
-            id="numeroMMAA"
-            value={formData.numeroMMAA}
-            onChange={(e) => handleChange('numeroMMAA', e.target.value)}
-            placeholder="Número de identificación MMAA"
-          />
-        </div>
 
         <div className="space-y-2">
           <Label htmlFor="trabajaConNNAJ">¿Trabajas con Jóvenes? *</Label>
@@ -163,6 +133,11 @@ const Step4AdditionalData = ({ formData, updateFormData }) => {
             className="flex min-h-[120px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-gray-400 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
             rows={4}
           />
+          {formData.needsAccommodation === 'si' && (
+            <p className="text-sm text-blue-600 mt-1">
+              Se agregará (*ALOJAMIENTO*) a tus observaciones del curso
+            </p>
+          )}
         </div>
 
         <div className="space-y-2 md:col-span-2">

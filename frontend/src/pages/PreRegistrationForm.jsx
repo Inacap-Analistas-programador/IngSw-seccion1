@@ -27,15 +27,23 @@ const PreRegistrationForm = () => {
     );
   }, [currentStep]);
   const [formData, setFormData] = useState({
+    // Curso y Sección
+    curso: '',
+    seccion: '',
     // Paso 1: Datos Personales (llaves en español para coherencia)
     nombreCompleto: '',
     rut: '',
     fechaNacimiento: '',
     correo: '',
     direccion: '',
+    region: '',
+    provincia: '',
     comuna: '',
     telefono: '',
     tipoTelefono: '',
+    profesion: '',
+    religion: '',
+    fotoPerfil: null,
     // Paso 2: Información de Organización
     rol: '',
     grupo: '',
@@ -44,6 +52,16 @@ const PreRegistrationForm = () => {
     antiguedadUnidad: '',
     distrito: '',
     zona: '',
+    nivel: '',
+    nivelSecundario: '',
+    ramasMedio: [],
+    ramasAvanzado: [],
+    numeroMMAA: '',
+    esFormador: '',
+    habilitacion1: '',
+    habilitacion2: '',
+    verificador: '',
+    historialFormador: '',
     // Paso 3: Salud y Alimentación
     alimentacion: '',
     alergias: '',
@@ -57,9 +75,6 @@ const PreRegistrationForm = () => {
     vehiculoMarca: '',
     vehiculoModelo: '',
     vehiculoPatente: '',
-    profesion: '',
-    religion: '',
-    numeroMMAA: '',
     trabajaConNNAJ: '',
     tiempoTrabajoNNAJ: '',
     tiempoTrabajoAdultos: '',
@@ -114,6 +129,14 @@ const PreRegistrationForm = () => {
     const apellidoMaterno = apellidos.slice(1).join(' ') || '';
     const [rutVal, dv] = (formData.rut || '').split('-');
 
+    // Add (*ALOJAMIENTO*) to expectativas if accommodation is needed
+    let expectativasCurso = formData.expectativasCurso || '';
+    if (formData.needsAccommodation === 'si') {
+      expectativasCurso = expectativasCurso 
+        ? `${expectativasCurso} (*ALOJAMIENTO*)`
+        : '(*ALOJAMIENTO*)';
+    }
+
     const newPersona = {
       id: Date.now(),
       rut: rutVal || '',
@@ -139,14 +162,31 @@ const PreRegistrationForm = () => {
       tiempoAdulto: formData.tiempoTrabajoAdultos || '',
       estadoCivilId: '',
       comunaId: formData.comuna || '',
+      regionId: formData.region || '',
+      provinciaId: formData.provincia || '',
       usuarioId: '',
-      vigente: true,
-      esFormador: false,
-      habilitacion1: false,
-      habilitacion2: false,
-      verificacion: false,
-      historialCapacitaciones: '',
+      vigente: true, // Default: VIGENTE
+      esFormador: formData.esFormador === 'si',
+      habilitacion1: formData.habilitacion1 || '',
+      habilitacion2: formData.habilitacion2 || '',
+      verificacion: formData.verificador || '',
+      historialCapacitaciones: formData.esFormador === 'no' ? formData.historialFormador || '' : '',
       fechaCreacion: new Date().toISOString(),
+      // Curso data
+      cursoId: formData.curso || '',
+      seccionId: formData.seccion || '',
+      // Association data (PERSONA_INDIVIDUAL)
+      zonaId: formData.zona || '',
+      distritoId: formData.distrito || '',
+      grupoId: formData.grupo || '',
+      cargoId: formData.cargo || '',
+      rolId: formData.rol || '',
+      // Persona_Curso data
+      alimentacionId: formData.alimentacion || '',
+      nivelId: formData.nivel || '',
+      observacionCurso: expectativasCurso,
+      // Estado curso: Pre Inscripción = 1
+      estadoCurso: 1,
     };
 
     try {
