@@ -1,43 +1,54 @@
-# Django Framework
+amqp==5.3.1
+asgiref==3.10.0
+billiard==4.2.3
+black==23.12.0
+celery==5.3.4
+cffi==2.0.0
+click==8.3.1
+click-didyoumean==0.3.1
+click-plugins==1.1.1.2
+click-repl==0.3.0
+colorama==0.4.6
+coverage==7.12.0
+cryptography==41.0.7
 Django==5.2.7
 django-cors-headers==4.3.1
-
-# Django REST Framework
+django-redis==5.4.0
 djangorestframework==3.14.0
 djangorestframework-simplejwt==5.3.1
-
-# Database
-# mysqlclient==2.2.4  # Para MySQL en producción - problemas con Python 3.14
-PyMySQL==1.1.1  # Alternativa pura Python compatible con MySQL
-cryptography==41.0.7  # Requerido por PyMySQL para conexiones seguras
-# SQLite viene incluido con Python para desarrollo
-
-# Security & Authentication
-PyJWT==2.8.0
-
-# API Documentation
 drf-yasg==1.21.7
-
-# Environment Variables
-python-decouple==3.8
-
-# Testing
-pytest==7.4.3
-pytest-django==4.7.0
-pytest-cov==4.1.0
-
-# Code Quality
 flake8==6.1.0
-black==23.12.0
-
-# Performance & Caching (opcional pero recomendado)
-redis==5.0.1
-django-redis==5.4.0
-
-# Task Queue (opcional para operaciones asíncronas)
-celery==5.3.4
-
-# Utilities
+inflection==0.5.1
+iniconfig==2.3.0
+kombu==5.6.0
+mccabe==0.7.0
+mypy_extensions==1.1.0
+packaging==25.0
+pathspec==0.12.1
+pillow==12.0.0
+platformdirs==4.5.0
+pluggy==1.6.0
+prompt_toolkit==3.0.52
+pycodestyle==2.11.1
+pycparser==2.23
+pyflakes==3.1.0
+PyJWT==2.8.0
+PyMySQL==1.1.1
+pypng==0.20220715.0
+pytest==7.4.3
+pytest-cov==4.1.0
+pytest-django==4.7.0
 python-dateutil==2.8.2
-pillow==12.0.0  # Para manejo de imágenes en perfiles - compatible con Python 3.14
-qrcode[pil]==7.4.2  # Para generación de códigos QR
+python-decouple==3.8
+pytz==2025.2
+PyYAML==6.0.3
+qrcode==7.4.2
+redis==5.0.1
+setuptools==80.9.0
+six==1.17.0
+sqlparse==0.5.3
+typing_extensions==4.15.0
+tzdata==2025.2
+uritemplate==4.2.0
+vine==5.1.0
+wcwidth==0.2.14
