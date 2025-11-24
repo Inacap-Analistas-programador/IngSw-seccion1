@@ -5,6 +5,7 @@ import { Input } from '@/components/ui/Input';
 import { Label } from '@/components/ui/Label';
 import { X, Calendar, MapPin, Settings, Filter } from 'lucide-react';
 import { useToast } from '@/components/ui/use-toast';
+import CursoDashboard from './CursoDashboard';
 
 const Cursos = () => {
   const { toast } = useToast();
@@ -12,7 +13,11 @@ const Cursos = () => {
   const [showViewModal, setShowViewModal] = useState(false);
   const [showEditForm, setShowEditForm] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [showEstadoModal, setShowEstadoModal] = useState(false);
+  const [showEstadoConfirmModal, setShowEstadoConfirmModal] = useState(false);
+  const [showCursoDashboard, setShowCursoDashboard] = useState(false);
   const [selectedCourse, setSelectedCourse] = useState(null);
+  const [newEstado, setNewEstado] = useState('');
   const [courses, setCourses] = useState([]);
   const [filters, setFilters] = useState({
     search: '',
@@ -33,19 +38,101 @@ const Cursos = () => {
     cuotaSinAlmuerzo: '',
     modalidad: '',
     tipoCurso: '',
-    estado: 'pendiente',
     observacion: '',
     responsableId: '',
     cargoResponsableId: '',
+    regionId: '',
     comunaId: '',
     administra: '1',
   });
+
+  // Datos de regiones y comunas de Chile
+  const regionesComunas = {
+    '1': { 
+      nombre: 'Región de Tarapacá',
+      comunas: ['Iquique', 'Alto Hospicio', 'Pozo Almonte', 'Camiña', 'Colchane', 'Huara', 'Pica']
+    },
+    '2': { 
+      nombre: 'Región de Antofagasta',
+      comunas: ['Antofagasta', 'Mejillones', 'Sierra Gorda', 'Taltal', 'Calama', 'Ollagüe', 'San Pedro de Atacama', 'Tocopilla', 'María Elena']
+    },
+    '3': { 
+      nombre: 'Región de Atacama',
+      comunas: ['Copiapó', 'Caldera', 'Tierra Amarilla', 'Chañaral', 'Diego de Almagro', 'Vallenar', 'Alto del Carmen', 'Freirina', 'Huasco']
+    },
+    '4': { 
+      nombre: 'Región de Coquimbo',
+      comunas: ['La Serena', 'Coquimbo', 'Andacollo', 'La Higuera', 'Paiguano', 'Vicuña', 'Illapel', 'Canela', 'Los Vilos', 'Salamanca', 'Ovalle', 'Combarbalá', 'Monte Patria', 'Punitaqui', 'Río Hurtado']
+    },
+    '5': { 
+      nombre: 'Región de Valparaíso',
+      comunas: ['Valparaíso', 'Casablanca', 'Concón', 'Juan Fernández', 'Puchuncaví', 'Quintero', 'Viña del Mar', 'Isla de Pascua', 'Los Andes', 'Calle Larga', 'Rinconada', 'San Esteban', 'La Ligua', 'Cabildo', 'Papudo', 'Petorca', 'Zapallar', 'Quillota', 'Calera', 'Hijuelas', 'La Cruz', 'Nogales', 'San Antonio', 'Algarrobo', 'Cartagena', 'El Quisco', 'El Tabo', 'Santo Domingo', 'San Felipe', 'Catemu', 'Llaillay', 'Panquehue', 'Putaendo', 'Santa María', 'Quilpué', 'Limache', 'Olmué', 'Villa Alemana']
+    },
+    '13': { 
+      nombre: 'Región Metropolitana',
+      comunas: ['Santiago', 'Cerrillos', 'Cerro Navia', 'Conchalí', 'El Bosque', 'Estación Central', 'Huechuraba', 'Independencia', 'La Cisterna', 'La Florida', 'La Granja', 'La Pintana', 'La Reina', 'Las Condes', 'Lo Barnechea', 'Lo Espejo', 'Lo Prado', 'Macul', 'Maipú', 'Ñuñoa', 'Pedro Aguirre Cerda', 'Peñalolén', 'Providencia', 'Pudahuel', 'Quilicura', 'Quinta Normal', 'Recoleta', 'Renca', 'San Joaquín', 'San Miguel', 'San Ramón', 'Vitacura', 'Puente Alto', 'Pirque', 'San José de Maipo', 'Colina', 'Lampa', 'Tiltil', 'San Bernardo', 'Buin', 'Calera de Tango', 'Paine', 'Melipilla', 'Alhué', 'Curacaví', 'María Pinto', 'San Pedro', 'Talagante', 'El Monte', 'Isla de Maipo', 'Padre Hurtado', 'Peñaflor']
+    },
+    '6': { 
+      nombre: 'Región del Libertador Gral. Bernardo O\'Higgins',
+      comunas: ['Rancagua', 'Codegua', 'Coinco', 'Coltauco', 'Doñihue', 'Graneros', 'Las Cabras', 'Machalí', 'Malloa', 'Mostazal', 'Olivar', 'Peumo', 'Pichidegua', 'Quinta de Tilcoco', 'Rengo', 'Requínoa', 'San Vicente', 'Pichilemu', 'La Estrella', 'Litueche', 'Marchihue', 'Navidad', 'Paredones', 'San Fernando', 'Chépica', 'Chimbarongo', 'Lolol', 'Nancagua', 'Palmilla', 'Peralillo', 'Placilla', 'Pumanque', 'Santa Cruz']
+    },
+    '7': { 
+      nombre: 'Región del Maule',
+      comunas: ['Talca', 'ConsConstitución', 'Curepto', 'Empedrado', 'Maule', 'Pelarco', 'Pencahue', 'Río Claro', 'San Clemente', 'San Rafael', 'Cauquenes', 'Chanco', 'Pelluhue', 'Curicó', 'Hualañé', 'Licantén', 'Molina', 'Rauco', 'Romeral', 'Sagrada Familia', 'Teno', 'Vichuquén', 'Linares', 'Colbún', 'Longaví', 'Parral', 'Retiro', 'San Javier', 'Villa Alegre', 'Yerbas Buenas']
+    },
+    '16': { 
+      nombre: 'Región de Ñuble',
+      comunas: ['Chillán', 'Bulnes', 'Chillán Viejo', 'El Carmen', 'Pemuco', 'Pinto', 'Quillón', 'San Ignacio', 'Yungay', 'Quirihue', 'Cobquecura', 'Coelemu', 'Ninhue', 'Portezuelo', 'Ránquil', 'Treguaco', 'San Carlos', 'Coihueco', 'Ñiquén', 'San Fabián', 'San Nicolás']
+    },
+    '8': { 
+      nombre: 'Región del Biobío',
+      comunas: ['Concepción', 'Coronel', 'Chiguayante', 'Florida', 'Hualqui', 'Lota', 'Penco', 'San Pedro de la Paz', 'Santa Juana', 'Talcahuano', 'Tomé', 'Hualpén', 'Lebu', 'Arauco', 'Cañete', 'Contulmo', 'Curanilahue', 'Los Álamos', 'Tirúa', 'Los Ángeles', 'Antuco', 'Cabrero', 'Laja', 'Mulchén', 'Nacimiento', 'Negrete', 'Quilaco', 'Quilleco', 'San Rosendo', 'Santa Bárbara', 'Tucapel', 'Yumbel', 'Alto Biobío']
+    },
+    '9': { 
+      nombre: 'Región de La Araucanía',
+      comunas: ['Temuco', 'Carahue', 'Cunco', 'Curarrehue', 'Freire', 'Galvarino', 'Gorbea', 'Lautaro', 'Loncoche', 'Melipeuco', 'Nueva Imperial', 'Padre Las Casas', 'Perquenco', 'Pitrufquén', 'Pucón', 'Saavedra', 'Teodoro Schmidt', 'Toltén', 'Vilcún', 'Villarrica', 'Cholchol', 'Angol', 'Collipulli', 'Curacautín', 'Ercilla', 'Lonquimay', 'Los Sauces', 'Lumaco', 'Purén', 'Renaico', 'Traiguén', 'Victoria']
+    },
+    '14': { 
+      nombre: 'Región de Los Ríos',
+      comunas: ['Valdivia', 'Corral', 'Lanco', 'Los Lagos', 'Máfil', 'Mariquina', 'Paillaco', 'Panguipulli', 'La Unión', 'Futrono', 'Lago Ranco', 'Río Bueno']
+    },
+    '10': { 
+      nombre: 'Región de Los Lagos',
+      comunas: ['Puerto Montt', 'Calbuco', 'Cochamó', 'Fresia', 'Frutillar', 'Los Muermos', 'Llanquihue', 'Maullín', 'Puerto Varas', 'Castro', 'Ancud', 'Chonchi', 'Curaco de Vélez', 'Dalcahue', 'Puqueldón', 'Queilén', 'Quellón', 'Quemchi', 'Quinchao', 'Osorno', 'Puerto Octay', 'Purranque', 'Puyehue', 'Río Negro', 'San Juan de la Costa', 'San Pablo', 'Chaitén', 'Futaleufú', 'Hualaihué', 'Palena']
+    },
+    '11': { 
+      nombre: 'Región Aysén del Gral. Carlos Ibáñez del Campo',
+      comunas: ['Coyhaique', 'Lago Verde', 'Aysén', 'Cisnes', 'Guaitecas', 'Cochrane', 'O\'Higgins', 'Tortel', 'Chile Chico', 'Río Ibáñez']
+    },
+    '12': { 
+      nombre: 'Región de Magallanes y de la Antártica Chilena',
+      comunas: ['Punta Arenas', 'Laguna Blanca', 'Río Verde', 'San Gregorio', 'Cabo de Hornos', 'Antártica', 'Porvenir', 'Primavera', 'Timaukel', 'Natales', 'Torres del Paine']
+    },
+    '15': { 
+      nombre: 'Región de Arica y Parinacota',
+      comunas: ['Arica', 'Camarones', 'Putre', 'General Lagos']
+    }
+  };
+
+  const [comunasDisponibles, setComunasDisponibles] = useState([]);
 
   const handleInputChange = (field, value) => {
     setCourseData((prev) => ({
       ...prev,
       [field]: value,
     }));
+    
+    // Si cambia la región, actualizar comunas disponibles y limpiar comuna seleccionada
+    if (field === 'regionId') {
+      const comunas = value ? regionesComunas[value]?.comunas || [] : [];
+      setComunasDisponibles(comunas);
+      setCourseData((prev) => ({
+        ...prev,
+        regionId: value,
+        comunaId: '', // Limpiar comuna al cambiar región
+      }));
+    }
+    
     // Limpiar error del campo al modificarlo
     if (errors[field]) {
       setErrors((prev) => ({ ...prev, [field]: '' }));
@@ -64,6 +151,7 @@ const Cursos = () => {
     if (!courseData.responsableId) newErrors.responsableId = 'El responsable es obligatorio';
     if (!courseData.cargoResponsableId)
       newErrors.cargoResponsableId = 'El cargo del responsable es obligatorio';
+    if (!courseData.regionId) newErrors.regionId = 'La región es obligatoria';
     if (!courseData.comunaId) newErrors.comunaId = 'La comuna es obligatoria';
     if (!courseData.administra) newErrors.administra = 'El tipo de administración es obligatorio';
 
@@ -88,7 +176,7 @@ const Cursos = () => {
       descripcion: courseData.descripcion,
       fechaHora: courseData.fechaHora,
       lugar: courseData.lugar,
-      estado: courseData.estado,
+      estado: 'pendiente',
       modalidad: courseData.modalidad,
       tipoCurso: courseData.tipoCurso,
       cuotaConAlmuerzo: parseFloat(courseData.cuotaConAlmuerzo) || 0,
@@ -99,6 +187,8 @@ const Cursos = () => {
       fechaSolicitud: courseData.fechaSolicitud,
       coordLatitud: courseData.coordLatitud,
       coordLongitud: courseData.coordLongitud,
+      regionId: courseData.regionId,
+      regionNombre: regionesComunas[courseData.regionId]?.nombre || '',
       comunaId: courseData.comunaId,
     };
 
@@ -122,6 +212,13 @@ const Cursos = () => {
 
   const handleEditCourse = (course) => {
     setSelectedCourse(course);
+    
+    // Si hay regionId, cargar las comunas de esa región
+    if (course.regionId) {
+      const comunas = regionesComunas[course.regionId]?.comunas || [];
+      setComunasDisponibles(comunas);
+    }
+    
     setCourseData({
       codigo: course.codigo,
       descripcion: course.descripcion,
@@ -138,7 +235,8 @@ const Cursos = () => {
       observacion: course.observacion,
       responsableId: getIdFromName(course.responsable, 'responsable'),
       cargoResponsableId: getIdFromName(course.cargo, 'cargo'),
-      comunaId: course.comunaId,
+      regionId: course.regionId || '',
+      comunaId: course.comunaId || '',
       administra: '1',
     });
     setShowEditForm(true);
@@ -171,6 +269,8 @@ const Cursos = () => {
       fechaSolicitud: courseData.fechaSolicitud,
       coordLatitud: courseData.coordLatitud,
       coordLongitud: courseData.coordLongitud,
+      regionId: courseData.regionId,
+      regionNombre: regionesComunas[courseData.regionId]?.nombre || '',
       comunaId: courseData.comunaId,
     };
 
@@ -191,6 +291,77 @@ const Cursos = () => {
   const handleDeleteCourse = (course) => {
     setSelectedCourse(course);
     setShowDeleteModal(true);
+  };
+
+  const handleChangeEstado = (course) => {
+    setSelectedCourse(course);
+    setCourseData({ ...courseData, estado: course.estado });
+    setNewEstado(course.estado);
+    setShowEstadoModal(true);
+  };
+
+  const handleEstadoSelected = () => {
+    setNewEstado(courseData.estado);
+    setShowEstadoModal(false);
+    setShowEstadoConfirmModal(true);
+  };
+
+  const confirmChangeEstado = () => {
+    const updatedCourse = {
+      ...selectedCourse,
+      estado: newEstado,
+    };
+
+    setCourses((prev) =>
+      prev.map((course) => (course.id === selectedCourse.id ? updatedCourse : course))
+    );
+
+    setShowEstadoConfirmModal(false);
+    setSelectedCourse(null);
+    toast({
+      title: 'Estado actualizado',
+      description: 'El estado del curso ha sido cambiado exitosamente',
+      variant: 'default',
+    });
+  };
+
+  const handleOpenDashboard = (course) => {
+    setSelectedCourse(course);
+    setShowCursoDashboard(true);
+  };
+
+  const handleEditCurso = (course) => {
+    setSelectedCourse(course);
+    
+    const regionId = course.regionId || '';
+    // Si hay regionId, cargar las comunas de esa región
+    if (regionId) {
+      const comunas = regionesComunas[regionId]?.comunas || [];
+      setComunasDisponibles(comunas);
+    }
+    
+    setCourseData({
+      codigo: course.codigo || course.cur_codigo || '',
+      descripcion: course.descripcion || course.cur_descripcion || '',
+      fechaHora: course.fechaHora || course.cur_fecha_hora || '',
+      fechaSolicitud: course.fechaSolicitud || course.cur_fecha_solicitud || '',
+      lugar: course.lugar || course.cur_lugar || '',
+      coordLatitud: course.coordLatitud || course.cur_coord_latitud || '',
+      coordLongitud: course.coordLongitud || course.cur_coord_longitud || '',
+      cuotaConAlmuerzo: (course.cuotaConAlmuerzo || course.cur_cuota_con_almuerzo || '').toString(),
+      cuotaSinAlmuerzo: (course.cuotaSinAlmuerzo || course.cur_cuota_sin_almuerzo || '').toString(),
+      modalidad: course.modalidad || course.cur_modalidad || '',
+      tipoCurso: course.tipoCurso || course.cur_tipo_curso || '',
+      estado: course.estado || course.cur_estado || '0',
+      observacion: course.observacion || course.cur_observacion || '',
+      responsableId: course.responsableId || course.per_id_responsable || '',
+      cargoResponsableId: course.cargoResponsableId || course.car_id_responsable || '',
+      regionId: regionId,
+      comunaId: course.comunaId || course.com_id_lugar || '',
+      administra: course.administra || course.cur_administra || '1',
+    });
+    setShowCursoDashboard(false);
+    setShowEditForm(true);
   };
 
   const confirmDeleteCourse = () => {
@@ -238,13 +409,14 @@ const Cursos = () => {
       cuotaSinAlmuerzo: '',
       modalidad: '',
       tipoCurso: '',
-      estado: 'pendiente',
       observacion: '',
       responsableId: '',
       cargoResponsableId: '',
+      regionId: '',
       comunaId: '',
       administra: '1',
     });
+    setComunasDisponibles([]);
     setErrors({});
     setShowCreateForm(false);
     setShowEditForm(false);
@@ -273,33 +445,56 @@ const Cursos = () => {
   };
 
   const getEstadoName = (estado) => {
+    // Valores de la DB: 0: Pendiente, 1: Vigente, 2: Anulado, 3: Finalizado
     const estados = {
-      pendiente: { name: 'Pendiente', color: 'bg-orange-100 text-orange-800' },
-      1: { name: 'Activo', color: 'bg-primary text-primary-foreground' },
-      2: { name: 'Inactivo', color: 'bg-gray-100 text-gray-800' },
-      3: { name: 'En Proceso', color: 'bg-yellow-100 text-yellow-800' },
-      4: { name: 'Finalizado', color: 'bg-blue-100 text-blue-800' },
-      5: { name: 'Cancelado', color: 'bg-red-100 text-red-800' },
+      'pendiente': { name: 'Pendiente', color: 'bg-orange-100 text-orange-800' },
+      '0': { name: 'Pendiente', color: 'bg-orange-100 text-orange-800' },
+      0: { name: 'Pendiente', color: 'bg-orange-100 text-orange-800' },
+      '1': { name: 'Vigente', color: 'bg-green-100 text-green-800' },
+      1: { name: 'Vigente', color: 'bg-green-100 text-green-800' },
+      '2': { name: 'Anulado', color: 'bg-red-100 text-red-800' },
+      2: { name: 'Anulado', color: 'bg-red-100 text-red-800' },
+      '3': { name: 'Finalizado', color: 'bg-blue-100 text-blue-800' },
+      3: { name: 'Finalizado', color: 'bg-blue-100 text-blue-800' },
     };
     return estados[estado] || { name: 'Desconocido', color: 'bg-gray-100 text-gray-800' };
   };
 
   const getModalidadName = (modalidad) => {
+    // Valores de la DB: 1: Internado, 2: Externado, 3: Internado/Externado
     const modalidades = {
-      1: 'Presencial',
-      2: 'Online',
-      3: 'Híbrida',
+      '1': 'Internado',
+      '2': 'Externado',
+      '3': 'Internado/Externado',
+      1: 'Internado',
+      2: 'Externado',
+      3: 'Internado/Externado',
     };
     return modalidades[modalidad] || 'Sin definir';
   };
 
   const getTipoCursoName = (tipoCurso) => {
+    // Valores de la DB: 1: Presencial, 2: Online, 3: Híbrido
     const tipos = {
+      '1': 'Presencial',
+      '2': 'Online',
+      '3': 'Híbrido',
       1: 'Presencial',
       2: 'Online',
       3: 'Híbrido',
     };
     return tipos[tipoCurso] || 'Sin definir';
+  };
+
+  const getAdministraName = (administra) => {
+    // Valores de la DB: 1: Zona, 2: Distrito
+    const tipos = {
+      '1': 'Zona',
+      '2': 'Distrito',
+      1: 'Zona',
+      2: 'Distrito',
+    };
+    return tipos[administra] || 'Sin definir';
   };
 
   const filteredCourses = courses.filter((course) => {
@@ -441,15 +636,36 @@ const Cursos = () => {
                     />
                   </div>
                   <div className="space-y-2">
+                    <Label htmlFor="regionId">Región *</Label>
+                    <select
+                      id="regionId"
+                      value={courseData.regionId}
+                      onChange={(e) => handleInputChange('regionId', e.target.value)}
+                      className={`flex h-10 w-full rounded-md border bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 ${errors.regionId ? 'border-red-500' : 'border-input'}`}
+                    >
+                      <option value="">Seleccionar región</option>
+                      {Object.entries(regionesComunas).map(([id, region]) => (
+                        <option key={id} value={id}>{region.nombre}</option>
+                      ))}
+                    </select>
+                    {errors.regionId && <p className="text-xs text-red-600">{errors.regionId}</p>}
+                  </div>
+                  <div className="space-y-2">
                     <Label htmlFor="comunaId">Comuna *</Label>
-                    <Input
+                    <select
                       id="comunaId"
                       value={courseData.comunaId}
                       onChange={(e) => handleInputChange('comunaId', e.target.value)}
-                      placeholder="Ingrese la comuna"
-                      maxLength={50}
-                      className={errors.comunaId ? 'border-red-500' : ''}
-                    />
+                      disabled={!courseData.regionId || comunasDisponibles.length === 0}
+                      className={`flex h-10 w-full rounded-md border bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 ${errors.comunaId ? 'border-red-500' : 'border-input'}`}
+                    >
+                      <option value="">
+                        {!courseData.regionId ? 'Primero seleccione una región' : 'Seleccionar comuna'}
+                      </option>
+                      {comunasDisponibles.map((comuna) => (
+                        <option key={comuna} value={comuna}>{comuna}</option>
+                      ))}
+                    </select>
                     {errors.comunaId && <p className="text-xs text-red-600">{errors.comunaId}</p>}
                   </div>
                 </div>
@@ -486,9 +702,9 @@ const Cursos = () => {
                       className={`flex h-10 w-full rounded-md border bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 ${errors.modalidad ? 'border-red-500' : 'border-input'}`}
                     >
                       <option value="">Seleccionar modalidad</option>
-                      <option value="1">Presencial</option>
-                      <option value="2">Online</option>
-                      <option value="3">Híbrida</option>
+                      <option value="1">Internado</option>
+                      <option value="2">Externado</option>
+                      <option value="3">Internado/Externado</option>
                     </select>
                     {errors.modalidad && <p className="text-xs text-red-600">{errors.modalidad}</p>}
                   </div>
@@ -519,7 +735,7 @@ const Cursos = () => {
                 </div>
               </div>
 
-              {/* Responsabilidad y Estado */}
+              {/* Responsabilidad */}
               <div className="space-y-4">
                 <h3 className="text-lg font-semibold text-gray-800">Responsabilidad</h3>
                 <div className="grid md:grid-cols-2 gap-4">
@@ -558,22 +774,6 @@ const Cursos = () => {
                     {errors.cargoResponsableId && (
                       <p className="text-xs text-red-600">{errors.cargoResponsableId}</p>
                     )}
-                  </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="estado">Estado del Curso *</Label>
-                    <select
-                      id="estado"
-                      value={courseData.estado}
-                      onChange={(e) => handleInputChange('estado', e.target.value)}
-                      className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-                    >
-                      <option value="pendiente">Pendiente</option>
-                      <option value="1">Activo</option>
-                      <option value="2">Inactivo</option>
-                      <option value="3">En Proceso</option>
-                      <option value="4">Finalizado</option>
-                      <option value="5">Cancelado</option>
-                    </select>
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor="administra">Administrado por *</Label>
@@ -616,7 +816,7 @@ const Cursos = () => {
 
               {/* Botones de Acción */}
               <div className="flex justify-end space-x-4 pt-6 border-t">
-                <Button onClick={resetForm} variant="outline">
+                <Button onClick={resetForm} variant="outline" className="bg-gray-100 hover:bg-gray-200 text-gray-700 border-gray-300">
                   Cancelar
                 </Button>
                 <Button onClick={handleCreateCourse} className="bg-primary hover:bg-primary">
@@ -668,6 +868,16 @@ const Cursos = () => {
                     <p>
                       <span className="font-medium">Lugar:</span> {selectedCourse.lugar}
                     </p>
+                    {selectedCourse.regionNombre && (
+                      <p>
+                        <span className="font-medium">Región:</span> {selectedCourse.regionNombre}
+                      </p>
+                    )}
+                    {selectedCourse.comunaId && (
+                      <p>
+                        <span className="font-medium">Comuna:</span> {selectedCourse.comunaId}
+                      </p>
+                    )}
                     {selectedCourse.coordLatitud && selectedCourse.coordLongitud && (
                       <p>
                         <span className="font-medium">Coordenadas:</span>{' '}
@@ -725,8 +935,82 @@ const Cursos = () => {
                 </div>
               )}
 
+              {/* Sección de Cuotas del Curso */}
+              <div className="space-y-3 border-t pt-6">
+                <h3 className="text-lg font-semibold text-gray-800">Cuotas del Curso (CURSO_CUOTA)</h3>
+                <div className="bg-gray-50 p-4 rounded-md">
+                  <div className="overflow-x-auto">
+                    <table className="w-full text-sm">
+                      <thead className="bg-gray-100">
+                        <tr>
+                          <th className="px-4 py-2 text-left font-medium text-gray-700">N° Cuota</th>
+                          <th className="px-4 py-2 text-left font-medium text-gray-700">Descripción</th>
+                          <th className="px-4 py-2 text-left font-medium text-gray-700">Monto</th>
+                          <th className="px-4 py-2 text-left font-medium text-gray-700">Fecha Vencimiento</th>
+                        </tr>
+                      </thead>
+                      <tbody className="divide-y divide-gray-200">
+                        {/* Datos de ejemplo - en producción vendrían del backend */}
+                        <tr>
+                          <td className="px-4 py-2">1</td>
+                          <td className="px-4 py-2">Primera cuota</td>
+                          <td className="px-4 py-2 font-semibold">{formatCurrency(30000)}</td>
+                          <td className="px-4 py-2">15/12/2025</td>
+                        </tr>
+                        <tr>
+                          <td className="px-4 py-2">2</td>
+                          <td className="px-4 py-2">Segunda cuota</td>
+                          <td className="px-4 py-2 font-semibold">{formatCurrency(30000)}</td>
+                          <td className="px-4 py-2">15/01/2026</td>
+                        </tr>
+                        <tr>
+                          <td className="px-4 py-2">3</td>
+                          <td className="px-4 py-2">Tercera cuota</td>
+                          <td className="px-4 py-2 font-semibold">{formatCurrency(30000)}</td>
+                          <td className="px-4 py-2">15/02/2026</td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+
+              {/* Sección de Coordinadores del Curso */}
+              <div className="space-y-3 border-t pt-6">
+                <h3 className="text-lg font-semibold text-gray-800">Coordinadores del Curso (CURSO_COORDINADOR)</h3>
+                <div className="bg-gray-50 p-4 rounded-md">
+                  <div className="overflow-x-auto">
+                    <table className="w-full text-sm">
+                      <thead className="bg-gray-100">
+                        <tr>
+                          <th className="px-4 py-2 text-left font-medium text-gray-700">Nombre</th>
+                          <th className="px-4 py-2 text-left font-medium text-gray-700">Cargo</th>
+                          <th className="px-4 py-2 text-left font-medium text-gray-700">Email</th>
+                          <th className="px-4 py-2 text-left font-medium text-gray-700">Teléfono</th>
+                        </tr>
+                      </thead>
+                      <tbody className="divide-y divide-gray-200">
+                        {/* Datos de ejemplo - en producción vendrían del backend */}
+                        <tr>
+                          <td className="px-4 py-2 font-medium">Juan Pérez González</td>
+                          <td className="px-4 py-2">Coordinador Principal</td>
+                          <td className="px-4 py-2">juan.perez@scouts.cl</td>
+                          <td className="px-4 py-2">+56 9 1234 5678</td>
+                        </tr>
+                        <tr>
+                          <td className="px-4 py-2 font-medium">María González Silva</td>
+                          <td className="px-4 py-2">Coordinador Adjunto</td>
+                          <td className="px-4 py-2">maria.gonzalez@scouts.cl</td>
+                          <td className="px-4 py-2">+56 9 8765 4321</td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+
               <div className="flex justify-end space-x-4 pt-6 border-t">
-                <Button onClick={() => setShowViewModal(false)} variant="outline">
+                <Button onClick={() => setShowViewModal(false)} variant="outline" className="bg-gray-100 hover:bg-gray-200 text-gray-700 border-gray-300">
                   Cerrar
                 </Button>
                 <Button
@@ -734,7 +1018,7 @@ const Cursos = () => {
                     setShowViewModal(false);
                     handleEditCourse(selectedCourse);
                   }}
-                  className="bg-blue-600 hover:bg-blue-700"
+                  className="bg-blue-600 hover:bg-blue-700 text-white"
                 >
                   Editar
                 </Button>
@@ -842,6 +1126,37 @@ const Cursos = () => {
                       maxLength={50}
                     />
                   </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="regionId-edit">Región *</Label>
+                    <select
+                      id="regionId-edit"
+                      value={courseData.regionId}
+                      onChange={(e) => handleInputChange('regionId', e.target.value)}
+                      className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                    >
+                      <option value="">Seleccionar región</option>
+                      {Object.entries(regionesComunas).map(([id, region]) => (
+                        <option key={id} value={id}>{region.nombre}</option>
+                      ))}
+                    </select>
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="comunaId-edit">Comuna *</Label>
+                    <select
+                      id="comunaId-edit"
+                      value={courseData.comunaId}
+                      onChange={(e) => handleInputChange('comunaId', e.target.value)}
+                      disabled={!courseData.regionId || comunasDisponibles.length === 0}
+                      className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                    >
+                      <option value="">
+                        {!courseData.regionId ? 'Primero seleccione una región' : 'Seleccionar comuna'}
+                      </option>
+                      {comunasDisponibles.map((comuna) => (
+                        <option key={comuna} value={comuna}>{comuna}</option>
+                      ))}
+                    </select>
+                  </div>
                 </div>
               </div>
 
@@ -861,9 +1176,9 @@ const Cursos = () => {
                       className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
                     >
                       <option value="">Seleccionar modalidad</option>
-                      <option value="1">Presencial</option>
-                      <option value="2">Virtual</option>
-                      <option value="3">Mixta</option>
+                      <option value="1">Internado</option>
+                      <option value="2">Externado</option>
+                      <option value="3">Internado/Externado</option>
                     </select>
                   </div>
                   <div className="space-y-2">
@@ -874,12 +1189,11 @@ const Cursos = () => {
                       onChange={(e) => handleInputChange('estado', e.target.value)}
                       className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
                     >
+                      <option value="0">Pendiente</option>
                       <option value="pendiente">Pendiente</option>
-                      <option value="1">Activo</option>
-                      <option value="2">Inactivo</option>
-                      <option value="3">En Proceso</option>
-                      <option value="4">Finalizado</option>
-                      <option value="5">Cancelado</option>
+                      <option value="1">Vigente</option>
+                      <option value="2">Anulado</option>
+                      <option value="3">Finalizado</option>
                     </select>
                   </div>
                   <div className="space-y-2">
@@ -931,10 +1245,10 @@ const Cursos = () => {
 
               {/* Botones de Acción */}
               <div className="flex justify-end space-x-4 pt-6 border-t">
-                <Button onClick={resetForm} variant="outline">
+                <Button onClick={resetForm} variant="outline" className="bg-gray-100 hover:bg-gray-200 text-gray-700 border-gray-300">
                   Cancelar
                 </Button>
-                <Button onClick={handleUpdateCourse} className="bg-blue-600 hover:bg-blue-700">
+                <Button onClick={handleUpdateCourse} className="bg-blue-600 hover:bg-blue-700 text-white">
                   Guardar Cambios
                 </Button>
               </div>
@@ -962,7 +1276,7 @@ const Cursos = () => {
                 <p className="text-sm text-red-600 mb-6">Esta acción no se puede deshacer.</p>
               </div>
               <div className="flex justify-center space-x-4">
-                <Button onClick={() => setShowDeleteModal(false)} variant="outline">
+                <Button onClick={() => setShowDeleteModal(false)} variant="outline" className="bg-gray-100 hover:bg-gray-200 text-gray-700 border-gray-300">
                   Cancelar
                 </Button>
                 <Button
@@ -970,6 +1284,113 @@ const Cursos = () => {
                   className="bg-red-600 hover:bg-red-700 text-white"
                 >
                   Eliminar
+                </Button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Modal de Cambio de Estado - Paso 1: Selección */}
+      {showEstadoModal && selectedCourse && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-lg shadow-xl max-w-md w-full m-4">
+            <div className="flex justify-between items-center p-6 border-b">
+              <h2 className="text-xl font-bold text-gray-900">Cambio de Estado</h2>
+              <Button onClick={() => setShowEstadoModal(false)} variant="ghost" className="p-2">
+                <X className="h-6 w-6" />
+              </Button>
+            </div>
+            
+            <div className="p-6 space-y-4">
+              <div className="space-y-2">
+                <p className="text-sm text-gray-600">
+                  Curso: <span className="font-semibold">{selectedCourse.descripcion}</span>
+                </p>
+                <p className="text-sm text-gray-600">
+                  Código: <span className="font-semibold">{selectedCourse.codigo}</span>
+                </p>
+                <p className="text-sm text-gray-600">
+                  Estado actual: 
+                  <span className={`ml-2 inline-flex px-2 py-1 text-xs font-semibold rounded-full ${getEstadoName(selectedCourse.estado).color}`}>
+                    {getEstadoName(selectedCourse.estado).name}
+                  </span>
+                </p>
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="nuevo-estado">¿Qué estado desea poner? *</Label>
+                <select
+                  id="nuevo-estado"
+                  value={courseData.estado}
+                  onChange={(e) => handleInputChange('estado', e.target.value)}
+                  className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+                >
+                  <option value="0">Pendiente</option>
+                  <option value="1">Vigente</option>
+                  <option value="2">Anulado</option>
+                  <option value="3">Finalizado</option>
+                </select>
+              </div>
+
+              <div className="flex justify-end space-x-4 pt-4 border-t">
+                <Button onClick={() => setShowEstadoModal(false)} variant="outline" className="bg-gray-100 hover:bg-gray-200 text-gray-700 border-gray-300">
+                  Cancelar
+                </Button>
+                <Button 
+                  onClick={handleEstadoSelected} 
+                  className="bg-orange-500 hover:bg-orange-600 text-white"
+                >
+                  Continuar
+                </Button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Modal de Cambio de Estado - Paso 2: Confirmación */}
+      {showEstadoConfirmModal && selectedCourse && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-lg shadow-xl max-w-md w-full m-4">
+            <div className="p-6">
+              <div className="flex items-center mb-4">
+                <div className="mx-auto flex-shrink-0 flex items-center justify-center h-12 w-12 rounded-full bg-orange-100">
+                  <Settings className="h-6 w-6 text-orange-600" />
+                </div>
+              </div>
+              <div className="text-center">
+                <h3 className="text-lg font-medium text-gray-900 mb-2">¿Está seguro?</h3>
+                <p className="text-sm text-gray-500 mb-4">
+                  ¿Confirma que desea cambiar el estado del curso <span className="font-semibold">"{selectedCourse.descripcion}"</span>?
+                </p>
+                <div className="bg-gray-50 p-4 rounded-md mb-4">
+                  <p className="text-sm text-gray-600">
+                    Estado actual: 
+                    <span className={`ml-2 inline-flex px-2 py-1 text-xs font-semibold rounded-full ${getEstadoName(selectedCourse.estado).color}`}>
+                      {getEstadoName(selectedCourse.estado).name}
+                    </span>
+                  </p>
+                  <p className="text-sm text-gray-600 mt-2">
+                    Nuevo estado: 
+                    <span className={`ml-2 inline-flex px-2 py-1 text-xs font-semibold rounded-full ${getEstadoName(newEstado).color}`}>
+                      {getEstadoName(newEstado).name}
+                    </span>
+                  </p>
+                </div>
+              </div>
+              <div className="flex justify-center space-x-4">
+                <Button onClick={() => {
+                  setShowEstadoConfirmModal(false);
+                  setShowEstadoModal(true);
+                }} variant="outline" className="bg-gray-100 hover:bg-gray-200 text-gray-700 border-gray-300">
+                  Volver
+                </Button>
+                <Button
+                  onClick={confirmChangeEstado}
+                  className="bg-orange-500 hover:bg-orange-600 text-white"
+                >
+                  Guardar
                 </Button>
               </div>
             </div>
@@ -1013,12 +1434,11 @@ const Cursos = () => {
                 className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
               >
                 <option value="">Todos</option>
+                <option value="0">Pendiente</option>
                 <option value="pendiente">Pendiente</option>
-                <option value="1">Activo</option>
-                <option value="2">Inactivo</option>
-                <option value="3">En Proceso</option>
-                <option value="4">Finalizado</option>
-                <option value="5">Cancelado</option>
+                <option value="1">Vigente</option>
+                <option value="2">Anulado</option>
+                <option value="3">Finalizado</option>
               </select>
             </div>
             <div className="space-y-2">
@@ -1030,9 +1450,9 @@ const Cursos = () => {
                 className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
               >
                 <option value="">Todas</option>
-                <option value="1">Presencial</option>
-                <option value="2">Online</option>
-                <option value="3">Híbrida</option>
+                <option value="1">Internado</option>
+                <option value="2">Externado</option>
+                <option value="3">Internado/Externado</option>
               </select>
             </div>
             <div className="space-y-2">
@@ -1147,6 +1567,7 @@ const Cursos = () => {
                             size="sm"
                             variant="outline"
                             onClick={() => handleViewCourse(course)}
+                            className="bg-blue-500 text-white hover:bg-blue-600 border-blue-500"
                           >
                             Ver
                           </Button>
@@ -1154,16 +1575,25 @@ const Cursos = () => {
                             size="sm"
                             variant="outline"
                             onClick={() => handleEditCourse(course)}
+                            className="bg-green-500 text-white hover:bg-green-600 border-green-500"
                           >
                             Editar
                           </Button>
                           <Button
                             size="sm"
                             variant="outline"
-                            onClick={() => handleDeleteCourse(course)}
-                            className="text-red-600 hover:text-red-700 hover:bg-red-50"
+                            onClick={() => handleChangeEstado(course)}
+                            className="bg-orange-500 text-white hover:bg-orange-600 border-orange-500"
                           >
-                            Eliminar
+                            Estado
+                          </Button>
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            onClick={() => handleOpenDashboard(course)}
+                            className="bg-purple-500 text-white hover:bg-purple-600 border-purple-500"
+                          >
+                            Gestión
                           </Button>
                         </div>
                       </td>
@@ -1189,6 +1619,27 @@ const Cursos = () => {
           </div>
         )}
       </Card>
+
+      {/* Modal de Dashboard del Curso */}
+      {showCursoDashboard && selectedCourse && (
+        <CursoDashboard 
+          curso={selectedCourse} 
+          onClose={() => {
+            setShowCursoDashboard(false);
+            setSelectedCourse(null);
+          }}
+          onNavigateToPersonas={(filter) => {
+            // Aquí se implementaría la navegación a Gestión de Personas con filtro
+            console.log('Navegar a Personas con filtro:', filter);
+            toast({
+              title: 'Navegación',
+              description: `Navegando a Gestión de Personas (filtro: ${filter})`,
+              variant: 'default',
+            });
+          }}
+          onEditCurso={handleEditCurso}
+        />
+      )}
     </div>
   );
 };
