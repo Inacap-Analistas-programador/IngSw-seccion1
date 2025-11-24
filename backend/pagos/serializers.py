@@ -3,9 +3,34 @@ from .models import PagoPersona, ComprobantePago, PagoComprobante, PagoCambioPer
 
 
 class PagoPersonaSerializer(serializers.ModelSerializer):
+    # Campos de solo lectura para mostrar información detallada
+    persona_nombre = serializers.SerializerMethodField(read_only=True)
+    curso_nombre = serializers.SerializerMethodField(read_only=True)
+    usuario_nombre = serializers.SerializerMethodField(read_only=True)
+    tipo_display = serializers.SerializerMethodField(read_only=True)
+    
     class Meta:
         model = PagoPersona
         fields = '__all__'
+        read_only_fields = ('usu_id',)  # El usuario se asigna automáticamente
+    
+    def get_persona_nombre(self, obj):
+        if obj.per_id:
+            return f"{obj.per_id.per_nombres} {obj.per_id.per_apelpat}"
+        return None
+    
+    def get_curso_nombre(self, obj):
+        if obj.cur_id:
+            return f"{obj.cur_id.cur_codigo} - {obj.cur_id.cur_descripcion}"
+        return None
+    
+    def get_usuario_nombre(self, obj):
+        if obj.usu_id:
+            return obj.usu_id.usu_username
+        return None
+    
+    def get_tipo_display(self, obj):
+        return "Ingreso" if obj.pap_tipo == 1 else "Egreso"
 
 
 class ComprobantePagoSerializer(serializers.ModelSerializer):

@@ -67,20 +67,20 @@ const RegistrarPagoModal = ({ isOpen, onClose, onSuccess }) => {
             // If not, we might need to send it. Let's try sending without it first, assuming backend sets it.
 
             const payload = {
-                ...formData,
+                per_id: formData.per_id,
+                cur_id: formData.cur_id,
+                pap_tipo: formData.pap_tipo,
+                pap_valor: formData.pap_valor,
+                pap_observacion: formData.pap_observacion,
                 pap_fecha_hora: new Date().toISOString(),
-                // usu_id will be handled by backend (request.user) hopefully. 
-                // If not, we need to decode token.
             };
-
-            // We need to send the ID, not the whole object if the select returns ID
-            // The select values should be IDs.
 
             await api.post('/pagos/pagopersonas/', payload);
 
             toast({
-                title: 'Éxito',
-                description: 'Pago registrado correctamente.',
+                title: '✅ Pago Registrado Exitosamente',
+                description: `Se ha registrado un ${formData.pap_tipo === '1' ? 'ingreso' : 'egreso'} de $${formData.pap_valor} correctamente.`,
+                variant: 'success',
             });
 
             onSuccess();
