@@ -12,6 +12,14 @@ from maestros.models import Perfil
 def create_admin_user():
     """
     Crea un usuario administrador con el perfil 'Administrador'.
+
+    Este script puede ser ejecutado de dos maneras:
+    1. Definiendo las variables de entorno ADMIN_USERNAME, ADMIN_EMAIL, y ADMIN_PASSWORD.
+       Ejemplo:
+       ADMIN_USERNAME=admin ADMIN_EMAIL=admin@example.com ADMIN_PASSWORD=securepassword python create_superuser.py
+    2. Ejecutándolo interactivamente, en cuyo caso se le solicitarán los datos.
+       Ejemplo:
+       python create_superuser.py
     """
     # Obtener o crear el perfil de Administrador
     try:
@@ -33,9 +41,13 @@ def create_admin_user():
     # Si las variables de entorno no están, solicitarlas
     if not all([username, email, password]):
         print("Variables de entorno no encontradas. Solicitando datos interactivamente.")
-        username = input("Ingrese nombre de usuario para el administrador: ")
-        email = input("Ingrese email para el administrador: ")
-        password = getpass.getpass("Ingrese password para el administrador: ")
+        try:
+            username = input("Ingrese nombre de usuario para el administrador: ")
+            email = input("Ingrese email para el administrador: ")
+            password = getpass.getpass("Ingrese password para el administrador: ")
+        except (EOFError, KeyboardInterrupt):
+            print("\nOperación cancelada por el usuario.")
+            return
 
     # Validar que los campos no estén vacíos
     if not all([username, email, password]):
