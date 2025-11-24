@@ -412,6 +412,10 @@ const Cursos = () => {
     }).format(amount);
   };
 
+  const agregarCursoEjemplo = () => {
+    // TODO: Implementar la lógica para agregar un curso de ejemplo
+  };
+
   // Calcular estadísticas totales de un curso
   const calcularEstadisticasCurso = (course) => {
     // Total de participantes (suma de todas las secciones)
