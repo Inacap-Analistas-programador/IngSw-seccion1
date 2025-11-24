@@ -20,7 +20,7 @@ const GruposPage = () => {
   const fields = [
     {
       key: 'dis_id',
-      label: 'Distrito',
+      label: 'DISTRITO',
       type: 'select',
       options: distritos.map((d) => ({ value: d.dis_id, label: d.dis_descripcion })),
       render: (value) => {
@@ -28,25 +28,16 @@ const GruposPage = () => {
         return distrito ? distrito.dis_descripcion : value;
       },
     },
-    { key: 'gru_descripcion', label: 'Descripción', type: 'text', fullWidth: true },
-    {
-      key: 'gru_vigente',
-      label: 'Vigente',
-      type: 'select',
-      options: [
-        { value: 'true', label: 'Sí' },
-        { value: 'false', label: 'No' },
-      ],
-      render: (value) => (value ? 'Sí' : 'No'),
-    },
+    { key: 'gru_descripcion', label: 'DESCRIPCIÓN', type: 'text', fullWidth: true },
   ];
 
   return (
     <GeografiaList
       geografiaType="grupos"
-      title="Grupos"
+      title="GRUPOS"
       fields={fields}
       idField="gru_id"
+      statusField="gru_vigente"
     />
   );
 };

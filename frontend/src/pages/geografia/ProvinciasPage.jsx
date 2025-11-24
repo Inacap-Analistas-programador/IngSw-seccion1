@@ -20,7 +20,7 @@ const ProvinciasPage = () => {
   const fields = [
     {
       key: 'reg_id',
-      label: 'Región',
+      label: 'REGIÓN',
       type: 'select',
       options: regiones.map((r) => ({ value: r.reg_id, label: r.reg_descripcion })),
       render: (value) => {
@@ -28,25 +28,16 @@ const ProvinciasPage = () => {
         return region ? region.reg_descripcion : value;
       },
     },
-    { key: 'pro_descripcion', label: 'Descripción', type: 'text', fullWidth: true },
-    {
-      key: 'pro_vigente',
-      label: 'Vigente',
-      type: 'select',
-      options: [
-        { value: 'true', label: 'Sí' },
-        { value: 'false', label: 'No' },
-      ],
-      render: (value) => (value ? 'Sí' : 'No'),
-    },
+    { key: 'pro_descripcion', label: 'DESCRIPCIÓN', type: 'text', fullWidth: true },
   ];
 
   return (
     <GeografiaList
       geografiaType="provincias"
-      title="Provincias"
+      title="PROVINCIAS"
       fields={fields}
       idField="pro_id"
+      statusField="pro_vigente"
     />
   );
 };

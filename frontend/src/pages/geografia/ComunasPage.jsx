@@ -20,7 +20,7 @@ const ComunasPage = () => {
   const fields = [
     {
       key: 'pro_id',
-      label: 'Provincia',
+      label: 'PROVINCIA',
       type: 'select',
       options: provincias.map((p) => ({ value: p.pro_id, label: p.pro_descripcion })),
       render: (value) => {
@@ -28,25 +28,16 @@ const ComunasPage = () => {
         return provincia ? provincia.pro_descripcion : value;
       },
     },
-    { key: 'com_descripcion', label: 'Descripción', type: 'text', fullWidth: true },
-    {
-      key: 'com_vigente',
-      label: 'Vigente',
-      type: 'select',
-      options: [
-        { value: 'true', label: 'Sí' },
-        { value: 'false', label: 'No' },
-      ],
-      render: (value) => (value ? 'Sí' : 'No'),
-    },
+    { key: 'com_descripcion', label: 'DESCRIPCIÓN', type: 'text', fullWidth: true },
   ];
 
   return (
     <GeografiaList
       geografiaType="comunas"
-      title="Comunas"
+      title="COMUNAS"
       fields={fields}
       idField="com_id"
+      statusField="com_vigente"
     />
   );
 };

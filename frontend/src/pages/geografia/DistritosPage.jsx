@@ -20,7 +20,7 @@ const DistritosPage = () => {
   const fields = [
     {
       key: 'zon_id',
-      label: 'Zona',
+      label: 'ZONA',
       type: 'select',
       options: zonas.map((z) => ({ value: z.zon_id, label: z.zon_descripcion })),
       render: (value) => {
@@ -28,25 +28,16 @@ const DistritosPage = () => {
         return zona ? zona.zon_descripcion : value;
       },
     },
-    { key: 'dis_descripcion', label: 'Descripción', type: 'text', fullWidth: true },
-    {
-      key: 'dis_vigente',
-      label: 'Vigente',
-      type: 'select',
-      options: [
-        { value: 'true', label: 'Sí' },
-        { value: 'false', label: 'No' },
-      ],
-      render: (value) => (value ? 'Sí' : 'No'),
-    },
+    { key: 'dis_descripcion', label: 'DESCRIPCIÓN', type: 'text', fullWidth: true },
   ];
 
   return (
     <GeografiaList
       geografiaType="distritos"
-      title="Distritos"
+      title="DISTRITOS"
       fields={fields}
       idField="dis_id"
+      statusField="dis_vigente"
     />
   );
 };
