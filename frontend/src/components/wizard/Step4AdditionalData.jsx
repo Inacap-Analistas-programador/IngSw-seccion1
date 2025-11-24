@@ -29,7 +29,7 @@ const Step4AdditionalData = ({ formData, updateFormData }) => {
           </select>
         </div>
 
-        {formData.vehicle === 'si' && (
+        {formData.vehiculo === 'si' && (
           <>
             <div className="space-y-2">
               <Label htmlFor="vehiculoMarca">Marca del Vehículo</Label>

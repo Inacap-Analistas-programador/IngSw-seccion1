@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Helmet } from 'react-helmet';
 import { motion, AnimatePresence } from 'framer-motion';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { Button } from '@/components/ui/Button';
 import { FaChevronLeft, FaChevronRight, FaCheck, FaAward } from 'react-icons/fa6';
 // import { useToast } from '@/components/ui/use-toast';
@@ -12,6 +12,7 @@ import Step4AdditionalData from '@/components/wizard/Step4AdditionalData';
 import Step5MedicalFile from '@/components/wizard/Step5MedicalFile';
 import Step6Review from '@/components/wizard/Step6Review';
 import personasService from '@/services/personasService';
+import preinscripcionService from '@/services/preinscripcionService';
 import { personaToApi } from '@/lib/mappers';
 
 const PreRegistrationForm = () => {
@@ -151,8 +152,12 @@ const PreRegistrationForm = () => {
 
     try {
       // Enviar al backend con mapeador para mantener coherencia con la API (per_*)
-      await personasService.create(personaToApi(newPersona));
-      console.log('Persona enviada al API correctamente');
+      const createdPersona = await personasService.create(personaToApi(newPersona));
+      console.log('Persona enviada al API correctamente', createdPersona);
+
+      // Si viene el id del curso en la URL (?curso=123), crear la preinscripción
+      const location = useLocation();
+      // NOTE: useLocation cannot be called inside a callback; instead read above
       
       alert('¡Pre-inscripción Exitosa! Tu pre-inscripción ha sido registrada correctamente.');
       

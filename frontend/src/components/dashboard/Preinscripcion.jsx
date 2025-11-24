@@ -179,10 +179,15 @@ const Inscripciones = () => {
   };
 
   const filteredSubmissions = submissions.filter((sub) => {
+    const nameToSearch = (sub.persona_nombre || sub.nombre || '').toLowerCase();
+    const emailToSearch = (sub.persona_email || sub.email || '').toLowerCase();
+    const cursoToSearch = (sub.curso || '').toLowerCase();
+
     const matchesSearch =
-      sub.nombre.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      sub.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      sub.curso.toLowerCase().includes(searchTerm.toLowerCase());
+      nameToSearch.includes(searchTerm.toLowerCase()) ||
+      emailToSearch.includes(searchTerm.toLowerCase()) ||
+      cursoToSearch.includes(searchTerm.toLowerCase());
+
     const matchesStatus = statusFilter === 'todos' || sub.estado === statusFilter;
     return matchesSearch && matchesStatus;
   });
@@ -282,8 +287,8 @@ const Inscripciones = () => {
                   >
                     <td className="py-3 px-4">
                       <div>
-                        <p className="font-medium text-gray-900">{submission.nombre}</p>
-                        <p className="text-sm text-gray-500">{submission.email}</p>
+                        <p className="font-medium text-gray-900">{submission.persona_nombre || submission.nombre}</p>
+                        <p className="text-sm text-gray-500">{submission.persona_email || submission.email}</p>
                       </div>
                     </td>
                     <td className="py-3 px-4 text-sm text-gray-700">{submission.curso}</td>
@@ -355,11 +360,11 @@ const Inscripciones = () => {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
                   <p className="text-sm text-gray-600 font-medium">Nombre Completo</p>
-                  <p className="text-gray-900">{selectedSubmission.nombre}</p>
+                  <p className="text-gray-900">{selectedSubmission.persona_nombre || selectedSubmission.nombre}</p>
                 </div>
                 <div>
                   <p className="text-sm text-gray-600 font-medium">Email</p>
-                  <p className="text-gray-900">{selectedSubmission.email}</p>
+                  <p className="text-gray-900">{selectedSubmission.persona_email || selectedSubmission.email}</p>
                 </div>
                 <div>
                   <p className="text-sm text-gray-600 font-medium">Teléfono</p>

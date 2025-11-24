@@ -46,6 +46,11 @@ class Preinscripcion(models.Model):
     en_lista_espera = models.BooleanField(default=False)
     # motivo_rechazo: Motivo si la preinscripción es rechazada
     motivo_rechazo = models.TextField(null=True, blank=True)
+    # Información de vehículo (opcional)
+    vehiculo = models.BooleanField(default=False)
+    vehiculo_marca = models.CharField(max_length=50, null=True, blank=True)
+    vehiculo_modelo = models.CharField(max_length=50, null=True, blank=True)
+    vehiculo_patente = models.CharField(max_length=20, null=True, blank=True)
     # version_optimistic_lock: Para control de concurrencia (versión del registro)
     version_optimistic_lock = models.IntegerField(default=0)
     # created_at: Fecha y hora de creación
