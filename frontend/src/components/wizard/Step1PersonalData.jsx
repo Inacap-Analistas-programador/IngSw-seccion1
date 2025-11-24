@@ -164,6 +164,9 @@ const Step1PersonalData = ({ formData, updateFormData }) => {
       setImagePreview(preview);
       
       handleChange('fotoPerfil', compressedFile);
+      
+      const sizeKB = (compressedFile.size / 1024).toFixed(1);
+      console.log(`Imagen comprimida: ${sizeKB} KB`);
     } catch (error) {
       console.error('Error compressing image:', error);
       setImageError('Error al procesar la imagen');
@@ -404,11 +407,18 @@ const Step1PersonalData = ({ formData, updateFormData }) => {
             )}
             {imagePreview && (
               <div className="mt-2">
-                <img 
-                  src={imagePreview} 
-                  alt="Vista previa" 
-                  className="max-w-xs rounded-lg shadow-md"
-                />
+                <p className="text-sm text-gray-600 mb-2">Vista previa de la foto:</p>
+                <div className="relative w-48 h-48 mx-auto border-2 border-gray-300 rounded-lg overflow-hidden">
+                  <img 
+                    src={imagePreview} 
+                    alt="Vista previa" 
+                    className="w-full h-full object-cover"
+                    style={{ objectPosition: 'center' }}
+                  />
+                </div>
+                <p className="text-xs text-gray-500 text-center mt-2">
+                  La imagen se ajustará automáticamente al área de perfil
+                </p>
               </div>
             )}
             {formData.fotoPerfil && !imageError && (
