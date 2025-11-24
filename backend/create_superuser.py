@@ -1,5 +1,5 @@
-import { Button } from 'react-native';
-import { useState, useEffect } from 'react';
+
+import os
 import django
 import getpass
 
