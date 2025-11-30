@@ -71,24 +71,7 @@ const Step6Review = ({ formData, updateFormData }) => {
         </div>
       </div>
 
-      <div className="border-t pt-6">
-        <div className="flex items-start space-x-3">
-          <Checkbox
-            id="consent"
-            checked={formData.consent}
-            onCheckedChange={(checked) => updateFormData({ consent: checked })}
-          />
-          <div className="flex-1">
-            <Label htmlFor="consent" className="cursor-pointer">
-              <span className="font-semibold text-gray-800">Acepto los términos y condiciones</span>
-              <p className="text-sm text-gray-600 mt-1">
-                Confirmo que la información proporcionada es correcta y autorizo el uso de mis datos
-                personales para fines de inscripción en los cursos de formación Scout.
-              </p>
-            </Label>
-          </div>
-        </div>
-      </div>
+      {/* Terms and consent removed per requirement: only 'Enviar' will be shown on final step */}
     </div>
   );
 };

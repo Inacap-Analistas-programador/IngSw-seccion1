@@ -63,15 +63,7 @@ const Step4AdditionalData = ({ formData, updateFormData }) => {
           </>
         )}
 
-        <div className="space-y-2">
-          <Label htmlFor="profesion">Profesión u Oficio</Label>
-          <Input
-            id="profesion"
-            value={formData.profesion}
-            onChange={(e) => handleChange('profesion', e.target.value)}
-            placeholder="Tu profesión u oficio"
-          />
-        </div>
+        {/* Profesión movida a Datos Personales (Step1) */}
 
         <div className="space-y-2">
           <Label htmlFor="religion">Religión</Label>

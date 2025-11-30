@@ -17,6 +17,7 @@ import { personaToApi } from '@/lib/mappers';
 
 const PreRegistrationForm = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   // const { toast } = useToast();
   const [currentStep, setCurrentStep] = useState(1);
 
@@ -53,6 +54,7 @@ const PreRegistrationForm = () => {
     nombreEmergencia: '',
     parentescoEmergencia: '',
     telefonoEmergencia: '',
+    estadoCivil: '',
     // Paso 4: Datos Adicionales
     vehiculo: '',
     vehiculoMarca: '',
@@ -105,10 +107,7 @@ const PreRegistrationForm = () => {
   };
 
   const handleSubmit = async () => {
-    if (!formData.consent) {
-      alert('Debes aceptar los términos y condiciones para continuar.');
-      return;
-    }
+    // Removed consent requirement: proceed to submit without checking terms checkbox
 
     const [nombres, ...apellidos] = (formData.nombreCompleto || '').split(' ');
     const apellidoPaterno = apellidos[0] || '';
@@ -152,22 +151,49 @@ const PreRegistrationForm = () => {
 
     try {
       // Enviar al backend con mapeador para mantener coherencia con la API (per_*)
-      const createdPersona = await personasService.create(personaToApi(newPersona));
-      console.log('Persona enviada al API correctamente', createdPersona);
+      const createdPersonaResp = await personasService.create(personaToApi(newPersona));
+      const createdPersonaData = createdPersonaResp?.data || createdPersonaResp;
+      // Extract persona id from possible response shapes
+      const personaId = createdPersonaData?.per_id || createdPersonaData?.id || createdPersonaData?.perId || null;
 
       // Si viene el id del curso en la URL (?curso=123), crear la preinscripción
-      const location = useLocation();
-      // NOTE: useLocation cannot be called inside a callback; instead read above
-      
+      const params = new URLSearchParams(location.search);
+      const cursoId = params.get('curso');
+
+      // If needs accommodation, append marker to observaciones in PERSONA_CURSO
+      let observ = formData.observaciones || '';
+      if (formData.needsAccommodation === 'si') {
+        observ = observ ? `${observ} (*ALOJAMIENTO*)` : '(*ALOJAMIENTO*)';
+      }
+
+      // Validation: Cargo required when Zona + Distrito selected but Grupo not
+      if (formData.zona && formData.distrito && !formData.grupo && !formData.cargo) {
+        alert('El campo Cargo es obligatorio cuando se selecciona Zona y Distrito sin Grupo.');
+        return;
+      }
+
+      if (cursoId && personaId) {
+        try {
+          await preinscripcionService.create({
+            persona: personaId,
+            curso: cursoId,
+            estado: 1,
+            observaciones: observ,
+          });
+        } catch (e) {
+          console.warn('No se pudo crear preinscripción automáticamente:', e);
+        }
+      }
+
       alert('¡Pre-inscripción Exitosa! Tu pre-inscripción ha sido registrada correctamente.');
-      
+
       setTimeout(() => {
         navigate('/');
-      }, 2000);
+      }, 1200);
     } catch (err) {
       console.error('Error al enviar pre-inscripción:', err);
-      const errorMessage = err.response?.data?.message || err.message || 'Error desconocido';
-      alert(`Error al enviar la pre-inscripción: ${errorMessage}. Por favor, verifica tu conexión e intenta nuevamente.`);
+      const errorMessage = err.response?.data || err.response?.data?.message || err.message || 'Error desconocido';
+      alert(`Error al enviar la pre-inscripción: ${JSON.stringify(errorMessage)}. Por favor, verifica tu conexión e intenta nuevamente.`);
     }
   };
 

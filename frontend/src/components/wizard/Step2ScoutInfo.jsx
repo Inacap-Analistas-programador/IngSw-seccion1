@@ -7,6 +7,18 @@ const Step2ScoutInfo = ({ formData, updateFormData }) => {
     updateFormData({ [field]: value });
   };
 
+  // Static options (replace with API data if available)
+  const zonas = ['Norte', 'Sur', 'Centro', 'Occidente'];
+  const distritos = ['Distrito 1', 'Distrito 2', 'Distrito 3'];
+  const grupos = ['Grupo A', 'Grupo B', 'Grupo C'];
+  const roles = ['Dirigente', 'Colaborador', 'Voluntario'];
+  const estadosCiviles = [
+    { value: 'soltero', label: 'Soltero(a)' },
+    { value: 'casado', label: 'Casado(a)' },
+    { value: 'otro', label: 'Otro' },
+  ];
+  const ramas = ['Castores', 'Lobatos', 'Scouts', 'Pioneros', 'Rovers'];
+
   return (
     <div className="space-y-6">
       <div>
@@ -17,70 +29,110 @@ const Step2ScoutInfo = ({ formData, updateFormData }) => {
       </div>
 
       <div className="grid md:grid-cols-2 gap-4">
-        <div className="space-y-2">
-          <Label htmlFor="rol">Rol *</Label>
-          <Input
-            id="rol"
-            value={formData.rol}
-            onChange={(e) => handleChange('rol', e.target.value)}
-            placeholder="Dirigente / Colaborador"
-          />
-        </div>
+        {/* Association top row: Zona, Distrito, Grupo (compact) */}
+        <div className="md:col-span-2">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+            <div className="space-y-2">
+              <Label htmlFor="zona">Zona</Label>
+              <select
+                id="zona"
+                value={formData.zona}
+                onChange={(e) => handleChange('zona', e.target.value)}
+                className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
+              >
+                <option value="">Seleccionar Zona</option>
+                {zonas.map((z) => (
+                  <option key={z} value={z}>{z}</option>
+                ))}
+              </select>
+            </div>
 
-        <div className="space-y-2">
-          <Label htmlFor="esIndividual">¿Es persona individual? *</Label>
-          <select
-            id="esIndividual"
-            value={formData.esIndividual}
-            onChange={(e) => handleChange('esIndividual', e.target.value)}
-            className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-          >
-            <option value="">Seleccionar</option>
-            <option value="no">No</option>
-            <option value="si">Sí</option>
-          </select>
-        </div>
+            <div className="space-y-2">
+              <Label htmlFor="distrito">Distrito</Label>
+              <select
+                id="distrito"
+                value={formData.distrito}
+                onChange={(e) => handleChange('distrito', e.target.value)}
+                className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
+              >
+                <option value="">Seleccionar Distrito</option>
+                {distritos.map((d) => (
+                  <option key={d} value={d}>{d}</option>
+                ))}
+              </select>
+            </div>
 
-        {formData.esIndividual !== 'si' && (
-          <div className="space-y-2">
-            <Label htmlFor="grupo">Organización / Grupo *</Label>
-            <Input
-              id="grupo"
-              value={formData.grupo}
-              onChange={(e) => handleChange('grupo', e.target.value)}
-              placeholder="Nombre de la organización o grupo"
-            />
+            <div className="space-y-2">
+              <Label htmlFor="grupo">Grupo</Label>
+              <select
+                id="grupo"
+                value={formData.grupo}
+                onChange={(e) => handleChange('grupo', e.target.value)}
+                className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
+              >
+                <option value="">Seleccionar Grupo</option>
+                {grupos.map((g) => (
+                  <option key={g} value={g}>{g}</option>
+                ))}
+              </select>
+            </div>
           </div>
-        )}
-
-        <div className="space-y-2">
-          <Label htmlFor="cargo">Cargo *</Label>
-          <Input
-            id="cargo"
-            value={formData.cargo}
-            onChange={(e) => handleChange('cargo', e.target.value)}
-            placeholder="Jefe de Tropa, Dirigente"
-          />
         </div>
 
-        <div className="space-y-2">
-          <Label htmlFor="distrito">Distrito *</Label>
-          <Input
-            id="distrito"
-            value={formData.distrito}
-            onChange={(e) => handleChange('distrito', e.target.value)}
-            placeholder="Distrito"
-          />
-        </div>
+        {/* Role and cargo next */}
+        <div className="space-y-2 md:col-span-2">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+            <div className="space-y-2">
+              <Label htmlFor="rol">Rol</Label>
+              <select
+                id="rol"
+                value={formData.rol}
+                onChange={(e) => handleChange('rol', e.target.value)}
+                className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
+              >
+                <option value="">Seleccionar Rol</option>
+                {roles.map((r) => (
+                  <option key={r} value={r}>{r}</option>
+                ))}
+              </select>
+            </div>
 
-        <div className="space-y-2">
-          <Label htmlFor="zona">Zona *</Label>
-          <Input
-            id="zona"
-            value={formData.zona}
-            onChange={(e) => handleChange('zona', e.target.value)}
-            placeholder="Zona"
-          />
+            <div className="space-y-2">
+              {/* Cargo visibility/requirement rules handled here */}
+              {!(formData.zona && formData.distrito && formData.grupo) ? (
+                <>
+                  <Label htmlFor="cargo">Cargo {formData.zona && formData.distrito && !formData.grupo ? '*' : ''}</Label>
+                  <Input
+                    id="cargo"
+                    value={formData.cargo}
+                    onChange={(e) => handleChange('cargo', e.target.value)}
+                    placeholder="Jefe de Tropa, Dirigente"
+                  />
+                </>
+              ) : (
+                // If zona + distrito + grupo present, hide cargo and clear it
+                <>
+                  {formData.cargo && handleChange('cargo', '')}
+                  <Label className="text-sm text-gray-500">Cargo (no aplica con Zona+Distrito+Grupo)</Label>
+                </>
+              )}
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="estadoCivil">Estado Civil</Label>
+              <select
+                id="estadoCivil"
+                value={formData.estadoCivil}
+                onChange={(e) => handleChange('estadoCivil', e.target.value)}
+                className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
+              >
+                <option value="">Seleccionar</option>
+                {estadosCiviles.map((s) => (
+                  <option key={s.value} value={s.value}>{s.label}</option>
+                ))}
+              </select>
+            </div>
+          </div>
         </div>
 
         <div className="space-y-2">
@@ -98,22 +150,53 @@ const Step2ScoutInfo = ({ formData, updateFormData }) => {
           </select>
         </div>
 
-        {formData.nivel === 'avanzado' && (
+        {/* Nivel & ramas logic */}
+        <div className="space-y-2">
+          <Label htmlFor="nivel">Nivel *</Label>
+          <select
+            id="nivel"
+            value={formData.nivel}
+            onChange={(e) => handleChange('nivel', e.target.value)}
+            className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
+          >
+            <option value="">Seleccionar nivel</option>
+            <option value="inicial">Inicial</option>
+            <option value="medio">Medio</option>
+            <option value="avanzado">Avanzado</option>
+          </select>
+        </div>
+
+        {formData.nivel === 'medio' && (
           <div className="space-y-2">
-            <Label htmlFor="ramaFormacion">Rama de Formación *</Label>
+            <Label htmlFor="subNivel">Sub-nivel</Label>
             <select
-              id="ramaFormacion"
-              value={formData.ramaFormacion}
-              onChange={(e) => handleChange('ramaFormacion', e.target.value)}
-              className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+              id="subNivel"
+              value={formData.subNivel || ''}
+              onChange={(e) => handleChange('subNivel', e.target.value)}
+              className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
             >
-              <option value="">Seleccionar rama</option>
-              <option value="castores">Castores</option>
-              <option value="lobatos">Lobatos</option>
-              <option value="scouts">Scouts</option>
-              <option value="pioneros">Pioneros</option>
-              <option value="rovers">Rovers</option>
+              <option value="">Ninguno</option>
+              <option value="avanzado">Avanzado</option>
             </select>
+          </div>
+        )}
+
+        {/* Show ramas list to pick from depending on nivel */}
+        {formData.nivel && (
+          <div className="space-y-2 md:col-span-2">
+            <Label>Ramas (haz click para seleccionar)</Label>
+            <div className="flex flex-wrap gap-2 mt-2">
+              {ramas.map((r) => (
+                <button
+                  key={r}
+                  type="button"
+                  onClick={() => handleChange('ramaFormacion', r)}
+                  className={`px-3 py-1 border rounded ${formData.ramaFormacion===r? 'bg-primary text-white':''}`}
+                >
+                  {r}
+                </button>
+              ))}
+            </div>
           </div>
         )}
 
@@ -174,19 +257,17 @@ const Step2ScoutInfo = ({ formData, updateFormData }) => {
                 id="verificador"
                 value={formData.verificador}
                 onChange={(e) => handleChange('verificador', e.target.value)}
-                placeholder="Verificador"
+                onBlur={(e) => {
+                  const val = (e.target.value || '').toUpperCase();
+                  if (val && !val.endsWith('R')) {
+                    handleChange('verificador', `${val}R`);
+                  }
+                }}
+                placeholder="Verificador (se añadirá 'R' si falta)"
               />
             </div>
 
-            <div className="space-y-2">
-              <Label htmlFor="historialFormador">Historial de Formador</Label>
-              <Input
-                id="historialFormador"
-                value={formData.historialFormador}
-                onChange={(e) => handleChange('historialFormador', e.target.value)}
-                placeholder="Historial de formador"
-              />
-            </div>
+            {/* Do not show historial when esFormador === 'si' per requirement */}
           </div>
         </div>
       )}
