@@ -29,8 +29,10 @@ const Step1PersonalData = ({ formData, updateFormData }) => {
 
   const handleRutChange = (value) => {
     const digits = stripRutDigits(value);
-    setRutInput(digits);
-    updateFormData({ rut: digits });
+    const maxDigits = digits.slice(0, 9);
+
+    setRutInput(maxDigits);
+    updateFormData({ rut: maxDigits });
   };
 
   const handleSearchByRut = async () => {

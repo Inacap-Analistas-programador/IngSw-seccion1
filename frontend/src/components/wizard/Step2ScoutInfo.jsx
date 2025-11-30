@@ -150,22 +150,6 @@ const Step2ScoutInfo = ({ formData, updateFormData }) => {
           </select>
         </div>
 
-        {/* Nivel & ramas logic */}
-        <div className="space-y-2">
-          <Label htmlFor="nivel">Nivel *</Label>
-          <select
-            id="nivel"
-            value={formData.nivel}
-            onChange={(e) => handleChange('nivel', e.target.value)}
-            className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
-          >
-            <option value="">Seleccionar nivel</option>
-            <option value="inicial">Inicial</option>
-            <option value="medio">Medio</option>
-            <option value="avanzado">Avanzado</option>
-          </select>
-        </div>
-
         {formData.nivel === 'medio' && (
           <div className="space-y-2">
             <Label htmlFor="subNivel">Sub-nivel</Label>
