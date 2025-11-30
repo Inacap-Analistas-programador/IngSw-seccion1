@@ -1,19 +1,18 @@
-import React, { useRef } from 'react';
-import { Label } from '@/components/ui/Label';
-import { Input } from '@/components/ui/Input';
+import React, { useRef, useState } from 'react';
 import { Upload, Download } from 'lucide-react';
 
 const Step5MedicalFile = ({ formData, updateFormData }) => {
   const inputRef = useRef(null);
+  const [dragActive, setDragActive] = useState(false);
 
-  const handleFileChange = (e) => {
-    const file = e.target.files[0];
+  const allowedTypes = [
+    'application/pdf',
+    'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+    'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+  ];
+
+  const handleFileChange = (file) => {
     if (file) {
-      const allowedTypes = [
-        'application/pdf',
-        'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
-        'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-      ];
       if (allowedTypes.includes(file.type)) {
         updateFormData({ medicalFile: file });
       } else {
@@ -22,9 +21,9 @@ const Step5MedicalFile = ({ formData, updateFormData }) => {
     }
   };
 
-  const triggerFileDialog = () => {
-    if (inputRef.current) inputRef.current.click();
-  };
+  const onInputChange = (e) => handleFileChange(e.target.files[0]);
+
+  const triggerFileDialog = () => inputRef.current?.click();
 
   const handleDownload = () => {
     const file = formData.medicalFile;
@@ -39,6 +38,26 @@ const Step5MedicalFile = ({ formData, updateFormData }) => {
     URL.revokeObjectURL(url);
   };
 
+  // Eventos drag & drop
+  const handleDrag = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (e.type === 'dragenter' || e.type === 'dragover') {
+      setDragActive(true);
+    } else if (e.type === 'dragleave') {
+      setDragActive(false);
+    }
+  };
+
+  const handleDrop = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setDragActive(false);
+    if (e.dataTransfer.files && e.dataTransfer.files[0]) {
+      handleFileChange(e.dataTransfer.files[0]);
+    }
+  };
+
   return (
     <div className="space-y-6">
       <div>
@@ -46,7 +65,14 @@ const Step5MedicalFile = ({ formData, updateFormData }) => {
         <p className="text-gray-600">Sube tu ficha médica en formato PDF, DOCX o XLSX.</p>
       </div>
 
-      <div className="border-2 border-dashed border-gray-300 rounded-lg p-8 text-center hover:border-primary/60 transition-colors duration-300">
+      <div
+        className={`border-2 border-dashed rounded-lg p-8 text-center transition-colors duration-300 
+          ${dragActive ? 'border-blue-500 bg-blue-50' : 'border-gray-300 hover:border-primary/60'}`}
+        onDragEnter={handleDrag}
+        onDragLeave={handleDrag}
+        onDragOver={handleDrag}
+        onDrop={handleDrop}
+      >
         <Upload className="w-12 h-12 text-gray-400 mx-auto mb-4" />
         <div className="flex items-center justify-center gap-4">
           <button
@@ -63,7 +89,7 @@ const Step5MedicalFile = ({ formData, updateFormData }) => {
             id="medicalFile"
             type="file"
             accept=".pdf,.docx,.xlsx"
-            onChange={handleFileChange}
+            onChange={onInputChange}
             className="hidden"
           />
 
@@ -79,6 +105,7 @@ const Step5MedicalFile = ({ formData, updateFormData }) => {
             DESCARGAR
           </button>
         </div>
+
         {formData.medicalFile && (
           <div className="mt-4 p-3 bg-primary/5 rounded-md">
             <p className="text-sm text-[#001558] font-medium">
