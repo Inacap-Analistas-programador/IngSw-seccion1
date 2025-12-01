@@ -17,7 +17,13 @@ class PagoPersona(models.Model):
     # pap_fecha_hora: Fecha y hora de registro/modificación
     pap_fecha_hora = models.DateTimeField()
     # pap_tipo: Tipo de pago (1: Ingreso, 2: Egreso)
-    pap_tipo = models.IntegerField()
+    PAP_TIPO_INGRESO = 1
+    PAP_TIPO_EGRESO = 2
+    PAP_TIPO_CHOICES = (
+        (PAP_TIPO_INGRESO, 'Ingreso'),
+        (PAP_TIPO_EGRESO, 'Egreso'),
+    )
+    pap_tipo = models.IntegerField(choices=PAP_TIPO_CHOICES)
     # pap_valor: Monto del pago
     pap_valor = models.DecimalField(max_digits=21, decimal_places=6)
     # pap_observacion: Observaciones sobre el pago
@@ -29,7 +35,7 @@ class PagoPersona(models.Model):
         verbose_name_plural = 'Pagos de Personas'
 
     def __str__(self):
-        return f"Pago {self.pap_id} de {self.per_id} por {self.pap_valor}"
+        return f"Pago {self.pap_id} de {self.per_id} por {self.pap_valor} ({self.get_pap_tipo_display()})"
 
 # Tabla: comprobante_pago
 class ComprobantePago(models.Model):

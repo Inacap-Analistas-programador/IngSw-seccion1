@@ -1,83 +1,136 @@
-import { useState, useEffect } from 'react';
-import api from '@/lib/api';
+import React, { useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import {
+  Wallet,
+  FileText,
+  CreditCard,
+  BookOpen,
+  History,
+  LayoutDashboard
+} from 'lucide-react';
+import GestionPagos from './GestionPagos';
+import ComprobantesPagos from './ComprobantesPagos';
+import Prepagos from './Prepagos';
+import ConceptoContable from './ConceptoContable';
+import HistorialPagos from './HistorialPagos';
+import EstadisticasPagos from './EstadisticasPagos';
 
 const DashboardPagos = () => {
-  const [stats, setStats] = useState({
-    total_ingresos: 0,
-    pagos_pendientes: 0,
-    cursos_pagados: 0
-  });
-  const [loading, setLoading] = useState(true);
+  const [activeTab, setActiveTab] = useState('resumen');
 
-  useEffect(() => {
-    loadPaymentStats();
-  }, []);
-
-  const loadPaymentStats = async () => {
-    try {
-      setLoading(true);
-      const response = await api.get('/usuarios/dashboard/payment-stats/');
-      setStats(response.data);
-    } catch (error) {
-      console.error('Error loading payment stats:', error);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const formatCurrency = (amount) => {
-    return new Intl.NumberFormat('es-CL', {
-      style: 'currency',
-      currency: 'CLP',
-      minimumFractionDigits: 0
-    }).format(amount);
-  };
+  const tabs = [
+    { id: 'resumen', label: 'Resumen', icon: LayoutDashboard },
+    { id: 'gestion', label: 'Gestión de Pagos', icon: Wallet },
+    { id: 'comprobantes', label: 'Comprobantes', icon: FileText },
+    { id: 'prepagos', label: 'Prepagos', icon: CreditCard },
+    { id: 'conceptos', label: 'Conceptos Contables', icon: BookOpen },
+    { id: 'historial', label: 'Historial', icon: History },
+  ];
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-      <div className="bg-gradient-to-br from-green-50 to-green-100 p-4 rounded-lg border border-green-200">
-        <h3 className="text-sm font-medium text-green-800 mb-1">Total Ingresos</h3>
-        {loading ? (
-          <div className="animate-pulse">
-            <div className="h-8 bg-green-200 rounded w-1/2 mb-2"></div>
-            <div className="h-3 bg-green-200 rounded w-1/3"></div>
-          </div>
-        ) : (
-          <>
-            <p className="text-2xl font-bold text-green-900">{formatCurrency(stats.total_ingresos)}</p>
-            <p className="text-xs text-green-600 mt-1">Este mes</p>
-          </>
-        )}
+    <div className="space-y-6">
+      {/* Header & Tabs */}
+      <div className="flex flex-col gap-6">
+        <div>
+          <h1 className="text-2xl font-bold text-white mb-2">Gestión Financiera</h1>
+          <p className="text-white/60">Administra pagos, comprobantes y conceptos contables</p>
+        </div>
+
+        <div className="flex flex-wrap gap-2 p-1 bg-white/5 rounded-xl w-fit">
+          {tabs.map((tab) => (
+            <button
+              key={tab.id}
+              onClick={() => setActiveTab(tab.id)}
+              className={`
+                flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200
+                ${activeTab === tab.id
+                  ? 'bg-emerald-500 text-white shadow-lg shadow-emerald-500/20'
+                  : 'text-white/60 hover:text-white hover:bg-white/5'
+                }
+              `}
+            >
+              <tab.icon size={16} />
+              {tab.label}
+            </button>
+          ))}
+        </div>
       </div>
-      
-      <div className="bg-gradient-to-br from-yellow-50 to-yellow-100 p-4 rounded-lg border border-yellow-200">
-        <h3 className="text-sm font-medium text-yellow-800 mb-1">Pagos Pendientes</h3>
-        {loading ? (
-          <div className="animate-pulse">
-            <div className="h-8 bg-yellow-200 rounded w-1/2 mb-2"></div>
-            <div className="h-3 bg-yellow-200 rounded w-1/3"></div>
-          </div>
-        ) : (
-          <>
-            <p className="text-2xl font-bold text-yellow-900">{stats.pagos_pendientes}</p>
-            <p className="text-xs text-yellow-600 mt-1">Por confirmar</p>
-          </>
-        )}
-      </div>
-      
-      <div className="bg-gradient-to-br from-blue-50 to-blue-100 p-4 rounded-lg border border-blue-200">
-        <h3 className="text-sm font-medium text-blue-800 mb-1">Cursos Pagados</h3>
-        {loading ? (
-          <div className="animate-pulse">
-            <div className="h-8 bg-blue-200 rounded w-1/2 mb-2"></div>
-            <div className="h-3 bg-blue-200 rounded w-1/3"></div>
-          </div>
-        ) : (
-          <>
-            <p className="text-2xl font-bold text-blue-900">{stats.cursos_pagados}</p>
-            <p className="text-xs text-blue-600 mt-1">Total registrados</p>
-          </>
-        )}
+
+      {/* Content Area */}
+      <div className="relative min-h-[400px]">
+        <AnimatePresence mode="wait">
+          {activeTab === 'resumen' && (
+            <motion.div
+              key="resumen"
+              initial={{ opacity: 0, x: 20 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: -20 }}
+              transition={{ duration: 0.2 }}
+            >
+              <EstadisticasPagos />
+            </motion.div>
+          )}
+
+          {activeTab === 'gestion' && (
+            <motion.div
+              key="gestion"
+              initial={{ opacity: 0, x: 20 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: -20 }}
+              transition={{ duration: 0.2 }}
+            >
+              <GestionPagos />
+            </motion.div>
+          )}
+
+          {activeTab === 'comprobantes' && (
+            <motion.div
+              key="comprobantes"
+              initial={{ opacity: 0, x: 20 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: -20 }}
+              transition={{ duration: 0.2 }}
+            >
+              <ComprobantesPagos />
+            </motion.div>
+          )}
+
+          {activeTab === 'prepagos' && (
+            <motion.div
+              key="prepagos"
+              initial={{ opacity: 0, x: 20 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: -20 }}
+              transition={{ duration: 0.2 }}
+            >
+              <Prepagos />
+            </motion.div>
+          )}
+
+          {activeTab === 'conceptos' && (
+            <motion.div
+              key="conceptos"
+              initial={{ opacity: 0, x: 20 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: -20 }}
+              transition={{ duration: 0.2 }}
+            >
+              <ConceptoContable />
+            </motion.div>
+          )}
+
+          {activeTab === 'historial' && (
+            <motion.div
+              key="historial"
+              initial={{ opacity: 0, x: 20 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: -20 }}
+              transition={{ duration: 0.2 }}
+            >
+              <HistorialPagos />
+            </motion.div>
+          )}
+        </AnimatePresence>
       </div>
     </div>
   );

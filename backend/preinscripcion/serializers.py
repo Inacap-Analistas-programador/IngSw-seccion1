@@ -96,7 +96,7 @@ class DocumentoSerializer(serializers.ModelSerializer):
     class Meta:
         model = Documento
         fields = [
-            'id', 'persona', 'archivo_relacionado', 'tipo_documento',
+            'id', 'persona', 'archivo_relacionado', 'archivo', 'tipo_documento',
             'numero', 'file_size', 'uploaded_at', 'verified',
             'persona_nombre'
         ]

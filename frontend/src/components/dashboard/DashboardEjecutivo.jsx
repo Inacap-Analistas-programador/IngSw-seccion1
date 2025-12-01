@@ -34,7 +34,7 @@ const DashboardEjecutivo = () => {
   const loadDashboardData = async () => {
     try {
       setLoading(true);
-      
+
       // Load all dashboard data in parallel
       const [statsData, coursesData, activityData] = await Promise.all([
         api.get('/usuarios/dashboard/executive-stats/').then(r => r.data),
@@ -104,11 +104,7 @@ const DashboardEjecutivo = () => {
   return (
     <div className="space-y-6">
       {/* Period Selector */}
-      <div className="flex justify-between items-center">
-        <div>
-          <h2 className="text-2xl font-bold text-gray-800">Vista Ejecutiva</h2>
-          <p className="text-gray-600 text-sm mt-1">Resumen general de la plataforma</p>
-        </div>
+      <div className="flex justify-end items-center">
         <div className="flex gap-2">
           <Button
             variant={selectedPeriod === 'semana' ? 'default' : 'outline'}
@@ -139,10 +135,10 @@ const DashboardEjecutivo = () => {
         {loading ? (
           // Loading skeletons
           [1, 2, 3, 4].map((i) => (
-            <Card key={i}>
-              <div className="animate-pulse">
-                <div className="h-4 bg-gray-200 rounded w-1/2 mb-2"></div>
-                <div className="h-8 bg-gray-200 rounded w-3/4"></div>
+            <Card key={i} className="bg-white/5 border-white/10 backdrop-blur-sm">
+              <div className="animate-pulse p-4">
+                <div className="h-4 bg-white/10 rounded w-1/2 mb-2"></div>
+                <div className="h-8 bg-white/10 rounded w-3/4"></div>
               </div>
             </Card>
           ))
@@ -161,9 +157,9 @@ const DashboardEjecutivo = () => {
           ))
         ) : (
           <div className="col-span-4">
-            <Card>
+            <Card className="bg-white/5 border-white/10 backdrop-blur-sm">
               <CardContent>
-                <p className="text-gray-500 text-center py-4">No hay datos disponibles</p>
+                <p className="text-white/50 text-center py-4">No hay datos disponibles</p>
               </CardContent>
             </Card>
           </div>
@@ -172,22 +168,22 @@ const DashboardEjecutivo = () => {
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Recent Courses */}
-        <Card>
-          <CardHeader className="pb-3">
+        <Card className="bg-white/5 border-white/10 backdrop-blur-sm">
+          <CardHeader className="pb-3 border-b border-white/5">
             <div className="flex justify-between items-center">
-              <CardTitle className="text-xl">Cursos Próximos</CardTitle>
-              <Button variant="ghost" size="sm">
+              <CardTitle className="text-xl text-white">Cursos Próximos</CardTitle>
+              <Button variant="ghost" size="sm" className="text-white/70 hover:text-white hover:bg-white/10">
                 Ver todos
               </Button>
             </div>
           </CardHeader>
-          <CardContent>
+          <CardContent className="pt-4">
             {loading ? (
               <div className="space-y-3">
                 {[1, 2, 3].map((i) => (
                   <div key={i} className="animate-pulse">
-                    <div className="h-4 bg-gray-200 rounded w-3/4 mb-2"></div>
-                    <div className="h-3 bg-gray-200 rounded w-1/2"></div>
+                    <div className="h-4 bg-white/10 rounded w-3/4 mb-2"></div>
+                    <div className="h-3 bg-white/10 rounded w-1/2"></div>
                   </div>
                 ))}
               </div>
@@ -196,36 +192,36 @@ const DashboardEjecutivo = () => {
                 {recentCourses.map((curso) => (
                   <div
                     key={curso.id}
-                    className="p-4 border border-gray-200 rounded-lg hover:border-scout-azul-claro hover:bg-scout-azul-muy-claro/30 transition-all duration-200"
+                    className="p-4 border border-white/10 rounded-lg hover:bg-white/5 transition-all duration-200 bg-white/5"
                   >
                     <div className="flex justify-between items-start mb-3">
-                      <h3 className="font-semibold text-gray-900">{curso.nombre}</h3>
+                      <h3 className="font-semibold text-white">{curso.nombre}</h3>
                       {getEstadoBadge(curso.estado)}
                     </div>
-                    <div className="space-y-2 text-sm text-gray-600">
+                    <div className="space-y-2 text-sm text-white/60">
                       {curso.fecha && (
                         <div className="flex items-center gap-2">
-                          <Calendar className="w-4 h-4 text-scout-azul-medio" />
+                          <Calendar className="w-4 h-4 text-emerald-400" />
                           <span>{curso.fecha}</span>
                         </div>
                       )}
                       {curso.lugar && (
                         <div className="flex items-center gap-2">
-                          <MapPin className="w-4 h-4 text-scout-azul-medio" />
+                          <MapPin className="w-4 h-4 text-emerald-400" />
                           <span>{curso.lugar}</span>
                         </div>
                       )}
                       <div className="flex items-center gap-2">
-                        <Users className="w-4 h-4 text-scout-azul-medio" />
+                        <Users className="w-4 h-4 text-emerald-400" />
                         <span>
                           {curso.inscritos}/{curso.capacidad} participantes
                         </span>
                       </div>
                     </div>
                     <div className="mt-3">
-                      <div className="w-full bg-gray-200 rounded-full h-2">
+                      <div className="w-full bg-white/10 rounded-full h-2">
                         <div
-                          className="bg-gradient-to-r from-scout-azul-medio to-scout-azul-claro h-2 rounded-full transition-all duration-300"
+                          className="bg-gradient-to-r from-emerald-500 to-teal-500 h-2 rounded-full transition-all duration-300"
                           style={{ width: `${(curso.inscritos / curso.capacidad) * 100}%` }}
                         ></div>
                       </div>
@@ -234,29 +230,29 @@ const DashboardEjecutivo = () => {
                 ))}
               </div>
             ) : (
-              <p className="text-gray-500 text-center py-4">No hay cursos próximos</p>
+              <p className="text-white/50 text-center py-4">No hay cursos próximos</p>
             )}
           </CardContent>
         </Card>
 
         {/* Recent Activity */}
-        <Card>
-          <CardHeader className="pb-3">
+        <Card className="bg-white/5 border-white/10 backdrop-blur-sm">
+          <CardHeader className="pb-3 border-b border-white/5">
             <div className="flex justify-between items-center">
-              <CardTitle className="text-xl">Actividad Reciente</CardTitle>
-              <Button variant="ghost" size="sm" onClick={loadDashboardData}>
+              <CardTitle className="text-xl text-white">Actividad Reciente</CardTitle>
+              <Button variant="ghost" size="sm" onClick={loadDashboardData} className="text-white/70 hover:text-white hover:bg-white/10">
                 <Clock className="w-4 h-4 mr-1" />
                 Actualizar
               </Button>
             </div>
           </CardHeader>
-          <CardContent>
+          <CardContent className="pt-4">
             {loading ? (
               <div className="space-y-3">
                 {[1, 2, 3].map((i) => (
                   <div key={i} className="animate-pulse">
-                    <div className="h-4 bg-gray-200 rounded w-3/4 mb-2"></div>
-                    <div className="h-3 bg-gray-200 rounded w-1/2"></div>
+                    <div className="h-4 bg-white/10 rounded w-3/4 mb-2"></div>
+                    <div className="h-3 bg-white/10 rounded w-1/2"></div>
                   </div>
                 ))}
               </div>
@@ -269,21 +265,21 @@ const DashboardEjecutivo = () => {
                       key={activity.id}
                       initial={{ opacity: 0, x: -20 }}
                       animate={{ opacity: 1, x: 0 }}
-                      className="flex items-start gap-3 p-3 border border-gray-200 rounded-lg hover:border-scout-azul-claro hover:bg-scout-azul-muy-claro/30 transition-all duration-200"
+                      className="flex items-start gap-3 p-3 border border-white/10 rounded-lg hover:bg-white/5 transition-all duration-200 bg-white/5"
                     >
-                      <div className={`mt-1 ${activity.color}`}>
-                        <IconComponent className="w-5 h-5" />
+                      <div className={`mt-1 p-2 rounded-lg bg-white/10 ${activity.color?.replace('text-', 'text-') || 'text-emerald-400'}`}>
+                        <IconComponent className="w-4 h-4" />
                       </div>
                       <div className="flex-1">
-                        <p className="text-sm text-gray-900 font-medium">{activity.descripcion}</p>
-                        <p className="text-xs text-gray-500 mt-1">{activity.fecha}</p>
+                        <p className="text-sm text-white font-medium">{activity.descripcion}</p>
+                        <p className="text-xs text-white/50 mt-1">{activity.fecha}</p>
                       </div>
                     </motion.div>
                   );
                 })}
               </div>
             ) : (
-              <p className="text-gray-500 text-center py-4">No hay actividad reciente</p>
+              <p className="text-white/50 text-center py-4">No hay actividad reciente</p>
             )}
           </CardContent>
         </Card>

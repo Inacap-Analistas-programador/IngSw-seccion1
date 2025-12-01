@@ -190,11 +190,21 @@ const PreRegistrationForm = () => {
           await preinscripcionService.create({
             persona: personaId,
             curso: cursoId,
-            estado: 1,
+            estado: 'enviado',
             observaciones: observ,
           });
+
+          // Upload medical file if exists
+          if (formData.medicalFile) {
+            const docData = new FormData();
+            docData.append('persona', personaId);
+            docData.append('tipo_documento', 'ficha_medica');
+            docData.append('archivo', formData.medicalFile);
+
+            await preinscripcionService.uploadDocument(docData);
+          }
         } catch (e) {
-          console.warn('No se pudo crear preinscripción automáticamente:', e);
+          console.warn('No se pudo crear preinscripción o subir archivo:', e);
         }
       }
 
@@ -294,31 +304,28 @@ const PreRegistrationForm = () => {
                 <React.Fragment key={step.number}>
                   <div className="flex flex-col items-center">
                     <div
-                      className={`w-10 h-10 rounded-full flex items-center justify-center font-bold transition-all duration-300 ${
-                        currentStep > step.number
+                      className={`w-10 h-10 rounded-full flex items-center justify-center font-bold transition-all duration-300 ${currentStep > step.number
                           ? 'bg-primary text-primary-foreground'
                           : currentStep === step.number
                             ? 'bg-primary text-primary-foreground ring-4 ring-primary/30'
                             : 'bg-gray-200 text-gray-500'
-                      }`}
+                        }`}
                     >
                       {currentStep > step.number ? <FaCheck className="w-5 h-5" /> : step.number}
                     </div>
                     <span
-                      className={`text-xs mt-2 text-center hidden md:block ${
-                        currentStep >= step.number
+                      className={`text-xs mt-2 text-center hidden md:block ${currentStep >= step.number
                           ? 'text-[#001558] font-semibold'
                           : 'text-gray-500'
-                      }`}
+                        }`}
                     >
                       {step.title}
                     </span>
                   </div>
                   {index < steps.length - 1 && (
                     <div
-                      className={`flex-1 h-1 mx-2 transition-all duration-300 ${
-                        currentStep > step.number ? 'bg-primary' : 'bg-gray-200'
-                      }`}
+                      className={`flex-1 h-1 mx-2 transition-all duration-300 ${currentStep > step.number ? 'bg-primary' : 'bg-gray-200'
+                        }`}
                     ></div>
                   )}
                 </React.Fragment>

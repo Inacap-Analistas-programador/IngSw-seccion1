@@ -2,24 +2,9 @@ import { useState, useEffect } from 'react';
 import { Helmet } from 'react-helmet';
 import { useNavigate, Routes, Route, useLocation, Navigate } from 'react-router-dom';
 import { Button } from '@/components/ui/Button';
-import {
-  FaRightFromBracket,
-  FaBars,
-  FaChartLine,
-  FaBook,
-  FaClipboardCheck,
-  FaCreditCard,
-  FaUsers,
-  FaEnvelope,
-  FaAward,
-  FaDatabase,
-  FaTruck,
-  FaChevronDown,
-  FaChevronRight,
-  FaCircleUser,
-  FaToolbox,
-} from 'react-icons/fa6';
+import { FaRightFromBracket } from 'react-icons/fa6';
 import authService from '@/services/authService';
+import ModernSidebar from '@/components/ModernSidebar';
 import Cursos from '@/components/dashboard/Cursos';
 import Pagos from '@/components/dashboard/Pagos';
 import EnvioCorreo from '@/components/dashboard/EnvioCorreo';
@@ -29,49 +14,34 @@ import Inscripciones from '@/components/dashboard/Preinscripcion';
 import Acreditacion from '@/components/dashboard/Acreditacion';
 import Personas from '@/components/dashboard/Personas';
 import UserProfilePage from '@/pages/UserProfilePage';
-
 import ProveedoresPage from '@/pages/ProveedoresPage';
-// import Breadcrumb from '@/components/Breadcrumb';
 
 const CoordinatorDashboard = () => {
   const navigate = useNavigate();
   const location = useLocation();
+  const [collapsed, setCollapsed] = useState(false);
   const [coordinator, setCoordinator] = useState(null);
-  const [sidebarOpen, setSidebarOpen] = useState(window.innerWidth >= 1024);
-  const [maestrosExpanded, setMaestrosExpanded] = useState(false);
 
-  // Move render-time console logging into an effect so it's only a side effect
   useEffect(() => {
     console.log('✅ CoordinatorDashboard renderizado correctamente, location:', location.pathname);
   }, [location.pathname]);
 
   useEffect(() => {
-    const storedCoordinator = localStorage.getItem('coordinator');
-    if (!storedCoordinator) {
-      // Para desarrollo, creamos un coordinador por defecto
-      const defaultCoordinator = {
-        correo: 'admin@gic.cl',
-        name: 'Administrador',
-        loginTime: new Date().toISOString(),
-      };
-      localStorage.setItem('coordinator', JSON.stringify(defaultCoordinator));
-      setCoordinator(defaultCoordinator);
+    const user = authService.getCurrentUser();
+    if (user) {
+      setCoordinator({
+        name: user.first_name || user.username || 'Administrador',
+        email: user.email,
+        role: 'Coordinador'
+      });
     } else {
-      setCoordinator(JSON.parse(storedCoordinator));
+      // Fallback for dev/testing if authService has no user but we are allowed in (e.g. by ProtectedRoute)
+      // or redirect to login
+      if (!authService.isAuthenticated()) {
+        navigate('/coordinador/login');
+      }
     }
   }, [navigate]);
-
-  useEffect(() => {
-    const handleResize = () => {
-      if (window.innerWidth < 1024) {
-        setSidebarOpen(false);
-      } else {
-        setSidebarOpen(true);
-      }
-    };
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
-  }, []);
 
   const handleLogout = () => {
     authService.logout('USER_ACTION');
@@ -79,7 +49,6 @@ const CoordinatorDashboard = () => {
     navigate('/');
   };
 
-  // Detectar si estamos en ruta /panel o /coordinador/panel, sino caer en /dashboard por compatibilidad
   const basePath = location.pathname.startsWith('/coordinador/panel')
     ? '/coordinador/panel'
     : location.pathname.startsWith('/panel')
@@ -88,35 +57,23 @@ const CoordinatorDashboard = () => {
         ? '/coordinador/dashboard'
         : '/dashboard';
 
-  const menuItems = [
-    { icon: FaChartLine, label: 'Dashboard', path: `${basePath}/ejecutivo` },
-    { icon: FaBook, label: 'Cursos', path: `${basePath}/gestion-cursos` },
-    { icon: FaUsers, label: 'Personas', path: `${basePath}/personas` },
-    { icon: FaCreditCard, label: 'Pagos', path: `${basePath}/gestion-pagos` },
-    { icon: FaAward, label: 'Acreditaciones', path: `${basePath}/acreditacion` },
-  ];
-
-  const maestrosSubItems = [
-    { icon: FaToolbox, label: 'Visor de Atributos', path: `${basePath}/maestros` },
-    { icon: FaUsers, label: 'Gestión de Personas', path: `${basePath}/personas` },
-    { icon: FaCreditCard, label: 'Gestión de Pagos', path: `${basePath}/gestion-pagos` },
-    { icon: FaAward, label: 'Gestión de Acreditación', path: `${basePath}/acreditacion` },
-    { icon: FaCircleUser, label: 'Administración de Perfil', path: `${basePath}/perfil` },
-  ];
-
   if (!coordinator) {
     return null;
   }
 
   const getPageTitle = () => {
-    const currentPath = location.pathname;
-    const activeItem = menuItems.find((item) => item.path === currentPath);
-    if (activeItem) return activeItem.label;
-    
-    const activeMaestrosItem = maestrosSubItems.find((item) => item.path === currentPath);
-    if (activeMaestrosItem) return activeMaestrosItem.label;
-    
-    return 'GIC';
+    const path = location.pathname;
+    if (path.includes('/ejecutivo')) return 'Vista Ejecutiva';
+    if (path.includes('/gestion-cursos')) return 'Gestión de Cursos';
+    if (path.includes('/inscripciones')) return 'Inscripciones';
+    if (path.includes('/personas')) return 'Gestión de Personas';
+    if (path.includes('/gestion-pagos')) return 'Gestión de Pagos';
+    if (path.includes('/envio-correos')) return 'Envío de Correos';
+    if (path.includes('/acreditacion')) return 'Acreditación';
+    if (path.includes('/maestros')) return 'Maestros';
+    if (path.includes('/proveedores')) return 'Proveedores';
+    if (path.includes('/perfil')) return 'Mi Perfil';
+    return 'Panel de Control';
   };
 
   return (
@@ -126,135 +83,57 @@ const CoordinatorDashboard = () => {
         <meta name="description" content="Panel de administración de la plataforma GIC." />
       </Helmet>
 
-      <div className="min-h-screen bg-gray-50 flex">
-        {/* Sidebar */}
-        <aside
-          className={`fixed lg:static inset-y-0 left-0 z-40 w-64 bg-gradient-to-b from-blue-900 to-blue-700 text-white shadow-2xl transform transition-transform duration-300 ease-in-out ${
-            sidebarOpen ? 'translate-x-0' : '-translate-x-full'
-          }`}
+      <div className="min-h-screen bg-gradient-to-br from-slate-900 via-blue-900 to-slate-900 flex">
+        {/* Modern Sidebar */}
+        <ModernSidebar
+          basePath={basePath}
+          collapsed={collapsed}
+          setCollapsed={setCollapsed}
+        />
+
+        {/* Main content - with dynamic left margin */}
+        <div
+          className={`flex-1 flex flex-col transition-all duration-300 ${collapsed ? 'ml-[80px]' : 'ml-[280px]'
+            }`}
         >
-          <div className="flex items-center justify-center h-20 border-b border-white/10 px-6">
-            <FaAward className="w-8 h-8 mr-3 text-white" />
-            <span className="text-xl font-bold text-white">GIC</span>
-          </div>
-          <nav className="p-3 space-y-1 h-full overflow-y-auto">
-            {menuItems.map((item) => {
-              const isActive = location.pathname === item.path;
-              return (
-                <Button
-                  key={item.path}
-                  onClick={() => {
-                    navigate(item.path);
-                    if (window.innerWidth < 1024) {
-                      setSidebarOpen(false);
-                    }
-                  }}
-                  variant="ghost"
-                  className={`w-full justify-start text-base py-6 transition-all duration-200 hover:bg-white/10 hover:translate-x-1 ${
-                    isActive ? 'bg-white/15 shadow-lg' : ''
-                  }`}
-                >
-                  <item.icon className="w-5 h-5 mr-3" />
-                  {item.label}
-                  {isActive && <div className="ml-auto w-1.5 h-1.5 rounded-full bg-white" />}
-                </Button>
-              );
-            })}
-            
-            {/* Maestros Toolbox with subcategories */}
-            <div className="border-t border-white/10 mt-2 pt-2">
+          {/* Integrated Header */}
+          <header className="sticky top-0 z-30 px-8 py-6 flex justify-between items-center backdrop-blur-sm bg-slate-900/50">
+            <div className="flex items-center space-x-4">
+              <span className="text-2xl font-bold text-white tracking-tight" style={{ fontFamily: 'Inter, system-ui, sans-serif' }}>
+                {getPageTitle()}
+              </span>
+            </div>
+            <div className="flex items-center space-x-4">
+              <div className="hidden md:flex items-center px-4 py-2 bg-white/5 rounded-xl border border-white/10 backdrop-blur-md">
+                <span className="text-sm text-white/90" style={{ fontFamily: 'Inter, system-ui, sans-serif' }}>
+                  Bienvenido, <span className="font-semibold text-white">{coordinator.name}</span>
+                </span>
+              </div>
               <Button
-                onClick={() => setMaestrosExpanded(!maestrosExpanded)}
+                onClick={() => navigate('/')}
                 variant="ghost"
-                className="w-full justify-start text-base py-6 transition-all duration-200 hover:bg-white/10"
+                size="sm"
+                className="text-white/70 hover:text-white hover:bg-white/10 border border-transparent hover:border-white/10"
+                style={{ fontFamily: 'Inter, system-ui, sans-serif' }}
               >
-                <FaDatabase className="w-5 h-5 mr-3" />
-                Maestros
-                {maestrosExpanded ? (
-                  <FaChevronDown className="w-4 h-4 ml-auto" />
-                ) : (
-                  <FaChevronRight className="w-4 h-4 ml-auto" />
-                )}
+                Inicio
               </Button>
-              
-              {maestrosExpanded && (
-                <div className="ml-4 mt-1 space-y-1">
-                  {maestrosSubItems.map((item) => {
-                    const isActive = location.pathname === item.path;
-                    return (
-                      <Button
-                        key={item.path}
-                        onClick={() => {
-                          navigate(item.path);
-                          if (window.innerWidth < 1024) {
-                            setSidebarOpen(false);
-                          }
-                        }}
-                        variant="ghost"
-                        className={`w-full justify-start text-sm py-4 transition-all duration-200 hover:bg-white/10 hover:translate-x-1 ${
-                          isActive ? 'bg-white/15 shadow-lg' : ''
-                        }`}
-                      >
-                        <item.icon className="w-4 h-4 mr-3" />
-                        {item.label}
-                        {isActive && <div className="ml-auto w-1.5 h-1.5 rounded-full bg-white" />}
-                      </Button>
-                    );
-                  })}
-                </div>
-              )}
+              <Button
+                onClick={handleLogout}
+                variant="ghost"
+                size="sm"
+                className="text-red-400 hover:text-red-300 hover:bg-red-500/10 border border-transparent hover:border-red-500/20"
+                style={{ fontFamily: 'Inter, system-ui, sans-serif' }}
+              >
+                <FaRightFromBracket className="w-4 h-4 mr-0 sm:mr-2" />
+                <span className="hidden sm:inline">Cerrar Sesión</span>
+              </Button>
             </div>
-          </nav>
-        </aside>
+          </header>
 
-        {/* Main content */}
-        <div className="flex-1 flex flex-col">
-          {/* Top Navbar */}
-          <nav className="bg-white shadow-sm sticky top-0 z-30 border-b border-gray-200">
-            <div className="px-4 py-4 flex justify-between items-center">
-              <div className="flex items-center space-x-4">
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  onClick={() => setSidebarOpen(!sidebarOpen)}
-                  className="text-gray-600 hover:bg-gray-100 lg:hidden"
-                >
-                  <FaBars className="w-6 h-6" />
-                </Button>
-                {/* <Breadcrumb /> */}
-                <span className="text-lg font-semibold text-gray-800">GIC</span>
-              </div>
-              <div className="flex items-center space-x-3">
-                <div className="hidden md:flex items-center px-3 py-2 bg-blue-50 rounded-lg">
-                  <span className="text-sm text-blue-900">
-                    Bienvenido, <span className="font-semibold">{coordinator.name}</span>
-                  </span>
-                </div>
-                <Button
-                  onClick={() => navigate('/')}
-                  variant="outline"
-                  size="sm"
-                  className="text-blue-600 border-blue-300 hover:bg-blue-50"
-                >
-                  Inicio
-                </Button>
-                <Button
-                  onClick={handleLogout}
-                  variant="ghost"
-                  size="sm"
-                  className="text-red-600 hover:bg-red-50"
-                >
-                  <FaRightFromBracket className="w-4 h-4 mr-0 sm:mr-2" />
-                  <span className="hidden sm:inline">Cerrar Sesión</span>
-                </Button>
-              </div>
-            </div>
-          </nav>
-
-          <main className="flex-1 p-6 lg:p-8 bg-gray-50">
+          <main className="flex-1 p-6 lg:p-8">
             <Routes>
               <Route path="/ejecutivo" element={<DashboardEjecutivo />} />
-
               <Route path="/gestion-cursos" element={<Cursos />} />
               <Route path="/inscripciones" element={<Inscripciones />} />
               <Route path="/personas" element={<Personas />} />
@@ -264,19 +143,10 @@ const CoordinatorDashboard = () => {
               <Route path="/maestros" element={<Maestros />} />
               <Route path="/proveedores" element={<ProveedoresPage />} />
               <Route path="/perfil" element={<UserProfilePage />} />
-              {/* Fallback route */}
               <Route path="/" element={<Navigate to="ejecutivo" replace />} />
             </Routes>
           </main>
         </div>
-
-        {/* Overlay for mobile */}
-        {sidebarOpen && window.innerWidth < 1024 && (
-          <div
-            className="fixed inset-0 bg-black bg-opacity-50 z-30 lg:hidden"
-            onClick={() => setSidebarOpen(false)}
-          ></div>
-        )}
       </div>
     </>
   );

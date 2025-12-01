@@ -1,36 +1,50 @@
 from rest_framework import serializers
 from .models import PagoPersona, ComprobantePago, PagoComprobante, PagoCambioPersona, Prepago
+from personas.models import Persona
+from django.utils import timezone
+from rest_framework import serializers
 
 
 class PagoPersonaSerializer(serializers.ModelSerializer):
-    # Campos de solo lectura para mostrar información detallada
-    persona_nombre = serializers.SerializerMethodField(read_only=True)
-    curso_nombre = serializers.SerializerMethodField(read_only=True)
-    usuario_nombre = serializers.SerializerMethodField(read_only=True)
-    tipo_display = serializers.SerializerMethodField(read_only=True)
-    
+    # Read only person fields for display/search in frontend
+    per_run = serializers.SerializerMethodField(read_only=True)
+    per_nombres = serializers.SerializerMethodField(read_only=True)
+    per_apelpat = serializers.SerializerMethodField(read_only=True)
+    # Allow passing cpa_id to link to a comprobante (optional)
+    cpa_id = serializers.IntegerField(write_only=True, required=False, allow_null=True)
+
     class Meta:
         model = PagoPersona
         fields = '__all__'
-        read_only_fields = ('usu_id',)  # El usuario se asigna automáticamente
-    
-    def get_persona_nombre(self, obj):
-        if obj.per_id:
-            return f"{obj.per_id.per_nombres} {obj.per_id.per_apelpat}"
-        return None
-    
-    def get_curso_nombre(self, obj):
-        if obj.cur_id:
-            return f"{obj.cur_id.cur_codigo} - {obj.cur_id.cur_descripcion}"
-        return None
-    
-    def get_usuario_nombre(self, obj):
-        if obj.usu_id:
-            return obj.usu_id.usu_username
-        return None
-    
-    def get_tipo_display(self, obj):
-        return "Ingreso" if obj.pap_tipo == 1 else "Egreso"
+
+    def get_per_run(self, obj):
+        return getattr(obj.per_id, 'per_run', None)
+
+    def get_per_nombres(self, obj):
+        return getattr(obj.per_id, 'per_nombres', None)
+
+    def get_per_apelpat(self, obj):
+        return getattr(obj.per_id, 'per_apelpat', None)
+
+    def validate(self, data):
+        # Ensure pap_tipo is present and valid
+        pap_tipo = data.get('pap_tipo') or getattr(self.instance, 'pap_tipo', None)
+        if pap_tipo not in [PagoPersona.PAP_TIPO_INGRESO, PagoPersona.PAP_TIPO_EGRESO]:
+            raise serializers.ValidationError({'pap_tipo': 'pap_tipo debe ser 1 (Ingreso) o 2 (Egreso).'})
+        # If pap_tipo is ingreso, encourage comprobante presence (not hard requirement because comprobante management may be separate)
+        return data
+
+    def create(self, validated_data):
+        cpa_id = validated_data.pop('cpa_id', None)
+        payment = super().create(validated_data)
+        # If a comprobante was provided, create the association
+        if cpa_id:
+            try:
+                comprobante = ComprobantePago.objects.get(cpa_id=cpa_id)
+                PagoComprobante.objects.create(pap_id=payment, cpa_id=comprobante)
+            except ComprobantePago.DoesNotExist:
+                raise serializers.ValidationError({'cpa_id': f'Comprobante cpa_id={cpa_id} no existe.'})
+        return payment
 
 
 class ComprobantePagoSerializer(serializers.ModelSerializer):

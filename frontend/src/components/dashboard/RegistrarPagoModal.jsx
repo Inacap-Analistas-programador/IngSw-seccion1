@@ -6,9 +6,10 @@ import { Input } from '@/components/ui/Input';
 import { Label } from '@/components/ui/Label';
 import { Select, Textarea } from '@/components/ui/Select';
 import api from '../../config/api';
+import authService from '../../services/authService';
 import { useToast } from '@/components/ui/use-toast';
 
-const RegistrarPagoModal = ({ isOpen, onClose, onSuccess }) => {
+const RegistrarPagoModal = ({ isOpen, onClose, onSuccess, initialData = null }) => {
     const { toast } = useToast();
     const [loading, setLoading] = useState(false);
     const [personas, setPersonas] = useState([]);
@@ -25,8 +26,25 @@ const RegistrarPagoModal = ({ isOpen, onClose, onSuccess }) => {
     useEffect(() => {
         if (isOpen) {
             fetchData();
+            if (initialData) {
+                setFormData({
+                    per_id: initialData.per_id,
+                    cur_id: initialData.cur_id,
+                    pap_tipo: initialData.pap_tipo.toString(),
+                    pap_valor: initialData.pap_valor,
+                    pap_observacion: initialData.pap_observacion || ''
+                });
+            } else {
+                setFormData({
+                    per_id: '',
+                    cur_id: '',
+                    pap_tipo: '1',
+                    pap_valor: '',
+                    pap_observacion: ''
+                });
+            }
         }
-    }, [isOpen]);
+    }, [isOpen, initialData]);
 
     const fetchData = async () => {
         try {
@@ -60,28 +78,37 @@ const RegistrarPagoModal = ({ isOpen, onClose, onSuccess }) => {
         setLoading(true);
 
         try {
-            // Get user ID from local storage or context (assuming stored in auth)
-            // For now, we'll let the backend handle it or send a default if needed
-            // Actually, the model requires usu_id. Let's see if we can get it from the token or if the backend sets it automatically from request.user
-            // Looking at the model, usu_id is required. Usually backend sets this from request.user.
-            // If not, we might need to send it. Let's try sending without it first, assuming backend sets it.
+            // Get current user from authService
+            const currentUser = authService.getCurrentUser();
+            if (!currentUser || !currentUser.usu_id) {
+                throw new Error('No se pudo obtener el usuario actual');
+            }
 
             const payload = {
-                per_id: formData.per_id,
-                cur_id: formData.cur_id,
-                pap_tipo: formData.pap_tipo,
-                pap_valor: formData.pap_valor,
-                pap_observacion: formData.pap_observacion,
+                per_id: parseInt(formData.per_id),
+                cur_id: parseInt(formData.cur_id),
+                usu_id: currentUser.usu_id,
+                pap_tipo: parseInt(formData.pap_tipo),
+                pap_valor: parseFloat(formData.pap_valor),
+                pap_observacion: formData.pap_observacion || '',
                 pap_fecha_hora: new Date().toISOString(),
             };
 
-            await api.post('/pagos/pagopersonas/', payload);
-
-            toast({
-                title: '✅ Pago Registrado Exitosamente',
-                description: `Se ha registrado un ${formData.pap_tipo === '1' ? 'ingreso' : 'egreso'} de $${formData.pap_valor} correctamente.`,
-                variant: 'success',
-            });
+            if (initialData) {
+                await api.put(`/pagos/pagopersonas/${initialData.pap_id}/`, payload);
+                toast({
+                    title: '✅ Pago Actualizado Exitosamente',
+                    description: 'El pago ha sido actualizado correctamente.',
+                    variant: 'success',
+                });
+            } else {
+                await api.post('/pagos/pagopersonas/', payload);
+                toast({
+                    title: '✅ Pago Registrado Exitosamente',
+                    description: `Se ha registrado un ${formData.pap_tipo === '1' ? 'ingreso' : 'egreso'} de $${formData.pap_valor} correctamente.`,
+                    variant: 'success',
+                });
+            }
 
             onSuccess();
             onClose();
@@ -94,9 +121,14 @@ const RegistrarPagoModal = ({ isOpen, onClose, onSuccess }) => {
             });
         } catch (error) {
             console.error('Error registering payment:', error);
+            const errorMessage = error.response?.data?.detail
+                || error.response?.data?.message
+                || error.response?.data?.non_field_errors?.[0]
+                || Object.values(error.response?.data || {}).flat()[0]
+                || error.message;
             toast({
                 title: 'Error',
-                description: 'No se pudo registrar el pago. ' + (error.response?.data?.detail || error.message),
+                description: 'No se pudo registrar el pago. ' + errorMessage,
                 variant: 'destructive',
             });
         } finally {
@@ -117,7 +149,7 @@ const RegistrarPagoModal = ({ isOpen, onClose, onSuccess }) => {
                 >
                     <div className="bg-primary text-primary-foreground p-4 flex justify-between items-center">
                         <h2 className="text-xl font-bold flex items-center gap-2">
-                            <FaMoneyBillWave /> Registrar Nuevo Pago
+                            <FaMoneyBillWave /> {initialData ? 'Editar Pago' : 'Registrar Nuevo Pago'}
                         </h2>
                         <button onClick={onClose} className="text-white/80 hover:text-white transition-colors">
                             <FaXmark size={24} />
@@ -210,7 +242,7 @@ const RegistrarPagoModal = ({ isOpen, onClose, onSuccess }) => {
                                 Cancelar
                             </Button>
                             <Button type="submit" disabled={loading}>
-                                {loading ? 'Registrando...' : 'Guardar Pago'}
+                                {loading ? 'Guardando...' : (initialData ? 'Actualizar Pago' : 'Guardar Pago')}
                             </Button>
                         </div>
                     </form>

@@ -143,7 +143,9 @@ class Documento(models.Model):
     # archivo_relacionado: Clave foránea al modelo Archivo genérico (si existe)
     # Si no existe un modelo Archivo genérico, este campo podría ser un FileField directo.
     # Asumiendo que el modelo Archivo de la app 'archivos' es el que se usa para almacenar el archivo.
-    archivo_relacionado = models.ForeignKey('archivos.Archivo', on_delete=models.CASCADE, db_column='archivo_id', related_name='documentos_asociados')
+    archivo_relacionado = models.ForeignKey('archivos.Archivo', on_delete=models.SET_NULL, db_column='archivo_id', related_name='documentos_asociados', null=True, blank=True)
+    # archivo: El archivo físico subido
+    archivo = models.FileField(upload_to='documentos_preinscripcion/', null=True, blank=True)
     # tipo_documento: Tipo de documento (ej. 'ficha_medica', 'dni', 'otro')
     tipo_documento = models.CharField(max_length=50)
     # numero: Número del documento (si aplica, ej. DNI)

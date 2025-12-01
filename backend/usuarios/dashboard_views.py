@@ -38,11 +38,12 @@ def dashboard_stats(request):
 @permission_classes([IsAuthenticated])
 def dashboard_payment_stats(request):
     """
-    Get payment statistics for dashboard
+    Get payment statistics for dashboard including history and recent payments
     """
     today = datetime.now()
     current_month_start = today.replace(day=1, hour=0, minute=0, second=0, microsecond=0)
     
+    # 1. Basic Stats
     # Total income this month (tipo = 1 is Ingreso)
     ingresos_mes = PagoPersona.objects.filter(
         pap_tipo=1,
@@ -54,11 +55,47 @@ def dashboard_payment_stats(request):
     
     # Count of courses with payments
     cursos_pagados = PagoPersona.objects.values('cur_id').distinct().count()
+
+    # 2. Monthly History (Last 6 months)
+    monthly_stats = []
+    for i in range(5, -1, -1):
+        date = today - timedelta(days=i*30) # Approx
+        month_start = date.replace(day=1, hour=0, minute=0, second=0, microsecond=0)
+        if date.month == 12:
+            next_month = date.replace(year=date.year + 1, month=1, day=1)
+        else:
+            next_month = date.replace(month=date.month + 1, day=1)
+            
+        month_income = PagoPersona.objects.filter(
+            pap_tipo=1,
+            pap_fecha_hora__gte=month_start,
+            pap_fecha_hora__lt=next_month
+        ).aggregate(total=Sum('pap_valor'))['total'] or 0
+        
+        monthly_stats.append({
+            'name': month_start.strftime('%b'), # Short month name
+            'ingresos': float(month_income)
+        })
+
+    # 3. Recent Payments
+    recent_payments_qs = PagoPersona.objects.select_related('per_id', 'cur_id').filter(pap_tipo=1).order_by('-pap_fecha_hora')[:5]
+    recent_payments = []
+    for pago in recent_payments_qs:
+        recent_payments.append({
+            'id': pago.pap_id,
+            'persona': f"{pago.per_id.per_nombres} {pago.per_id.per_apelpat}",
+            'curso': pago.cur_id.cur_descripcion if pago.cur_id else 'Sin curso',
+            'monto': float(pago.pap_valor),
+            'fecha': pago.pap_fecha_hora.strftime('%d/%m/%Y'),
+            'estado': 'Completado' # Assuming all in this list are completed/verified for now
+        })
     
     return Response({
         'total_ingresos': float(ingresos_mes),
         'pagos_pendientes': pagos_pendientes,
-        'cursos_pagados': cursos_pagados
+        'cursos_pagados': cursos_pagados,
+        'monthly_stats': monthly_stats,
+        'recent_payments': recent_payments
     })
 
 

@@ -85,6 +85,23 @@ const preinscripcionService = {
   },
 
   /**
+   * Subir documento (ficha médica)
+   */
+  async uploadDocument(formData) {
+    try {
+      const response = await httpClient.post('/api/documento/', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      });
+      return response;
+    } catch (error) {
+      console.error('Error uploading document:', error);
+      throw error;
+    }
+  },
+
+  /**
    * Exportar preinscripciones a CSV
    */
   async exportCSV(filters = {}) {
