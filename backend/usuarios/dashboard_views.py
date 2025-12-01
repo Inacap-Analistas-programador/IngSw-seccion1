@@ -83,31 +83,79 @@ def dashboard_payment_stats(request):
             'egresos': float(egresos)
         })
 
-    # 5. Enrollment Status (Inscritos vs Acreditados)
-    total_inscripciones = PersonaCurso.objects.count()
-    acreditados = PersonaCurso.objects.filter(pec_acreditado=True).count()
-    pendientes = total_inscripciones - acreditados
+    # 5. Enrollment Status (Detailed)
+    # Define states:
+    # - Vigente: Registered + Accredited
+    # - Por Acreditar: Registered + Not Accredited
+    # - Pre-inscrito: Not Registered
+    
+    vigentes = PersonaCurso.objects.filter(pec_registro=True, pec_acreditado=True).count()
+    por_acreditar = PersonaCurso.objects.filter(pec_registro=True, pec_acreditado=False).count()
+    pre_inscritos = PersonaCurso.objects.filter(pec_registro=False).count()
     
     inscripcion_stats = [
-        {'name': 'Acreditados', 'value': acreditados, 'color': '#10B981'}, # Emerald
-        {'name': 'Pendientes', 'value': pendientes, 'color': '#F59E0B'}, # Amber
+        {'name': 'Vigentes', 'value': vigentes, 'color': '#10B981'}, # Emerald
+        {'name': 'Por Acreditar', 'value': por_acreditar, 'color': '#F59E0B'}, # Amber
+        {'name': 'Pre-inscritos', 'value': pre_inscritos, 'color': '#64748B'}, # Slate
     ]
 
-    # 6. Popular Courses (Top 3)
+    # 6. Course Enrollment Breakdown (Stacked Bar Data)
+    # Top 5 courses with breakdown of Vigente vs Pendiente (Por Acreditar + Pre-inscrito)
     cursos_populares = Curso.objects.annotate(
-        num_inscritos=Count('cursoseccion__personacurso')
-    ).order_by('-num_inscritos')[:3]
+        total_inscritos=Count('cursoseccion__personacurso')
+    ).order_by('-total_inscritos')[:5]
     
     curso_stats = []
     for curso in cursos_populares:
+        # Count stats for this course
+        course_vigentes = PersonaCurso.objects.filter(
+            cus_id__cur_id=curso.cur_id, 
+            pec_registro=True, 
+            pec_acreditado=True
+        ).count()
+        
+        course_pendientes = PersonaCurso.objects.filter(
+            cus_id__cur_id=curso.cur_id
+        ).exclude(
+            pec_registro=True, 
+            pec_acreditado=True
+        ).count()
+
         curso_stats.append({
             'name': curso.cur_codigo,
             'full_name': curso.cur_descripcion,
-            'value': curso.num_inscritos
+            'vigentes': course_vigentes,
+            'pendientes': course_pendientes,
+            'total': course_vigentes + course_pendientes
         })
 
-    # 7. Recent Payments (Keep existing)
-    recent_payments_qs = PagoPersona.objects.select_related('per_id', 'cur_id').order_by('-pap_fecha_hora')[:5]
+    # 7. Daily Stats (Last 30 days for Line Chart)
+    daily_stats = []
+    for i in range(29, -1, -1):
+        date = today - timedelta(days=i)
+        day_start = date.replace(hour=0, minute=0, second=0, microsecond=0)
+        day_end = date.replace(hour=23, minute=59, second=59, microsecond=999999)
+        
+        ingresos_dia = PagoPersona.objects.filter(
+            pap_tipo=1,
+            pap_fecha_hora__gte=day_start,
+            pap_fecha_hora__lte=day_end
+        ).aggregate(total=Sum('pap_valor'))['total'] or 0
+        
+        egresos_dia = PagoPersona.objects.filter(
+            pap_tipo=2,
+            pap_fecha_hora__gte=day_start,
+            pap_fecha_hora__lte=day_end
+        ).aggregate(total=Sum('pap_valor'))['total'] or 0
+        
+        daily_stats.append({
+            'date': date.strftime('%d/%m'),
+            'ingresos': float(ingresos_dia),
+            'egresos': float(egresos_dia)
+        })
+
+    # 8. Recent Payments (Keep existing)
+    recent_payments_qs = PagoPersona.objects.select_related('per_id', 'cur_id').order_by('-pap_fecha_hora')[:10] # Increased to 10 for sidebar
     recent_payments = []
     for pago in recent_payments_qs:
         recent_payments.append({
@@ -127,6 +175,7 @@ def dashboard_payment_stats(request):
         'balance_stats': balance_stats,
         'inscripcion_stats': inscripcion_stats,
         'curso_stats': curso_stats,
+        'daily_stats': daily_stats,
         'recent_payments': recent_payments
     })
 

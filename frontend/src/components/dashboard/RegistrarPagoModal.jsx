@@ -79,15 +79,18 @@ const RegistrarPagoModal = ({ isOpen, onClose, onSuccess, initialData = null }) 
 
         try {
             // Get current user from authService
+            // Get current user from authService
             const currentUser = authService.getCurrentUser();
-            if (!currentUser || !currentUser.usu_id) {
+            const userId = currentUser?.id || currentUser?.usu_id;
+
+            if (!userId) {
                 throw new Error('No se pudo obtener el usuario actual');
             }
 
             const payload = {
                 per_id: parseInt(formData.per_id),
                 cur_id: parseInt(formData.cur_id),
-                usu_id: currentUser.usu_id,
+                usu_id: userId,
                 pap_tipo: parseInt(formData.pap_tipo),
                 pap_valor: parseFloat(formData.pap_valor),
                 pap_observacion: formData.pap_observacion || '',
