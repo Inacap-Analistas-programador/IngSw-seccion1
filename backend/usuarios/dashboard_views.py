@@ -38,63 +38,95 @@ def dashboard_stats(request):
 @permission_classes([IsAuthenticated])
 def dashboard_payment_stats(request):
     """
-    Get payment statistics for dashboard including history and recent payments
+    Get payment statistics for dashboard including monthly history and recent payments
     """
     today = datetime.now()
     current_month_start = today.replace(day=1, hour=0, minute=0, second=0, microsecond=0)
     
-    # 1. Basic Stats
-    # Total income this month (tipo = 1 is Ingreso)
+    # 1. Total income this month
     ingresos_mes = PagoPersona.objects.filter(
         pap_tipo=1,
         pap_fecha_hora__gte=current_month_start
     ).aggregate(total=Sum('pap_valor'))['total'] or 0
     
-    # Pending payments count
+    # 2. Total registered payments count
     pagos_pendientes = PagoPersona.objects.all().count()
     
-    # Count of courses with payments
+    # 3. Count of courses with payments
     cursos_pagados = PagoPersona.objects.values('cur_id').distinct().count()
 
-    # 2. Monthly History (Last 6 months)
-    monthly_stats = []
+    # 4. Balance Stats (Income vs Expenses - Last 6 months)
+    balance_stats = []
     for i in range(5, -1, -1):
-        date = today - timedelta(days=i*30) # Approx
+        date = today - timedelta(days=i*30)
         month_start = date.replace(day=1, hour=0, minute=0, second=0, microsecond=0)
         if date.month == 12:
-            next_month = date.replace(year=date.year + 1, month=1, day=1)
+            month_end = date.replace(year=date.year+1, month=1, day=1, hour=0, minute=0, second=0, microsecond=0)
         else:
-            next_month = date.replace(month=date.month + 1, day=1)
+            month_end = date.replace(month=date.month+1, day=1, hour=0, minute=0, second=0, microsecond=0)
             
-        month_income = PagoPersona.objects.filter(
-            pap_tipo=1,
+        ingresos = PagoPersona.objects.filter(
+            pap_tipo=1, # Ingreso
             pap_fecha_hora__gte=month_start,
-            pap_fecha_hora__lt=next_month
+            pap_fecha_hora__lt=month_end
         ).aggregate(total=Sum('pap_valor'))['total'] or 0
         
-        monthly_stats.append({
-            'name': month_start.strftime('%b'), # Short month name
-            'ingresos': float(month_income)
+        egresos = PagoPersona.objects.filter(
+            pap_tipo=2, # Egreso
+            pap_fecha_hora__gte=month_start,
+            pap_fecha_hora__lt=month_end
+        ).aggregate(total=Sum('pap_valor'))['total'] or 0
+        
+        balance_stats.append({
+            'name': date.strftime('%b'),
+            'ingresos': float(ingresos),
+            'egresos': float(egresos)
         })
 
-    # 3. Recent Payments
-    recent_payments_qs = PagoPersona.objects.select_related('per_id', 'cur_id').filter(pap_tipo=1).order_by('-pap_fecha_hora')[:5]
+    # 5. Enrollment Status (Inscritos vs Acreditados)
+    total_inscripciones = PersonaCurso.objects.count()
+    acreditados = PersonaCurso.objects.filter(pec_acreditado=True).count()
+    pendientes = total_inscripciones - acreditados
+    
+    inscripcion_stats = [
+        {'name': 'Acreditados', 'value': acreditados, 'color': '#10B981'}, # Emerald
+        {'name': 'Pendientes', 'value': pendientes, 'color': '#F59E0B'}, # Amber
+    ]
+
+    # 6. Popular Courses (Top 3)
+    cursos_populares = Curso.objects.annotate(
+        num_inscritos=Count('cursoseccion__personacurso')
+    ).order_by('-num_inscritos')[:3]
+    
+    curso_stats = []
+    for curso in cursos_populares:
+        curso_stats.append({
+            'name': curso.cur_codigo,
+            'full_name': curso.cur_descripcion,
+            'value': curso.num_inscritos
+        })
+
+    # 7. Recent Payments (Keep existing)
+    recent_payments_qs = PagoPersona.objects.select_related('per_id', 'cur_id').order_by('-pap_fecha_hora')[:5]
     recent_payments = []
     for pago in recent_payments_qs:
         recent_payments.append({
             'id': pago.pap_id,
             'persona': f"{pago.per_id.per_nombres} {pago.per_id.per_apelpat}",
             'curso': pago.cur_id.cur_descripcion if pago.cur_id else 'Sin curso',
-            'monto': float(pago.pap_valor),
             'fecha': pago.pap_fecha_hora.strftime('%d/%m/%Y'),
-            'estado': 'Completado' # Assuming all in this list are completed/verified for now
+            'monto': float(pago.pap_valor),
+            'tipo': 'Ingreso' if pago.pap_tipo == 1 else 'Egreso',
+            'estado': 'Completado'
         })
     
     return Response({
         'total_ingresos': float(ingresos_mes),
         'pagos_pendientes': pagos_pendientes,
         'cursos_pagados': cursos_pagados,
-        'monthly_stats': monthly_stats,
+        'balance_stats': balance_stats,
+        'inscripcion_stats': inscripcion_stats,
+        'curso_stats': curso_stats,
         'recent_payments': recent_payments
     })
 
