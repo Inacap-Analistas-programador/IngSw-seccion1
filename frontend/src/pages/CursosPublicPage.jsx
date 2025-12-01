@@ -149,7 +149,7 @@ const CursosPublicPage = () => {
                       placeholder="Buscar cursos..."
                       value={searchTerm}
                       onChange={(e) => setSearchTerm(e.target.value)}
-                      className="w-full pl-10 pr-4 py-2 bg-white/20 border border-white/30 rounded-lg text-white placeholder-white/60 focus:outline-none focus:ring-2 focus:ring-white/50"
+                      className="w-full pl-10 pr-4 py-2 bg-white/20 border border-white/30 rounded-lg text-black placeholder-white/60 focus:outline-none focus:ring-2 focus:ring-white/50"
                     />
                   </div>
                   <div className="relative">
@@ -157,7 +157,7 @@ const CursosPublicPage = () => {
                     <select
                       value={modalidadFilter}
                       onChange={(e) => setModalidadFilter(e.target.value)}
-                      className="w-full pl-10 pr-4 py-2 bg-white/20 border border-white/30 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-white/50"
+                      className="w-full pl-10 pr-4 py-2 bg-white/20 border border-white/30 rounded-lg text-black focus:outline-none focus:ring-2 focus:ring-white/50"
                     >
                       <option value="all">Todas las modalidades</option>
                       <option value="1">Presencial</option>
