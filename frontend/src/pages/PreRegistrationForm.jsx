@@ -88,12 +88,25 @@ const PreRegistrationForm = () => {
   ];
 
   const handleStepClick = (stepNumber) => {
+    // If navigating forward, validate current step before allowing
+    if (stepNumber > currentStep) {
+      const validation = validateCurrentStep();
+      if (!validation.ok) {
+        alert(validation.message);
+        return;
+      }
+    }
     setCurrentStep(stepNumber);
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   const handleNext = () => {
     if (currentStep < totalSteps) {
+      const validation = validateCurrentStep();
+      if (!validation.ok) {
+        alert(validation.message);
+        return;
+      }
       setCurrentStep(currentStep + 1);
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
@@ -199,6 +212,44 @@ const PreRegistrationForm = () => {
 
   const updateFormData = (data) => {
     setFormData({ ...formData, ...data });
+  };
+
+  // Validación por paso: evita avanzar si faltan campos obligatorios
+  const validateCurrentStep = () => {
+    // Devuelve { ok: true } si pasa, o { ok: false, message: '...' } si falla
+    switch (currentStep) {
+      case 1: {
+        if (!formData.nombreCompleto || formData.nombreCompleto.trim() === '')
+          return { ok: false, message: 'Complete el Nombre antes de continuar.' };
+        if (!formData.rut || formData.rut.trim() === '')
+          return { ok: false, message: 'Complete el RUT antes de continuar.' };
+        if (!formData.telefono || formData.telefono.trim() === '')
+          return { ok: false, message: 'Complete el teléfono antes de continuar.' };
+        return { ok: true };
+      }
+      case 2: {
+        // Requerimos al menos rol o grupo para avanzar
+        if ((!formData.rol || formData.rol.trim() === '') && (!formData.grupo || formData.grupo.trim() === ''))
+          return { ok: false, message: 'Complete rol o grupo antes de continuar.' };
+        return { ok: true };
+      }
+      case 3: {
+        if (!formData.alimentacion || formData.alimentacion.trim() === '')
+          return { ok: false, message: 'Indique la alimentación antes de continuar.' };
+        return { ok: true };
+      }
+      case 4: {
+        // Paso opcional: no hay campos estrictos, permitir avanzar
+        return { ok: true };
+      }
+      case 5: {
+        if (!formData.medicalFile)
+          return { ok: false, message: 'Adjunte la ficha médica (PDF) antes de continuar.' };
+        return { ok: true };
+      }
+      default:
+        return { ok: true };
+    }
   };
 
   const CurrentStepComponent = steps[currentStep - 1].component;
