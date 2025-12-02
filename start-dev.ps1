@@ -76,11 +76,11 @@ if (!(Test-Path "db.sqlite3")) {
 }
 
 # Iniciar backend en background
-Write-Host "Iniciando servidor Django en puerto 8000..."
+Write-Host "Iniciando servidor Django en puerto 8001..."
 $djangoJob = Start-Job -ScriptBlock { 
     param($path)
     Set-Location $path
-    python manage.py runserver 0.0.0.0:8000 
+    python manage.py runserver 0.0.0.0:8001 
 } -ArgumentList (Get-Location).Path
 Write-Host "✓ Backend Django iniciado (Job ID: $($djangoJob.Id))" -ForegroundColor Green
 Write-Host ""
@@ -111,7 +111,7 @@ if (!(Test-Path "node_modules")) {
 }
 
 # Iniciar frontend en background
-Write-Host "Iniciando servidor Vite en puerto 3000..."
+Write-Host "Iniciando servidor Vite en puerto 3001..."
 $viteJob = Start-Job -ScriptBlock { 
     param($path)
     Set-Location $path
@@ -126,12 +126,12 @@ Write-Host "    ✅ Plataforma GIC Iniciada" -ForegroundColor Green
 Write-Host "===========================================" -ForegroundColor Green
 Write-Host ""
 Write-Host "Backend Django:" -ForegroundColor Blue
-Write-Host "  URL: http://localhost:8000"
-Write-Host "  Admin: http://localhost:8000/admin/"
-Write-Host "  API Docs: http://localhost:8000/api/docs/"
+Write-Host "  URL: http://localhost:8001"
+Write-Host "  Admin: http://localhost:8001/admin/"
+Write-Host "  API Docs: http://localhost:8001/api/docs/"
 Write-Host ""
 Write-Host "Frontend React:" -ForegroundColor Blue
-Write-Host "  URL: http://localhost:3000"
+Write-Host "  URL: http://localhost:3001"
 Write-Host ""
 Write-Host "Credenciales de prueba:" -ForegroundColor Blue
 Write-Host "  admin@test.com / Admin123!"
@@ -170,7 +170,7 @@ if ($viteJob.State -eq "Running") {
 }
 
 Write-Host ""
-Write-Host "🎉 ¡Listo! Abre http://localhost:3000 en tu navegador" -ForegroundColor Green
+Write-Host "🎉 ¡Listo! Abre http://localhost:3001 en tu navegador" -ForegroundColor Green
 Write-Host ""
 Write-Host "Presiona Enter para mantener los servidores corriendo o Ctrl+C para salir..."
 $null = Read-Host
