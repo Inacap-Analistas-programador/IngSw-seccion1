@@ -29,6 +29,7 @@ const MaestrosPage = lazyRetry(() => import('@/pages/MaestrosPage'));
 const MaestroForm = lazyRetry(() => import('@/pages/MaestroForm'));
 const ProveedoresPage = lazyRetry(() => import('@/pages/ProveedoresPage'));
 const ProveedorForm = lazyRetry(() => import('@/pages/ProveedorForm'));
+const PagosPage = lazyRetry(() => import('@/pages/PagosPage'));
 
 // Geografia pages
 const RegionesPage = lazyRetry(() => import('@/pages/geografia/RegionesPage'));
@@ -166,6 +167,16 @@ function App() {
               element={
                 <ProtectedRoute>
                   <ProveedorForm />
+                </ProtectedRoute>
+              }
+            />
+
+            {/* Pagos */}
+            <Route
+              path="/pagos"
+              element={
+                <ProtectedRoute>
+                  <PagosPage />
                 </ProtectedRoute>
               }
             />

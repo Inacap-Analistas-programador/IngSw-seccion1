@@ -33,17 +33,19 @@ class PagoPersonaViewSet(viewsets.ModelViewSet):
 
 	@action(detail=False, methods=['post'], url_path='masivo')
 	def registro_masivo(self, request):
-		"""Registro masivo de pagos: valor_total se reparte entre personas seleccionadas o filtradas por curso/grupo.
-		Payload: {"valor_total": 100000, "personas": [1,2], "cur_id": 1, "gru_id": 1, "pap_tipo": 1}
+		"""Registro masivo de pagos: valor_total se reparte entre personas seleccionadas o filtradas por curso/grupo/rama.
+		Payload: {"valor_total": 100000, "valor_unitario": 5000, "personas": [1,2], "cur_id": 1, "gru_id": 1, "ram_id": 1, "pap_tipo": 1}
 		"""
 		valor_total = request.data.get('valor_total')
+		valor_unitario = request.data.get('valor_unitario')
 		personas = request.data.get('personas')  # optional list of per_id
 		cur_id = request.data.get('cur_id')
 		gru_id = request.data.get('gru_id')
+		ram_id = request.data.get('ram_id')
 		pap_tipo = int(request.data.get('pap_tipo', PagoPersona.PAP_TIPO_INGRESO))
 
-		if not valor_total:
-			return Response({'detail': 'valor_total es requerido.'}, status=status.HTTP_400_BAD_REQUEST)
+		if not valor_total and not valor_unitario:
+			return Response({'detail': 'Debe proporcionar valor_total o valor_unitario.'}, status=status.HTTP_400_BAD_REQUEST)
 
 		# Obtain list of persona instances to create payments for
 		queryset = Persona.objects.all()
@@ -53,14 +55,21 @@ class PagoPersonaViewSet(viewsets.ModelViewSet):
 			queryset = queryset.filter(personacurso__cus_id__cur_id=cur_id)  # Personas en el curso
 		if gru_id:
 			queryset = queryset.filter(personagrupo__gru_id=gru_id)  # Personas en el grupo
+		if ram_id:
+			# Filtrar por Rama a través de la sección del curso
+			queryset = queryset.filter(personacurso__cus_id__ram_id=ram_id)
 
 		queryset = queryset.distinct()
 		total_personas = queryset.count()
 		if total_personas == 0:
 			return Response({'detail': 'No hay personas que coincidan con los filtros.'}, status=status.HTTP_400_BAD_REQUEST)
 
-		valor_total_dec = Decimal(str(valor_total))
-		valor_por_persona = (valor_total_dec / total_personas).quantize(Decimal('0.01'))
+		if valor_unitario:
+			valor_por_persona = Decimal(str(valor_unitario))
+			valor_total_dec = valor_por_persona * total_personas
+		else:
+			valor_total_dec = Decimal(str(valor_total))
+			valor_por_persona = (valor_total_dec / total_personas).quantize(Decimal('0.01'))
 
 		created = []
 		for persona in queryset:
@@ -109,6 +118,152 @@ class PagoPersonaViewSet(viewsets.ModelViewSet):
 
 		serializer = self.get_serializer(created, many=True)
 		return Response({'created_count': len(created), 'valor_por_persona': str(valor_por_persona), 'pagos': serializer.data}, status=status.HTTP_201_CREATED)
+
+	@action(detail=False, methods=['post'], url_path='multi-persona')
+	def registro_multi_persona(self, request):
+		"""Registro de pagos donde un pagador (payer_id) paga por varias personas (beneficiaries).
+		Payload: {
+			"payer_id": 1, 
+			"cur_id": 1, 
+			"payments": [
+				{"per_id": 2, "amount": 5000},
+				{"per_id": 3, "amount": 5000}
+			],
+			"pap_tipo": 1,
+			"observacion": "Pago cuota enero"
+		}
+		"""
+		payer_id = request.data.get('payer_id') # Persona que paga (opcional, solo para registro)
+		cur_id = request.data.get('cur_id')
+		payments = request.data.get('payments', [])
+		pap_tipo = int(request.data.get('pap_tipo', PagoPersona.PAP_TIPO_INGRESO))
+		observacion = request.data.get('observacion', '')
+
+		if not payments:
+			return Response({'detail': 'Lista de pagos (payments) requerida.'}, status=status.HTTP_400_BAD_REQUEST)
+
+		# Determine usuario
+		usu = None
+		if hasattr(request.user, 'usuario'):
+			usu = request.user.usuario
+		else:
+			from usuarios.models import Usuario as UsuarioModel
+			if getattr(request.user, 'username', None):
+				usu = UsuarioModel.objects.filter(usu_username=request.user.username).first()
+			if not usu and getattr(request.user, 'email', None):
+				usu = UsuarioModel.objects.filter(usu_email=request.user.email).first()
+		
+		if not usu:
+			# Try to get from request if not authenticated properly
+			if request.data.get('usu_id'):
+				try:
+					usu = UsuarioModel.objects.get(usu_id=request.data.get('usu_id'))
+				except:
+					pass
+		
+		if not usu:
+			return Response({'detail': 'Usuario no identificado.'}, status=status.HTTP_400_BAD_REQUEST)
+
+		created = []
+		for item in payments:
+			per_id = item.get('per_id')
+			amount = item.get('amount')
+			
+			if not per_id or not amount:
+				continue
+
+			try:
+				persona = Persona.objects.get(per_id=per_id)
+			except Persona.DoesNotExist:
+				continue
+
+			curso_instance = None
+			if cur_id:
+				try:
+					curso_instance = Curso.objects.get(cur_id=cur_id)
+				except Curso.DoesNotExist:
+					pass
+			
+			if not curso_instance:
+				# Try to infer course
+				persona_curso = PersonaCurso.objects.filter(per_id=persona).first()
+				if persona_curso:
+					curso_instance = persona_curso.cus_id.cur_id
+			
+			if not curso_instance:
+				continue # Skip if no course found
+
+			payment = PagoPersona.objects.create(
+				per_id=persona,
+				cur_id=curso_instance,
+				usu_id=usu,
+				pap_fecha_hora=timezone.now(),
+				pap_tipo=pap_tipo,
+				pap_valor=amount,
+				pap_observacion=f"{observacion} (Pagado por ID: {payer_id})" if payer_id else observacion
+			)
+			created.append(payment)
+
+		serializer = self.get_serializer(created, many=True)
+		return Response({'created_count': len(created), 'pagos': serializer.data}, status=status.HTTP_201_CREATED)
+
+	@action(detail=False, methods=['get'], url_path='estado-cuenta')
+	def estado_cuenta(self, request):
+		"""Obtiene el estado de cuenta de una persona en un curso (todos los ingresos y egresos).
+		Params: cur_id, per_id
+		"""
+		cur_id = request.query_params.get('cur_id')
+		per_id = request.query_params.get('per_id')
+
+		if not cur_id or not per_id:
+			return Response({'detail': 'cur_id y per_id son requeridos.'}, status=status.HTTP_400_BAD_REQUEST)
+
+		pagos = PagoPersona.objects.filter(cur_id=cur_id, per_id=per_id).order_by('pap_fecha_hora')
+		
+		total_ingresos = sum(p.pap_valor for p in pagos if p.pap_tipo == PagoPersona.PAP_TIPO_INGRESO)
+		total_egresos = sum(p.pap_valor for p in pagos if p.pap_tipo == PagoPersona.PAP_TIPO_EGRESO)
+		balance = total_ingresos - total_egresos
+
+		serializer = self.get_serializer(pagos, many=True)
+		
+		return Response({
+			'resumen': {
+				'total_ingresos': total_ingresos,
+				'total_egresos': total_egresos,
+				'balance': balance
+			},
+			'transacciones': serializer.data
+		})
+
+	@action(detail=False, methods=['get'], url_path='dashboard')
+	def dashboard(self, request):
+		"""Dashboard financiero del curso.
+		Params: cur_id
+		"""
+		cur_id = request.query_params.get('cur_id')
+		if not cur_id:
+			return Response({'detail': 'cur_id es requerido.'}, status=status.HTTP_400_BAD_REQUEST)
+
+		pagos = PagoPersona.objects.filter(cur_id=cur_id)
+		
+		total_ingresos = sum(p.pap_valor for p in pagos if p.pap_tipo == PagoPersona.PAP_TIPO_INGRESO)
+		total_egresos = sum(p.pap_valor for p in pagos if p.pap_tipo == PagoPersona.PAP_TIPO_EGRESO)
+		balance = total_ingresos - total_egresos
+
+		# Agrupar por fecha (mes)
+		from django.db.models.functions import TruncMonth
+		from django.db.models import Sum
+		
+		por_mes = pagos.annotate(month=TruncMonth('pap_fecha_hora')).values('month', 'pap_tipo').annotate(total=Sum('pap_valor')).order_by('month')
+
+		return Response({
+			'global': {
+				'total_ingresos': total_ingresos,
+				'total_egresos': total_egresos,
+				'balance': balance
+			},
+			'evolucion': por_mes
+		})
 
 	@action(detail=True, methods=['post'], url_path='cambio-persona')
 	def cambio_persona(self, request, pk=None):

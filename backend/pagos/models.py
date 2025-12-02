@@ -55,6 +55,16 @@ class ComprobantePago(models.Model):
     cpa_numero = models.IntegerField()
     # cpa_valor: Valor total del comprobante
     cpa_valor = models.DecimalField(max_digits=21, decimal_places=6)
+    # cpa_archivo: Archivo o foto del comprobante
+    cpa_archivo = models.FileField(upload_to='comprobantes/', null=True, blank=True)
+    # cpa_tipo: Tipo de comprobante (1: Ingreso, 2: Egreso)
+    CPA_TIPO_INGRESO = 1
+    CPA_TIPO_EGRESO = 2
+    CPA_TIPO_CHOICES = (
+        (CPA_TIPO_INGRESO, 'Ingreso'),
+        (CPA_TIPO_EGRESO, 'Egreso'),
+    )
+    cpa_tipo = models.IntegerField(choices=CPA_TIPO_CHOICES, default=CPA_TIPO_INGRESO)
 
     class Meta:
         db_table = 'comprobante_pago'

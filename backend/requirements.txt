@@ -13,6 +13,7 @@ coverage==7.12.0
 cryptography==41.0.7
 Django==5.2.7
 django-cors-headers==4.3.1
+django-filter>=23.0
 django-redis==5.4.0
 djangorestframework==3.14.0
 djangorestframework-simplejwt==5.3.1
@@ -48,7 +49,3 @@ setuptools==80.9.0
 six==1.17.0
 sqlparse==0.5.3
 typing_extensions==4.15.0
-tzdata==2025.2
-uritemplate==4.2.0
-vine==5.1.0
-wcwidth==0.2.14
