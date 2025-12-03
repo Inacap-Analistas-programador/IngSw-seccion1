@@ -9,6 +9,8 @@ import { useToast } from "@/components/ui/use-toast";
 import pagosService from '../services/pagosService';
 import cursosService from '../services/cursosService'; // Asumiendo que existe
 import personasService from '../services/personasService'; // Asumiendo que existe
+import ComprobantesPagos from '../components/dashboard/ComprobantesPagos';
+import PagosProveedores from '../components/dashboard/PagosProveedores';
 
 const PagosPage = () => {
   const { toast } = useToast();
@@ -30,7 +32,7 @@ const PagosPage = () => {
   const loadCursos = async () => {
     try {
       // Ajustar según el servicio real de cursos
-      const data = await cursosService.getAll(); 
+      const data = await cursosService.getAll();
       setCursos(data.results || data);
     } catch (error) {
       console.error("Error cargando cursos", error);
@@ -49,7 +51,7 @@ const PagosPage = () => {
   return (
     <div className="container mx-auto p-6">
       <h1 className="text-3xl font-bold mb-6">Gestión Financiera</h1>
-      
+
       <div className="mb-6">
         <Label>Seleccionar Curso</Label>
         <Select onValueChange={setSelectedCurso} value={selectedCurso}>
@@ -72,6 +74,7 @@ const PagosPage = () => {
             <TabsTrigger value="dashboard">Dashboard</TabsTrigger>
             <TabsTrigger value="pagos">Pagos</TabsTrigger>
             <TabsTrigger value="comprobantes">Comprobantes</TabsTrigger>
+            <TabsTrigger value="proveedores">Proveedores</TabsTrigger>
             <TabsTrigger value="prepagos">Prepagos (Gastos Previstos)</TabsTrigger>
           </TabsList>
 
@@ -84,7 +87,11 @@ const PagosPage = () => {
           </TabsContent>
 
           <TabsContent value="comprobantes">
-            <ComprobantesTab curId={selectedCurso} />
+            <ComprobantesPagos />
+          </TabsContent>
+
+          <TabsContent value="proveedores">
+            <PagosProveedores />
           </TabsContent>
 
           <TabsContent value="prepagos">
@@ -98,7 +105,7 @@ const PagosPage = () => {
 
 const DashboardTab = ({ data }) => {
   if (!data) return <div>Cargando...</div>;
-  
+
   const { global, evolucion } = data;
 
   return (
@@ -129,7 +136,7 @@ const DashboardTab = ({ data }) => {
           </div>
         </CardContent>
       </Card>
-      
+
       {/* Aquí se podría agregar un gráfico con 'evolucion' */}
     </div>
   );
@@ -141,7 +148,7 @@ const PagosTab = ({ curId }) => {
   const [mode, setMode] = useState('individual'); // individual, multi
   const [amount, setAmount] = useState('');
   const [observacion, setObservacion] = useState('');
-  
+
   const handleRegister = async () => {
     // Lógica de registro
     toast({ title: "Función en desarrollo", description: "Aquí iría el formulario de pagos." });
@@ -159,12 +166,12 @@ const PagosTab = ({ curId }) => {
             <Button variant={mode === 'individual' ? 'default' : 'outline'} onClick={() => setMode('individual')}>Individual</Button>
             <Button variant={mode === 'multi' ? 'default' : 'outline'} onClick={() => setMode('multi')}>Masivo / Multi-persona</Button>
           </div>
-          
+
           <div className="grid gap-2">
             <Label>Monto</Label>
             <Input type="number" value={amount} onChange={e => setAmount(e.target.value)} />
           </div>
-          
+
           <div className="grid gap-2">
             <Label>Observación</Label>
             <Input value={observacion} onChange={e => setObservacion(e.target.value)} />
@@ -177,66 +184,6 @@ const PagosTab = ({ curId }) => {
   );
 };
 
-const ComprobantesTab = ({ curId }) => {
-  const { toast } = useToast();
-  const [file, setFile] = useState(null);
-  const [tipo, setTipo] = useState('1'); // 1: Ingreso, 2: Egreso
-  const [monto, setMonto] = useState('');
-
-  const handleUpload = async () => {
-    if (!file || !monto) {
-      toast({ title: "Error", description: "Complete todos los campos", variant: "destructive" });
-      return;
-    }
-    
-    const formData = new FormData();
-    formData.append('cpa_archivo', file);
-    formData.append('cpa_valor', monto);
-    formData.append('cpa_tipo', tipo);
-    formData.append('cpa_fecha', new Date().toISOString().split('T')[0]);
-    formData.append('cpa_fecha_hora', new Date().toISOString());
-    formData.append('cpa_numero', Math.floor(Math.random() * 10000)); // Temporal
-    // Faltan IDs requeridos como usu_id, pec_id, coc_id que deberían venir del contexto o selección
-    
-    toast({ title: "Simulación", description: "Enviando comprobante..." });
-    // await pagosService.createComprobante(formData);
-  };
-
-  return (
-    <Card className="mt-4">
-      <CardHeader>
-        <CardTitle>Gestión de Comprobantes</CardTitle>
-        <CardDescription>Suba fotos de comprobantes de ingresos o gastos.</CardDescription>
-      </CardHeader>
-      <CardContent>
-        <div className="space-y-4">
-          <div className="grid gap-2">
-            <Label>Tipo</Label>
-            <Select value={tipo} onValueChange={setTipo}>
-              <SelectTrigger><SelectValue /></SelectTrigger>
-              <SelectContent>
-                <SelectItem value="1">Ingreso</SelectItem>
-                <SelectItem value="2">Gasto (Egreso)</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
-
-          <div className="grid gap-2">
-            <Label>Monto</Label>
-            <Input type="number" value={monto} onChange={e => setMonto(e.target.value)} />
-          </div>
-
-          <div className="grid gap-2">
-            <Label>Archivo / Foto</Label>
-            <Input type="file" onChange={e => setFile(e.target.files[0])} />
-          </div>
-
-          <Button onClick={handleUpload}>Subir Comprobante</Button>
-        </div>
-      </CardContent>
-    </Card>
-  );
-};
 
 const PrepagosTab = ({ curId }) => {
   return (

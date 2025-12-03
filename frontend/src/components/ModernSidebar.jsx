@@ -21,7 +21,7 @@ const ModernSidebar = ({ basePath = '/dashboard', collapsed, setCollapsed, isMob
     const [maestrosExpanded, setMaestrosExpanded] = useState(false);
 
     const menuItems = [
-        { icon: FaChartLine, label: 'Dashboard', path: `${basePath}/ejecutivo` },
+        { icon: FaChartLine, label: 'Vista Ejecutiva', path: `${basePath}/ejecutivo` },
         { icon: FaBook, label: 'Cursos', path: `${basePath}/gestion-cursos` },
         { icon: FaUsers, label: 'Personas', path: `${basePath}/personas` },
         { icon: FaCreditCard, label: 'Pagos', path: `${basePath}/gestion-pagos` },
@@ -30,10 +30,7 @@ const ModernSidebar = ({ basePath = '/dashboard', collapsed, setCollapsed, isMob
 
     const maestrosSubItems = [
         { icon: FaToolbox, label: 'Visor de Atributos', path: `${basePath}/maestros` },
-        { icon: FaUsers, label: 'Gestión de Personas', path: `${basePath}/personas` },
-        { icon: FaCreditCard, label: 'Gestión de Pagos', path: `${basePath}/gestion-pagos` },
-        { icon: FaAward, label: 'Gestión de Acreditación', path: `${basePath}/acreditacion` },
-        { icon: FaCircleUser, label: 'Administración de Perfil', path: `${basePath}/perfil` },
+        { icon: FaCircleUser, label: 'Mi Perfil', path: `${basePath}/perfil` },
     ];
 
     const isActive = (path) => location.pathname === path;
@@ -285,7 +282,7 @@ const ModernSidebar = ({ basePath = '/dashboard', collapsed, setCollapsed, isMob
             </div>
 
             {/* Custom Scrollbar Styles */}
-            <style jsx>{`
+            <style>{`
         .custom-scrollbar::-webkit-scrollbar {
           width: 6px;
         }

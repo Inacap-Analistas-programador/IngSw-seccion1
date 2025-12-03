@@ -3,7 +3,7 @@
 // API Base URL - Usar HTTPS en producción
 export const API_BASE_URL =
   import.meta.env.VITE_API_BASE_URL ||
-  (import.meta.env.MODE === 'production' ? 'https://api.gic.scouts.cl' : 'http://localhost:8001');
+  (import.meta.env.MODE === 'production' ? 'https://api.gic.scouts.cl' : 'http://localhost:8000');
 
 export const ROLES = {
   DIRIGENTE: 'dirigente',

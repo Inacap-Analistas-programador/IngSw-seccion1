@@ -75,15 +75,7 @@ const Step4AdditionalData = ({ formData, updateFormData }) => {
           />
         </div>
 
-        <div className="space-y-2">
-          <Label htmlFor="numeroMMAA">Número MMAA</Label>
-          <Input
-            id="numeroMMAA"
-            value={formData.numeroMMAA}
-            onChange={(e) => handleChange('numeroMMAA', e.target.value)}
-            placeholder="Número de identificación MMAA"
-          />
-        </div>
+
 
         <div className="space-y-2">
           <Label htmlFor="trabajaConNNAJ">¿Trabajas con Jóvenes? *</Label>
@@ -112,14 +104,56 @@ const Step4AdditionalData = ({ formData, updateFormData }) => {
         )}
 
         <div className="space-y-2">
-          <Label htmlFor="tiempoTrabajoAdultos">Tiempo trabajo con Adultos</Label>
-          <Input
-            id="tiempoTrabajoAdultos"
-            value={formData.tiempoTrabajoAdultos}
-            onChange={(e) => handleChange('tiempoTrabajoAdultos', e.target.value)}
-            placeholder="ej. 3 años"
-          />
+          <Label htmlFor="trabajaConAdultos">¿Trabajas con Adultos? *</Label>
+          <select
+            id="trabajaConAdultos"
+            value={formData.trabajaConAdultos}
+            onChange={(e) => handleChange('trabajaConAdultos', e.target.value)}
+            className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+          >
+            <option value="">Seleccionar</option>
+            <option value="si">Sí</option>
+            <option value="no">No</option>
+          </select>
         </div>
+
+        {formData.trabajaConAdultos === 'si' && (
+          <div className="space-y-2">
+            <Label htmlFor="tiempoTrabajoAdultos">Tiempo trabajo con Adultos</Label>
+            <Input
+              id="tiempoTrabajoAdultos"
+              value={formData.tiempoTrabajoAdultos}
+              onChange={(e) => handleChange('tiempoTrabajoAdultos', e.target.value)}
+              placeholder="ej. 3 años"
+            />
+          </div>
+        )}
+
+        <div className="space-y-2">
+          <Label htmlFor="esBeneficiario">¿Fuiste Beneficiario? *</Label>
+          <select
+            id="esBeneficiario"
+            value={formData.esBeneficiario}
+            onChange={(e) => handleChange('esBeneficiario', e.target.value)}
+            className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+          >
+            <option value="">Seleccionar</option>
+            <option value="si">Sí</option>
+            <option value="no">No</option>
+          </select>
+        </div>
+
+        {formData.esBeneficiario === 'si' && (
+          <div className="space-y-2">
+            <Label htmlFor="tiempoBeneficiario">Tiempo como Beneficiario</Label>
+            <Input
+              id="tiempoBeneficiario"
+              value={formData.tiempoBeneficiario}
+              onChange={(e) => handleChange('tiempoBeneficiario', e.target.value)}
+              placeholder="ej. 10 años"
+            />
+          </div>
+        )}
 
         <div className="space-y-2">
           <Label htmlFor="apodo">Apodo Scout</Label>
@@ -144,6 +178,20 @@ const Step4AdditionalData = ({ formData, updateFormData }) => {
             <option value="no">No</option>
           </select>
         </div>
+
+        {formData.needsAccommodation === 'si' && (
+          <div className="space-y-2 md:col-span-2">
+            <Label htmlFor="detalleAlojamiento">Detalles de Alojamiento</Label>
+            <textarea
+              id="detalleAlojamiento"
+              value={formData.detalleAlojamiento}
+              onChange={(e) => handleChange('detalleAlojamiento', e.target.value)}
+              placeholder="Indica si necesitas algo específico o tienes alguna restricción."
+              className="flex min-h-[80px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-gray-400 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+              rows={3}
+            />
+          </div>
+        )}
 
         <div className="space-y-2 md:col-span-2">
           <Label htmlFor="expectativasCurso">Observación del curso (qué esperas del curso)</Label>

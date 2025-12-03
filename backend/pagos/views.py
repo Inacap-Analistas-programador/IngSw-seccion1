@@ -31,18 +31,81 @@ class PagoPersonaViewSet(viewsets.ModelViewSet):
 	search_fields = ['per_id__per_run', 'per_id__per_nombres', 'per_id__per_apelpat', 'per_id__per_apelmat']
 	ordering_fields = ['pap_fecha_hora', 'pap_valor']
 
+	def create(self, request, *args, **kwargs):
+		serializer = self.get_serializer(data=request.data)
+		serializer.is_valid(raise_exception=True)
+		
+		# Extract extra fields
+		file = request.FILES.get('file')
+		coc_id = request.data.get('coc_id')
+		
+		# Perform standard create
+		self.perform_create(serializer)
+		payment = serializer.instance
+		
+		# If file and concept are provided, create ComprobantePago
+		if file and coc_id:
+			try:
+				from maestros.models import ConceptoContable
+				concepto = ConceptoContable.objects.get(coc_id=coc_id)
+				
+				# Determine pec_id (PersonaCurso) - try to find one active
+				pec_id = None
+				persona_curso = PersonaCurso.objects.filter(per_id=payment.per_id, cus_id__cur_id=payment.cur_id).first()
+				if persona_curso:
+					pec_id = persona_curso
+				else:
+					# Fallback: any active enrollment
+					pec_id = PersonaCurso.objects.filter(per_id=payment.per_id).first()
+				
+				if pec_id:
+					comprobante = ComprobantePago.objects.create(
+						usu_id=payment.usu_id,
+						pec_id=pec_id,
+						coc_id=concepto,
+						cpa_fecha_hora=timezone.now(),
+						cpa_fecha=timezone.now().date(),
+						cpa_numero=0, # Placeholder, logic for numbering can be added
+						cpa_valor=payment.pap_valor,
+						cpa_archivo=file,
+						cpa_tipo=ComprobantePago.CPA_TIPO_INGRESO if payment.pap_tipo == PagoPersona.PAP_TIPO_INGRESO else ComprobantePago.CPA_TIPO_EGRESO
+					)
+					
+					# Link payment to comprobante
+					PagoComprobante.objects.create(pap_id=payment, cpa_id=comprobante)
+			except Exception as e:
+				print(f"Error creating automatic comprobante: {e}")
+				# We don't fail the request if comprobante creation fails, but we log it
+		
+		headers = self.get_success_headers(serializer.data)
+		return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
+
 	@action(detail=False, methods=['post'], url_path='masivo')
 	def registro_masivo(self, request):
 		"""Registro masivo de pagos: valor_total se reparte entre personas seleccionadas o filtradas por curso/grupo/rama.
 		Payload: {"valor_total": 100000, "valor_unitario": 5000, "personas": [1,2], "cur_id": 1, "gru_id": 1, "ram_id": 1, "pap_tipo": 1}
+		Supports multipart/form-data for file upload.
 		"""
 		valor_total = request.data.get('valor_total')
 		valor_unitario = request.data.get('valor_unitario')
-		personas = request.data.get('personas')  # optional list of per_id
+		
+		# Handle personas list (support both JSON list and FormData getlist)
+		personas = request.data.get('personas')
+		if not isinstance(personas, list):
+			personas = request.data.getlist('personas') if hasattr(request.data, 'getlist') else []
+			# If it's a list of strings/ints, ensure they are clean
+			if personas and isinstance(personas[0], str) and ',' in personas[0]:
+				# Handle case where FormData sends "1,2,3" as a single string
+				personas = personas[0].split(',')
+
 		cur_id = request.data.get('cur_id')
 		gru_id = request.data.get('gru_id')
 		ram_id = request.data.get('ram_id')
 		pap_tipo = int(request.data.get('pap_tipo', PagoPersona.PAP_TIPO_INGRESO))
+		
+		# Extra fields for Comprobante
+		file = request.FILES.get('file')
+		coc_id = request.data.get('coc_id')
 
 		if not valor_total and not valor_unitario:
 			return Response({'detail': 'Debe proporcionar valor_total o valor_unitario.'}, status=status.HTTP_400_BAD_REQUEST)
@@ -72,6 +135,49 @@ class PagoPersonaViewSet(viewsets.ModelViewSet):
 			valor_por_persona = (valor_total_dec / total_personas).quantize(Decimal('0.01'))
 
 		created = []
+		
+		# Prepare Comprobante if applicable
+		comprobante = None
+		if file and coc_id:
+			try:
+				from maestros.models import ConceptoContable
+				concepto = ConceptoContable.objects.get(coc_id=coc_id)
+				
+				# Find a representative pec_id (use the first person's enrollment in this course)
+				first_persona = queryset.first()
+				pec_id = None
+				if cur_id:
+					pec_id = PersonaCurso.objects.filter(per_id=first_persona, cus_id__cur_id=cur_id).first()
+				else:
+					pec_id = PersonaCurso.objects.filter(per_id=first_persona).first()
+				
+				if pec_id:
+					# Determine user
+					usu_comprobante = None
+					if hasattr(request.user, 'usuario'):
+						usu_comprobante = request.user.usuario
+					elif request.data.get('usu_id'):
+						from usuarios.models import Usuario as UsuarioModel
+						try:
+							usu_comprobante = UsuarioModel.objects.get(usu_id=request.data.get('usu_id'))
+						except:
+							pass
+
+					if usu_comprobante:
+						comprobante = ComprobantePago.objects.create(
+							usu_id=usu_comprobante,
+							pec_id=pec_id,
+							coc_id=concepto,
+							cpa_fecha_hora=timezone.now(),
+							cpa_fecha=timezone.now().date(),
+							cpa_numero=0,
+							cpa_valor=valor_total_dec, # Total value for the mass payment
+							cpa_archivo=file,
+							cpa_tipo=ComprobantePago.CPA_TIPO_INGRESO if pap_tipo == PagoPersona.PAP_TIPO_INGRESO else ComprobantePago.CPA_TIPO_EGRESO
+						)
+			except Exception as e:
+				print(f"Error creating mass comprobante: {e}")
+
 		for persona in queryset:
 			curso_instance = None
 			if cur_id:
@@ -115,6 +221,10 @@ class PagoPersonaViewSet(viewsets.ModelViewSet):
 				pap_observacion=f'Registro masivo: {valor_total_dec} (valor por persona: {valor_por_persona})'
 			)
 			created.append(payment)
+			
+			# Link to comprobante if created
+			if comprobante:
+				PagoComprobante.objects.create(pap_id=payment, cpa_id=comprobante)
 
 		serializer = self.get_serializer(created, many=True)
 		return Response({'created_count': len(created), 'valor_por_persona': str(valor_por_persona), 'pagos': serializer.data}, status=status.HTTP_201_CREATED)
@@ -482,3 +592,5 @@ class PrepagoViewSet(viewsets.ModelViewSet):
 	queryset = Prepago.objects.all()
 	serializer_class = PrepagoSerializer
 	permission_classes = [IsAuthenticated]
+
+

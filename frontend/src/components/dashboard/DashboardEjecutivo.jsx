@@ -23,7 +23,10 @@ import api from '@/lib/api';
 const DashboardEjecutivo = () => {
   const [selectedPeriod, setSelectedPeriod] = useState('mes');
   const [stats, setStats] = useState([]);
-  const [recentCourses, setRecentCourses] = useState([]);
+  const [cursosActivos, setCursosActivos] = useState([]);
+  const [cursosPendientes, setCursosPendientes] = useState([]);
+  const [cursosFinalizar, setCursosFinalizar] = useState([]);
+  const [activeTab, setActiveTab] = useState('activos');
   const [recentActivity, setRecentActivity] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -65,13 +68,24 @@ const DashboardEjecutivo = () => {
       });
 
       setStats(statsWithIcons);
-      setRecentCourses(coursesData);
+
+      // Categorize courses
+      const activos = coursesData.filter(c => c.estado === 'activo' || c.estado === 'inscripcion');
+      const pendientes = coursesData.filter(c => c.estado === 'pendiente' || c.estado === 'borrador');
+      const finalizar = coursesData.filter(c => c.estado === 'completo' || c.estado === 'cerrado');
+
+      setCursosActivos(activos);
+      setCursosPendientes(pendientes);
+      setCursosFinalizar(finalizar);
+
       setRecentActivity(activityData);
     } catch (error) {
       console.error('Error loading dashboard data:', error);
       // Set default empty arrays on error
       setStats([]);
-      setRecentCourses([]);
+      setCursosActivos([]);
+      setCursosPendientes([]);
+      setCursosFinalizar([]);
       setRecentActivity([]);
     } finally {
       setLoading(false);
@@ -100,6 +114,79 @@ const DashboardEjecutivo = () => {
     };
     return icons[iconName] || FaCalendarDays;
   };
+
+  const calculateTrafficLight = (curso) => {
+    // Red: Critical missing info
+    if (!curso.coordinador || !curso.nivel) return 'red';
+    // Yellow: Warnings (e.g. pending payments logic could go here)
+    if (curso.pagos_pendientes > 0) return 'yellow';
+    // Green: All good
+    return 'green';
+  };
+
+  const getTrafficLightColor = (status) => {
+    switch (status) {
+      case 'red': return 'bg-red-500';
+      case 'yellow': return 'bg-yellow-500';
+      case 'green': return 'bg-emerald-500';
+      default: return 'bg-gray-500';
+    }
+  };
+
+  const renderCourseList = (courses) => (
+    <div className="space-y-3">
+      {courses.length > 0 ? (
+        courses.map((curso) => {
+          const trafficLight = calculateTrafficLight(curso);
+          return (
+            <div
+              key={curso.id}
+              className="p-4 border border-white/10 rounded-lg hover:bg-white/5 transition-all duration-200 bg-white/5 cursor-pointer group"
+              onClick={() => window.location.href = `/coordinador/dashboard/gestion-cursos?id=${curso.id}`}
+            >
+              <div className="flex justify-between items-start mb-3">
+                <div className="flex items-center gap-2">
+                  <div className={`w-3 h-3 rounded-full ${getTrafficLightColor(trafficLight)} shadow-[0_0_8px_rgba(0,0,0,0.5)]`} title="Estado de Salud del Curso"></div>
+                  <h3 className="font-semibold text-white group-hover:text-emerald-400 transition-colors">{curso.nombre}</h3>
+                </div>
+                {getEstadoBadge(curso.estado)}
+              </div>
+              <div className="space-y-2 text-sm text-white/60">
+                {curso.fecha && (
+                  <div className="flex items-center gap-2">
+                    <Calendar className="w-4 h-4 text-emerald-400" />
+                    <span>{curso.fecha}</span>
+                  </div>
+                )}
+                {curso.lugar && (
+                  <div className="flex items-center gap-2">
+                    <MapPin className="w-4 h-4 text-emerald-400" />
+                    <span>{curso.lugar}</span>
+                  </div>
+                )}
+                <div className="flex items-center gap-2">
+                  <Users className="w-4 h-4 text-emerald-400" />
+                  <span>
+                    {curso.inscritos}/{curso.capacidad} participantes
+                  </span>
+                </div>
+              </div>
+              <div className="mt-3">
+                <div className="w-full bg-white/10 rounded-full h-2">
+                  <div
+                    className="bg-gradient-to-r from-emerald-500 to-teal-500 h-2 rounded-full transition-all duration-300"
+                    style={{ width: `${(curso.inscritos / curso.capacidad) * 100}%` }}
+                  ></div>
+                </div>
+              </div>
+            </div>
+          );
+        })
+      ) : (
+        <p className="text-white/50 text-center py-4">No hay cursos en esta categoría</p>
+      )}
+    </div>
+  );
 
   return (
     <div className="space-y-6">
@@ -170,11 +257,28 @@ const DashboardEjecutivo = () => {
         {/* Recent Courses */}
         <Card className="bg-white/5 border-white/10 backdrop-blur-sm">
           <CardHeader className="pb-3 border-b border-white/5">
-            <div className="flex justify-between items-center">
-              <CardTitle className="text-xl text-white">Cursos Próximos</CardTitle>
-              <Button variant="ghost" size="sm" className="text-white/70 hover:text-white hover:bg-white/10">
-                Ver todos
-              </Button>
+            <div className="flex flex-col sm:flex-row justify-between items-center gap-4">
+              <CardTitle className="text-xl text-white">Gestión de Cursos</CardTitle>
+              <div className="flex bg-white/5 rounded-lg p-1">
+                <button
+                  onClick={() => setActiveTab('activos')}
+                  className={`px-3 py-1.5 rounded-md text-sm font-medium transition-all ${activeTab === 'activos' ? 'bg-emerald-500/20 text-emerald-400' : 'text-white/60 hover:text-white'}`}
+                >
+                  Activos
+                </button>
+                <button
+                  onClick={() => setActiveTab('pendientes')}
+                  className={`px-3 py-1.5 rounded-md text-sm font-medium transition-all ${activeTab === 'pendientes' ? 'bg-yellow-500/20 text-yellow-400' : 'text-white/60 hover:text-white'}`}
+                >
+                  Pendientes
+                </button>
+                <button
+                  onClick={() => setActiveTab('finalizar')}
+                  className={`px-3 py-1.5 rounded-md text-sm font-medium transition-all ${activeTab === 'finalizar' ? 'bg-blue-500/20 text-blue-400' : 'text-white/60 hover:text-white'}`}
+                >
+                  Por Finalizar
+                </button>
+              </div>
             </div>
           </CardHeader>
           <CardContent className="pt-4">
@@ -187,50 +291,12 @@ const DashboardEjecutivo = () => {
                   </div>
                 ))}
               </div>
-            ) : recentCourses.length > 0 ? (
-              <div className="space-y-3">
-                {recentCourses.map((curso) => (
-                  <div
-                    key={curso.id}
-                    className="p-4 border border-white/10 rounded-lg hover:bg-white/5 transition-all duration-200 bg-white/5"
-                  >
-                    <div className="flex justify-between items-start mb-3">
-                      <h3 className="font-semibold text-white">{curso.nombre}</h3>
-                      {getEstadoBadge(curso.estado)}
-                    </div>
-                    <div className="space-y-2 text-sm text-white/60">
-                      {curso.fecha && (
-                        <div className="flex items-center gap-2">
-                          <Calendar className="w-4 h-4 text-emerald-400" />
-                          <span>{curso.fecha}</span>
-                        </div>
-                      )}
-                      {curso.lugar && (
-                        <div className="flex items-center gap-2">
-                          <MapPin className="w-4 h-4 text-emerald-400" />
-                          <span>{curso.lugar}</span>
-                        </div>
-                      )}
-                      <div className="flex items-center gap-2">
-                        <Users className="w-4 h-4 text-emerald-400" />
-                        <span>
-                          {curso.inscritos}/{curso.capacidad} participantes
-                        </span>
-                      </div>
-                    </div>
-                    <div className="mt-3">
-                      <div className="w-full bg-white/10 rounded-full h-2">
-                        <div
-                          className="bg-gradient-to-r from-emerald-500 to-teal-500 h-2 rounded-full transition-all duration-300"
-                          style={{ width: `${(curso.inscritos / curso.capacidad) * 100}%` }}
-                        ></div>
-                      </div>
-                    </div>
-                  </div>
-                ))}
-              </div>
             ) : (
-              <p className="text-white/50 text-center py-4">No hay cursos próximos</p>
+              <>
+                {activeTab === 'activos' && renderCourseList(cursosActivos)}
+                {activeTab === 'pendientes' && renderCourseList(cursosPendientes)}
+                {activeTab === 'finalizar' && renderCourseList(cursosFinalizar)}
+              </>
             )}
           </CardContent>
         </Card>

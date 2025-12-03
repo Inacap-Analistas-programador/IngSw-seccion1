@@ -13,9 +13,15 @@ const Step6Review = ({ formData, updateFormData }) => {
       <div className="bg-gray-50 rounded-lg p-6 space-y-4">
         <div className="grid md:grid-cols-2 gap-4">
           <div>
-            <p className="text-sm text-gray-600">Nombre Completo</p>
+            <p className="text-sm text-gray-600">Nombres</p>
             <p className="font-semibold text-gray-800">
-              {formData.nombreCompleto || 'No especificado'}
+              {formData.nombres || 'No especificado'}
+            </p>
+          </div>
+          <div>
+            <p className="text-sm text-gray-600">Apellidos</p>
+            <p className="font-semibold text-gray-800">
+              {`${formData.apellidoPaterno || ''} ${formData.apellidoMaterno || ''}`.trim() || 'No especificado'}
             </p>
           </div>
           <div>
@@ -38,10 +44,7 @@ const Step6Review = ({ formData, updateFormData }) => {
             <p className="text-sm text-gray-600">Religión</p>
             <p className="font-semibold text-gray-800">{formData.religion || 'No especificada'}</p>
           </div>
-          <div>
-            <p className="text-sm text-gray-600">Número MMAA</p>
-            <p className="font-semibold text-gray-800">{formData.numeroMMAA || 'No asignado'}</p>
-          </div>
+
           <div>
             <p className="text-sm text-gray-600">Apodo Scout</p>
             <p className="font-semibold text-gray-800">{formData.apodo || 'No especificado'}</p>
@@ -65,9 +68,23 @@ const Step6Review = ({ formData, updateFormData }) => {
           <div>
             <p className="text-sm text-gray-600">Tiempo trabajo con Adultos</p>
             <p className="font-semibold text-gray-800">
-              {formData.tiempoTrabajoAdultos || 'No especificado'}
+              {formData.trabajaConAdultos === 'si' ? formData.tiempoTrabajoAdultos : 'No'}
             </p>
           </div>
+          <div>
+            <p className="text-sm text-gray-600">Beneficiario</p>
+            <p className="font-semibold text-gray-800">
+              {formData.esBeneficiario === 'si' ? `Sí (${formData.tiempoBeneficiario})` : 'No'}
+            </p>
+          </div>
+          {formData.needsAccommodation === 'si' && (
+            <div className="md:col-span-2">
+              <p className="text-sm text-gray-600">Alojamiento</p>
+              <p className="font-semibold text-gray-800">
+                Sí - {formData.detalleAlojamiento || 'Sin detalles'}
+              </p>
+            </div>
+          )}
         </div>
       </div>
 

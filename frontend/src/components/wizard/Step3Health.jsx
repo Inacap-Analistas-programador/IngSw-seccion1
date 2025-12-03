@@ -18,7 +18,7 @@ const Step3Health = ({ formData, updateFormData }) => {
 
       <div className="grid md:grid-cols-2 gap-4">
         <div className="space-y-2">
-          <Label htmlFor="alimentacion">Tipo de Dieta *</Label>
+          <Label htmlFor="alimentacion">Tipo de Alimentación *</Label>
           <select
             id="alimentacion"
             value={formData.alimentacion}

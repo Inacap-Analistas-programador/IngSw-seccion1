@@ -136,4 +136,5 @@ class Prepago(models.Model):
         verbose_name_plural = 'Prepagos'
 
     def __str__(self):
-        return f"Prepago {self.ppa_id} de {self.per_id} por {self.ppa_valor} para {self.cur_id}"
+        return f"Prepago {self.ppa_id} de {self.per_id} por {self.ppa_valor} ({self.cur_id})"
+

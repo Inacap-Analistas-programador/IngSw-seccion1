@@ -28,13 +28,10 @@ const DashboardPagos = () => {
   ];
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-3">
       {/* Header & Tabs */}
-      <div className="flex flex-col gap-6">
-        <div>
-          <h1 className="text-2xl font-bold text-white mb-2">Gestión Financiera</h1>
-          <p className="text-white/60">Administra pagos, comprobantes y conceptos contables</p>
-        </div>
+      <div className="flex flex-col gap-3">
+
 
         <div className="flex flex-wrap gap-2 p-1 bg-white/5 rounded-xl w-fit">
           {tabs.map((tab) => (

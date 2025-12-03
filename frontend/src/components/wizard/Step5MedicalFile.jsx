@@ -14,6 +14,10 @@ const Step5MedicalFile = ({ formData, updateFormData }) => {
   const handleFileChange = (file) => {
     if (file) {
       if (allowedTypes.includes(file.type)) {
+        if (file.size > 2 * 1024 * 1024) {
+          alert('El archivo no debe superar los 2MB.');
+          return;
+        }
         updateFormData({ medicalFile: file });
       } else {
         alert('Por favor selecciona un archivo PDF, DOCX o XLSX');
@@ -96,9 +100,8 @@ const Step5MedicalFile = ({ formData, updateFormData }) => {
           <button
             type="button"
             onClick={handleDownload}
-            className={`inline-flex items-center px-4 py-2 border rounded-md ${
-              formData.medicalFile ? 'border-primary text-primary' : 'border-gray-300 text-gray-400'
-            }`}
+            className={`inline-flex items-center px-4 py-2 border rounded-md ${formData.medicalFile ? 'border-primary text-primary' : 'border-gray-300 text-gray-400'
+              }`}
             disabled={!formData.medicalFile}
           >
             <Download className="w-4 h-4 mr-2" />

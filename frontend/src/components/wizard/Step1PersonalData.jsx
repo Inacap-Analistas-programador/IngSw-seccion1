@@ -66,7 +66,9 @@ const Step1PersonalData = ({ formData, updateFormData }) => {
         updateFormData({
           searchedRut: true,
           personaFound: true,
-          nombreCompleto: `${p.per_nombres || ''} ${p.per_apelpat || ''} ${p.per_apelmat || ''}`.trim(),
+          nombres: p.per_nombres || '',
+          apellidoPaterno: p.per_apelpat || '',
+          apellidoMaterno: p.per_apelmat || '',
           correo: p.per_email || '',
           fechaNacimiento: p.per_fecha_nac || '',
           direccion: p.per_direccion || '',
@@ -193,13 +195,34 @@ const Step1PersonalData = ({ formData, updateFormData }) => {
         {!formData.searchedRut ? null : (
           <>
             <div className="space-y-2">
-              <Label htmlFor="nombreCompleto">Nombre Completo *</Label>
+              <Label htmlFor="nombres">Nombres *</Label>
               <Input
-                id="nombreCompleto"
-                value={formData.nombreCompleto}
-                onChange={(e) => handleChange('nombreCompleto', e.target.value)}
-                placeholder="Juan Pérez González"
+                id="nombres"
+                value={formData.nombres}
+                onChange={(e) => handleChange('nombres', e.target.value)}
+                placeholder="Juan Andrés"
               />
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label htmlFor="apellidoPaterno">Apellido Paterno *</Label>
+                <Input
+                  id="apellidoPaterno"
+                  value={formData.apellidoPaterno}
+                  onChange={(e) => handleChange('apellidoPaterno', e.target.value)}
+                  placeholder="Pérez"
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="apellidoMaterno">Apellido Materno *</Label>
+                <Input
+                  id="apellidoMaterno"
+                  value={formData.apellidoMaterno}
+                  onChange={(e) => handleChange('apellidoMaterno', e.target.value)}
+                  placeholder="González"
+                />
+              </div>
             </div>
 
             <div className="space-y-2">
@@ -327,11 +350,11 @@ const Step1PersonalData = ({ formData, updateFormData }) => {
 
                   <div className="flex items-center gap-2 mb-2">
                     <label className="text-sm">Encadrar:</label>
-                    <button type="button" onClick={() => setFotoCrop('center')} className={`px-2 py-1 border rounded ${fotoCrop==='center'?'bg-primary text-white':''}`}>Centro</button>
-                    <button type="button" onClick={() => setFotoCrop('top')} className={`px-2 py-1 border rounded ${fotoCrop==='top'?'bg-primary text-white':''}`}>Arriba</button>
-                    <button type="button" onClick={() => setFotoCrop('bottom')} className={`px-2 py-1 border rounded ${fotoCrop==='bottom'?'bg-primary text-white':''}`}>Abajo</button>
-                    <button type="button" onClick={() => setFotoCrop('left')} className={`px-2 py-1 border rounded ${fotoCrop==='left'?'bg-primary text-white':''}`}>Izquierda</button>
-                    <button type="button" onClick={() => setFotoCrop('right')} className={`px-2 py-1 border rounded ${fotoCrop==='right'?'bg-primary text-white':''}`}>Derecha</button>
+                    <button type="button" onClick={() => setFotoCrop('center')} className={`px-2 py-1 border rounded ${fotoCrop === 'center' ? 'bg-primary text-white' : ''}`}>Centro</button>
+                    <button type="button" onClick={() => setFotoCrop('top')} className={`px-2 py-1 border rounded ${fotoCrop === 'top' ? 'bg-primary text-white' : ''}`}>Arriba</button>
+                    <button type="button" onClick={() => setFotoCrop('bottom')} className={`px-2 py-1 border rounded ${fotoCrop === 'bottom' ? 'bg-primary text-white' : ''}`}>Abajo</button>
+                    <button type="button" onClick={() => setFotoCrop('left')} className={`px-2 py-1 border rounded ${fotoCrop === 'left' ? 'bg-primary text-white' : ''}`}>Izquierda</button>
+                    <button type="button" onClick={() => setFotoCrop('right')} className={`px-2 py-1 border rounded ${fotoCrop === 'right' ? 'bg-primary text-white' : ''}`}>Derecha</button>
                   </div>
 
                   <div className="flex items-center gap-2">

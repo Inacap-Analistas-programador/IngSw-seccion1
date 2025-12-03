@@ -9,40 +9,142 @@ import {
   Edit,
   Trash2,
   AlertCircle,
-  Plus
+  Plus,
+  FileText,
+  Users
 } from 'lucide-react';
 import api from '../../config/api';
+import RegistrarPagoMasivoModal from './RegistrarPagoMasivoModal';
 import RegistrarPagoModal from './RegistrarPagoModal';
 
 const GestionPagos = () => {
   const [pagos, setPagos] = useState([]);
+  const [personas, setPersonas] = useState({});
+  const [cursos, setCursos] = useState({});
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isMassModalOpen, setIsMassModalOpen] = useState(false);
   const [selectedPago, setSelectedPago] = useState(null);
+  const [searchTerm, setSearchTerm] = useState('');
 
   useEffect(() => {
-    fetchPagos();
+    fetchData();
   }, []);
 
-  const fetchPagos = async () => {
+  const fetchData = async () => {
     try {
-      const response = await api.get('/pagos/pagopersonas/');
-      const data = response.data;
-      const pagosArray = Array.isArray(data) ? data : (data.results || []);
-      setPagos(pagosArray);
+      setLoading(true);
+      const [pagosRes, personasRes, cursosRes] = await Promise.all([
+        api.get('/pagos/pagopersonas/'),
+        api.get('/personas/personas/'),
+        api.get('/cursos/cursos/')
+      ]);
+
+      const pagosData = Array.isArray(pagosRes.data) ? pagosRes.data : (pagosRes.data.results || []);
+      setPagos(pagosData);
+
+      const personasData = Array.isArray(personasRes.data) ? personasRes.data : (personasRes.data.results || []);
+      const personasMap = {};
+      personasData.forEach(p => {
+        personasMap[p.per_id] = p; // Store full object
+      });
+      setPersonas(personasMap);
+
+      const cursosData = Array.isArray(cursosRes.data) ? cursosRes.data : (cursosRes.data.results || []);
+      const cursosMap = {};
+      cursosData.forEach(c => {
+        cursosMap[c.cur_id] = c; // Store full object
+      });
+      setCursos(cursosMap);
+
       setError(null);
     } catch (err) {
-      console.error('Error fetching pagos:', err);
+      console.error('Error fetching data:', err);
       setError(err);
     } finally {
       setLoading(false);
     }
   };
 
+  const handleExport = () => {
+    const headers = [
+      'ID Pago', 'RUT', 'Nombre', 'Apellidos', 'Correo',
+      'Curso', 'Tipo', 'Valor', 'Fecha', 'Observación'
+    ];
+
+    const csvContent = [
+      headers.join(','),
+      ...filteredPagos.map(pago => {
+        const persona = personas[pago.per_id] || {};
+        const curso = cursos[pago.cur_id] || {};
+
+        return [
+          pago.pap_id,
+          persona.per_run || '',
+          persona.per_nombres || '',
+          persona.per_apelpat || '',
+          persona.per_email || '',
+          curso.cur_descripcion || '',
+          pago.pap_tipo === 1 ? 'Ingreso' : 'Egreso',
+          pago.pap_valor,
+          new Date(pago.pap_fecha_hora).toLocaleDateString(),
+          `"${(pago.pap_observacion || '').replace(/"/g, '""')}"`
+        ].join(',');
+      })
+    ].join('\n');
+
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const link = document.createElement('a');
+    const url = URL.createObjectURL(blob);
+    link.setAttribute('href', url);
+    link.setAttribute('download', `pagos_export_${new Date().toISOString().split('T')[0]}.csv`);
+    link.style.visibility = 'hidden';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
+  const handleGenerateReceipt = async (pagoId) => {
+    try {
+      const response = await api.get(`/archivos/archivos/descargar-comprobante/?pap_id=${pagoId}`, {
+        responseType: 'blob'
+      });
+
+      // Extract filename from Content-Disposition header
+      const contentDisposition = response.headers['content-disposition'];
+      let filename = `comprobante_pago_${pagoId}`;
+      if (contentDisposition) {
+        const filenameMatch = contentDisposition.match(/filename="?([^"]+)"?/);
+        if (filenameMatch && filenameMatch.length === 2) {
+          filename = filenameMatch[1];
+        }
+      }
+
+      const url = window.URL.createObjectURL(new Blob([response.data]));
+      const link = document.createElement('a');
+      link.href = url;
+      link.setAttribute('download', filename);
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+    } catch (error) {
+      console.error('Error downloading receipt:', error);
+      // Toast for error
+      if (error.response && error.response.status === 404) {
+        // You might want to show a toast here saying "No receipt found"
+        alert('No hay comprobante asociado a este pago.');
+      }
+    }
+  };
+
   const handleRegisterPayment = () => {
     setSelectedPago(null);
     setIsModalOpen(true);
+  };
+
+  const handleRegisterMassPayment = () => {
+    setIsMassModalOpen(true);
   };
 
   const handleEdit = (pago) => {
@@ -54,7 +156,7 @@ const GestionPagos = () => {
     if (window.confirm('¿Estás seguro de que deseas eliminar este pago?')) {
       try {
         await api.delete(`/pagos/pagopersonas/${id}/`);
-        fetchPagos();
+        fetchData(); // Refresh all data to be safe
       } catch (err) {
         console.error('Error deleting pago:', err);
         setError(err);
@@ -63,8 +165,17 @@ const GestionPagos = () => {
   };
 
   const handleSuccess = () => {
-    fetchPagos();
+    fetchData();
   };
+
+  const filteredPagos = pagos.filter(pago => {
+    const persona = personas[pago.per_id] || {};
+    const personaName = `${persona.per_nombres || ''} ${persona.per_apelpat || ''}`.toLowerCase();
+    const curso = cursos[pago.cur_id] || {};
+    const cursoName = (curso.cur_descripcion || '').toLowerCase();
+    const search = searchTerm.toLowerCase();
+    return personaName.includes(search) || cursoName.includes(search) || pago.pap_id.toString().includes(search);
+  });
 
   if (loading) {
     return (
@@ -88,99 +199,134 @@ const GestionPagos = () => {
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
-      className="space-y-4"
+      className="space-y-6"
     >
       {/* Toolbar */}
-      <div className="flex flex-col sm:flex-row gap-3 justify-between items-center bg-white/5 p-3 rounded-2xl backdrop-blur-xl border border-white/10">
-        <div className="relative w-full sm:w-64">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-white/40" size={16} />
+      <div className="flex flex-col sm:flex-row gap-4 justify-between items-center bg-white/5 p-4 rounded-2xl backdrop-blur-xl border border-white/10 shadow-xl">
+        <div className="relative w-full sm:w-72 order-2 sm:order-1">
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-white/40" size={18} />
           <input
             type="text"
-            placeholder="Buscar pago..."
-            className="w-full bg-white/5 border border-white/10 rounded-xl py-2 pl-10 pr-4 text-sm text-white placeholder:text-white/40 focus:outline-none focus:border-emerald-500/50 transition-colors"
+            placeholder="Buscar por nombre, curso o ID..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            className="w-full bg-slate-900/50 border border-white/10 rounded-xl py-2.5 pl-10 pr-4 text-sm text-white placeholder:text-white/40 focus:outline-none focus:border-emerald-500/50 focus:ring-1 focus:ring-emerald-500/50 transition-all"
           />
         </div>
-        <div className="flex gap-2 w-full sm:w-auto">
+        <div className="flex gap-3 w-full sm:w-auto order-1 sm:order-2">
+          <button
+            onClick={handleExport}
+            className="flex items-center gap-2 px-5 py-2.5 bg-slate-700 hover:bg-slate-600 rounded-xl text-sm text-white font-semibold transition-all shadow-lg hover:scale-105 active:scale-95"
+          >
+            <FileText size={18} />
+            <span>Exportar Excel</span>
+          </button>
+          <button
+            onClick={handleRegisterMassPayment}
+            className="flex items-center gap-2 px-5 py-2.5 bg-blue-600 hover:bg-blue-500 rounded-xl text-sm text-white font-semibold transition-all shadow-lg shadow-blue-500/20 hover:scale-105 active:scale-95"
+          >
+            <Users size={18} />
+            <span>Pago Masivo</span>
+          </button>
           <button
             onClick={handleRegisterPayment}
-            className="flex items-center gap-2 px-4 py-2 bg-emerald-500 hover:bg-emerald-600 rounded-xl text-sm text-white font-medium transition-colors shadow-lg shadow-emerald-500/20"
+            className="flex items-center gap-2 px-5 py-2.5 bg-emerald-600 hover:bg-emerald-500 rounded-xl text-sm text-white font-semibold transition-all shadow-lg shadow-emerald-500/20 hover:scale-105 active:scale-95"
           >
-            <Plus size={16} />
-            <span>Registrar Nuevo Pago</span>
-          </button>
-          <button className="flex items-center gap-2 px-4 py-2 bg-white/5 hover:bg-white/10 border border-white/10 rounded-xl text-sm text-white transition-colors">
-            <Filter size={16} />
-            <span>Filtrar</span>
+            <Plus size={18} />
+            <span>Nuevo Pago</span>
           </button>
         </div>
       </div>
 
       {/* Table */}
-      <div className="bg-white/5 backdrop-blur-xl rounded-2xl border border-white/10 overflow-hidden">
+      <div className="bg-white/5 backdrop-blur-xl rounded-2xl border border-white/10 overflow-hidden shadow-2xl">
         <div className="overflow-x-auto">
           <table className="w-full text-left border-collapse">
             <thead>
-              <tr className="border-b border-white/10 text-white/60 text-xs uppercase tracking-wider">
-                <th className="p-4 font-medium">ID</th>
-                <th className="p-4 font-medium">Persona</th>
-                <th className="p-4 font-medium">Curso</th>
-                <th className="p-4 font-medium">Fecha</th>
-                <th className="p-4 font-medium">Tipo</th>
-                <th className="p-4 font-medium text-right">Valor</th>
-                <th className="p-4 font-medium text-center">Acciones</th>
+              <tr className="bg-white/5 border-b border-white/10 text-white/70 text-xs uppercase tracking-wider">
+                <th className="p-5 font-semibold">ID</th>
+                <th className="p-5 font-semibold">Persona</th>
+                <th className="p-5 font-semibold">Curso</th>
+                <th className="p-5 font-semibold">Fecha</th>
+                <th className="p-5 font-semibold">Tipo</th>
+                <th className="p-5 font-semibold text-right">Valor</th>
+                <th className="p-5 font-semibold text-center">Acciones</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-white/5">
-              {pagos.map((pago) => (
-                <tr key={pago.pap_id} className="text-white/80 hover:bg-white/5 transition-colors text-sm">
-                  <td className="p-4 font-medium text-white">#{pago.pap_id}</td>
-                  <td className="p-4">{pago.per_id}</td>
-                  <td className="p-4">{pago.cur_id}</td>
-                  <td className="p-4">{new Date(pago.pap_fecha_hora).toLocaleDateString()}</td>
-                  <td className="p-4">
-                    <span className={`inline-flex items-center gap-1 px-2 py-1 rounded-lg text-xs font-medium ${pago.pap_tipo === 1
-                      ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20'
-                      : 'bg-red-500/10 text-red-400 border border-red-500/20'
-                      }`}>
-                      {pago.pap_tipo === 1 ? <ArrowUpRight size={12} /> : <ArrowDownRight size={12} />}
-                      {pago.pap_tipo === 1 ? 'Ingreso' : 'Egreso'}
-                    </span>
-                  </td>
-                  <td className="p-4 text-right font-medium text-white">
-                    ${parseInt(pago.pap_valor).toLocaleString('es-CL')}
-                  </td>
-                  <td className="p-4">
-                    <div className="flex items-center justify-center gap-2">
-                      <button className="p-1.5 hover:bg-white/10 rounded-lg text-white/60 hover:text-blue-400 transition-colors" title="Ver detalle">
-                        <Eye size={16} />
-                      </button>
-                      <button
-                        onClick={() => handleEdit(pago)}
-                        className="p-1.5 hover:bg-white/10 rounded-lg text-white/60 hover:text-emerald-400 transition-colors"
-                        title="Editar"
-                      >
-                        <Edit size={16} />
-                      </button>
-                      <button
-                        onClick={() => handleDelete(pago.pap_id)}
-                        className="p-1.5 hover:bg-white/10 rounded-lg text-white/60 hover:text-red-400 transition-colors"
-                        title="Eliminar"
-                      >
-                        <Trash2 size={16} />
-                      </button>
-                    </div>
-                  </td>
-                </tr>
-              ))}
+              {filteredPagos.map((pago) => {
+                const persona = personas[pago.per_id] || {};
+                const curso = cursos[pago.cur_id] || {};
+                const nombreCompleto = `${persona.per_nombres || ''} ${persona.per_apelpat || ''}`;
+
+                return (
+                  <tr key={pago.pap_id} className="text-white/90 hover:bg-white/5 transition-colors text-sm group">
+                    <td className="p-5 font-medium text-white/50">#{pago.pap_id}</td>
+                    <td className="p-5 font-medium">
+                      <div className="flex items-center gap-3">
+                        <div className="w-8 h-8 rounded-full bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center text-xs font-bold text-white shadow-lg">
+                          {nombreCompleto.charAt(0) || '?'}
+                        </div>
+                        <div className="flex flex-col">
+                          <span>{nombreCompleto || 'Desconocido'}</span>
+                          <span className="text-xs text-white/40">{persona.per_run}</span>
+                        </div>
+                      </div>
+                    </td>
+                    <td className="p-5 text-white/70">{curso.cur_descripcion || 'Desconocido'}</td>
+                    <td className="p-5 text-white/70">{new Date(pago.pap_fecha_hora).toLocaleDateString()}</td>
+                    <td className="p-5">
+                      <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-bold border ${pago.pap_tipo === 1
+                        ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20'
+                        : 'bg-rose-500/10 text-rose-400 border-rose-500/20'
+                        }`}>
+                        {pago.pap_tipo === 1 ? <ArrowUpRight size={14} /> : <ArrowDownRight size={14} />}
+                        {pago.pap_tipo === 1 ? 'Ingreso' : 'Egreso'}
+                      </span>
+                    </td>
+                    <td className="p-5 text-right font-bold text-white">
+                      ${parseInt(pago.pap_valor).toLocaleString('es-CL')}
+                    </td>
+                    <td className="p-5">
+                      <div className="flex items-center justify-center gap-2 opacity-100 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity">
+                        <button
+                          onClick={() => handleGenerateReceipt(pago.pap_id)}
+                          className="p-2 bg-purple-500/10 hover:bg-purple-500/20 text-purple-400 rounded-lg transition-colors border border-purple-500/20"
+                          title="Descargar Comprobante"
+                        >
+                          <FileText size={18} />
+                        </button>
+                        <button
+                          onClick={() => handleEdit(pago)}
+                          className="p-2 bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-400 rounded-lg transition-colors border border-emerald-500/20"
+                          title="Editar"
+                        >
+                          <Edit size={18} />
+                        </button>
+                        <button
+                          onClick={() => handleDelete(pago.pap_id)}
+                          className="p-2 bg-rose-500/10 hover:bg-rose-500/20 text-rose-400 rounded-lg transition-colors border border-rose-500/20"
+                          title="Eliminar"
+                        >
+                          <Trash2 size={18} />
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                );
+              })}
             </tbody>
           </table>
         </div>
-        {pagos.length === 0 && !error && (
-          <div className="p-12 text-center">
-            <div className="w-16 h-16 bg-white/5 rounded-full flex items-center justify-center mx-auto mb-4">
-              <Search className="text-white/20" size={32} />
+        {filteredPagos.length === 0 && !error && (
+          <div className="p-16 text-center">
+            <div className="w-20 h-20 bg-white/5 rounded-full flex items-center justify-center mx-auto mb-6 border border-white/10">
+              <FileText className="text-white/20" size={40} />
             </div>
-            <p className="text-white/40 text-sm">No se encontraron pagos registrados</p>
+            <h3 className="text-lg font-bold text-white mb-2">No se encontraron pagos</h3>
+            <p className="text-white/40 text-sm max-w-xs mx-auto">
+              {searchTerm ? 'Intenta ajustar tu búsqueda para encontrar lo que necesitas.' : 'Comienza registrando un nuevo pago o importando masivamente.'}
+            </p>
           </div>
         )}
       </div>
@@ -190,6 +336,12 @@ const GestionPagos = () => {
         onClose={() => setIsModalOpen(false)}
         onSuccess={handleSuccess}
         initialData={selectedPago}
+      />
+
+      <RegistrarPagoMasivoModal
+        isOpen={isMassModalOpen}
+        onClose={() => setIsMassModalOpen(false)}
+        onSuccess={handleSuccess}
       />
     </motion.div>
   );

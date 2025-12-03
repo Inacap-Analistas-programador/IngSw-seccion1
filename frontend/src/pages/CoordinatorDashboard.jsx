@@ -67,7 +67,7 @@ const CoordinatorDashboard = () => {
     if (path.includes('/gestion-cursos')) return 'Gestión de Cursos';
     if (path.includes('/inscripciones')) return 'Inscripciones';
     if (path.includes('/personas')) return 'Gestión de Personas';
-    if (path.includes('/gestion-pagos')) return 'Gestión de Pagos';
+    if (path.includes('/gestion-pagos')) return 'Gestión Financiera';
     if (path.includes('/envio-correos')) return 'Envío de Correos';
     if (path.includes('/acreditacion')) return 'Acreditación';
     if (path.includes('/maestros')) return 'Maestros';
@@ -93,19 +93,24 @@ const CoordinatorDashboard = () => {
 
         {/* Main content - with dynamic left margin */}
         <div
-          className={`flex-1 flex flex-col transition-all duration-300 ${collapsed ? 'ml-[80px]' : 'ml-[280px]'
+          className={`flex-1 flex flex-col ${collapsed ? 'ml-[80px]' : 'ml-[280px]'
             }`}
+          style={{ transition: 'margin-left 0.3s cubic-bezier(0.4, 0, 0.2, 1)' }}
         >
           {/* Integrated Header */}
-          <header className="sticky top-0 z-30 px-8 py-6 flex justify-between items-center backdrop-blur-sm bg-slate-900/50">
-            <div className="flex items-center space-x-4">
-              <span className="text-2xl font-bold text-white tracking-tight" style={{ fontFamily: 'Inter, system-ui, sans-serif' }}>
+          <header
+            className={`fixed top-0 right-0 z-40 px-8 py-4 flex justify-between items-center backdrop-blur-md bg-slate-900/80 border-b border-white/5 ${collapsed ? 'left-[80px]' : 'left-[280px]'
+              }`}
+            style={{ transition: 'left 0.3s cubic-bezier(0.4, 0, 0.2, 1)' }}
+          >
+            <div className="flex items-center space-x-4 pl-4">
+              <span className="text-xl font-bold text-white tracking-tight" style={{ fontFamily: 'Inter, system-ui, sans-serif' }}>
                 {getPageTitle()}
               </span>
             </div>
             <div className="flex items-center space-x-4">
-              <div className="hidden md:flex items-center px-4 py-2 bg-white/5 rounded-xl border border-white/10 backdrop-blur-md">
-                <span className="text-sm text-white/90" style={{ fontFamily: 'Inter, system-ui, sans-serif' }}>
+              <div className="hidden md:flex items-center px-3 py-1.5 bg-white/5 rounded-lg border border-white/10 backdrop-blur-md">
+                <span className="text-xs text-white/90" style={{ fontFamily: 'Inter, system-ui, sans-serif' }}>
                   Bienvenido, <span className="font-semibold text-white">{coordinator.name}</span>
                 </span>
               </div>
@@ -113,7 +118,7 @@ const CoordinatorDashboard = () => {
                 onClick={() => navigate('/')}
                 variant="ghost"
                 size="sm"
-                className="text-white/70 hover:text-white hover:bg-white/10 border border-transparent hover:border-white/10"
+                className="text-white/70 hover:text-white hover:bg-white/10 border border-transparent hover:border-white/10 h-8 text-xs"
                 style={{ fontFamily: 'Inter, system-ui, sans-serif' }}
               >
                 Inicio
@@ -122,16 +127,16 @@ const CoordinatorDashboard = () => {
                 onClick={handleLogout}
                 variant="ghost"
                 size="sm"
-                className="text-red-400 hover:text-red-300 hover:bg-red-500/10 border border-transparent hover:border-red-500/20"
+                className="text-red-400 hover:text-red-300 hover:bg-red-500/10 border border-transparent hover:border-red-500/20 h-8 text-xs"
                 style={{ fontFamily: 'Inter, system-ui, sans-serif' }}
               >
-                <FaRightFromBracket className="w-4 h-4 mr-0 sm:mr-2" />
+                <FaRightFromBracket className="w-3 h-3 mr-0 sm:mr-2" />
                 <span className="hidden sm:inline">Cerrar Sesión</span>
               </Button>
             </div>
           </header>
 
-          <main className="flex-1 p-6 lg:p-8">
+          <main className="flex-1 p-4 lg:p-6 mt-16">
             <Routes>
               <Route path="/ejecutivo" element={<DashboardEjecutivo />} />
               <Route path="/gestion-cursos" element={<Cursos />} />

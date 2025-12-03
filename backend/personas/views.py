@@ -1,4 +1,6 @@
-from rest_framework import viewsets
+from rest_framework import viewsets, status
+from rest_framework.decorators import action
+from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from .models import (
     Persona,
@@ -31,9 +33,29 @@ class PersonaViewSet(viewsets.ModelViewSet):
         """
         Allow public POST for pre-registration, require authentication for other operations
         """
-        if self.action == 'create':
+        if self.action in ['create', 'search_by_rut']:
             return [AllowAny()]
         return [IsAuthenticated()]
+
+    @action(detail=False, methods=['get'], url_path='search-by-rut')
+    def search_by_rut(self, request):
+        rut = request.query_params.get('rut')
+        if not rut:
+            return Response({'error': 'RUT parameter is required'}, status=status.HTTP_400_BAD_REQUEST)
+        
+        # Clean RUT: remove dots, take part before hyphen
+        rut_clean = rut.replace('.', '').split('-')[0]
+        
+        try:
+            rut_int = int(rut_clean)
+            persona = Persona.objects.filter(per_run=rut_int).first()
+            if persona:
+                serializer = self.get_serializer(persona)
+                return Response(serializer.data)
+            else:
+                return Response({'message': 'Persona not found'}, status=status.HTTP_404_NOT_FOUND)
+        except ValueError:
+            return Response({'error': 'Invalid RUT format'}, status=status.HTTP_400_BAD_REQUEST)
 
 
 class PersonaGrupoViewSet(viewsets.ModelViewSet):

@@ -1,11 +1,18 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { motion } from 'framer-motion';
 import Card from '@/components/ui/Card';
 import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
 import { Label } from '@/components/ui/Label';
-import { X, Calendar, MapPin, Settings, Filter } from 'lucide-react';
+import {
+  X, Calendar, MapPin, Settings, Filter, Eye, Edit2,
+  Plus, Search, Loader2, AlertCircle
+} from 'lucide-react';
 import { useToast } from '@/components/ui/use-toast';
+import CascadingGeographySelector from './CascadingGeographySelector';
+import CourseTypeSelector from './CourseTypeSelector';
+import CourseModalitySelector from './CourseModalitySelector';
 
 const Cursos = () => {
   const { toast } = useToast();
@@ -27,8 +34,8 @@ const Cursos = () => {
   const [courseData, setCourseData] = useState({
     codigo: '',
     descripcion: '',
-    fechaHora: '',
-    fechaSolicitud: '',
+    fechaHora: new Date().toISOString().slice(0, 16), // Auto-fill with current date/time
+    fechaSolicitud: new Date().toISOString().slice(0, 16), // Auto-fill
     lugar: '',
     coordLatitud: '',
     coordLongitud: '',
@@ -40,17 +47,19 @@ const Cursos = () => {
     observacion: '',
     responsableId: '',
     cargoResponsableId: '',
+    regionId: '', // New
+    provinciaId: '', // New
     comunaId: '',
     administra: '1',
-    fechas: [], // Array de fechas múltiples para el curso
-    secciones: [], // Array de secciones del curso
-    coordinadores: [], // Array de coordinadores del curso
-    formadores: [], // Array de formadores del curso
-    alimentacionRegistrada: false, // Indica si hay alimentación registrada
-    directoresFormadoresCompleto: false, // Indica si todos los directores/formadores están registrados
-    pagosPendientes: false, // Indica si hay pagos pendientes
-    totalFormadoresPorSeccion: {}, // Total de formadores por cada sección
-    alimentacion: [], // Lista de alimentación del curso
+    fechas: [],
+    secciones: [],
+    coordinadores: [],
+    formadores: [],
+    alimentacionRegistrada: false,
+    directoresFormadoresCompleto: false,
+    pagosPendientes: false,
+    totalFormadoresPorSeccion: {},
+    alimentacion: [],
   });
 
   const handleInputChange = (field, value) => {
@@ -473,81 +482,93 @@ const Cursos = () => {
       {/* Resumen de estadísticas */}
       {courses.length > 0 && (
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-          <Card>
-            <div className="p-4">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm font-medium text-gray-600">Total de Cursos</p>
-                  <p className="text-2xl font-bold text-primary">{courses.length}</p>
-                </div>
-                <div className="h-12 w-12 bg-blue-100 rounded-full flex items-center justify-center">
-                  <Calendar className="h-6 w-6 text-blue-600" />
-                </div>
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.1 }}
+            className="bg-blue-500/10 backdrop-blur-xl p-4 rounded-2xl border border-blue-500/20"
+          >
+            <div className="flex justify-between items-start mb-2">
+              <div>
+                <p className="text-blue-200/60 text-xs font-medium uppercase tracking-wider">Total Cursos</p>
+                <h3 className="text-2xl font-bold text-blue-100 mt-1">{courses.length}</h3>
+              </div>
+              <div className="p-2 bg-blue-500/20 rounded-lg">
+                <Calendar className="text-blue-400" size={20} />
               </div>
             </div>
-          </Card>
+          </motion.div>
 
-          <Card>
-            <div className="p-4">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm font-medium text-gray-600">Cursos Activos</p>
-                  <p className="text-2xl font-bold text-green-600">
-                    {courses.filter(c => c.estado === '1' || c.estado === '3').length}
-                  </p>
-                </div>
-                <div className="h-12 w-12 bg-green-100 rounded-full flex items-center justify-center">
-                  <Filter className="h-6 w-6 text-green-600" />
-                </div>
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.2 }}
+            className="bg-emerald-500/10 backdrop-blur-xl p-4 rounded-2xl border border-emerald-500/20"
+          >
+            <div className="flex justify-between items-start mb-2">
+              <div>
+                <p className="text-emerald-200/60 text-xs font-medium uppercase tracking-wider">Activos</p>
+                <h3 className="text-2xl font-bold text-emerald-100 mt-1">
+                  {courses.filter(c => c.estado === '1' || c.estado === '3').length}
+                </h3>
+              </div>
+              <div className="p-2 bg-emerald-500/20 rounded-lg">
+                <Filter className="text-emerald-400" size={20} />
               </div>
             </div>
-          </Card>
+          </motion.div>
 
-          <Card>
-            <div className="p-4">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm font-medium text-gray-600">Total Participantes</p>
-                  <p className="text-2xl font-bold text-purple-600">
-                    {courses.reduce((sum, course) => {
-                      const stats = calcularEstadisticasCurso(course);
-                      return sum + stats.totalParticipantes;
-                    }, 0)}
-                  </p>
-                </div>
-                <div className="h-12 w-12 bg-purple-100 rounded-full flex items-center justify-center">
-                  <MapPin className="h-6 w-6 text-purple-600" />
-                </div>
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.3 }}
+            className="bg-purple-500/10 backdrop-blur-xl p-4 rounded-2xl border border-purple-500/20"
+          >
+            <div className="flex justify-between items-start mb-2">
+              <div>
+                <p className="text-purple-200/60 text-xs font-medium uppercase tracking-wider">Participantes</p>
+                <h3 className="text-2xl font-bold text-purple-100 mt-1">
+                  {courses.reduce((sum, course) => {
+                    const stats = calcularEstadisticasCurso(course);
+                    return sum + stats.totalParticipantes;
+                  }, 0)}
+                </h3>
+              </div>
+              <div className="p-2 bg-purple-500/20 rounded-lg">
+                <MapPin className="text-purple-400" size={20} />
               </div>
             </div>
-          </Card>
+          </motion.div>
 
-          <Card>
-            <div className="p-4">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm font-medium text-gray-600">Total Coordinadores</p>
-                  <p className="text-2xl font-bold text-orange-600">
-                    {courses.reduce((sum, course) => {
-                      const stats = calcularEstadisticasCurso(course);
-                      return sum + stats.totalCoordinadores;
-                    }, 0)}
-                  </p>
-                </div>
-                <div className="h-12 w-12 bg-orange-100 rounded-full flex items-center justify-center">
-                  <Settings className="h-6 w-6 text-orange-600" />
-                </div>
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.4 }}
+            className="bg-amber-500/10 backdrop-blur-xl p-4 rounded-2xl border border-amber-500/20"
+          >
+            <div className="flex justify-between items-start mb-2">
+              <div>
+                <p className="text-amber-200/60 text-xs font-medium uppercase tracking-wider">Coordinadores</p>
+                <h3 className="text-2xl font-bold text-amber-100 mt-1">
+                  {courses.reduce((sum, course) => {
+                    const stats = calcularEstadisticasCurso(course);
+                    return sum + stats.totalCoordinadores;
+                  }, 0)}
+                </h3>
+              </div>
+              <div className="p-2 bg-amber-500/20 rounded-lg">
+                <Settings className="text-amber-400" size={20} />
               </div>
             </div>
-          </Card>
+          </motion.div>
         </div>
       )}
 
       {/* Modal de Creación de Curso */}
       {showCreateForm && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-lg shadow-xl max-w-4xl w-full max-h-[90vh] overflow-y-auto m-4">
-            <div className="flex justify-between items-center p-6 border-b">
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-lg shadow-xl max-w-6xl w-full max-h-[95vh] overflow-y-auto">
+            <div className="flex justify-between items-center p-6 border-b sticky top-0 bg-white z-10">
               <h2 className="text-2xl font-bold text-primary-foreground">Crear Nuevo Curso</h2>
               <Button onClick={resetForm} variant="ghost" className="p-2">
                 <X className="h-6 w-6" />
@@ -561,7 +582,7 @@ const Cursos = () => {
                   <Calendar className="h-5 w-5 mr-2" />
                   Información Básica
                 </h3>
-                <div className="grid md:grid-cols-2 gap-4">
+                <div className="grid md:grid-cols-3 gap-4">
                   <div className="space-y-2">
                     <Label htmlFor="codigo">Código del Curso *</Label>
                     <Input
@@ -696,6 +717,15 @@ const Cursos = () => {
                   <MapPin className="h-5 w-5 mr-2" />
                   Ubicación
                 </h3>
+                <CascadingGeographySelector
+                  selectedRegion={courseData.regionId}
+                  selectedProvincia={courseData.provinciaId}
+                  selectedComuna={courseData.comunaId}
+                  onRegionChange={(value) => handleInputChange('regionId', value)}
+                  onProvinciaChange={(value) => handleInputChange('provinciaId', value)}
+                  onComunaChange={(value) => handleInputChange('comunaId', value)}
+                  errors={errors}
+                />
                 <div className="grid md:grid-cols-2 gap-4">
                   <div className="space-y-2 md:col-span-2">
                     <Label htmlFor="lugar">Lugar del Curso</Label>
@@ -727,18 +757,7 @@ const Cursos = () => {
                       maxLength={50}
                     />
                   </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="comunaId">Comuna *</Label>
-                    <Input
-                      id="comunaId"
-                      value={courseData.comunaId}
-                      onChange={(e) => handleInputChange('comunaId', e.target.value)}
-                      placeholder="Ingrese la comuna"
-                      maxLength={50}
-                      className={errors.comunaId ? 'border-red-500' : ''}
-                    />
-                    {errors.comunaId && <p className="text-xs text-red-600">{errors.comunaId}</p>}
-                  </div>
+
                 </div>
               </div>
 
@@ -749,36 +768,16 @@ const Cursos = () => {
                   Configuración
                 </h3>
                 <div className="grid md:grid-cols-2 gap-4">
-                  <div className="space-y-2">
-                    <Label htmlFor="tipoCurso">Tipo de Curso *</Label>
-                    <select
-                      id="tipoCurso"
-                      value={courseData.tipoCurso}
-                      onChange={(e) => handleInputChange('tipoCurso', e.target.value)}
-                      className={`flex h-10 w-full rounded-md border bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 ${errors.tipoCurso ? 'border-red-500' : 'border-input'}`}
-                    >
-                      <option value="">Seleccionar tipo</option>
-                      <option value="1">Presencial</option>
-                      <option value="2">Online</option>
-                      <option value="3">Híbrido</option>
-                    </select>
-                    {errors.tipoCurso && <p className="text-xs text-red-600">{errors.tipoCurso}</p>}
-                  </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="modalidad">Modalidad *</Label>
-                    <select
-                      id="modalidad"
-                      value={courseData.modalidad}
-                      onChange={(e) => handleInputChange('modalidad', e.target.value)}
-                      className={`flex h-10 w-full rounded-md border bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 ${errors.modalidad ? 'border-red-500' : 'border-input'}`}
-                    >
-                      <option value="">Seleccionar modalidad</option>
-                      <option value="1">Presencial</option>
-                      <option value="2">Online</option>
-                      <option value="3">Híbrida</option>
-                    </select>
-                    {errors.modalidad && <p className="text-xs text-red-600">{errors.modalidad}</p>}
-                  </div>
+                  <CourseTypeSelector
+                    value={courseData.tipoCurso}
+                    onChange={(value) => handleInputChange('tipoCurso', value)}
+                    error={errors.tipoCurso}
+                  />
+                  <CourseModalitySelector
+                    value={courseData.modalidad}
+                    onChange={(value) => handleInputChange('modalidad', value)}
+                    error={errors.modalidad}
+                  />
                   <div className="space-y-2">
                     <Label htmlFor="cuotaConAlmuerzo">Cuota con Almuerzo</Label>
                     <Input
@@ -1627,261 +1626,167 @@ const Cursos = () => {
                   Cancelar
                 </Button>
                 <Button
-                  onClick={confirmDeleteCourse}
-                  className="bg-red-600 hover:bg-red-700 text-white"
-                >
-                  Eliminar
-                </Button>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* Lista de Cursos */}
-      <Card>
-        <div className="flex justify-between items-center mb-4">
-          <h2 className="text-xl font-semibold text-gray-800">
-            Cursos Disponibles ({filteredCourses.length} de {courses.length})
-          </h2>
-          <div className="flex gap-2">
-            <Button onClick={agregarCursoEjemplo} variant="outline" className="border-dashed">
-              + Curso de Ejemplo
-            </Button>
-            <Button onClick={() => setShowCreateForm(true)} className="bg-primary hover:bg-primary">
-              Nuevo Curso
-            </Button>
-          </div>
-        </div>
-
-        {/* Filtros */}
-        <div className="mb-6 p-4 bg-gray-50 rounded-lg border border-gray-200">
-          <div className="flex items-center mb-3">
-            <Filter className="h-5 w-5 mr-2 text-gray-600" />
-            <h3 className="font-semibold text-gray-700">Filtros</h3>
-          </div>
-          <div className="grid md:grid-cols-4 gap-4">
-            <div className="space-y-2">
-              <Label htmlFor="filter-search">Buscar</Label>
-              <Input
-                id="filter-search"
-                value={filters.search}
-                onChange={(e) => setFilters((prev) => ({ ...prev, search: e.target.value }))}
-                placeholder="Código, descripción, lugar..."
-              />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="filter-estado">Estado</Label>
-              <select
-                id="filter-estado"
-                value={filters.estado}
-                onChange={(e) => setFilters((prev) => ({ ...prev, estado: e.target.value }))}
-                className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
-              >
-                <option value="">Todos</option>
-                <option value="pendiente">Pendiente</option>
-                <option value="1">Activo</option>
-                <option value="2">Inactivo</option>
-                <option value="3">En Proceso</option>
-                <option value="4">Finalizado</option>
-                <option value="5">Cancelado</option>
-              </select>
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="filter-modalidad">Modalidad</Label>
-              <select
-                id="filter-modalidad"
-                value={filters.modalidad}
-                onChange={(e) => setFilters((prev) => ({ ...prev, modalidad: e.target.value }))}
-                className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
-              >
-                <option value="">Todas</option>
-                <option value="1">Presencial</option>
-                <option value="2">Online</option>
-                <option value="3">Híbrida</option>
-              </select>
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="filter-tipoCurso">Tipo de Curso</Label>
-              <select
-                id="filter-tipoCurso"
-                value={filters.tipoCurso}
-                onChange={(e) => setFilters((prev) => ({ ...prev, tipoCurso: e.target.value }))}
-                className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
-              >
-                <option value="">Todos</option>
-                <option value="1">Presencial</option>
-                <option value="2">Online</option>
-                <option value="3">Híbrido</option>
-              </select>
-            </div>
-          </div>
-          {(filters.search || filters.estado || filters.modalidad || filters.tipoCurso) && (
-            <div className="mt-3">
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => setFilters({ search: '', estado: '', modalidad: '', tipoCurso: '' })}
-              >
-                Limpiar filtros
+                  Limpiar filtros
               </Button>
             </div>
           )}
-        </div>
+          </div>
 
-        {filteredCourses.length > 0 ? (
-          <div className="overflow-x-auto">
-            <table className="w-full border-collapse">
-              <thead className="bg-gray-50">
-                <tr>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b">
-                    Código
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b">
-                    Descripción
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b">
-                    Fecha y Hora
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b">
-                    Tipo
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b">
-                    Modalidad
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b">
-                    Cuotas
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b">
-                    Participantes
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b">
-                    Equipo
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b">
-                    Estado
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b">
-                    Acciones
-                  </th>
-                </tr>
-              </thead>
-              <tbody className="bg-white divide-y divide-gray-200">
-                {filteredCourses.map((course) => {
-                  const estadoInfo = getEstadoName(course.estado);
-                  const stats = calcularEstadisticasCurso(course);
-                  return (
-                    <tr key={course.id} className="hover:bg-gray-50">
-                      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                        {course.codigo}
-                      </td>
-                      <td className="px-6 py-4 text-sm text-gray-900">
-                        <div className="max-w-xs">
-                          <p className="truncate font-medium">{course.descripcion}</p>
-                          <p className="text-xs text-gray-500 truncate">{course.lugar}</p>
-                        </div>
-                      </td>
-                      <td className="px-6 py-4 text-sm text-gray-900">
-                        {course.fechas && course.fechas.length > 0 ? (
-                          <div className="space-y-1">
-                            {course.fechas.map((fecha, idx) => (
-                              <div key={idx} className="text-xs">
-                                <span className="font-medium">
-                                  {formatDate(fecha.fecha_inicio)}
-                                </span>
-                                {' - '}
-                                <span>{formatDate(fecha.fecha_termino)}</span>
-                              </div>
-                            ))}
+          {filteredCourses.length > 0 ? (
+            <div className="overflow-x-auto">
+              <table className="w-full border-collapse">
+                <thead className="bg-gray-50">
+                  <tr>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b">
+                      Código
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b">
+                      Descripción
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b">
+                      Fecha Solicitud
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b">
+                      Fecha y Hora
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b">
+                      Tipo
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b">
+                      Modalidad
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b">
+                      Cuotas
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b">
+                      Participantes
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b">
+                      Equipo
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b">
+                      Estado
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b">
+                      Acciones
+                    </th>
+                  </tr>
+                </thead>
+                <tbody className="bg-white divide-y divide-gray-200">
+                  {filteredCourses.map((course) => {
+                    const estadoInfo = getEstadoName(course.estado);
+                    const stats = calcularEstadisticasCurso(course);
+                    return (
+                      <tr key={course.id} className="hover:bg-gray-50">
+                        <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                          {course.codigo}
+                        </td>
+                        <td className="px-6 py-4 text-sm text-gray-900">
+                          <div className="max-w-xs">
+                            <p className="truncate font-medium">{course.descripcion}</p>
+                            <p className="text-xs text-gray-500 truncate">{course.lugar}</p>
                           </div>
-                        ) : (
-                          formatDate(course.fechaHora)
-                        )}
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                        <span className="inline-flex px-2 py-1 text-xs rounded-full bg-blue-100 text-blue-800">
-                          {getTipoCursoName(course.tipoCurso)}
-                        </span>
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                        <span className="inline-flex px-2 py-1 text-xs rounded-full bg-green-100 text-green-800">
-                          {getModalidadName(course.modalidad)}
-                        </span>
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                        <div className="text-xs space-y-1">
-                          <p className="font-medium text-green-700">Con: {formatCurrency(course.cuotaConAlmuerzo)}</p>
-                          <p className="font-medium text-orange-700">Sin: {formatCurrency(course.cuotaSinAlmuerzo)}</p>
-                        </div>
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                        <div className="text-xs space-y-1">
-                          <p className="font-semibold text-blue-700">{stats.totalParticipantes} personas</p>
-                          <p className="text-gray-500">{stats.totalSecciones} {stats.totalSecciones === 1 ? 'sección' : 'secciones'}</p>
-                        </div>
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                        <div className="text-xs space-y-1">
-                          <p><span className="font-medium">Coord:</span> {stats.totalCoordinadores}</p>
-                          <p><span className="font-medium">Dir:</span> {stats.totalDirectores}</p>
-                          <p><span className="font-medium">Form:</span> {course.formadores?.length || 0}</p>
-                        </div>
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <span
-                          className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${estadoInfo.color}`}
-                        >
-                          {estadoInfo.name}
-                        </span>
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                        <div className="flex space-x-2">
-                          <Button
-                            size="sm"
-                            variant="outline"
-                            onClick={() => handleViewCourse(course)}
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                          {formatDate(course.fechaSolicitud)}
+                        </td>
+                        <td className="px-6 py-4 text-sm text-gray-900">
+                          {course.fechas && course.fechas.length > 0 ? (
+                            <div className="space-y-1">
+                              {course.fechas.map((fecha, idx) => (
+                                <div key={idx} className="text-xs">
+                                  <span className="font-medium">
+                                    {formatDate(fecha.fecha_inicio)}
+                                  </span>
+                                  {' - '}
+                                  <span>{formatDate(fecha.fecha_termino)}</span>
+                                </div>
+                              ))}
+                            </div>
+                          ) : (
+                            formatDate(course.fechaHora)
+                          )}
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                          <span className="inline-flex px-2 py-1 text-xs rounded-full bg-blue-100 text-blue-800">
+                            {getTipoCursoName(course.tipoCurso)}
+                          </span>
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                          <span className="inline-flex px-2 py-1 text-xs rounded-full bg-green-100 text-green-800">
+                            {getModalidadName(course.modalidad)}
+                          </span>
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                          <div className="text-xs space-y-1">
+                            <p className="font-medium text-green-700">Con: {formatCurrency(course.cuotaConAlmuerzo)}</p>
+                            <p className="font-medium text-orange-700">Sin: {formatCurrency(course.cuotaSinAlmuerzo)}</p>
+                          </div>
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                          <div className="text-xs space-y-1">
+                            <p className="font-semibold text-blue-700">{stats.totalParticipantes} personas</p>
+                            <p className="text-gray-500">{stats.totalSecciones} {stats.totalSecciones === 1 ? 'sección' : 'secciones'}</p>
+                          </div>
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                          <div className="text-xs space-y-1">
+                            <p><span className="font-medium">Coord:</span> {stats.totalCoordinadores}</p>
+                            <p><span className="font-medium">Dir:</span> {stats.totalDirectores}</p>
+                            <p><span className="font-medium">Form:</span> {course.formadores?.length || 0}</p>
+                          </div>
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          <span
+                            className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${estadoInfo.color}`}
                           >
-                            Ver
-                          </Button>
-                          <Button
-                            size="sm"
-                            variant="outline"
-                            onClick={() => handleEditCourse(course)}
-                          >
-                            Editar
-                          </Button>
-                          <Button
-                            size="sm"
-                            variant="outline"
-                            onClick={() => handleDeleteCourse(course)}
-                            className="text-red-600 hover:text-red-700 hover:bg-red-50"
-                          >
-                            Eliminar
-                          </Button>
-                        </div>
-                      </td>
-                    </tr>
-                  );
-                })}
-              </tbody>
-            </table>
-          </div>
-        ) : courses.length > 0 ? (
-          <div className="text-center py-8">
-            <p className="text-gray-500 text-lg">
-              No se encontraron cursos con los filtros aplicados
-            </p>
-            <p className="text-gray-400 text-sm mt-2">Intenta ajustar los filtros de búsqueda</p>
-          </div>
-        ) : (
-          <div className="text-center py-8">
-            <p className="text-gray-500 text-lg">No hay cursos registrados</p>
-            <p className="text-gray-400 text-sm mt-2">
-              Crea tu primer curso haciendo clic en "Nuevo Curso"
-            </p>
-          </div>
-        )}
-      </Card>
+                            {estadoInfo.name}
+                          </span>
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                          <div className="flex space-x-2">
+                            <Button
+                              size="sm"
+                              variant="ghost"
+                              onClick={() => handleViewCourse(course)}
+                              className="p-2 hover:bg-blue-50 text-blue-600 hover:text-blue-700"
+                              title="Ver detalles"
+                            >
+                              <Eye className="w-4 h-4" />
+                            </Button>
+                            <Button
+                              size="sm"
+                              variant="ghost"
+                              onClick={() => handleEditCourse(course)}
+                              className="p-2 hover:bg-green-50 text-green-600 hover:text-green-700"
+                              title="Editar curso"
+                            >
+                              <Edit2 className="w-4 h-4" />
+                            </Button>
+                          </div>
+                        </td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
+            </div>
+          ) : courses.length > 0 ? (
+            <div className="text-center py-8">
+              <p className="text-gray-500 text-lg">
+                No se encontraron cursos con los filtros aplicados
+              </p>
+              <p className="text-gray-400 text-sm mt-2">Intenta ajustar los filtros de búsqueda</p>
+            </div>
+          ) : (
+            <div className="text-center py-8">
+              <p className="text-gray-500 text-lg">No hay cursos registrados</p>
+              <p className="text-gray-400 text-sm mt-2">
+                Crea tu primer curso haciendo clic en "Nuevo Curso"
+              </p>
+            </div>
+          )}
+        </Card>
     </div>
   );
 };

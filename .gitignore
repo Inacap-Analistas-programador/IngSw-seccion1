@@ -73,3 +73,7 @@ logs/
 *.pem
 *.key
 *.crt
+
+# Reference repository (local folder only, not tracked)
+sweccion2/
+reference_repo_seccion2/

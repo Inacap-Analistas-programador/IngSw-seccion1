@@ -30,7 +30,10 @@ const PreRegistrationForm = () => {
   }, [currentStep]);
   const [formData, setFormData] = useState({
     // Paso 1: Datos Personales (llaves en español para coherencia)
-    nombreCompleto: '',
+    // Paso 1: Datos Personales (llaves en español para coherencia)
+    nombres: '',
+    apellidoPaterno: '',
+    apellidoMaterno: '',
     rut: '',
     fechaNacimiento: '',
     correo: '',
@@ -122,9 +125,9 @@ const PreRegistrationForm = () => {
   const handleSubmit = async () => {
     // Removed consent requirement: proceed to submit without checking terms checkbox
 
-    const [nombres, ...apellidos] = (formData.nombreCompleto || '').split(' ');
-    const apellidoPaterno = apellidos[0] || '';
-    const apellidoMaterno = apellidos.slice(1).join(' ') || '';
+    const nombres = formData.nombres || '';
+    const apellidoPaterno = formData.apellidoPaterno || '';
+    const apellidoMaterno = formData.apellidoMaterno || '';
     const [rutVal, dv] = (formData.rut || '').split('-');
 
     const newPersona = {
@@ -229,8 +232,12 @@ const PreRegistrationForm = () => {
     // Devuelve { ok: true } si pasa, o { ok: false, message: '...' } si falla
     switch (currentStep) {
       case 1: {
-        if (!formData.nombreCompleto || formData.nombreCompleto.trim() === '')
-          return { ok: false, message: 'Complete el Nombre antes de continuar.' };
+        if (!formData.nombres || formData.nombres.trim() === '')
+          return { ok: false, message: 'Complete sus Nombres antes de continuar.' };
+        if (!formData.apellidoPaterno || formData.apellidoPaterno.trim() === '')
+          return { ok: false, message: 'Complete su Apellido Paterno antes de continuar.' };
+        if (!formData.apellidoMaterno || formData.apellidoMaterno.trim() === '')
+          return { ok: false, message: 'Complete su Apellido Materno antes de continuar.' };
         if (!formData.rut || formData.rut.trim() === '')
           return { ok: false, message: 'Complete el RUT antes de continuar.' };
         if (!formData.telefono || formData.telefono.trim() === '')
@@ -305,18 +312,18 @@ const PreRegistrationForm = () => {
                   <div className="flex flex-col items-center">
                     <div
                       className={`w-10 h-10 rounded-full flex items-center justify-center font-bold transition-all duration-300 ${currentStep > step.number
-                          ? 'bg-primary text-primary-foreground'
-                          : currentStep === step.number
-                            ? 'bg-primary text-primary-foreground ring-4 ring-primary/30'
-                            : 'bg-gray-200 text-gray-500'
+                        ? 'bg-primary text-primary-foreground'
+                        : currentStep === step.number
+                          ? 'bg-primary text-primary-foreground ring-4 ring-primary/30'
+                          : 'bg-gray-200 text-gray-500'
                         }`}
                     >
                       {currentStep > step.number ? <FaCheck className="w-5 h-5" /> : step.number}
                     </div>
                     <span
                       className={`text-xs mt-2 text-center hidden md:block ${currentStep >= step.number
-                          ? 'text-[#001558] font-semibold'
-                          : 'text-gray-500'
+                        ? 'text-[#001558] font-semibold'
+                        : 'text-gray-500'
                         }`}
                     >
                       {step.title}

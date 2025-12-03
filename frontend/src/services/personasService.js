@@ -128,7 +128,7 @@ const personasService = {
    */
   async searchByRut(rut) {
     try {
-      const response = await httpClient.get(`/api/personas/personas/?rut=${rut}`);
+      const response = await httpClient.get(`/api/personas/personas/search-by-rut/?rut=${rut}`);
       return response;
     } catch (error) {
       console.error(`Error searching persona by RUT ${rut}:`, error);

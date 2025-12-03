@@ -165,8 +165,8 @@ const Step2ScoutInfo = ({ formData, updateFormData }) => {
           </div>
         )}
 
-        {/* Show ramas list to pick from depending on nivel */}
-        {formData.nivel && (
+        {/* Show ramas list to pick from depending on nivel (Medio/Avanzado only) */}
+        {(formData.nivel === 'medio' || formData.nivel === 'avanzado') && (
           <div className="space-y-2 md:col-span-2">
             <Label>Ramas (haz click para seleccionar)</Label>
             <div className="flex flex-wrap gap-2 mt-2">
@@ -175,7 +175,7 @@ const Step2ScoutInfo = ({ formData, updateFormData }) => {
                   key={r}
                   type="button"
                   onClick={() => handleChange('ramaFormacion', r)}
-                  className={`px-3 py-1 border rounded ${formData.ramaFormacion===r? 'bg-primary text-white':''}`}
+                  className={`px-3 py-1 border rounded ${formData.ramaFormacion === r ? 'bg-primary text-white' : ''}`}
                 >
                   {r}
                 </button>
@@ -184,17 +184,7 @@ const Step2ScoutInfo = ({ formData, updateFormData }) => {
           </div>
         )}
 
-        {formData.nivel === 'medio' && (
-          <div className="space-y-2">
-            <Label htmlFor="numeroMMAA">Número MMAA</Label>
-            <Input
-              id="numeroMMAA"
-              value={formData.numeroMMAA}
-              onChange={(e) => handleChange('numeroMMAA', e.target.value)}
-              placeholder="Número MMAA"
-            />
-          </div>
-        )}
+
 
         <div className="space-y-2">
           <Label htmlFor="esFormador">¿Es formador? *</Label>
@@ -211,7 +201,7 @@ const Step2ScoutInfo = ({ formData, updateFormData }) => {
         </div>
       </div>
 
-        {formData.esFormador === 'si' && (
+      {formData.esFormador === 'si' && (
         <div className="space-y-4">
           <h3 className="text-lg font-semibold text-blue-900">Información de Formador</h3>
           <div className="grid md:grid-cols-2 gap-4">

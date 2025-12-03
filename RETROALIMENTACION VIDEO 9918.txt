@@ -1,0 +1,22 @@
+RETROALIMENTACION VIDEO 9918:
+Ramas Scout:
+-Al momento de crear nueva rama eliminar select de estado, automáticamente queda como VIGENTE.
+-Gestión de maestro esta super bien la pantalla, no modificar mucho
+
+Gestión de cursos(Creación):
+-Fecha y hora debe guardarse en la BD, no debe porque seleccionarlo si se guarda solo por lógica.
+-Fechas de curso esta bien hecha que se puedan agregar hartas
+-Decidir bien si vamos a ocupar el mapa para la geolocalización, llevar listo el lunes.
+-La comuna no se ingresa, se selecciona. Debe estar Región, Provincia, Comuna, porque osino deberían salir todas las comunas del país jaja.
+-Tipo de curso: Inicial, medio, avanzado
+-Modalidad: Presencial, Online, Híbrido
+-Eliminar el estado igualmente de esa parte
+
+FALTAN: -Formadores
+	-Coordinadores
+	-Secciones
+	-Alimentación
+
+Pasamos a la vista de Lista de Cursos:
+-Dejar boton de ver y editar y agregar boton del estado que al presionarlo se abre un pequeño cuadrado se seleccion del estado del curso.
+-En fecha debe estar la fecha de solicitud

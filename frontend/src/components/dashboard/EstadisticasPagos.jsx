@@ -88,12 +88,12 @@ const EstadisticasPagos = () => {
     if (!stats) return null;
 
     return (
-        <div className="flex flex-col xl:flex-row gap-6 h-[calc(100vh-120px)]">
+        <div className="flex flex-col xl:flex-row gap-6">
             {/* Left Sidebar: Recent Activity */}
             <motion.div
                 initial={{ opacity: 0, x: -20 }}
                 animate={{ opacity: 1, x: 0 }}
-                className="w-full xl:w-72 flex-shrink-0 bg-white/5 backdrop-blur-xl rounded-2xl border border-white/10 overflow-hidden flex flex-col"
+                className="w-full xl:w-72 flex-shrink-0 bg-white/5 backdrop-blur-xl rounded-2xl border border-white/10 flex flex-col h-fit"
             >
                 <div className="p-6 border-b border-white/10 bg-white/5">
                     <h3 className="text-sm font-bold text-white flex items-center gap-2 uppercase tracking-wider">
@@ -101,7 +101,7 @@ const EstadisticasPagos = () => {
                         Últimos Movimientos
                     </h3>
                 </div>
-                <div className="overflow-y-auto custom-scrollbar flex-1 p-2">
+                <div className="p-2">
                     <div className="space-y-2">
                         {stats.recent_payments.map((pago) => (
                             <div key={pago.id} className="flex items-center justify-between p-3 rounded-xl hover:bg-white/5 transition-all group border border-transparent hover:border-white/5">
@@ -127,7 +127,7 @@ const EstadisticasPagos = () => {
             </motion.div>
 
             {/* Right Content: Charts Grid */}
-            <div className="flex-1 flex flex-col gap-6 overflow-y-auto custom-scrollbar pr-2">
+            <div className="flex-1 flex flex-col gap-6">
 
                 {/* Summary Cards Row */}
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -203,7 +203,7 @@ const EstadisticasPagos = () => {
                             <Activity className="text-emerald-400" size={14} />
                             Balance Mensual
                         </h3>
-                        <div className="flex-1 min-h-[180px] w-full">
+                        <div className="flex-1 min-h-[180px] w-full min-w-0">
                             <ResponsiveContainer width="100%" height="100%">
                                 <AreaChart data={stats.balance_stats} margin={{ top: 5, right: 0, left: -20, bottom: 0 }}>
                                     <defs>
@@ -239,7 +239,7 @@ const EstadisticasPagos = () => {
                             <TrendingUp className="text-cyan-400" size={14} />
                             Tendencia Diaria (30 Días)
                         </h3>
-                        <div className="flex-1 min-h-[180px] w-full">
+                        <div className="flex-1 min-h-[180px] w-full min-w-0">
                             <ResponsiveContainer width="100%" height="100%">
                                 <AreaChart data={stats.daily_stats} margin={{ top: 5, right: 0, left: -20, bottom: 0 }}>
                                     <defs>
@@ -259,7 +259,7 @@ const EstadisticasPagos = () => {
                         </div>
                     </motion.div>
 
-                    {/* 3. Inscripciones por Curso (Stacked Bar Chart) */}
+                    {/* 3. Pagos por Curso (Stacked Bar Chart) */}
                     <motion.div
                         initial={{ opacity: 0, scale: 0.95 }}
                         animate={{ opacity: 1, scale: 1 }}
@@ -268,9 +268,9 @@ const EstadisticasPagos = () => {
                     >
                         <h3 className="text-xs font-bold text-white mb-4 flex items-center gap-2 uppercase tracking-wider">
                             <BarChart3 className="text-blue-400" size={14} />
-                            Inscripciones por Curso
+                            Pagos por Curso
                         </h3>
-                        <div className="flex-1 min-h-[180px] w-full">
+                        <div className="flex-1 min-h-[180px] w-full min-w-0">
                             <ResponsiveContainer width="100%" height="100%">
                                 <BarChart data={stats.curso_stats} layout="vertical" margin={{ top: 0, right: 20, left: 0, bottom: 0 }}>
                                     <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" horizontal={false} />
@@ -278,7 +278,7 @@ const EstadisticasPagos = () => {
                                     <YAxis dataKey="name" type="category" width={60} tick={{ fill: 'rgba(255,255,255,0.5)', fontSize: 10 }} axisLine={false} tickLine={false} />
                                     <Tooltip cursor={{ fill: 'rgba(255,255,255,0.05)' }} contentStyle={{ backgroundColor: 'rgba(15, 23, 42, 0.9)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '8px', fontSize: '12px' }} />
                                     <Legend iconType="circle" wrapperStyle={{ fontSize: '10px', paddingTop: '10px' }} />
-                                    <Bar dataKey="vigentes" name="Vigentes" stackId="a" fill="#10B981" radius={[0, 0, 0, 0]} barSize={12} />
+                                    <Bar dataKey="vigentes" name="Pagados" stackId="a" fill="#10B981" radius={[0, 0, 0, 0]} barSize={12} />
                                     <Bar dataKey="pendientes" name="Pendientes" stackId="a" fill="#F59E0B" radius={[0, 4, 4, 0]} barSize={12} />
                                 </BarChart>
                             </ResponsiveContainer>
