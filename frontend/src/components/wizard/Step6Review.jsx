@@ -5,82 +5,79 @@ import { Checkbox } from '@/components/ui/Checkbox';
 const Step6Review = ({ formData, updateFormData }) => {
   return (
     <div className="space-y-6">
-      <div>
-        <h2 className="text-2xl font-bold text-primary-foreground mb-2">Revisión y Confirmación</h2>
-        <p className="text-gray-600">Revisa tu información antes de enviar la preinscripción.</p>
-      </div>
 
-      <div className="bg-gray-50 rounded-lg p-6 space-y-4">
+
+      <div className="bg-white/5 border border-white/10 rounded-xl p-6 space-y-4">
         <div className="grid md:grid-cols-2 gap-4">
           <div>
-            <p className="text-sm text-gray-600">Nombres</p>
-            <p className="font-semibold text-gray-800">
+            <p className="text-sm text-gray-400">Nombres</p>
+            <p className="font-semibold text-white">
               {formData.nombres || 'No especificado'}
             </p>
           </div>
           <div>
-            <p className="text-sm text-gray-600">Apellidos</p>
-            <p className="font-semibold text-gray-800">
+            <p className="text-sm text-gray-400">Apellidos</p>
+            <p className="font-semibold text-white">
               {`${formData.apellidoPaterno || ''} ${formData.apellidoMaterno || ''}`.trim() || 'No especificado'}
             </p>
           </div>
           <div>
-            <p className="text-sm text-gray-600">RUT</p>
-            <p className="font-semibold text-gray-800">{formData.rut || 'No especificado'}</p>
+            <p className="text-sm text-gray-400">RUT</p>
+            <p className="font-semibold text-white">{formData.rut || 'No especificado'}</p>
           </div>
           <div>
-            <p className="text-sm text-gray-600">Correo</p>
-            <p className="font-semibold text-gray-800">{formData.correo || 'No especificado'}</p>
+            <p className="text-sm text-gray-400">Correo</p>
+            <p className="font-semibold text-white">{formData.correo || 'No especificado'}</p>
           </div>
           <div>
-            <p className="text-sm text-gray-600">Teléfono</p>
-            <p className="font-semibold text-gray-800">{formData.telefono || 'No especificado'}</p>
+            <p className="text-sm text-gray-400">Teléfono</p>
+            <p className="font-semibold text-white">{formData.telefono || 'No especificado'}</p>
           </div>
           <div>
-            <p className="text-sm text-gray-600">Profesión</p>
-            <p className="font-semibold text-gray-800">{formData.profesion || 'No especificada'}</p>
+            <p className="text-sm text-gray-400">Profesión</p>
+            <p className="font-semibold text-white">{formData.profesion || 'No especificada'}</p>
           </div>
           <div>
-            <p className="text-sm text-gray-600">Religión</p>
-            <p className="font-semibold text-gray-800">{formData.religion || 'No especificada'}</p>
+            <p className="text-sm text-gray-400">Religión</p>
+            <p className="font-semibold text-white">{formData.religion || 'No especificada'}</p>
           </div>
 
           <div>
-            <p className="text-sm text-gray-600">Apodo Scout</p>
-            <p className="font-semibold text-gray-800">{formData.apodo || 'No especificado'}</p>
+            <p className="text-sm text-gray-400">Apodo Scout</p>
+            <p className="font-semibold text-white">{formData.apodo || 'No especificado'}</p>
           </div>
           <div>
-            <p className="text-sm text-gray-600">Grupo Scout</p>
-            <p className="font-semibold text-gray-800">{formData.grupo || 'No especificado'}</p>
+            <p className="text-sm text-gray-400">Grupo Scout</p>
+            <p className="font-semibold text-white">{formData.grupo || 'No especificado'}</p>
           </div>
           <div>
-            <p className="text-sm text-gray-600">Rama</p>
-            <p className="font-semibold text-gray-800">
+            <p className="text-sm text-gray-400">Rama</p>
+            <p className="font-semibold text-white">
               {formData.ramaFormacion || 'No especificado'}
             </p>
           </div>
           <div>
-            <p className="text-sm text-gray-600">Tiempo trabajo con NNAJ</p>
-            <p className="font-semibold text-gray-800">
+            <p className="text-sm text-gray-400">Tiempo trabajo con NNAJ</p>
+            <p className="font-semibold text-white">
               {formData.tiempoTrabajoNNAJ || 'No especificado'}
             </p>
           </div>
           <div>
-            <p className="text-sm text-gray-600">Tiempo trabajo con Adultos</p>
-            <p className="font-semibold text-gray-800">
+            <p className="text-sm text-gray-400">Tiempo trabajo con Adultos</p>
+            <p className="font-semibold text-white">
               {formData.trabajaConAdultos === 'si' ? formData.tiempoTrabajoAdultos : 'No'}
             </p>
           </div>
           <div>
-            <p className="text-sm text-gray-600">Beneficiario</p>
-            <p className="font-semibold text-gray-800">
+            <p className="text-sm text-gray-400">Beneficiario</p>
+            <p className="font-semibold text-white">
               {formData.esBeneficiario === 'si' ? `Sí (${formData.tiempoBeneficiario})` : 'No'}
             </p>
           </div>
           {formData.needsAccommodation === 'si' && (
             <div className="md:col-span-2">
-              <p className="text-sm text-gray-600">Alojamiento</p>
-              <p className="font-semibold text-gray-800">
+              <p className="text-sm text-gray-400">Alojamiento</p>
+              <p className="font-semibold text-white">
                 Sí - {formData.detalleAlojamiento || 'Sin detalles'}
               </p>
             </div>

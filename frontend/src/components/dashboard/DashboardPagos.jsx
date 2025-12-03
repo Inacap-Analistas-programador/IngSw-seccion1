@@ -31,7 +31,7 @@ const DashboardPagos = () => {
   ];
 
   return (
-    <div className="-mt-4 lg:-mt-6 -mx-4 lg:-mx-6">
+    <div className="w-full">
       {/* Header & Tabs */}
       <div className="sticky top-16 z-30 w-full bg-slate-900 border-b border-white/10 mb-6">
         <div className="flex overflow-x-auto no-scrollbar">

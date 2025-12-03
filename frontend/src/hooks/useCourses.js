@@ -1,5 +1,7 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useToast } from '@/components/ui/use-toast';
+import maestrosService from '@/services/maestrosService';
+import personasService from '@/services/personasService';
 import {
   validateCourseData,
   filterCourses,
@@ -16,6 +18,13 @@ export const useCourses = () => {
   
   // State
   const [courses, setCourses] = useState([]);
+  const [masterData, setMasterData] = useState({
+    ramas: [],
+    niveles: [],
+    cargos: [],
+    tiposCurso: [],
+    personas: [],
+  });
   const [selectedCourse, setSelectedCourse] = useState(null);
   const [showCreateForm, setShowCreateForm] = useState(false);
   const [showEditForm, setShowEditForm] = useState(false);
@@ -28,6 +37,38 @@ export const useCourses = () => {
     modalidad: '',
     tipoCurso: '',
   });
+
+  // Fetch master data
+  useEffect(() => {
+    const fetchMasterData = async () => {
+      try {
+        const [ramas, niveles, cargos, tiposCurso, personas] = await Promise.all([
+          maestrosService.getAll('ramas'),
+          maestrosService.getAll('niveles'),
+          maestrosService.getAll('cargos'),
+          maestrosService.getAll('tipos-curso'),
+          personasService.getAll(),
+        ]);
+        
+        setMasterData({
+          ramas: ramas.results || ramas || [],
+          niveles: niveles.results || niveles || [],
+          cargos: cargos.results || cargos || [],
+          tiposCurso: tiposCurso.results || tiposCurso || [],
+          personas: personas.results || personas || [],
+        });
+      } catch (error) {
+        console.error('Error fetching master data:', error);
+        toast({
+          title: 'Error',
+          description: 'No se pudieron cargar los datos maestros.',
+          variant: 'destructive',
+        });
+      }
+    };
+
+    fetchMasterData();
+  }, []);
 
   // Initial course data structure
   const getInitialCourseData = () => ({
@@ -231,6 +272,7 @@ export const useCourses = () => {
   return {
     // State
     courses,
+    masterData,
     selectedCourse,
     courseData,
     showCreateForm,

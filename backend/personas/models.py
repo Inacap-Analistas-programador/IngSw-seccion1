@@ -107,7 +107,7 @@ class PersonaCurso(models.Model):
     # pec_id: Identificador único de la inscripción (clave primaria)
     pec_id = models.AutoField(primary_key=True)
     # per_id: Clave foránea a Persona (relación ManyToOne)
-    per_id = models.ForeignKey(Persona, on_delete=models.CASCADE, db_column='per_id')
+    per_id = models.ForeignKey(Persona, on_delete=models.CASCADE, db_column='per_id', related_name='personacurso')
     # cus_id: Clave foránea a CursoSeccion (relación ManyToOne)
     cus_id = models.ForeignKey(CursoSeccion, on_delete=models.CASCADE, db_column='cus_id')
     # rol_id: Clave foránea a Rol (rol de la persona en el curso)

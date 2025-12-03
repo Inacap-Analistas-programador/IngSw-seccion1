@@ -41,6 +41,79 @@ class PagoPersonaViewSet(viewsets.ModelViewSet):
 	search_fields = ['per_id__per_run', 'per_id__per_nombres', 'per_id__per_apelpat', 'per_id__per_apelmat']
 	ordering_fields = ['pap_fecha_hora', 'pap_valor']
 
+	@action(detail=True, methods=['post'])
+	def anular(self, request, pk=None):
+		"""Anula un pago (Soft Delete) cambiando su estado a Anulado (2)."""
+		pago = self.get_object()
+		if pago.pap_estado == PagoPersona.PAP_ESTADO_ANULADO:
+			return Response({'detail': 'El pago ya está anulado.'}, status=status.HTTP_400_BAD_REQUEST)
+		
+		pago.pap_estado = PagoPersona.PAP_ESTADO_ANULADO
+		pago.save()
+		serializer = self.get_serializer(pago)
+		return Response(serializer.data)
+
+	@action(detail=True, methods=['post'], url_path='enviar-comprobante')
+	def enviar_comprobante(self, request, pk=None):
+		"""Envía el comprobante de pago por correo electrónico."""
+		pago = self.get_object()
+		persona = pago.per_id
+		
+		if not persona.per_email:
+			return Response({'detail': 'La persona asociada no tiene correo electrónico registrado.'}, status=status.HTTP_400_BAD_REQUEST)
+
+		try:
+			from emails.services import EmailService
+			from pagos.utils import generate_payment_pdf
+			from pagos.models import PagoComprobante
+
+			# 1. Obtener el archivo del comprobante (Físico o Generado)
+			pdf_content = None
+			filename = f"comprobante_pago_{pago.pap_id}.pdf"
+			
+			# Intentar buscar archivo físico existente
+			pago_comprobante = PagoComprobante.objects.select_related('cpa_id').filter(pap_id=pago.pap_id).first()
+			if pago_comprobante and pago_comprobante.cpa_id.cpa_archivo:
+				try:
+					with pago_comprobante.cpa_id.cpa_archivo.open('rb') as f:
+						pdf_content = f.read()
+						filename = pago_comprobante.cpa_id.cpa_archivo.name.split('/')[-1]
+				except FileNotFoundError:
+					pass
+
+			# Si no hay archivo físico, generar PDF
+			if not pdf_content:
+				pdf_buffer = generate_payment_pdf(pago)
+				pdf_content = pdf_buffer.getvalue()
+
+			# 2. Enviar Correo
+			email_service = EmailService()
+			subject = f"Comprobante de Pago #{pago.pap_id} - GIC"
+			html_content = f"""
+				<h2>Comprobante de Pago</h2>
+				<p>Estimado/a {persona.per_nombres} {persona.per_apelpat},</p>
+				<p>Adjunto encontrará el comprobante de su pago realizado el {localtime(pago.pap_fecha_hora).strftime("%d/%m/%Y")}.</p>
+				<br>
+				<p>Atentamente,<br>Equipo GIC</p>
+			"""
+			
+			email_service.send_email(
+				recipient_email=persona.per_email,
+				subject=subject,
+				html_content=html_content,
+				attachments=[{
+					'filename': filename,
+					'content': pdf_content,
+					'content_type': 'application/pdf'
+				}]
+			)
+
+			return Response({'detail': 'Comprobante enviado correctamente.'}, status=status.HTTP_200_OK)
+
+		except Exception as e:
+			print(f"Error enviando comprobante: {e}")
+			return Response({'detail': 'Error al enviar el correo.'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
 	def create(self, request, *args, **kwargs):
 		serializer = self.get_serializer(data=request.data)
 		serializer.is_valid(raise_exception=True)

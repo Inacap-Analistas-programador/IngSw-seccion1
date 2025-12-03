@@ -2,12 +2,12 @@ import random
 from datetime import date, timedelta
 from django.core.management.base import BaseCommand
 from django.utils import timezone
-from django.contrib.auth.models import User
 from usuarios.models import Usuario
 from maestros.models import (
-    ConceptoContable, Region, Provincia, Comuna, Perfil, 
+    ConceptoContable, Perfil, 
     EstadoCivil, Cargo, Nivel, Rama, Rol, TipoArchivo, TipoCurso, Alimentacion
 )
+from geografia.models import Region, Provincia, Comuna
 from cursos.models import Curso
 from personas.models import Persona
 from proveedores.models import Proveedor
@@ -21,46 +21,95 @@ class Command(BaseCommand):
 
         # 1. Ensure Basic Maestros exist
         self.stdout.write('Creating Maestros...')
-        region, _ = Region.objects.get_or_create(reg_id=1, defaults={'reg_descripcion': 'Metropolitana', 'reg_orden': 1})
-        provincia, _ = Provincia.objects.get_or_create(prv_id=1, defaults={'prv_descripcion': 'Santiago', 'reg_id': region})
-        comuna, _ = Comuna.objects.get_or_create(com_id=1, defaults={'com_descripcion': 'Santiago', 'prv_id': provincia})
+        region, _ = Region.objects.get_or_create(reg_id=1, defaults={'reg_descripcion': 'Metropolitana', 'reg_vigente': True})
+        provincia, _ = Provincia.objects.get_or_create(pro_id=1, defaults={'pro_descripcion': 'Santiago', 'reg_id': region, 'pro_vigente': True})
+        comuna, _ = Comuna.objects.get_or_create(com_id=1, defaults={'com_descripcion': 'Santiago', 'pro_id': provincia, 'com_vigente': True})
         
         # Conceptos Contables
         conceptos_data = [
-            ('Matrícula', 1), ('Mensualidad', 1), ('Donación', 1), 
-            ('Materiales', 2), ('Servicios Básicos', 2), ('Transporte', 2)
+            'Matrícula', 'Mensualidad', 'Donación', 
+            'Materiales', 'Servicios Básicos', 'Transporte'
         ]
         conceptos = []
-        for desc, tipo in conceptos_data:
+        for desc in conceptos_data:
             c, _ = ConceptoContable.objects.get_or_create(
                 coc_descripcion=desc, 
-                defaults={'coc_tipo': tipo, 'coc_vigente': True}
+                defaults={'coc_vigente': True}
             )
             conceptos.append(c)
 
         # 2. Ensure User exists
-        user = User.objects.first()
-        if not user:
-            user = User.objects.create_superuser('admin', 'admin@example.com', 'admin123')
-        
         perfil, _ = Perfil.objects.get_or_create(pel_descripcion='Administrador', defaults={'pel_vigente': True})
-        usuario, _ = Usuario.objects.get_or_create(
-            usu_username='admin',
-            defaults={'usu_email': 'admin@example.com', 'pel_id': perfil, 'usu_vigente': True}
+        
+        usuario = Usuario.objects.filter(usu_username='admin').first()
+        if not usuario:
+            usuario = Usuario(
+                usu_username='admin',
+                usu_email='admin@example.com',
+                pel_id=perfil,
+                usu_vigente=True
+            )
+            usuario.set_password('admin123')
+            usuario.save()
+
+        # 3. Create Dependencies for Curso
+        self.stdout.write('Creating Curso Dependencies...')
+        tipo_curso, _ = TipoCurso.objects.get_or_create(
+            tcu_descripcion='Presencial',
+            defaults={'tcu_tipo': 1, 'tcu_vigente': True}
+        )
+        cargo, _ = Cargo.objects.get_or_create(
+            car_descripcion='Coordinador',
+            defaults={'car_vigente': True}
+        )
+        
+        # Create a dummy responsible person first
+        estado_civil, _ = EstadoCivil.objects.get_or_create(esc_descripcion='Soltero', defaults={'esc_vigente': True})
+        
+        responsable, _ = Persona.objects.get_or_create(
+            per_run=99999999,
+            defaults={
+                'per_dv': '9',
+                'per_nombres': 'Responsable',
+                'per_apelpat': 'Curso',
+                'per_email': 'resp@curso.com',
+                'per_vigente': True,
+                'esc_id': estado_civil,
+                'com_id': comuna,
+                'usu_id': usuario,
+                'per_fecha_nac': date(1980, 1, 1),
+                'per_direccion': 'Direccion Falsa 123',
+                'per_tipo_fono': 1,
+                'per_fono': '912345678',
+                'per_apodo': 'Resp'
+            }
         )
 
-        # 3. Create Cursos
+        # 4. Create Cursos
         self.stdout.write('Creating Cursos...')
         cursos_names = ['1° Básico A', '1° Básico B', '2° Básico A', '3° Medio A', '4° Medio B']
         cursos = []
         for name in cursos_names:
             c, _ = Curso.objects.get_or_create(
-                cur_descripcion=name,
-                defaults={'cur_codigo': name[:3].replace(' ', ''), 'cur_vigente': True}
+                cur_codigo=name[:3].replace(' ', ''),
+                defaults={
+                    'cur_descripcion': name,
+                    'usu_id': usuario,
+                    'tcu_id': tipo_curso,
+                    'per_id_responsable': responsable,
+                    'car_id_responsable': cargo,
+                    'cur_fecha_solicitud': timezone.now(),
+                    'cur_administra': 1,
+                    'cur_cuota_con_almuerzo': 50000,
+                    'cur_cuota_sin_almuerzo': 45000,
+                    'cur_modalidad': 1,
+                    'cur_tipo_curso': 1,
+                    'cur_estado': 1
+                }
             )
             cursos.append(c)
 
-        # 4. Create Personas
+        # 5. Create Personas (Students)
         self.stdout.write('Creating Personas...')
         nombres = ['Juan', 'Maria', 'Pedro', 'Ana', 'Luis', 'Sofia', 'Carlos', 'Elena', 'Diego', 'Valentina']
         apellidos = ['Perez', 'Gonzalez', 'Rodriguez', 'Lopez', 'Martinez', 'Silva', 'Rojas', 'Torres']
@@ -75,10 +124,15 @@ class Command(BaseCommand):
                     'per_nombres': random.choice(nombres),
                     'per_apelpat': random.choice(apellidos),
                     'per_apelmat': random.choice(apellidos),
-                    'per_fecha_nacimiento': date(2000, 1, 1),
+                    'per_fecha_nac': date(2000, 1, 1),
                     'per_direccion': 'Calle Falsa 123',
                     'com_id': comuna,
-                    'per_vigente': True
+                    'per_vigente': True,
+                    'esc_id': estado_civil,
+                    'usu_id': usuario,
+                    'per_tipo_fono': 1,
+                    'per_fono': '912345678',
+                    'per_apodo': 'Estudiante'
                 }
             )
             personas.append(p)

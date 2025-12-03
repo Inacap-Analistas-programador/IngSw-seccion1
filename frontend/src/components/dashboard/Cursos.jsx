@@ -25,6 +25,7 @@ const Cursos = () => {
   // Use custom hook for all state and operations
   const {
     courses,
+    masterData,
     selectedCourse,
     courseData,
     showCreateForm,
@@ -108,6 +109,7 @@ const Cursos = () => {
         isOpen={showCreateForm}
         onClose={resetForm}
         courseData={courseData}
+        masterData={masterData}
         handleInputChange={handleInputChange}
         handleCreateCourse={handleCreateCourse}
       />

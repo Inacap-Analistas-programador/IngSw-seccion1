@@ -19,7 +19,7 @@ import ProveedoresPage from '@/pages/ProveedoresPage';
 const CoordinatorDashboard = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  const [collapsed, setCollapsed] = useState(false);
+  const [collapsed, setCollapsed] = useState(true);
   const [coordinator, setCoordinator] = useState(null);
 
   useEffect(() => {
@@ -75,6 +75,8 @@ const CoordinatorDashboard = () => {
     if (path.includes('/perfil')) return 'Mi Perfil';
     return 'Panel de Control';
   };
+
+  const isPagosPage = location.pathname.includes('/gestion-pagos');
 
   return (
     <>
@@ -137,7 +139,7 @@ const CoordinatorDashboard = () => {
             </div>
           </header>
 
-          <main className="flex-1 p-4 lg:p-6 mt-16">
+          <main className={`flex-1 mt-16 ${isPagosPage ? 'p-0' : 'p-4 lg:p-6'}`}>
             <Routes>
               <Route path="/ejecutivo" element={<DashboardEjecutivo />} />
               <Route path="/gestion-cursos" element={<Cursos />} />

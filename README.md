@@ -161,6 +161,7 @@ Para garantizar la robustez del módulo y superar las expectativas del proyecto,
 | **GP-02** | Validación de Montos Negativos | 1. Intentar registrar pago con monto -5000.<br>2. Intentar con monto 0. | El sistema bloquea el botón "Guardar" o muestra error de validación en rojo. | ✅ Aprobado |
 | **GP-03** | Anulación de Pago | 1. Seleccionar un pago existente.<br>2. Clic en "Anular".<br>3. Confirmar acción. | El estado cambia a "Anulado". No se elimina físicamente (Soft Delete). | ✅ Aprobado |
 | **GP-04** | Edición Restringida | 1. Intentar editar un pago histórico. | El sistema advierte sobre la modificación de registros contables cerrados. | ✅ Aprobado |
+| **GP-07** | Generación de Comprobante | 1. Registrar pago adjuntando archivo PDF. | Se crea el registro de pago y se asocia el archivo en la tabla Comprobantes. | ✅ Aprobado |
 
 **1.2 Pagos Masivos y Grupales**
 | ID | Caso de Prueba | Pasos | Resultado Esperado | Estado |
@@ -188,6 +189,7 @@ Para garantizar la robustez del módulo y superar las expectativas del proyecto,
 #### 3. Pruebas de Seguridad y Borde (Edge Cases)
 
 *   **Seguridad:**
+    *   ✅ **SEC-01 Acceso Denegado:** Verificación de que usuarios anónimos reciben `401 Unauthorized` al intentar registrar pagos.
     *   ✅ **Inyección SQL:** Sanitización automática vía Django ORM.
     *   ✅ **XSS:** Escapado de caracteres en Frontend (React).
 *   **Límites:**

@@ -11,6 +11,7 @@ const ProveedorForm = () => {
   const isEdit = Boolean(id);
 
   const [formData, setFormData] = useState({
+    prv_rut: '',
     descripcion: '',
     celular1: '',
     celular2: '',
@@ -93,6 +94,15 @@ const ProveedorForm = () => {
         <div className="container mx-auto px-4 py-6">
           <h1 className="text-2xl font-bold mb-4">{isEdit ? 'Editar' : 'Nuevo'} Proveedor</h1>
           <form onSubmit={handleSubmit} className="max-w-xl">
+            <div className="mb-4">
+              <label className="block text-sm font-medium text-gray-700">RUT</label>
+              <input
+                value={formData.prv_rut || ''}
+                onChange={(e) => handleChange('prv_rut', e.target.value)}
+                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm p-2 border"
+                placeholder="12.345.678-9"
+              />
+            </div>
             <div className="mb-4">
               <label className="block text-sm font-medium text-gray-700">Descripción</label>
               <input

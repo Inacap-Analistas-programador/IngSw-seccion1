@@ -1,10 +1,10 @@
 import React from 'react';
 import { cn } from '@/lib/utils';
 
-const Input = React.forwardRef(({ className, type, error, onChange, noTransform, ...props }, ref) => {
+const Textarea = React.forwardRef(({ className, error, onChange, noTransform, ...props }, ref) => {
   const handleChange = (e) => {
-    // Transform text input to uppercase, except for email, password, and fields with noTransform prop
-    if (!noTransform && type !== 'email' && type !== 'password' && type !== 'number' && type !== 'date') {
+    // Transform text input to uppercase unless noTransform is true
+    if (!noTransform) {
       const upperValue = e.target.value.toUpperCase();
       e.target.value = upperValue;
     }
@@ -14,14 +14,12 @@ const Input = React.forwardRef(({ className, type, error, onChange, noTransform,
   };
 
   return (
-    <input
-      type={type}
+    <textarea
       className={cn(
-        'flex h-10 w-full rounded-lg border px-3 py-2 text-sm',
+        'flex min-h-[80px] w-full rounded-lg border px-3 py-2 text-sm',
         'bg-slate-800 text-white border-white/10',
         'placeholder:text-white/40',
         'transition-colors duration-200',
-        'file:border-0 file:bg-transparent file:text-sm file:font-medium',
         'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500/50 focus-visible:border-emerald-500/50',
         'disabled:cursor-not-allowed disabled:opacity-50 disabled:bg-slate-700',
         error ? 'border-red-500 focus-visible:ring-red-500' : 'border-white/10',
@@ -29,12 +27,11 @@ const Input = React.forwardRef(({ className, type, error, onChange, noTransform,
       )}
       ref={ref}
       onChange={handleChange}
-      data-no-transform={noTransform ? 'true' : undefined}
       {...props}
     />
   );
 });
 
-Input.displayName = 'Input';
+Textarea.displayName = 'Textarea';
 
-export { Input };
+export { Textarea };

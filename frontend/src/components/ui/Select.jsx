@@ -5,11 +5,12 @@ const Select = React.forwardRef(({ className, error, children, ...props }, ref) 
   return (
     <select
       className={cn(
-        'flex h-10 w-full rounded-lg border bg-white px-3 py-2 text-sm text-gray-900',
+        'flex h-10 w-full rounded-lg border px-3 py-2 text-sm',
+        'bg-slate-800 text-white border-white/10',
         'transition-colors duration-200',
-        'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-scout-azul-claro focus-visible:border-scout-azul-medio',
-        'disabled:cursor-not-allowed disabled:opacity-50 disabled:bg-gray-100',
-        error ? 'border-red-500 focus-visible:ring-red-500' : 'border-gray-300',
+        'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500/50 focus-visible:border-emerald-500/50',
+        'disabled:cursor-not-allowed disabled:opacity-50 disabled:bg-slate-700',
+        error ? 'border-red-500 focus-visible:ring-red-500' : 'border-white/10',
         className
       )}
       ref={ref}
@@ -26,12 +27,13 @@ const Textarea = React.forwardRef(({ className, error, ...props }, ref) => {
   return (
     <textarea
       className={cn(
-        'flex min-h-[80px] w-full rounded-lg border bg-white px-3 py-2 text-sm text-gray-900',
-        'placeholder:text-gray-400',
+        'flex min-h-[80px] w-full rounded-lg border px-3 py-2 text-sm',
+        'bg-slate-800 text-white border-white/10',
+        'placeholder:text-white/40',
         'transition-colors duration-200',
-        'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-scout-azul-claro focus-visible:border-scout-azul-medio',
-        'disabled:cursor-not-allowed disabled:opacity-50 disabled:bg-gray-100',
-        error ? 'border-red-500 focus-visible:ring-red-500' : 'border-gray-300',
+        'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500/50 focus-visible:border-emerald-500/50',
+        'disabled:cursor-not-allowed disabled:opacity-50 disabled:bg-slate-700',
+        error ? 'border-red-500 focus-visible:ring-red-500' : 'border-white/10',
         className
       )}
       ref={ref}

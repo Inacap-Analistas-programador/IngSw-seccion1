@@ -7,226 +7,183 @@ const Step2ScoutInfo = ({ formData, updateFormData }) => {
     updateFormData({ [field]: value });
   };
 
-  // Static options (replace with API data if available)
-  const zonas = ['Norte', 'Sur', 'Centro', 'Occidente'];
-  const distritos = ['Distrito 1', 'Distrito 2', 'Distrito 3'];
-  const grupos = ['Grupo A', 'Grupo B', 'Grupo C'];
-  const roles = ['Dirigente', 'Colaborador', 'Voluntario'];
-  const estadosCiviles = [
-    { value: 'soltero', label: 'Soltero(a)' },
-    { value: 'casado', label: 'Casado(a)' },
-    { value: 'otro', label: 'Otro' },
-  ];
   const ramas = ['Castores', 'Lobatos', 'Scouts', 'Pioneros', 'Rovers'];
 
   return (
-    <div className="space-y-6">
-      <div>
-        <h2 className="text-2xl font-bold text-blue-900 mb-2">Información de Organización</h2>
-        <p className="text-gray-600">
-          Completa tu información organizacional (opcional para inscripción individual).
-        </p>
-      </div>
-
-      <div className="grid md:grid-cols-2 gap-4">
+    <div className="space-y-3">
+      <div className="grid md:grid-cols-2 gap-3">
         {/* Association top row: Zona, Distrito, Grupo (compact) */}
         <div className="md:col-span-2">
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-            <div className="space-y-2">
-              <Label htmlFor="zona">Zona</Label>
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
+            <div className="space-y-0.5">
+              <Label htmlFor="zona" className="text-[10px] text-gray-400 uppercase tracking-wider">Zona</Label>
               <select
                 id="zona"
                 value={formData.zona}
                 onChange={(e) => handleChange('zona', e.target.value)}
-                className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
+                className="flex h-8 w-full rounded-lg border border-gray-300 bg-white text-black px-2 py-1 text-xs focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500/50 outline-none"
               >
-                <option value="">Seleccionar Zona</option>
-                {zonas.map((z) => (
-                  <option key={z} value={z}>{z}</option>
-                ))}
+                <option value="">Seleccionar</option>
+                <option value="zona1" className="bg-slate-800">Zona Centro</option>
+                <option value="zona2" className="bg-slate-800">Zona Norte</option>
+                <option value="zona3" className="bg-slate-800">Zona Sur</option>
               </select>
             </div>
 
-            <div className="space-y-2">
-              <Label htmlFor="distrito">Distrito</Label>
+            <div className="space-y-0.5">
+              <Label htmlFor="distrito" className="text-[10px] text-gray-400 uppercase tracking-wider">Distrito</Label>
               <select
                 id="distrito"
                 value={formData.distrito}
                 onChange={(e) => handleChange('distrito', e.target.value)}
-                className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
+                className="flex h-8 w-full rounded-lg border border-gray-300 bg-white text-black px-2 py-1 text-xs focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500/50 outline-none"
               >
-                <option value="">Seleccionar Distrito</option>
-                {distritos.map((d) => (
-                  <option key={d} value={d}>{d}</option>
-                ))}
+                <option value="">Seleccionar</option>
+                <option value="distrito1" className="bg-slate-800">Distrito A</option>
+                <option value="distrito2" className="bg-slate-800">Distrito B</option>
               </select>
             </div>
 
-            <div className="space-y-2">
-              <Label htmlFor="grupo">Grupo</Label>
+            <div className="space-y-0.5">
+              <Label htmlFor="grupo" className="text-[10px] text-gray-400 uppercase tracking-wider">Grupo</Label>
               <select
                 id="grupo"
                 value={formData.grupo}
                 onChange={(e) => handleChange('grupo', e.target.value)}
-                className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
-              >
-                <option value="">Seleccionar Grupo</option>
-                {grupos.map((g) => (
-                  <option key={g} value={g}>{g}</option>
-                ))}
-              </select>
-            </div>
-          </div>
-        </div>
-
-        {/* Role and cargo next */}
-        <div className="space-y-2 md:col-span-2">
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-            <div className="space-y-2">
-              <Label htmlFor="rol">Rol</Label>
-              <select
-                id="rol"
-                value={formData.rol}
-                onChange={(e) => handleChange('rol', e.target.value)}
-                className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
-              >
-                <option value="">Seleccionar Rol</option>
-                {roles.map((r) => (
-                  <option key={r} value={r}>{r}</option>
-                ))}
-              </select>
-            </div>
-
-            <div className="space-y-2">
-              {/* Cargo visibility/requirement rules handled here */}
-              {!(formData.zona && formData.distrito && formData.grupo) ? (
-                <>
-                  <Label htmlFor="cargo">Cargo {formData.zona && formData.distrito && !formData.grupo ? '*' : ''}</Label>
-                  <Input
-                    id="cargo"
-                    value={formData.cargo}
-                    onChange={(e) => handleChange('cargo', e.target.value)}
-                    placeholder="Jefe de Tropa, Dirigente"
-                  />
-                </>
-              ) : (
-                // If zona + distrito + grupo present, hide cargo and clear it
-                <>
-                  {formData.cargo && handleChange('cargo', '')}
-                  <Label className="text-sm text-gray-500">Cargo (no aplica con Zona+Distrito+Grupo)</Label>
-                </>
-              )}
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="estadoCivil">Estado Civil</Label>
-              <select
-                id="estadoCivil"
-                value={formData.estadoCivil}
-                onChange={(e) => handleChange('estadoCivil', e.target.value)}
-                className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
+                className="flex h-8 w-full rounded-lg border border-gray-300 bg-white text-black px-2 py-1 text-xs focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500/50 outline-none"
               >
                 <option value="">Seleccionar</option>
-                {estadosCiviles.map((s) => (
-                  <option key={s.value} value={s.value}>{s.label}</option>
-                ))}
+                <option value="grupo1" className="bg-slate-800">Grupo 1</option>
+                <option value="grupo2" className="bg-slate-800">Grupo 2</option>
               </select>
             </div>
           </div>
         </div>
 
-        <div className="space-y-2">
-          <Label htmlFor="nivel">Nivel *</Label>
+        <div className="space-y-0.5">
+          <Label htmlFor="rama" className="text-[10px] text-gray-400 uppercase tracking-wider">Rama *</Label>
+          <select
+            id="rama"
+            value={formData.rama}
+            onChange={(e) => handleChange('rama', e.target.value)}
+            className="flex h-8 w-full rounded-lg border border-gray-300 bg-white text-black px-2 py-1 text-xs focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500/50 outline-none"
+          >
+            <option value="">Seleccionar rama</option>
+            {ramas.map((r) => (
+              <option key={r} value={r} className="bg-slate-800">{r}</option>
+            ))}
+          </select>
+        </div>
+
+        <div className="space-y-0.5">
+          <Label htmlFor="registroSocial" className="text-[10px] text-gray-400 uppercase tracking-wider">RSH (%)</Label>
+          <Input
+            id="registroSocial"
+            type="number"
+            value={formData.registroSocial}
+            onChange={(e) => handleChange('registroSocial', e.target.value)}
+            placeholder="Ej: 40"
+            className="h-8 bg-white text-black border-gray-300 text-xs placeholder:text-gray-400 focus:border-blue-500 focus:ring-blue-500"
+          />
+        </div>
+
+        <div className="space-y-0.5">
+          <Label htmlFor="nivel" className="text-[10px] text-gray-400 uppercase tracking-wider">Nivel de Formación</Label>
           <select
             id="nivel"
             value={formData.nivel}
             onChange={(e) => handleChange('nivel', e.target.value)}
-            className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+            className="flex h-8 w-full rounded-lg border border-gray-300 bg-white text-black px-2 py-1 text-xs focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500/50 outline-none placeholder:text-gray-400"
           >
             <option value="">Seleccionar nivel</option>
-            <option value="inicial">Inicial</option>
-            <option value="medio">Medio</option>
-            <option value="avanzado">Avanzado</option>
+            <option value="inicial" className="bg-slate-800">Inicial</option>
+            <option value="medio" className="bg-slate-800">Medio</option>
+            <option value="avanzado" className="bg-slate-800">Avanzado</option>
           </select>
         </div>
 
-        {formData.nivel === 'medio' && (
-          <div className="space-y-2">
-            <Label htmlFor="subNivel">Sub-nivel</Label>
-            <select
-              id="subNivel"
-              value={formData.subNivel || ''}
-              onChange={(e) => handleChange('subNivel', e.target.value)}
-              className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
-            >
-              <option value="">Ninguno</option>
-              <option value="avanzado">Avanzado</option>
-            </select>
-          </div>
-        )}
+        <div className="space-y-0.5">
+          <Label htmlFor="credencial" className="text-[10px] text-gray-400 uppercase tracking-wider">N° Credencial</Label>
+          <Input
+            id="credencial"
+            value={formData.credencial}
+            onChange={(e) => handleChange('credencial', e.target.value)}
+            placeholder="123456"
+            className="h-8 bg-white text-black border-gray-300 text-xs placeholder:text-gray-400 focus:border-blue-500 focus:ring-blue-500"
+          />
+        </div>
 
-        {/* Show ramas list to pick from depending on nivel (Medio/Avanzado only) */}
-        {(formData.nivel === 'medio' || formData.nivel === 'avanzado') && (
-          <div className="space-y-2 md:col-span-2">
-            <Label>Ramas (haz click para seleccionar)</Label>
-            <div className="flex flex-wrap gap-2 mt-2">
-              {ramas.map((r) => (
-                <button
-                  key={r}
-                  type="button"
-                  onClick={() => handleChange('ramaFormacion', r)}
-                  className={`px-3 py-1 border rounded ${formData.ramaFormacion === r ? 'bg-primary text-white' : ''}`}
-                >
-                  {r}
-                </button>
-              ))}
-            </div>
-          </div>
-        )}
+        <div className="space-y-0.5">
+          <Label htmlFor="cargo" className="text-[10px] text-gray-400 uppercase tracking-wider">Cargo</Label>
+          <Input
+            id="cargo"
+            value={formData.cargo}
+            onChange={(e) => handleChange('cargo', e.target.value)}
+            placeholder="Ej: Responsable de Unidad"
+            className="h-8 bg-white text-black border-gray-300 text-xs placeholder:text-gray-400 focus:border-blue-500 focus:ring-blue-500"
+          />
+        </div>
 
+        <div className="space-y-0.5">
+          <Label htmlFor="tallaPolera" className="text-[10px] text-gray-400 uppercase tracking-wider">Talla de Polera</Label>
+          <select
+            id="tallaPolera"
+            value={formData.tallaPolera}
+            onChange={(e) => handleChange('tallaPolera', e.target.value)}
+            className="flex h-8 w-full rounded-lg border border-gray-300 bg-white text-black px-2 py-1 text-xs focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500/50 outline-none"
+          >
+            <option value="">Seleccionar talla</option>
+            <option value="S" className="bg-slate-800">S</option>
+            <option value="M" className="bg-slate-800">M</option>
+            <option value="L" className="bg-slate-800">L</option>
+            <option value="XL" className="bg-slate-800">XL</option>
+            <option value="XXL" className="bg-slate-800">XXL</option>
+          </select>
+        </div>
 
-
-        <div className="space-y-2">
-          <Label htmlFor="esFormador">¿Es formador? *</Label>
+        <div className="space-y-0.5">
+          <Label htmlFor="esFormador" className="text-[10px] text-gray-400 uppercase tracking-wider">¿Es formador? *</Label>
           <select
             id="esFormador"
             value={formData.esFormador}
             onChange={(e) => handleChange('esFormador', e.target.value)}
-            className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+            className="flex h-8 w-full rounded-lg border border-gray-300 bg-white text-black px-2 py-1 text-xs focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500/50 outline-none"
           >
             <option value="">Seleccionar</option>
-            <option value="no">No</option>
-            <option value="si">Sí</option>
+            <option value="no" className="bg-slate-800">No</option>
+            <option value="si" className="bg-slate-800">Sí</option>
           </select>
         </div>
       </div>
 
       {formData.esFormador === 'si' && (
-        <div className="space-y-4">
-          <h3 className="text-lg font-semibold text-blue-900">Información de Formador</h3>
-          <div className="grid md:grid-cols-2 gap-4">
-            <div className="space-y-2">
-              <Label htmlFor="habilitacion1">Habilitación 1</Label>
+        <div className="space-y-3 pt-3 border-t border-white/10">
+          <h3 className="text-sm font-semibold text-white">Información de Formador</h3>
+          <div className="grid md:grid-cols-2 gap-3">
+            <div className="space-y-0.5">
+              <Label htmlFor="habilitacion1" className="text-[10px] text-gray-400 uppercase tracking-wider">Habilitación 1</Label>
               <Input
                 id="habilitacion1"
                 value={formData.habilitacion1}
                 onChange={(e) => handleChange('habilitacion1', e.target.value)}
                 placeholder="Habilitación 1"
+                className="h-8 bg-white text-black border-gray-300 text-xs placeholder:text-gray-400 focus:border-blue-500 focus:ring-blue-500"
               />
             </div>
 
-            <div className="space-y-2">
-              <Label htmlFor="habilitacion2">Habilitación 2</Label>
+            <div className="space-y-0.5">
+              <Label htmlFor="habilitacion2" className="text-[10px] text-gray-400 uppercase tracking-wider">Habilitación 2</Label>
               <Input
                 id="habilitacion2"
                 value={formData.habilitacion2}
                 onChange={(e) => handleChange('habilitacion2', e.target.value)}
                 placeholder="Habilitación 2"
+                className="h-8 bg-white text-black border-gray-300 text-xs placeholder:text-gray-400 focus:border-blue-500 focus:ring-blue-500"
               />
             </div>
 
-            <div className="space-y-2">
-              <Label htmlFor="verificador">Verificador</Label>
+            <div className="space-y-0.5">
+              <Label htmlFor="verificador" className="text-[10px] text-gray-400 uppercase tracking-wider">Verificador</Label>
               <Input
                 id="verificador"
                 value={formData.verificador}
@@ -238,10 +195,9 @@ const Step2ScoutInfo = ({ formData, updateFormData }) => {
                   }
                 }}
                 placeholder="Verificador (se añadirá 'R' si falta)"
+                className="h-8 bg-white text-black border-gray-300 text-xs placeholder:text-gray-400 focus:border-blue-500 focus:ring-blue-500"
               />
             </div>
-
-            {/* Do not show historial when esFormador === 'si' per requirement */}
           </div>
         </div>
       )}

@@ -64,25 +64,22 @@ const Step5MedicalFile = ({ formData, updateFormData }) => {
 
   return (
     <div className="space-y-6">
-      <div>
-        <h2 className="text-2xl font-bold text-[#001558] mb-2">Carga de Ficha Médica</h2>
-        <p className="text-gray-600">Sube tu ficha médica en formato PDF, DOCX o XLSX.</p>
-      </div>
+
 
       <div
-        className={`border-2 border-dashed rounded-lg p-8 text-center transition-colors duration-300 
-          ${dragActive ? 'border-blue-500 bg-blue-50' : 'border-gray-300 hover:border-primary/60'}`}
+        className={`border-2 border-dashed rounded-xl p-8 text-center transition-colors duration-300 
+          ${dragActive ? 'border-emerald-500 bg-emerald-500/10' : 'border-white/10 hover:border-emerald-500/50 hover:bg-white/5'}`}
         onDragEnter={handleDrag}
         onDragLeave={handleDrag}
         onDragOver={handleDrag}
         onDrop={handleDrop}
       >
-        <Upload className="w-12 h-12 text-gray-400 mx-auto mb-4" />
+        <Upload className="w-12 h-12 text-gray-500 mx-auto mb-4" />
         <div className="flex items-center justify-center gap-4">
           <button
             type="button"
             onClick={triggerFileDialog}
-            className="inline-flex items-center px-4 py-2 bg-primary text-white rounded-md"
+            className="inline-flex items-center px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-white rounded-lg font-medium transition-colors"
           >
             <Upload className="w-4 h-4 mr-2" />
             SUBIR
@@ -100,7 +97,7 @@ const Step5MedicalFile = ({ formData, updateFormData }) => {
           <button
             type="button"
             onClick={handleDownload}
-            className={`inline-flex items-center px-4 py-2 border rounded-md ${formData.medicalFile ? 'border-primary text-primary' : 'border-gray-300 text-gray-400'
+            className={`inline-flex items-center px-4 py-2 border rounded-lg transition-colors ${formData.medicalFile ? 'border-emerald-500 text-emerald-400 hover:bg-emerald-500/10' : 'border-white/10 text-gray-500 cursor-not-allowed'
               }`}
             disabled={!formData.medicalFile}
           >
@@ -110,8 +107,8 @@ const Step5MedicalFile = ({ formData, updateFormData }) => {
         </div>
 
         {formData.medicalFile && (
-          <div className="mt-4 p-3 bg-primary/5 rounded-md">
-            <p className="text-sm text-[#001558] font-medium">
+          <div className="mt-4 p-3 bg-emerald-500/10 rounded-lg border border-emerald-500/20">
+            <p className="text-sm text-emerald-300 font-medium">
               Archivo seleccionado: {formData.medicalFile.name}
             </p>
           </div>

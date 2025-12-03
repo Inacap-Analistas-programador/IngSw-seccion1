@@ -166,6 +166,8 @@ CORS_ALLOW_HEADERS = [
     'x-requested-with',
 ]
 
+CORS_EXPOSE_HEADERS = ['Content-Disposition']
+
 # Deshabilitar APPEND_SLASH para evitar redirects 301 en API endpoints
 # que causan problemas con CORS preflight requests
 APPEND_SLASH = False

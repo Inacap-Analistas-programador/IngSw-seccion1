@@ -1,423 +1,261 @@
+import { useState, useEffect } from 'react';
 import { Helmet } from 'react-helmet';
 import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/Button';
+import cursosService from '@/services/cursosService';
+import scoutBg from '@/assets/scout-digital-bg.png';
+import scoutLogo from '@/assets/scout-logo.png';
 import {
   FaCalendar,
-  FaUsers,
-  FaAward,
-  FaKey,
   FaMapMarkerAlt,
-  FaEnvelope,
-  FaChartLine,
-  FaShieldAlt,
-  FaRocket,
-  FaMobileAlt,
-  FaCheck,
-  FaBook,
+  FaArrowRight,
+  FaCampground,
+  FaStar,
 } from 'react-icons/fa';
 
 const HomePage = () => {
   const navigate = useNavigate();
+  const [cursos, setCursos] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-  const features = [
-    {
-      icon: <FaMapMarkerAlt className="w-8 h-8" />,
-      title: 'Integración Google Maps',
-      description: 'Selección de ubicaciones con autocompletado inteligente de direcciones',
-      color: 'from-blue-500 to-blue-600',
-      demo: '/demo/google-maps',
-    },
-    {
-      icon: <FaEnvelope className="w-8 h-8" />,
-      title: 'Sistema de Emails',
-      description: 'Plantillas personalizables y envío automático con SendGrid',
-      color: 'from-purple-500 to-purple-600',
-      demo: '/demo/email-system',
-    },
-    {
-      icon: <FaUsers className="w-8 h-8" />,
-      title: 'Gestión de Personas',
-      description: 'Control completo de participantes, dirigentes y coordinadores',
-      color: 'from-green-500 to-green-600',
-      demo: '/personas',
-    },
-    {
-      icon: <FaCalendar className="w-8 h-8" />,
-      title: 'Catálogo de Cursos',
-      description: 'Explora y selecciona cursos disponibles para inscribirte',
-      color: 'from-orange-500 to-orange-600',
-      demo: '/cursos',
-    },
-    {
-      icon: <FaChartLine className="w-8 h-8" />,
-      title: 'Reportes y Estadísticas',
-      description: 'Dashboard con métricas en tiempo real y análisis',
-      color: 'from-pink-500 to-pink-600',
-      demo: '/dashboard',
-    },
-    {
-      icon: <FaShieldAlt className="w-8 h-8" />,
-      title: 'Seguridad Avanzada',
-      description: 'Autenticación JWT, CSRF protection y rate limiting',
-      color: 'from-red-500 to-red-600',
-      demo: null,
-    },
-  ];
+  useEffect(() => {
+    const fetchCursos = async () => {
+      try {
+        const response = await cursosService.getAll();
+        const allCursos = response.data || response;
+        const activeCursos = allCursos
+          .filter(c => c.cur_estado === 1 || c.cur_estado === 2)
+          .slice(0, 3);
+        setCursos(activeCursos);
+      } catch (err) {
+        console.error('Error fetching courses:', err);
+      } finally {
+        setLoading(false);
+      }
+    };
 
-  const stats = [
-    { number: '47', label: 'Modelos de Datos', icon: <FaChartLine /> },
-    { number: '100%', label: 'API REST Completa', icon: <FaRocket /> },
-    { number: 'JWT', label: 'Autenticación Segura', icon: <FaShieldAlt /> },
-    { number: 'React 18', label: 'Frontend Moderno', icon: <FaMobileAlt /> },
-  ];
+    fetchCursos();
+  }, []);
 
-  const technologies = [
-    { name: 'React 18', description: 'Framework frontend moderno' },
-    { name: 'TailwindCSS', description: 'Estilos utility-first' },
-    { name: 'Django 5', description: 'Backend robusto' },
-    { name: 'Django REST', description: 'API RESTful completa' },
-    { name: 'MySQL', description: 'Base de datos confiable' },
-    { name: 'Google Maps', description: 'Geolocalización' },
-    { name: 'SendGrid', description: 'Email delivery' },
-    { name: 'JWT', description: 'Autenticación segura' },
-  ];
+  const getModalidadLabel = (modalidad) => {
+    const modalidades = { 1: 'Presencial', 2: 'Online', 3: 'Híbrido' };
+    return modalidades[modalidad] || 'Mixto';
+  };
 
   return (
     <>
       <Helmet>
-        <title>GIC - Plataforma de Gestión Integral de Cursos</title>
+        <title>GIC - Tu Futuro Scout Comienza Aquí</title>
         <meta
           name="description"
-          content="Sistema completo de gestión de cursos. Google Maps, emails automatizados, gestión de personas y mucho más."
+          content="Plataforma de gestión de cursos Scout. Inscríbete y gestiona tu aprendizaje."
         />
       </Helmet>
 
-      <div className="min-h-screen bg-white">
+      <div className="min-h-screen bg-[#020617] text-white selection:bg-blue-500 selection:text-white font-sans">
         {/* Navigation */}
-        <nav className="bg-gradient-to-r from-blue-900 via-blue-700 to-blue-600 text-white shadow-lg sticky top-0 z-50 backdrop-blur-sm bg-opacity-95">
-          <div className="container mx-auto px-4 py-4 flex justify-between items-center">
-            <div className="flex items-center space-x-3">
-              <motion.div
-                initial={{ rotate: 0 }}
-                animate={{ rotate: 360 }}
-                transition={{ duration: 1, ease: 'easeInOut' }}
-                className="w-12 h-12 bg-white rounded-full flex items-center justify-center shadow-md"
-              >
-                <FaAward className="w-7 h-7 text-blue-900" />
-              </motion.div>
-              <div>
-                <span className="text-2xl font-bold block">GIC Platform</span>
-                <span className="text-xs text-white/80">Gestión Integral de Cursos</span>
+        <nav className="fixed top-0 w-full z-50 bg-transparent">
+          <div className="container mx-auto px-6 h-20 flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-500 to-blue-700 flex items-center justify-center shadow-lg shadow-blue-500/20 overflow-hidden">
+                <img src={scoutLogo} alt="GIC Logo" className="w-full h-full object-cover" />
               </div>
+              <span className="text-xl font-bold tracking-tight">GIC Platform</span>
             </div>
-            <div className="flex space-x-3">
-              <Button
-                onClick={() => navigate('/cursos')}
-                className="bg-white/10 text-white hover:bg-white/20 backdrop-blur-sm border border-white/20 transition-all duration-300"
-              >
-                <FaBook className="w-4 h-4 mr-2" />
+
+            <div className="hidden md:flex items-center gap-8">
+              <button onClick={() => navigate('/cursos')} className="text-sm font-medium text-gray-300 hover:text-white transition-colors">
                 Cursos
-              </Button>
-              <Button
-                onClick={() => navigate('/perfil')}
-                className="bg-white/10 text-white hover:bg-white/20 backdrop-blur-sm border border-white/20 transition-all duration-300"
-              >
-                <FaUsers className="w-4 h-4 mr-2" />
-                Mi Perfil
-              </Button>
+              </button>
+              <button onClick={() => navigate('/coordinador/login')} className="text-sm font-medium text-gray-300 hover:text-white transition-colors">
+                Coordinadores
+              </button>
               <Button
                 onClick={() => navigate('/preinscripcion')}
-                className="bg-white text-blue-900 hover:bg-gray-100 transition-all duration-300 shadow-md hover:shadow-lg"
+                className="bg-white text-black hover:bg-gray-100 font-semibold rounded-full px-6"
               >
                 Inscribirse
-              </Button>
-              <Button
-                onClick={() => navigate('/coordinador/login')}
-                className="bg-white/10 text-white hover:bg-white/20 backdrop-blur-sm border border-white/20 transition-all duration-300"
-              >
-                <FaKey className="w-4 h-4 mr-2" />
-                Acceso Admin
               </Button>
             </div>
           </div>
         </nav>
 
         {/* Hero Section */}
-        <section className="relative bg-gradient-to-br from-blue-900 via-blue-700 to-blue-600 text-white py-24 overflow-hidden">
-          {/* Animated background */}
-          <div className="absolute inset-0 opacity-10">
-            <motion.div
-              animate={{
-                scale: [1, 1.2, 1],
-                rotate: [0, 90, 0],
-              }}
-              transition={{
-                duration: 20,
-                repeat: Infinity,
-                ease: 'linear',
-              }}
-              className="absolute top-0 left-0 w-96 h-96 bg-white rounded-full blur-3xl"
+        <section className="relative min-h-screen flex items-center justify-center overflow-hidden pt-20 pb-32">
+          {/* Background Image with Overlay */}
+          <div className="absolute inset-0 z-0">
+            <img
+              src={scoutBg}
+              alt="Scout Digital Background"
+              className="w-full h-full object-cover object-center"
             />
-            <motion.div
-              animate={{
-                scale: [1.2, 1, 1.2],
-                rotate: [90, 0, 90],
-              }}
-              transition={{
-                duration: 20,
-                repeat: Infinity,
-                ease: 'linear',
-              }}
-              className="absolute bottom-0 right-0 w-96 h-96 bg-white rounded-full blur-3xl"
-            />
+            {/* Subtle vignette for edges */}
+            <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,transparent_50%,#020617_100%)] opacity-60" />
+            {/* Vertical gradient for text readability at bottom */}
+            <div className="absolute inset-0 bg-gradient-to-b from-[#020617]/20 via-transparent to-[#020617]" />
+            <div className="absolute inset-0 bg-[url('/grid.svg')] opacity-10" />
           </div>
 
-          <div className="container mx-auto px-4 text-center relative z-10">
+          <div className="container mx-auto px-6 relative z-10 text-center">
             <motion.div
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8 }}
+              transition={{ duration: 0.8, ease: "easeOut" }}
+              className="max-w-4xl mx-auto"
             >
-              <h1 className="text-5xl md:text-7xl font-bold mb-6 text-white drop-shadow-2xl">
-                Plataforma GIC
+              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-blue-500/10 border border-blue-500/20 text-blue-400 text-sm font-medium mb-8 backdrop-blur-sm">
+                <FaCampground />
+                <span>Gestión Integral de Cursos Scout</span>
+              </div>
+
+              <h1 className="text-5xl md:text-7xl lg:text-8xl font-bold tracking-tight mb-8 bg-clip-text text-transparent bg-gradient-to-b from-white to-white/60">
+                Tu Aventura <br />
+                <span className="text-blue-500">Comienza Aquí</span>
               </h1>
-              <p className="text-xl md:text-2xl mb-4 max-w-3xl mx-auto text-white/95 font-medium">
-                Sistema completo de gestión de cursos y capacitaciones
+
+              <p className="text-lg md:text-xl text-gray-400 mb-10 max-w-2xl mx-auto leading-relaxed">
+                Una plataforma moderna diseñada para la gestión eficiente de cursos y capacitaciones.
+                Explora, aprende y crece con nosotros.
               </p>
-              <p className="text-lg md:text-xl mb-10 max-w-3xl mx-auto text-white/80">
-                Google Maps • Emails Automatizados • Gestión de Personas • API REST Completa
-              </p>
-              <div className="flex flex-col sm:flex-row gap-4 justify-center">
+
+              <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
                 <Button
                   onClick={() => navigate('/preinscripcion')}
-                  className="bg-white text-blue-900 hover:bg-gray-100 transition-all duration-300 shadow-xl hover:shadow-2xl text-lg px-8 py-4"
+                  className="h-14 px-8 rounded-full bg-blue-600 hover:bg-blue-500 text-white text-lg font-medium shadow-lg shadow-blue-500/25 transition-all hover:scale-105"
                 >
-                  <FaRocket className="inline-block mr-2" />
-                  Comenzar Ahora
+                  Pre-inscripción
+                  <FaArrowRight className="ml-2" />
                 </Button>
                 <Button
-                  onClick={() => navigate('/demo/google-maps')}
-                  className="bg-white/10 text-white hover:bg-white/20 backdrop-blur-sm border-2 border-white/30 transition-all duration-300 text-lg px-8 py-4"
+                  onClick={() => navigate('/cursos')}
+                  className="h-14 px-8 rounded-full bg-white/5 hover:bg-white/10 text-white border border-white/10 backdrop-blur-sm text-lg font-medium transition-all"
                 >
-                  Ver Demos
+                  Ver Cursos
                 </Button>
               </div>
             </motion.div>
           </div>
+
+          {/* Scroll Indicator */}
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 1, duration: 1 }}
+            className="absolute bottom-10 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 text-gray-500"
+          >
+            <span className="text-xs uppercase tracking-widest">Descubre Más</span>
+            <div className="w-[1px] h-12 bg-gradient-to-b from-blue-500 to-transparent" />
+          </motion.div>
         </section>
 
-        {/* Stats Section */}
-        <section className="py-16 bg-white">
-          <div className="container mx-auto px-4">
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
-              {stats.map((stat, index) => (
-                <motion.div
-                  key={index}
-                  initial={{ opacity: 0, y: 20 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ delay: index * 0.1 }}
-                  className="text-center"
-                >
-                  <div className="text-blue-900 mb-2 flex justify-center">
-                    {stat.icon && <div className="text-4xl">{stat.icon}</div>}
-                  </div>
-                  <div className="text-4xl font-bold text-blue-900 mb-2">
-                    {stat.number}
-                  </div>
-                  <div className="text-gray-600">{stat.label}</div>
-                </motion.div>
-              ))}
+        {/* Featured Courses Section */}
+        <section className="py-32 relative z-10">
+          <div className="container mx-auto px-6">
+            <div className="flex items-end justify-between mb-12">
+              <div>
+                <h2 className="text-3xl md:text-4xl font-bold mb-4">Cursos Destacados</h2>
+                <p className="text-gray-400">Explora las últimas oportunidades de formación disponibles.</p>
+              </div>
+              <Button
+                onClick={() => navigate('/cursos')}
+                variant="link"
+                className="text-blue-400 hover:text-blue-300 hidden md:flex"
+              >
+                Ver todos los cursos <FaArrowRight className="ml-2" />
+              </Button>
             </div>
-          </div>
-        </section>
 
-        {/* Features Grid */}
-        <section className="py-20 bg-gray-50">
-          <div className="container mx-auto px-4">
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              className="text-center mb-16"
-            >
-              <h2 className="text-4xl font-bold text-gray-900 mb-4">
-                Características Principales
-              </h2>
-              <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-                Todo lo que necesitas para gestionar tus cursos y actividades en una sola
-                plataforma
-              </p>
-            </motion.div>
+            {loading ? (
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+                {[1, 2, 3].map((i) => (
+                  <div key={i} className="h-96 rounded-3xl bg-white/5 animate-pulse" />
+                ))}
+              </div>
+            ) : (
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+                {cursos.map((curso, index) => (
+                  <motion.div
+                    key={curso.cur_id}
+                    initial={{ opacity: 0, y: 20 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ delay: index * 0.1 }}
+                    className="group relative rounded-3xl bg-white/5 border border-white/10 overflow-hidden hover:border-blue-500/50 transition-colors duration-300"
+                  >
+                    <div className="absolute inset-0 bg-gradient-to-b from-transparent to-[#020617] opacity-60" />
 
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-              {features.map((feature, index) => (
-                <motion.div
-                  key={index}
-                  initial={{ opacity: 0, y: 20 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ delay: index * 0.1 }}
-                  whileHover={{ y: -5, transition: { duration: 0.2 } }}
-                  className="bg-white rounded-xl shadow-lg hover:shadow-2xl transition-all duration-300 overflow-hidden group cursor-pointer"
-                  onClick={() => feature.demo && navigate(feature.demo)}
-                >
-                  <div className="p-8">
-                    <div
-                      className={`inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br ${feature.color} rounded-xl mb-4 text-white shadow-lg group-hover:scale-110 transition-transform`}
-                    >
-                      {feature.icon}
+                    <div className="relative p-8 h-full flex flex-col">
+                      <div className="flex items-start justify-between mb-6">
+                        <span className="px-3 py-1 rounded-full text-xs font-medium bg-blue-500/20 text-blue-400 border border-blue-500/20">
+                          {getModalidadLabel(curso.cur_modalidad)}
+                        </span>
+                        <FaStar className="text-yellow-500/50" />
+                      </div>
+
+                      <h3 className="text-2xl font-bold mb-4 group-hover:text-blue-400 transition-colors">
+                        {curso.cur_descripcion}
+                      </h3>
+
+                      <div className="space-y-3 mb-8 text-gray-400 text-sm">
+                        <div className="flex items-center gap-3">
+                          <FaMapMarkerAlt className="text-blue-500" />
+                          <span>{curso.cur_lugar}</span>
+                        </div>
+                        {curso.fechas && curso.fechas[0] && (
+                          <div className="flex items-center gap-3">
+                            <FaCalendar className="text-blue-500" />
+                            <span>
+                              {new Date(curso.fechas[0].cuf_fecha_inicio).toLocaleDateString()}
+                            </span>
+                          </div>
+                        )}
+                      </div>
+
+                      <div className="mt-auto pt-6 border-t border-white/10 flex items-center justify-between">
+                        <div className="flex flex-col">
+                          <span className="text-xs text-gray-500">Valor</span>
+                          <span className="text-xl font-bold text-white">
+                            ${parseInt(curso.cur_cuota_sin_almuerzo).toLocaleString()}
+                          </span>
+                        </div>
+                        <Button
+                          onClick={() => navigate(`/preinscripcion?curso=${curso.cur_id}`)}
+                          className="rounded-full bg-white text-black hover:bg-gray-200 font-medium px-6"
+                        >
+                          Inscribirse
+                        </Button>
+                      </div>
                     </div>
-                    <h3 className="text-xl font-bold text-gray-900 mb-3">
-                      {feature.title}
-                    </h3>
-                    <p className="text-gray-600 mb-4">{feature.description}</p>
-                    {feature.demo && (
-                      <span className="text-blue-700 font-medium group-hover:underline">
-                        Ver demo →
-                      </span>
-                    )}
-                  </div>
-                </motion.div>
-              ))}
-            </div>
-          </div>
-        </section>
-
-        {/* Technologies */}
-        <section className="py-20 bg-white">
-          <div className="container mx-auto px-4">
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              className="text-center mb-16"
-            >
-              <h2 className="text-4xl font-bold text-gray-900 mb-4">
-                Tecnologías Modernas
-              </h2>
-              <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-                Construido con las mejores herramientas y frameworks del mercado
-              </p>
-            </motion.div>
-
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-              {technologies.map((tech, index) => (
-                <motion.div
-                  key={index}
-                  initial={{ opacity: 0, scale: 0.9 }}
-                  whileInView={{ opacity: 1, scale: 1 }}
-                  viewport={{ once: true }}
-                  transition={{ delay: index * 0.05 }}
-                  className="bg-gradient-to-br from-gray-50 to-white border border-gray-200 rounded-xl p-6 text-center hover:shadow-lg transition-all"
-                >
-                  <div className="text-2xl font-bold text-blue-700 mb-2">
-                    {tech.name}
-                  </div>
-                  <div className="text-sm text-gray-600">{tech.description}</div>
-                </motion.div>
-              ))}
-            </div>
-          </div>
-        </section>
-
-        {/* CTA Section */}
-        <section className="py-20 bg-gradient-to-br from-blue-900 to-blue-700 text-white">
-          <div className="container mx-auto px-4 text-center">
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-            >
-              <h2 className="text-4xl font-bold mb-6">
-                ¿Listo para empezar?
-              </h2>
-              <p className="text-xl mb-8 max-w-2xl mx-auto text-white/90">
-                Únete a la plataforma de gestión más completa para tu organización
-              </p>
-              <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                <Button
-                  onClick={() => navigate('/preinscripcion')}
-                  className="bg-white text-blue-900 hover:bg-gray-100 transition-all duration-300 shadow-xl hover:shadow-2xl text-lg px-8 py-4"
-                >
-                  Inscribirse Ahora
-                </Button>
-                <Button
-                  onClick={() => navigate('/coordinador/login')}
-                  className="bg-white/10 text-white hover:bg-white/20 backdrop-blur-sm border-2 border-white/30 transition-all duration-300 text-lg px-8 py-4"
-                >
-                  <FaKey className="inline-block mr-2" />
-                  Acceso Coordinador
-                </Button>
+                  </motion.div>
+                ))}
               </div>
-            </motion.div>
+            )}
+
+            <div className="mt-12 text-center md:hidden">
+              <Button
+                onClick={() => navigate('/cursos')}
+                className="w-full bg-white/5 border border-white/10 text-white"
+              >
+                Ver todos los cursos
+              </Button>
+            </div>
           </div>
         </section>
 
         {/* Footer */}
-        <footer className="bg-gray-900 text-white py-12">
-          <div className="container mx-auto px-4">
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-              <div>
-                <h3 className="text-xl font-bold mb-4">GIC Platform</h3>
-                <p className="text-gray-400">
-                  Sistema de Gestión Integral de Cursos
-                </p>
+        <footer className="border-t border-white/10 bg-[#020617] py-12 relative z-10">
+          <div className="container mx-auto px-6">
+            <div className="flex flex-col md:flex-row justify-between items-center gap-6">
+              <div className="flex items-center gap-2">
+                <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-blue-500 to-blue-700 flex items-center justify-center shadow-lg shadow-blue-500/20 overflow-hidden">
+                  <img src={scoutLogo} alt="GIC Logo" className="w-full h-full object-cover" />
+                </div>
+                <span className="font-bold text-gray-300">GIC Platform</span>
               </div>
-              <div>
-                <h3 className="text-xl font-bold mb-4">Enlaces Rápidos</h3>
-                <ul className="space-y-2 text-gray-400">
-                  <li>
-                    <button
-                      onClick={() => navigate('/preinscripcion')}
-                      className="hover:text-white transition-colors"
-                    >
-                      Preinscripción
-                    </button>
-                  </li>
-                  <li>
-                    <button
-                      onClick={() => navigate('/demo/google-maps')}
-                      className="hover:text-white transition-colors"
-                    >
-                      Demo Google Maps
-                    </button>
-                  </li>
-                  <li>
-                    <button
-                      onClick={() => navigate('/demo/email-system')}
-                      className="hover:text-white transition-colors"
-                    >
-                      Demo Sistema de Emails
-                    </button>
-                  </li>
-                </ul>
-              </div>
-              <div>
-                <h3 className="text-xl font-bold mb-4">Tecnología</h3>
-                <ul className="space-y-2 text-gray-400">
-                  <li className="flex items-center">
-                    <FaCheck className="mr-2 text-green-400" />
-                    React 18 + Vite
-                  </li>
-                  <li className="flex items-center">
-                    <FaCheck className="mr-2 text-green-400" />
-                    Django 5 + DRF
-                  </li>
-                  <li className="flex items-center">
-                    <FaCheck className="mr-2 text-green-400" />
-                    Google Maps API
-                  </li>
-                  <li className="flex items-center">
-                    <FaCheck className="mr-2 text-green-400" />
-                    SendGrid Emails
-                  </li>
-                </ul>
-              </div>
-            </div>
-            <div className="border-t border-gray-800 mt-8 pt-8 text-center text-gray-400">
-              <p>© 2024 GIC Platform - Gestión Integral de Cursos</p>
+              <p className="text-gray-500 text-sm">
+                © {new Date().getFullYear()} Gestión Integral de Cursos. Todos los derechos reservados.
+              </p>
             </div>
           </div>
         </footer>

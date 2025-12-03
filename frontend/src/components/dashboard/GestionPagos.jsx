@@ -11,13 +11,16 @@ import {
   AlertCircle,
   Plus,
   FileText,
-  Users
+  Users,
+  Mail
 } from 'lucide-react';
 import api from '../../config/api';
 import RegistrarPagoMasivoModal from './RegistrarPagoMasivoModal';
 import RegistrarPagoModal from './RegistrarPagoModal';
+import { useToast } from '@/components/ui/use-toast';
 
 const GestionPagos = () => {
+  const { toast } = useToast();
   const [pagos, setPagos] = useState([]);
   const [personas, setPersonas] = useState({});
   const [cursos, setCursos] = useState({});
@@ -113,11 +116,18 @@ const GestionPagos = () => {
 
       // Extract filename from Content-Disposition header
       const contentDisposition = response.headers['content-disposition'];
-      let filename = `comprobante_pago_${pagoId}`;
+      let filename = `comprobante_pago_${pagoId}.pdf`; // Default to PDF if not found
       if (contentDisposition) {
         const filenameMatch = contentDisposition.match(/filename="?([^"]+)"?/);
         if (filenameMatch && filenameMatch.length === 2) {
           filename = filenameMatch[1];
+        }
+      } else {
+        // Fallback based on content-type if header is missing (e.g. CORS issues)
+        const contentType = response.headers['content-type'];
+        if (contentType && !contentType.includes('pdf')) {
+             if (contentType.includes('image/jpeg')) filename = `comprobante_pago_${pagoId}.jpg`;
+             else if (contentType.includes('image/png')) filename = `comprobante_pago_${pagoId}.png`;
         }
       }
 
@@ -138,6 +148,27 @@ const GestionPagos = () => {
     }
   };
 
+  const handleSendReceiptEmail = async (pagoId) => {
+    if (!window.confirm('¿Enviar comprobante por correo a la persona asociada?')) return;
+    
+    try {
+      await api.post(`/pagos/pagopersonas/${pagoId}/enviar-comprobante/`);
+      toast({
+        title: 'Correo Enviado',
+        description: 'El comprobante ha sido enviado exitosamente.',
+        variant: 'success',
+      });
+    } catch (error) {
+      console.error('Error sending receipt email:', error);
+      const msg = error.response?.data?.detail || 'Error al enviar el correo.';
+      toast({
+        title: 'Error',
+        description: msg,
+        variant: 'destructive',
+      });
+    }
+  };
+
   const handleRegisterPayment = () => {
     setSelectedPago(null);
     setIsModalOpen(true);
@@ -153,12 +184,12 @@ const GestionPagos = () => {
   };
 
   const handleDelete = async (id) => {
-    if (window.confirm('¿Estás seguro de que deseas eliminar este pago?')) {
+    if (window.confirm('¿Estás seguro de que deseas anular este pago?')) {
       try {
-        await api.delete(`/pagos/pagopersonas/${id}/`);
+        await api.post(`/pagos/pagopersonas/${id}/anular/`);
         fetchData(); // Refresh all data to be safe
       } catch (err) {
-        console.error('Error deleting pago:', err);
+        console.error('Error anulando pago:', err);
         setError(err);
       }
     }
@@ -276,13 +307,20 @@ const GestionPagos = () => {
                     <td className="p-5 text-white/70">{curso.cur_descripcion || 'Desconocido'}</td>
                     <td className="p-5 text-white/70">{new Date(pago.pap_fecha_hora).toLocaleDateString()}</td>
                     <td className="p-5">
-                      <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-bold border ${pago.pap_tipo === 1
-                        ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20'
-                        : 'bg-rose-500/10 text-rose-400 border-rose-500/20'
-                        }`}>
-                        {pago.pap_tipo === 1 ? <ArrowUpRight size={14} /> : <ArrowDownRight size={14} />}
-                        {pago.pap_tipo === 1 ? 'Ingreso' : 'Egreso'}
-                      </span>
+                      <div className="flex flex-col gap-1">
+                        <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-bold border ${pago.pap_tipo === 1
+                          ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20'
+                          : 'bg-rose-500/10 text-rose-400 border-rose-500/20'
+                          }`}>
+                          {pago.pap_tipo === 1 ? <ArrowUpRight size={14} /> : <ArrowDownRight size={14} />}
+                          {pago.pap_tipo === 1 ? 'Ingreso' : 'Egreso'}
+                        </span>
+                        {pago.pap_estado === 2 && (
+                          <span className="inline-flex items-center justify-center px-2.5 py-0.5 rounded-lg text-[10px] font-bold border bg-gray-500/10 text-gray-400 border-gray-500/20">
+                            ANULADO
+                          </span>
+                        )}
+                      </div>
                     </td>
                     <td className="p-5 text-right font-bold text-white">
                       ${parseInt(pago.pap_valor).toLocaleString('es-CL')}
@@ -297,6 +335,13 @@ const GestionPagos = () => {
                           <FileText size={18} />
                         </button>
                         <button
+                          onClick={() => handleSendReceiptEmail(pago.pap_id)}
+                          className="p-2 bg-blue-500/10 hover:bg-blue-500/20 text-blue-400 rounded-lg transition-colors border border-blue-500/20"
+                          title="Enviar por Correo"
+                        >
+                          <Mail size={18} />
+                        </button>
+                        <button
                           onClick={() => handleEdit(pago)}
                           className="p-2 bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-400 rounded-lg transition-colors border border-emerald-500/20"
                           title="Editar"
@@ -306,7 +351,7 @@ const GestionPagos = () => {
                         <button
                           onClick={() => handleDelete(pago.pap_id)}
                           className="p-2 bg-rose-500/10 hover:bg-rose-500/20 text-rose-400 rounded-lg transition-colors border border-rose-500/20"
-                          title="Eliminar"
+                          title="Anular"
                         >
                           <Trash2 size={18} />
                         </button>

@@ -22,6 +22,8 @@ class Curso(models.Model):
     cur_modalidad = models.IntegerField()
     cur_tipo_curso = models.IntegerField()
     cur_lugar = models.CharField(max_length=100, null=True, blank=True)
+    cur_latitud = models.DecimalField(max_digits=9, decimal_places=6, null=True, blank=True)
+    cur_longitud = models.DecimalField(max_digits=9, decimal_places=6, null=True, blank=True)
     cur_estado = models.IntegerField()
 
     class Meta:

@@ -281,123 +281,133 @@ const PreRegistrationForm = () => {
         />
       </Helmet>
 
-      <div className="min-h-screen bg-gray-50">
-        {/* Encabezado */}
-        <div className="bg-primary text-primary-foreground shadow-lg">
-          <div className="container mx-auto px-4 py-4">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center space-x-3">
-                <div className="w-10 h-10 bg-white rounded-full flex items-center justify-center">
-                  <FaAward className="w-6 h-6 text-[#001558]" />
-                </div>
-                <span className="text-xl font-bold">Formulario de Pre-inscripción</span>
+      <div className="min-h-screen bg-[#020617] text-white font-sans selection:bg-blue-500 selection:text-white relative overflow-hidden flex flex-col">
+        {/* Background Image */}
+        <div className="absolute inset-0 z-0">
+          <img
+            src="/src/assets/scout-planning-bg.png"
+            alt="Background"
+            className="w-full h-full object-cover object-center opacity-60"
+          />
+          <div className="absolute inset-0 bg-gradient-to-b from-[#020617]/30 via-[#020617]/20 to-[#020617]/50" />
+        </div>
+
+        {/* Navbar */}
+        <nav className="relative z-50 border-b border-white/5 bg-[#020617]/20 backdrop-blur-md h-16 flex-none">
+          <div className="container mx-auto px-4 h-full flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-blue-500 to-blue-700 flex items-center justify-center shadow-lg shadow-blue-500/20 overflow-hidden">
+                <img src="/src/assets/scout-logo.png" alt="GIC Logo" className="w-full h-full object-cover" />
               </div>
-              <Button
-                variant="ghost"
-                onClick={() => navigate('/')}
-                className="text-white hover:bg-primary/90"
-              >
-                Volver al Inicio
-              </Button>
+              <span className="text-lg font-bold tracking-tight hidden md:block">GIC Platform</span>
             </div>
+
+            {/* Progress Bar in Navbar (Desktop) or just below */}
+            <div className="flex-1 max-w-xl mx-4 hidden md:block">
+              <div className="flex justify-between text-xs text-gray-400 mb-1">
+                <span>Paso {currentStep} de {totalSteps}</span>
+                <span>{Math.round((currentStep / totalSteps) * 100)}% completado</span>
+              </div>
+              <div className="h-1.5 bg-white/10 rounded-full overflow-hidden">
+                <motion.div
+                  className="h-full bg-emerald-500"
+                  initial={{ width: 0 }}
+                  animate={{ width: `${(currentStep / totalSteps) * 100}%` }}
+                  transition={{ duration: 0.3 }}
+                />
+              </div>
+            </div>
+
+            <Button
+              variant="ghost"
+              onClick={() => navigate('/')}
+              className="text-gray-300 hover:text-white hover:bg-white/5 text-sm h-8 px-3"
+            >
+              Salir
+            </Button>
+          </div>
+        </nav>
+
+        {/* Mobile Progress Bar */}
+        <div className="md:hidden relative z-40 px-4 py-2 bg-[#020617]/40 backdrop-blur-sm border-b border-white/5">
+          <div className="flex justify-between text-xs text-gray-400 mb-1">
+            <span>Paso {currentStep} de {totalSteps}</span>
+            <span>{Math.round((currentStep / totalSteps) * 100)}%</span>
+          </div>
+          <div className="h-1 bg-white/10 rounded-full overflow-hidden">
+            <motion.div
+              className="h-full bg-emerald-500"
+              initial={{ width: 0 }}
+              animate={{ width: `${(currentStep / totalSteps) * 100}%` }}
+              transition={{ duration: 0.3 }}
+            />
           </div>
         </div>
 
-        {/* Indicador de Progreso */}
-        <div className="bg-white shadow-md">
-          <div className="container mx-auto px-4 py-6">
-            <div className="flex items-center justify-between mb-4">
-              {steps.map((step, index) => (
-                <React.Fragment key={step.number}>
-                  <div className="flex flex-col items-center">
-                    <div
-                      className={`w-10 h-10 rounded-full flex items-center justify-center font-bold transition-all duration-300 ${currentStep > step.number
-                        ? 'bg-primary text-primary-foreground'
-                        : currentStep === step.number
-                          ? 'bg-primary text-primary-foreground ring-4 ring-primary/30'
-                          : 'bg-gray-200 text-gray-500'
-                        }`}
-                    >
-                      {currentStep > step.number ? <FaCheck className="w-5 h-5" /> : step.number}
-                    </div>
-                    <span
-                      className={`text-xs mt-2 text-center hidden md:block ${currentStep >= step.number
-                        ? 'text-[#001558] font-semibold'
-                        : 'text-gray-500'
-                        }`}
-                    >
-                      {step.title}
-                    </span>
-                  </div>
-                  {index < steps.length - 1 && (
-                    <div
-                      className={`flex-1 h-1 mx-2 transition-all duration-300 ${currentStep > step.number ? 'bg-primary' : 'bg-gray-200'
-                        }`}
-                    ></div>
-                  )}
-                </React.Fragment>
-              ))}
-            </div>
-            <div className="text-center">
-              <p className="text-sm text-gray-600">
-                Paso {currentStep} de {totalSteps}:{' '}
-                <span className="font-semibold text-[#001558]">{steps[currentStep - 1].title}</span>
-              </p>
-            </div>
+        <div className="flex-1 overflow-y-auto relative z-10 py-6 px-4">
+          <div className="max-w-3xl mx-auto">
+            {/* Form Container */}
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="bg-slate-900/10 border border-white/10 backdrop-blur-md rounded-2xl shadow-2xl overflow-hidden"
+            >
+              {/* Step Header */}
+              <div className="px-6 py-4 border-b border-white/5 bg-white/5 flex items-center justify-between">
+                <h2 className="text-lg font-semibold text-white">
+                  {steps[currentStep - 1].title}
+                </h2>
+                <div className="text-xs text-emerald-400 font-medium px-2 py-1 rounded bg-emerald-500/10 border border-emerald-500/20">
+                  En progreso
+                </div>
+              </div>
+
+              <div className="p-6">
+                <AnimatePresence mode="wait">
+                  <motion.div
+                    key={currentStep}
+                    initial={{ opacity: 0, x: 10 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    exit={{ opacity: 0, x: -10 }}
+                    transition={{ duration: 0.2 }}
+                  >
+                    <CurrentStepComponent formData={formData} updateFormData={updateFormData} />
+                  </motion.div>
+                </AnimatePresence>
+              </div>
+
+              {/* Navigation Buttons */}
+              <div className="px-6 py-4 bg-white/5 border-t border-white/5 flex justify-between items-center">
+                <Button
+                  onClick={handlePrevious}
+                  disabled={currentStep === 1}
+                  variant="outline"
+                  className="border-white/10 text-gray-300 hover:bg-white/5 hover:text-white disabled:opacity-30 h-9 text-sm"
+                >
+                  <FaChevronLeft className="w-3 h-3 mr-2" />
+                  Anterior
+                </Button>
+
+                {currentStep < totalSteps ? (
+                  <Button
+                    onClick={handleNext}
+                    className="bg-emerald-600 hover:bg-emerald-500 text-white border-0 h-9 text-sm px-6"
+                  >
+                    Siguiente
+                    <FaChevronRight className="w-3 h-3 ml-2" />
+                  </Button>
+                ) : (
+                  <Button
+                    onClick={handleSubmit}
+                    className="bg-blue-600 hover:bg-blue-500 text-white border-0 h-9 text-sm px-6"
+                  >
+                    <FaCheck className="w-3 h-3 mr-2" />
+                    Enviar
+                  </Button>
+                )}
+              </div>
+            </motion.div>
           </div>
-        </div>
-
-        {/* Contenido del Formulario */}
-        <div className="container mx-auto px-4 py-8">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5 }}
-            className="max-w-3xl mx-auto bg-white rounded-lg shadow-lg p-8"
-          >
-            <AnimatePresence mode="wait">
-              <motion.div
-                key={currentStep}
-                initial={{ opacity: 0, x: 20 }}
-                animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: -20 }}
-                transition={{ duration: 0.3 }}
-              >
-                <CurrentStepComponent formData={formData} updateFormData={updateFormData} />
-              </motion.div>
-            </AnimatePresence>
-
-            {/* Botones de Navegación */}
-            <div className="flex justify-between mt-8 pt-6 border-t">
-              <Button
-                onClick={handlePrevious}
-                disabled={currentStep === 1}
-                variant="outline"
-                className="border border-border text-[#001558] hover:bg-primary/5"
-              >
-                <FaChevronLeft className="w-4 h-4 mr-2" />
-                Anterior
-              </Button>
-
-              {currentStep < totalSteps ? (
-                <Button
-                  onClick={handleNext}
-                  className="bg-primary hover:bg-primary/90 text-primary-foreground"
-                >
-                  Siguiente
-                  <FaChevronRight className="w-4 h-4 ml-2" />
-                </Button>
-              ) : (
-                <Button
-                  onClick={handleSubmit}
-                  className="bg-primary hover:bg-primary/90 text-primary-foreground"
-                >
-                  <FaCheck className="w-4 h-4 mr-2" />
-                  Enviar Pre-inscripción
-                </Button>
-              )}
-            </div>
-          </motion.div>
         </div>
       </div>
     </>

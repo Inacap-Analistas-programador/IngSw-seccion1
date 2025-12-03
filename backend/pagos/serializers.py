@@ -51,6 +51,12 @@ class PagoPersonaSerializer(serializers.ModelSerializer):
         pap_tipo = data.get('pap_tipo') or getattr(self.instance, 'pap_tipo', None)
         if pap_tipo not in [PagoPersona.PAP_TIPO_INGRESO, PagoPersona.PAP_TIPO_EGRESO]:
             raise serializers.ValidationError({'pap_tipo': 'pap_tipo debe ser 1 (Ingreso) o 2 (Egreso).'})
+        
+        # Validate pap_valor is positive
+        pap_valor = data.get('pap_valor')
+        if pap_valor is not None and pap_valor < 0:
+            raise serializers.ValidationError({'pap_valor': 'El monto del pago no puede ser negativo.'})
+
         # If pap_tipo is ingreso, encourage comprobante presence (not hard requirement because comprobante management may be separate)
         return data
 
@@ -111,13 +117,13 @@ class PagoProveedorSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
     def get_proveedor_nombre(self, obj):
-        return obj.prv_id.prv_nombre_fantasia if obj.prv_id else "Desconocido"
+        return obj.prv_id.prv_descripcion if obj.prv_id else "Desconocido"
 
     def get_concepto_nombre(self, obj):
         return obj.coc_id.coc_descripcion if obj.coc_id else "Sin Concepto"
     
     def get_usuario_nombre(self, obj):
-        return obj.usu_id.username if obj.usu_id else "Desconocido"
+        return obj.usu_id.usu_username if obj.usu_id else "Desconocido"
 
 
 

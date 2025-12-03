@@ -9,11 +9,6 @@ const Step4AdditionalData = ({ formData, updateFormData }) => {
 
   return (
     <div className="space-y-6">
-      <div>
-        <h2 className="text-2xl font-bold text-primary-foreground mb-2">Datos Adicionales</h2>
-        <p className="text-gray-600">Información complementaria para tu registro.</p>
-      </div>
-
       <div className="grid md:grid-cols-2 gap-4">
         <div className="space-y-2">
           <Label htmlFor="vehiculo">¿Tienes Vehículo?</Label>
@@ -21,11 +16,11 @@ const Step4AdditionalData = ({ formData, updateFormData }) => {
             id="vehiculo"
             value={formData.vehiculo}
             onChange={(e) => handleChange('vehiculo', e.target.value)}
-            className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+            className="flex h-9 w-full rounded-lg border border-gray-300 bg-white text-black px-3 py-1 text-sm focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500/50 outline-none placeholder:text-gray-400"
           >
             <option value="">Seleccionar</option>
-            <option value="si">Sí</option>
-            <option value="no">No</option>
+            <option value="si" className="bg-slate-800">Sí</option>
+            <option value="no" className="bg-slate-800">No</option>
           </select>
         </div>
 
@@ -63,8 +58,6 @@ const Step4AdditionalData = ({ formData, updateFormData }) => {
           </>
         )}
 
-        {/* Profesión movida a Datos Personales (Step1) */}
-
         <div className="space-y-2">
           <Label htmlFor="religion">Religión</Label>
           <Input
@@ -75,19 +68,17 @@ const Step4AdditionalData = ({ formData, updateFormData }) => {
           />
         </div>
 
-
-
         <div className="space-y-2">
           <Label htmlFor="trabajaConNNAJ">¿Trabajas con Jóvenes? *</Label>
           <select
             id="trabajaConNNAJ"
             value={formData.trabajaConNNAJ}
             onChange={(e) => handleChange('trabajaConNNAJ', e.target.value)}
-            className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+            className="flex h-9 w-full rounded-lg border border-gray-300 bg-white text-black px-3 py-1 text-sm focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500/50 outline-none placeholder:text-gray-400"
           >
             <option value="">Seleccionar</option>
-            <option value="si">Sí</option>
-            <option value="no">No</option>
+            <option value="si" className="bg-slate-800">Sí</option>
+            <option value="no" className="bg-slate-800">No</option>
           </select>
         </div>
 
@@ -109,11 +100,11 @@ const Step4AdditionalData = ({ formData, updateFormData }) => {
             id="trabajaConAdultos"
             value={formData.trabajaConAdultos}
             onChange={(e) => handleChange('trabajaConAdultos', e.target.value)}
-            className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+            className="flex h-9 w-full rounded-lg border border-gray-300 bg-white text-black px-3 py-1 text-sm focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500/50 outline-none placeholder:text-gray-400"
           >
             <option value="">Seleccionar</option>
-            <option value="si">Sí</option>
-            <option value="no">No</option>
+            <option value="si" className="bg-slate-800">Sí</option>
+            <option value="no" className="bg-slate-800">No</option>
           </select>
         </div>
 
@@ -135,11 +126,11 @@ const Step4AdditionalData = ({ formData, updateFormData }) => {
             id="esBeneficiario"
             value={formData.esBeneficiario}
             onChange={(e) => handleChange('esBeneficiario', e.target.value)}
-            className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+            className="flex h-9 w-full rounded-lg border border-gray-300 bg-white text-black px-3 py-1 text-sm focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500/50 outline-none placeholder:text-gray-400"
           >
             <option value="">Seleccionar</option>
-            <option value="si">Sí</option>
-            <option value="no">No</option>
+            <option value="si" className="bg-slate-800">Sí</option>
+            <option value="no" className="bg-slate-800">No</option>
           </select>
         </div>
 
@@ -171,11 +162,11 @@ const Step4AdditionalData = ({ formData, updateFormData }) => {
             id="needsAccommodation"
             value={formData.needsAccommodation}
             onChange={(e) => handleChange('needsAccommodation', e.target.value)}
-            className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+            className="flex h-9 w-full rounded-lg border border-gray-300 bg-white text-black px-3 py-1 text-sm focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500/50 outline-none placeholder:text-gray-400"
           >
             <option value="">Seleccionar</option>
-            <option value="si">Sí</option>
-            <option value="no">No</option>
+            <option value="si" className="bg-slate-800">Sí</option>
+            <option value="no" className="bg-slate-800">No</option>
           </select>
         </div>
 
@@ -187,7 +178,7 @@ const Step4AdditionalData = ({ formData, updateFormData }) => {
               value={formData.detalleAlojamiento}
               onChange={(e) => handleChange('detalleAlojamiento', e.target.value)}
               placeholder="Indica si necesitas algo específico o tienes alguna restricción."
-              className="flex min-h-[80px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-gray-400 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+              className="flex min-h-[80px] w-full rounded-lg border border-gray-300 bg-white text-black px-3 py-2 text-sm placeholder:text-gray-400 focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500/50 outline-none"
               rows={3}
             />
           </div>
@@ -200,7 +191,7 @@ const Step4AdditionalData = ({ formData, updateFormData }) => {
             value={formData.expectativasCurso}
             onChange={(e) => handleChange('expectativasCurso', e.target.value)}
             placeholder="Describe tus expectativas sobre el curso"
-            className="flex min-h-[120px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-gray-400 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+            className="flex min-h-[120px] w-full rounded-lg border border-gray-300 bg-white text-black px-3 py-2 text-sm placeholder:text-gray-400 focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500/50 outline-none"
             rows={4}
           />
         </div>
@@ -212,7 +203,7 @@ const Step4AdditionalData = ({ formData, updateFormData }) => {
             value={formData.observaciones}
             onChange={(e) => handleChange('observaciones', e.target.value)}
             placeholder="Información adicional relevante"
-            className="flex min-h-[80px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-gray-400 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+            className="flex min-h-[80px] w-full rounded-lg border border-gray-300 bg-white text-black px-3 py-2 text-sm placeholder:text-gray-400 focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500/50 outline-none"
             rows={3}
           />
         </div>

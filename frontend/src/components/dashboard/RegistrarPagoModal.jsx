@@ -87,6 +87,26 @@ const RegistrarPagoModal = ({ isOpen, onClose, onSuccess, initialData = null }) 
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        
+        // Validations
+        if (parseFloat(formData.pap_valor) <= 0) {
+            toast({
+                title: 'Error de Validación',
+                description: 'El monto debe ser mayor a 0.',
+                variant: 'destructive',
+            });
+            return;
+        }
+
+        if (formData.file && formData.file.size > 5 * 1024 * 1024) { // 5MB limit
+             toast({
+                title: 'Error de Archivo',
+                description: 'El archivo no puede superar los 5MB.',
+                variant: 'destructive',
+            });
+            return;
+        }
+
         setLoading(true);
 
         try {

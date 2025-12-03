@@ -31,15 +31,19 @@ body {
     --scout-verde-natura: #10B981;
     --scout-dorado-aventura: #F59E0B;
     --scout-rojo-alerta: #EF4444;
-    
+
     /* Light theme with high contrast */
-    --background: 0 0% 98%; /* Almost white background */
-    --foreground: 210 40% 15%; /* Dark text for high contrast */
-    --card: 0 0% 100%; /* Pure white cards */
+    --background: 0 0% 98%;
+    /* Almost white background */
+    --foreground: 210 40% 15%;
+    /* Dark text for high contrast */
+    --card: 0 0% 100%;
+    /* Pure white cards */
     --card-foreground: 210 40% 15%;
     --popover: 0 0% 100%;
     --popover-foreground: 210 40% 15%;
-    --primary: 210 100% 20%; /* #003366 Scout Blue */
+    --primary: 210 100% 20%;
+    /* #003366 Scout Blue */
     --primary-foreground: 0 0% 100%;
     --secondary: 210 80% 30%;
     --secondary-foreground: 0 0% 100%;
@@ -60,8 +64,9 @@ body {
   * {
     @apply border-border;
   }
+
   body {
-    @apply bg-slate-900 text-foreground;
+    @apply bg-[#020617] text-foreground;
   }
 }
 
@@ -86,6 +91,7 @@ select {
 
 /* Inputs placed on a white background should default to dark text for readability. */
 @layer components {
+
   /* Inputs that have white background directly */
   input.bg-white,
   select.bg-white,
@@ -114,6 +120,7 @@ select {
 
 /* Force uppercase for text inputs (except email and password) */
 @layer components {
+
   input[type='text']:not([data-no-transform]),
   input[type='search']:not([data-no-transform]),
   input:not([type]):not([data-no-transform]),

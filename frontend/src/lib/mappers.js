@@ -42,6 +42,7 @@ export const proveedorFromApi = (p = {}) => {
   if (!p) return {};
   return {
     id: p.prv_id || p.id,
+    rut: p.prv_rut || p.rut || '',
     descripcion: p.prv_descripcion || p.descripcion || '',
     celular1: p.prv_celular1 || p.celular1 || '',
     celular2: p.prv_celular2 || p.celular2 || '',
@@ -55,6 +56,7 @@ export const proveedorToApi = (f = {}) => {
   if (!f) return {};
   return {
     prv_id: f.id,
+    prv_rut: f.rut,
     prv_descripcion: f.descripcion,
     prv_celular1: f.celular1,
     prv_celular2: f.celular2,

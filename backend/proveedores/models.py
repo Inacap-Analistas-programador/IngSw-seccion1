@@ -4,6 +4,8 @@ from django.db import models
 class Proveedor(models.Model):
     # prv_id: Identificador único del proveedor (clave primaria)
     prv_id = models.AutoField(primary_key=True)
+    # prv_rut: RUT del proveedor
+    prv_rut = models.CharField(max_length=12, null=True, blank=True)
     # prv_descripcion: Nombre o razón social del proveedor
     prv_descripcion = models.CharField(max_length=100)
     # prv_celular1: Primer número de celular de contacto
