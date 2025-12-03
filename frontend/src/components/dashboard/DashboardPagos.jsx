@@ -5,15 +5,17 @@ import {
   FileText,
   CreditCard,
   BookOpen,
-  History,
-  LayoutDashboard
+  LayoutDashboard,
+  Building2,
+  Truck
 } from 'lucide-react';
 import GestionPagos from './GestionPagos';
 import ComprobantesPagos from './ComprobantesPagos';
 import Prepagos from './Prepagos';
 import ConceptoContable from './ConceptoContable';
-import HistorialPagos from './HistorialPagos';
 import EstadisticasPagos from './EstadisticasPagos';
+import PagosProveedores from './PagosProveedores';
+import GestionProveedores from './GestionProveedores';
 
 const DashboardPagos = () => {
   const [activeTab, setActiveTab] = useState('resumen');
@@ -21,32 +23,31 @@ const DashboardPagos = () => {
   const tabs = [
     { id: 'resumen', label: 'Resumen', icon: LayoutDashboard },
     { id: 'gestion', label: 'Gestión de Pagos', icon: Wallet },
+    { id: 'pagos-proveedores', label: 'Pagos a Proveedores', icon: Building2 },
+    { id: 'proveedores', label: 'Proveedores', icon: Truck },
     { id: 'comprobantes', label: 'Comprobantes', icon: FileText },
     { id: 'prepagos', label: 'Prepagos', icon: CreditCard },
     { id: 'conceptos', label: 'Conceptos Contables', icon: BookOpen },
-    { id: 'historial', label: 'Historial', icon: History },
   ];
 
   return (
-    <div className="space-y-3">
+    <div className="-mt-4 lg:-mt-6 -mx-4 lg:-mx-6">
       {/* Header & Tabs */}
-      <div className="flex flex-col gap-3">
-
-
-        <div className="flex flex-wrap gap-2 p-1 bg-white/5 rounded-xl w-fit">
+      <div className="sticky top-16 z-30 w-full bg-slate-900 border-b border-white/10 mb-6">
+        <div className="flex overflow-x-auto no-scrollbar">
           {tabs.map((tab) => (
             <button
               key={tab.id}
               onClick={() => setActiveTab(tab.id)}
               className={`
-                flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200
+                flex items-center gap-2 px-3 py-3 text-sm font-medium transition-all duration-200 border-b-2 whitespace-nowrap hover:bg-white/5
                 ${activeTab === tab.id
-                  ? 'bg-emerald-500 text-white shadow-lg shadow-emerald-500/20'
-                  : 'text-white/60 hover:text-white hover:bg-white/5'
+                  ? 'border-emerald-500 text-emerald-400 bg-emerald-500/5'
+                  : 'border-transparent text-white/60 hover:text-white'
                 }
               `}
             >
-              <tab.icon size={16} />
+              <tab.icon size={18} />
               {tab.label}
             </button>
           ))}
@@ -54,7 +55,7 @@ const DashboardPagos = () => {
       </div>
 
       {/* Content Area */}
-      <div className="relative min-h-[400px]">
+      <div className="relative min-h-[400px] px-6">
         <AnimatePresence mode="wait">
           {activeTab === 'resumen' && (
             <motion.div
@@ -77,6 +78,30 @@ const DashboardPagos = () => {
               transition={{ duration: 0.2 }}
             >
               <GestionPagos />
+            </motion.div>
+          )}
+
+          {activeTab === 'pagos-proveedores' && (
+            <motion.div
+              key="pagos-proveedores"
+              initial={{ opacity: 0, x: 20 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: -20 }}
+              transition={{ duration: 0.2 }}
+            >
+              <PagosProveedores onNavigate={setActiveTab} />
+            </motion.div>
+          )}
+
+          {activeTab === 'proveedores' && (
+            <motion.div
+              key="proveedores"
+              initial={{ opacity: 0, x: 20 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: -20 }}
+              transition={{ duration: 0.2 }}
+            >
+              <GestionProveedores />
             </motion.div>
           )}
 
@@ -113,18 +138,6 @@ const DashboardPagos = () => {
               transition={{ duration: 0.2 }}
             >
               <ConceptoContable />
-            </motion.div>
-          )}
-
-          {activeTab === 'historial' && (
-            <motion.div
-              key="historial"
-              initial={{ opacity: 0, x: 20 }}
-              animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: -20 }}
-              transition={{ duration: 0.2 }}
-            >
-              <HistorialPagos />
             </motion.div>
           )}
         </AnimatePresence>

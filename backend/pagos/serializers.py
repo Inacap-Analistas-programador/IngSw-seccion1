@@ -1,6 +1,7 @@
 from rest_framework import serializers
-from .models import PagoPersona, ComprobantePago, PagoComprobante, PagoCambioPersona, Prepago
+from .models import PagoPersona, ComprobantePago, PagoComprobante, PagoCambioPersona, Prepago, PagoProveedor
 from personas.models import Persona
+from proveedores.models import Proveedor
 from django.utils import timezone
 from rest_framework import serializers
 
@@ -99,6 +100,25 @@ class PagoCambioPersonaSerializer(serializers.ModelSerializer):
     class Meta:
         model = PagoCambioPersona
         fields = '__all__'
+
+class PagoProveedorSerializer(serializers.ModelSerializer):
+    proveedor_nombre = serializers.SerializerMethodField()
+    concepto_nombre = serializers.SerializerMethodField()
+    usuario_nombre = serializers.SerializerMethodField()
+
+    class Meta:
+        model = PagoProveedor
+        fields = '__all__'
+
+    def get_proveedor_nombre(self, obj):
+        return obj.prv_id.prv_nombre_fantasia if obj.prv_id else "Desconocido"
+
+    def get_concepto_nombre(self, obj):
+        return obj.coc_id.coc_descripcion if obj.coc_id else "Sin Concepto"
+    
+    def get_usuario_nombre(self, obj):
+        return obj.usu_id.username if obj.usu_id else "Desconocido"
+
 
 
 class PrepagoSerializer(serializers.ModelSerializer):

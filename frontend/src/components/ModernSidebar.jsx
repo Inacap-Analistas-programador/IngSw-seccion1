@@ -47,12 +47,13 @@ const ModernSidebar = ({ basePath = '/dashboard', collapsed, setCollapsed, isMob
             initial={false}
             animate={{
                 width: collapsed ? '80px' : '280px',
+                backgroundColor: collapsed ? 'rgb(15, 23, 42)' : 'rgba(15, 23, 42, 0.9)', // slate-900
             }}
             transition={{
                 duration: 0.3,
                 ease: [0.4, 0, 0.2, 1],
             }}
-            className="fixed left-0 top-0 h-screen bg-gradient-to-b from-slate-900 via-blue-900 to-slate-900 shadow-2xl z-50 flex flex-col"
+            className={`fixed left-0 top-0 h-screen shadow-2xl z-50 flex flex-col backdrop-blur-md ${collapsed ? 'bg-slate-900' : 'bg-slate-900/90'}`}
         >
             {/* Toggle Button - Top */}
             <div className="flex items-center justify-between h-20 px-4">

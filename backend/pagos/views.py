@@ -5,13 +5,14 @@ from rest_framework.response import Response
 from rest_framework.filters import SearchFilter, OrderingFilter
 from django_filters.rest_framework import DjangoFilterBackend
 from django.utils import timezone
-from .models import PagoPersona, ComprobantePago, PagoComprobante, PagoCambioPersona, Prepago
+from .models import PagoPersona, ComprobantePago, PagoComprobante, PagoCambioPersona, Prepago, PagoProveedor
 from .serializers import (
 	PagoPersonaSerializer,
 	ComprobantePagoSerializer,
 	PagoComprobanteSerializer,
 	PagoCambioPersonaSerializer,
 	PrepagoSerializer,
+    PagoProveedorSerializer,
 )
 from personas.models import Persona, PersonaCurso, PersonaGrupo
 from cursos.models import Curso
@@ -22,12 +23,21 @@ from django.http import HttpResponse
 
 
 
+class PagoProveedorViewSet(viewsets.ModelViewSet):
+    queryset = PagoProveedor.objects.all().select_related('prv_id', 'coc_id', 'usu_id')
+    serializer_class = PagoProveedorSerializer
+    permission_classes = [IsAuthenticated]
+    filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
+    filterset_fields = ['prv_id', 'coc_id', 'usu_id']
+    search_fields = ['prv_id__prv_nombre_fantasia', 'prv_id__prv_rut', 'ppr_observacion']
+    ordering_fields = ['ppr_fecha', 'ppr_valor']
+
 class PagoPersonaViewSet(viewsets.ModelViewSet):
 	queryset = PagoPersona.objects.all().select_related('per_id', 'cur_id')
 	serializer_class = PagoPersonaSerializer
 	permission_classes = [IsAuthenticated]
 	filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
-	filterset_fields = ['per_id', 'cur_id', 'usu_id', 'pap_tipo']
+	filterset_fields = ['per_id', 'cur_id', 'usu_id', 'pap_tipo', 'pap_estado']
 	search_fields = ['per_id__per_run', 'per_id__per_nombres', 'per_id__per_apelpat', 'per_id__per_apelmat']
 	ordering_fields = ['pap_fecha_hora', 'pap_valor']
 

@@ -3,6 +3,7 @@ from usuarios.models import Usuario
 from cursos.models import Curso
 from personas.models import Persona, PersonaCurso
 from maestros.models import ConceptoContable
+from proveedores.models import Proveedor
 
 # Tabla: pago_persona
 class PagoPersona(models.Model):
@@ -26,8 +27,16 @@ class PagoPersona(models.Model):
     pap_tipo = models.IntegerField(choices=PAP_TIPO_CHOICES)
     # pap_valor: Monto del pago
     pap_valor = models.DecimalField(max_digits=21, decimal_places=6)
+    # pap_estado: Estado del pago (1: Pagado, 2: Anulado)
+    PAP_ESTADO_PAGADO = 1
+    PAP_ESTADO_ANULADO = 2
+    PAP_ESTADO_CHOICES = (
+        (PAP_ESTADO_PAGADO, 'Pagado'),
+        (PAP_ESTADO_ANULADO, 'Anulado'),
+    )
+    pap_estado = models.IntegerField(choices=PAP_ESTADO_CHOICES, default=PAP_ESTADO_PAGADO)
     # pap_observacion: Observaciones sobre el pago
-    pap_observacion = models.CharField(max_length=100, null=True, blank=True)
+    pap_observacion = models.CharField(max_length=500, null=True, blank=True)
 
     class Meta:
         db_table = 'pago_persona'
@@ -137,4 +146,31 @@ class Prepago(models.Model):
 
     def __str__(self):
         return f"Prepago {self.ppa_id} de {self.per_id} por {self.ppa_valor} ({self.cur_id})"
+
+# Tabla: pago_proveedor
+class PagoProveedor(models.Model):
+    # ppr_id: Identificador único del pago a proveedor (clave primaria)
+    ppr_id = models.AutoField(primary_key=True)
+    # prv_id: Clave foránea a Proveedor
+    prv_id = models.ForeignKey(Proveedor, on_delete=models.CASCADE, db_column='prv_id')
+    # usu_id: Clave foránea a Usuario (quien registra el pago)
+    usu_id = models.ForeignKey(Usuario, on_delete=models.CASCADE, db_column='usu_id')
+    # coc_id: Clave foránea a ConceptoContable (concepto del pago)
+    coc_id = models.ForeignKey(ConceptoContable, on_delete=models.CASCADE, db_column='coc_id')
+    # ppr_fecha: Fecha del pago
+    ppr_fecha = models.DateField()
+    # ppr_valor: Monto del pago
+    ppr_valor = models.DecimalField(max_digits=21, decimal_places=6)
+    # ppr_observacion: Observaciones
+    ppr_observacion = models.CharField(max_length=500, null=True, blank=True)
+    # ppr_archivo: Comprobante del pago (opcional)
+    ppr_archivo = models.FileField(upload_to='comprobantes_proveedores/', null=True, blank=True)
+
+    class Meta:
+        db_table = 'pago_proveedor'
+        verbose_name = 'Pago a Proveedor'
+        verbose_name_plural = 'Pagos a Proveedores'
+
+    def __str__(self):
+        return f"Pago Prov {self.ppr_id} a {self.prv_id} por {self.ppr_valor}"
 

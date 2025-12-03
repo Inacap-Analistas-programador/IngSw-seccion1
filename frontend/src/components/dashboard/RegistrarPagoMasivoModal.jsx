@@ -29,11 +29,16 @@ const RegistrarPagoMasivoModal = ({ isOpen, onClose, onSuccess }) => {
         pap_tipo: '1',
         pap_observacion: '',
         coc_id: '',
-        file: null
+        file: null,
+        payer_id: '' // Added payer_id
     });
     const [selectedPersonas, setSelectedPersonas] = useState([]); // IDs of selected personas
     const [filteredPersonas, setFilteredPersonas] = useState([]);
     const [searchTerm, setSearchTerm] = useState('');
+    const [payerSearchTerm, setPayerSearchTerm] = useState(''); // Search term for payer
+    const [showPayerResults, setShowPayerResults] = useState(false); // Toggle for payer results
+    const [conceptoSearchTerm, setConceptoSearchTerm] = useState('');
+    const [showConceptoResults, setShowConceptoResults] = useState(false);
 
     // Filtered personas based on search
     const filteredPersonasList = filteredPersonas.filter(p => {
@@ -128,6 +133,10 @@ const RegistrarPagoMasivoModal = ({ isOpen, onClose, onSuccess }) => {
             formData.append('cur_id', parseInt(grupoForm.cur_id));
             formData.append('pap_tipo', parseInt(grupoForm.pap_tipo));
             formData.append('usu_id', userId);
+            
+            if (grupoForm.payer_id) {
+                formData.append('payer_id', parseInt(grupoForm.payer_id));
+            }
 
             selectedPersonas.forEach(p => formData.append('personas', parseInt(p)));
 
@@ -205,7 +214,7 @@ const RegistrarPagoMasivoModal = ({ isOpen, onClose, onSuccess }) => {
                     initial={{ opacity: 0, scale: 0.95 }}
                     animate={{ opacity: 1, scale: 1 }}
                     exit={{ opacity: 0, scale: 0.95 }}
-                    className="bg-slate-900 border border-white/10 rounded-xl shadow-2xl w-full max-w-4xl overflow-hidden flex flex-col max-h-[90vh]"
+                    className="bg-slate-900 border border-white/10 rounded-xl shadow-2xl w-full max-w-[95vw] overflow-hidden flex flex-col max-h-[90vh]"
                 >
                     <div className="bg-slate-800/50 p-4 flex justify-between items-center border-b border-white/10">
                         <h2 className="text-xl font-bold text-white flex items-center gap-2">
@@ -239,9 +248,70 @@ const RegistrarPagoMasivoModal = ({ isOpen, onClose, onSuccess }) => {
                     <div className="p-6 overflow-y-auto custom-scrollbar flex-1">
                         {activeTab === 'grupo' ? (
                             <form onSubmit={handleGrupoSubmit} className="space-y-4 h-full flex flex-col">
-                                <div className="grid grid-cols-1 md:grid-cols-3 gap-6 flex-1 min-h-0">
+                                <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 flex-1 min-h-0">
                                     {/* Column 1: Configuration */}
                                     <div className="space-y-4 overflow-y-auto pr-2">
+                                        {/* Payer Selection (Optional) */}
+                                        <div className="space-y-2 relative">
+                                            <Label className="text-white">Pagador (Opcional)</Label>
+                                            {grupoForm.payer_id ? (
+                                                <div className="flex items-center justify-between p-2 bg-emerald-500/10 border border-emerald-500/20 rounded-lg">
+                                                    <span className="text-sm text-white truncate">
+                                                        {personas.find(p => p.per_id.toString() === grupoForm.payer_id.toString())?.per_nombres} {personas.find(p => p.per_id.toString() === grupoForm.payer_id.toString())?.per_apelpat}
+                                                    </span>
+                                                    <button
+                                                        type="button"
+                                                        onClick={() => setGrupoForm({ ...grupoForm, payer_id: '' })}
+                                                        className="text-white/40 hover:text-white"
+                                                    >
+                                                        <FaXmark />
+                                                    </button>
+                                                </div>
+                                            ) : (
+                                                <div className="relative">
+                                                    <Input
+                                                        placeholder="Buscar pagador..."
+                                                        value={payerSearchTerm}
+                                                        onChange={(e) => {
+                                                            setPayerSearchTerm(e.target.value);
+                                                            setShowPayerResults(true);
+                                                        }}
+                                                        onFocus={() => setShowPayerResults(true)}
+                                                        className="!bg-slate-800 border-white/10 !text-white pl-8"
+                                                    />
+                                                    <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 text-white/40" size={14} />
+                                                    
+                                                    {showPayerResults && payerSearchTerm && (
+                                                        <div className="absolute z-50 top-full left-0 right-0 mt-1 max-h-40 overflow-y-auto bg-slate-800 border border-white/10 rounded-lg shadow-xl">
+                                                            {personas
+                                                                .filter(p => 
+                                                                    `${p.per_nombres} ${p.per_apelpat}`.toLowerCase().includes(payerSearchTerm.toLowerCase()) ||
+                                                                    p.per_run?.includes(payerSearchTerm)
+                                                                )
+                                                                .slice(0, 10)
+                                                                .map(p => (
+                                                                    <div
+                                                                        key={p.per_id}
+                                                                        onClick={() => {
+                                                                            setGrupoForm({ ...grupoForm, payer_id: p.per_id });
+                                                                            setPayerSearchTerm('');
+                                                                            setShowPayerResults(false);
+                                                                        }}
+                                                                        className="p-2 hover:bg-white/5 cursor-pointer text-sm text-white truncate"
+                                                                    >
+                                                                        {p.per_nombres} {p.per_apelpat}
+                                                                    </div>
+                                                                ))
+                                                            }
+                                                        </div>
+                                                    )}
+                                                </div>
+                                            )}
+                                            {showPayerResults && (
+                                                <div className="fixed inset-0 z-40" onClick={() => setShowPayerResults(false)} />
+                                            )}
+                                        </div>
+
                                         <div className="space-y-2">
                                             <Label className="text-white">Curso</Label>
                                             <Select
@@ -308,23 +378,68 @@ const RegistrarPagoMasivoModal = ({ isOpen, onClose, onSuccess }) => {
                                         {/* Optional: Comprobante */}
                                         <div className="bg-slate-800/50 p-3 rounded-lg border border-white/10 space-y-3">
                                             <div className="space-y-2">
-                                                <Label className="text-xs font-bold text-white/60 uppercase">Opcional: Generar Comprobante</Label>
+                                                <Label className="text-xs font-bold text-white/60 uppercase">Respaldo del Pago (Voucher)</Label>
+                                            </div>
+                                            <div className="space-y-2 relative">
+                                                <Label className="text-white">Concepto Contable</Label>
+                                                {grupoForm.coc_id ? (
+                                                    <div className="flex items-center justify-between p-2 bg-blue-500/10 border border-blue-500/20 rounded-lg">
+                                                        <span className="text-sm text-white truncate">
+                                                            {conceptos.find(c => c.coc_id.toString() === grupoForm.coc_id.toString())?.coc_descripcion}
+                                                        </span>
+                                                        <button
+                                                            type="button"
+                                                            onClick={() => setGrupoForm({ ...grupoForm, coc_id: '' })}
+                                                            className="text-white/40 hover:text-white"
+                                                        >
+                                                            <FaXmark />
+                                                        </button>
+                                                    </div>
+                                                ) : (
+                                                    <div className="relative">
+                                                        <Input
+                                                            placeholder="Buscar concepto..."
+                                                            value={conceptoSearchTerm}
+                                                            onChange={(e) => {
+                                                                setConceptoSearchTerm(e.target.value);
+                                                                setShowConceptoResults(true);
+                                                            }}
+                                                            onFocus={() => setShowConceptoResults(true)}
+                                                            className="!bg-slate-800 border-white/10 !text-white"
+                                                        />
+                                                        {showConceptoResults && (
+                                                            <div className="absolute z-50 top-full left-0 right-0 mt-1 max-h-40 overflow-y-auto bg-slate-800 border border-white/10 rounded-lg shadow-xl">
+                                                                {conceptos
+                                                                    .filter(c => 
+                                                                        c.coc_descripcion.toLowerCase().includes(conceptoSearchTerm.toLowerCase())
+                                                                    )
+                                                                    .map(c => (
+                                                                        <div
+                                                                            key={c.coc_id}
+                                                                            onClick={() => {
+                                                                                setGrupoForm({ ...grupoForm, coc_id: c.coc_id });
+                                                                                setConceptoSearchTerm('');
+                                                                                setShowConceptoResults(false);
+                                                                            }}
+                                                                            className="p-2 hover:bg-white/5 cursor-pointer text-sm text-white truncate"
+                                                                        >
+                                                                            {c.coc_descripcion}
+                                                                        </div>
+                                                                    ))
+                                                                }
+                                                                {conceptos.filter(c => c.coc_descripcion.toLowerCase().includes(conceptoSearchTerm.toLowerCase())).length === 0 && (
+                                                                    <div className="p-2 text-xs text-white/40">No se encontraron conceptos</div>
+                                                                )}
+                                                            </div>
+                                                        )}
+                                                    </div>
+                                                )}
+                                                {showConceptoResults && (
+                                                    <div className="fixed inset-0 z-40" onClick={() => setShowConceptoResults(false)} />
+                                                )}
                                             </div>
                                             <div className="space-y-2">
-                                                <Label className="text-white">Concepto</Label>
-                                                <Select
-                                                    value={grupoForm.coc_id}
-                                                    onChange={(e) => setGrupoForm({ ...grupoForm, coc_id: e.target.value })}
-                                                    className="!bg-slate-800 border-white/10 !text-white"
-                                                >
-                                                    <option value="" className="bg-slate-800 text-white">Seleccione</option>
-                                                    {conceptos.map(c => (
-                                                        <option key={c.coc_id} value={c.coc_id} className="bg-slate-800 text-white">{c.coc_descripcion}</option>
-                                                    ))}
-                                                </Select>
-                                            </div>
-                                            <div className="space-y-2">
-                                                <Label className="text-white">Archivo</Label>
+                                                <Label className="text-white">Subir Voucher/Comprobante</Label>
                                                 <div className="relative">
                                                     <Input
                                                         type="file"
@@ -403,42 +518,43 @@ const RegistrarPagoMasivoModal = ({ isOpen, onClose, onSuccess }) => {
                                                 </span>
                                             </div>
                                             <div className="overflow-y-auto custom-scrollbar p-2 space-y-1 flex-1">
-                                                {filteredPersonasList.map(p => {
-                                                    const isSelected = selectedPersonas.includes(p.per_id.toString());
-                                                    return (
-                                                        <div
-                                                            key={p.per_id}
-                                                            onClick={() => {
-                                                                const id = p.per_id.toString();
-                                                                if (isSelected) {
-                                                                    setSelectedPersonas(selectedPersonas.filter(pid => pid !== id));
-                                                                } else {
-                                                                    setSelectedPersonas([...selectedPersonas, id]);
-                                                                }
-                                                            }}
-                                                            className={`flex items-center gap-3 p-2.5 rounded-lg cursor-pointer transition-all ${isSelected
-                                                                ? 'bg-emerald-500/20 border border-emerald-500/30 scale-[0.98]'
-                                                                : 'hover:bg-white/5 border border-transparent hover:scale-[0.98]'
-                                                                }`}
-                                                        >
-                                                            <div className={`w-5 h-5 rounded-md border-2 flex items-center justify-center flex-shrink-0 transition-all ${isSelected
-                                                                ? 'bg-emerald-500 border-emerald-500 scale-110'
-                                                                : 'border-white/30'
-                                                                }`}>
-                                                                {isSelected && <FaCheck size={12} className="text-white" />}
-                                                            </div>
-                                                            <div className="flex-1 min-w-0">
-                                                                <div className={`text-sm font-medium truncate ${isSelected ? 'text-emerald-100' : 'text-white/90'}`}>
-                                                                    {p.per_nombres} {p.per_apelpat}
+                                                {filteredPersonasList.length > 0 ? (
+                                                    filteredPersonasList.map(p => {
+                                                        const isSelected = selectedPersonas.includes(p.per_id.toString());
+                                                        return (
+                                                            <div
+                                                                key={p.per_id}
+                                                                onClick={() => {
+                                                                    const id = p.per_id.toString();
+                                                                    if (isSelected) {
+                                                                        setSelectedPersonas(selectedPersonas.filter(pid => pid !== id));
+                                                                    } else {
+                                                                        setSelectedPersonas([...selectedPersonas, id]);
+                                                                    }
+                                                                }}
+                                                                className={`flex items-center gap-3 p-2.5 rounded-lg cursor-pointer transition-all ${isSelected
+                                                                    ? 'bg-emerald-500/20 border border-emerald-500/30 scale-[0.98]'
+                                                                    : 'hover:bg-white/5 border border-transparent hover:scale-[0.98]'
+                                                                    }`}
+                                                            >
+                                                                <div className={`w-5 h-5 rounded-md border-2 flex items-center justify-center flex-shrink-0 transition-all ${isSelected
+                                                                    ? 'bg-emerald-500 border-emerald-500 scale-110'
+                                                                    : 'border-white/30'
+                                                                    }`}>
+                                                                    {isSelected && <FaCheck size={12} className="text-white" />}
                                                                 </div>
-                                                                <div className="text-xs text-white/40 truncate">RUN: {p.per_run}</div>
+                                                                <div className="flex-1 min-w-0">
+                                                                    <div className={`text-sm font-medium truncate ${isSelected ? 'text-emerald-100' : 'text-white/90'}`}>
+                                                                        {p.per_nombres} {p.per_apelpat}
+                                                                    </div>
+                                                                    <div className="text-xs text-white/40 truncate">RUN: {p.per_run}</div>
+                                                                </div>
                                                             </div>
-                                                        </div>
-                                                    );
-                                                })}
-                                                {filteredPersonasList.length === 0 && (
+                                                        );
+                                                    })
+                                                ) : (
                                                     <div className="text-center py-8 text-white/40 text-sm">
-                                                        No se encontraron personas
+                                                        {personas.length === 0 ? 'No hay personas registradas en el sistema.' : 'No se encontraron personas con ese criterio.'}
                                                     </div>
                                                 )}
                                             </div>
@@ -457,16 +573,64 @@ const RegistrarPagoMasivoModal = ({ isOpen, onClose, onSuccess }) => {
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6 flex-1 min-h-0">
                                     {/* Left Column: Configuration */}
                                     <div className="space-y-4 overflow-y-auto pr-2">
-                                        <div className="space-y-2">
+                                        <div className="space-y-2 relative">
                                             <Label className="text-white">Pagador (Quien realiza el pago)</Label>
-                                            <Select
-                                                value={multiForm.payer_id}
-                                                onChange={(e) => setMultiForm({ ...multiForm, payer_id: e.target.value })}
-                                                className="!bg-slate-800 border-white/10 !text-white"
-                                            >
-                                                <option value="" className="bg-slate-800 text-white">Seleccione Pagador (Opcional)</option>
-                                                {personas.map(p => <option key={p.per_id} value={p.per_id} className="bg-slate-800 text-white">{p.per_nombres} {p.per_apelpat}</option>)}
-                                            </Select>
+                                            {multiForm.payer_id ? (
+                                                <div className="flex items-center justify-between p-2 bg-emerald-500/10 border border-emerald-500/20 rounded-lg">
+                                                    <span className="text-sm text-white truncate">
+                                                        {personas.find(p => p.per_id.toString() === multiForm.payer_id.toString())?.per_nombres} {personas.find(p => p.per_id.toString() === multiForm.payer_id.toString())?.per_apelpat}
+                                                    </span>
+                                                    <button
+                                                        type="button"
+                                                        onClick={() => setMultiForm({ ...multiForm, payer_id: '' })}
+                                                        className="text-white/40 hover:text-white"
+                                                    >
+                                                        <FaXmark />
+                                                    </button>
+                                                </div>
+                                            ) : (
+                                                <div className="relative">
+                                                    <Input
+                                                        placeholder="Buscar pagador..."
+                                                        value={payerSearchTerm}
+                                                        onChange={(e) => {
+                                                            setPayerSearchTerm(e.target.value);
+                                                            setShowPayerResults(true);
+                                                        }}
+                                                        onFocus={() => setShowPayerResults(true)}
+                                                        className="!bg-slate-800 border-white/10 !text-white pl-8"
+                                                    />
+                                                    <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 text-white/40" size={14} />
+                                                    
+                                                    {showPayerResults && payerSearchTerm && (
+                                                        <div className="absolute z-50 top-full left-0 right-0 mt-1 max-h-40 overflow-y-auto bg-slate-800 border border-white/10 rounded-lg shadow-xl">
+                                                            {personas
+                                                                .filter(p => 
+                                                                    `${p.per_nombres} ${p.per_apelpat}`.toLowerCase().includes(payerSearchTerm.toLowerCase()) ||
+                                                                    p.per_run?.includes(payerSearchTerm)
+                                                                )
+                                                                .slice(0, 10)
+                                                                .map(p => (
+                                                                    <div
+                                                                        key={p.per_id}
+                                                                        onClick={() => {
+                                                                            setMultiForm({ ...multiForm, payer_id: p.per_id });
+                                                                            setPayerSearchTerm('');
+                                                                            setShowPayerResults(false);
+                                                                        }}
+                                                                        className="p-2 hover:bg-white/5 cursor-pointer text-sm text-white truncate"
+                                                                    >
+                                                                        {p.per_nombres} {p.per_apelpat}
+                                                                    </div>
+                                                                ))
+                                                            }
+                                                        </div>
+                                                    )}
+                                                </div>
+                                            )}
+                                            {showPayerResults && (
+                                                <div className="fixed inset-0 z-40" onClick={() => setShowPayerResults(false)} />
+                                            )}
                                         </div>
                                         <div className="space-y-2">
                                             <Label className="text-white">Curso (Opcional)</Label>

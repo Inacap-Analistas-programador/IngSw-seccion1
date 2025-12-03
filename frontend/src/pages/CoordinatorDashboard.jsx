@@ -91,16 +91,14 @@ const CoordinatorDashboard = () => {
           setCollapsed={setCollapsed}
         />
 
-        {/* Main content - with dynamic left margin */}
+        {/* Main content - with fixed left margin for collapsed state */}
         <div
-          className={`flex-1 flex flex-col ${collapsed ? 'ml-[80px]' : 'ml-[280px]'
-            }`}
+          className="flex-1 flex flex-col ml-[80px]"
           style={{ transition: 'margin-left 0.3s cubic-bezier(0.4, 0, 0.2, 1)' }}
         >
           {/* Integrated Header */}
           <header
-            className={`fixed top-0 right-0 z-40 px-8 py-4 flex justify-between items-center backdrop-blur-md bg-slate-900/80 border-b border-white/5 ${collapsed ? 'left-[80px]' : 'left-[280px]'
-              }`}
+            className="fixed top-0 right-0 z-40 h-16 px-8 flex justify-between items-center backdrop-blur-md bg-slate-900/80 border-b border-white/5 left-[80px]"
             style={{ transition: 'left 0.3s cubic-bezier(0.4, 0, 0.2, 1)' }}
           >
             <div className="flex items-center space-x-4 pl-4">
@@ -109,6 +107,9 @@ const CoordinatorDashboard = () => {
               </span>
             </div>
             <div className="flex items-center space-x-4">
+              {/* Portal Target for Page Actions (Filters, etc) */}
+              <div id="header-actions" className="flex items-center"></div>
+              
               <div className="hidden md:flex items-center px-3 py-1.5 bg-white/5 rounded-lg border border-white/10 backdrop-blur-md">
                 <span className="text-xs text-white/90" style={{ fontFamily: 'Inter, system-ui, sans-serif' }}>
                   Bienvenido, <span className="font-semibold text-white">{coordinator.name}</span>
