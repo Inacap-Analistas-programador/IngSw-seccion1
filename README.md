@@ -201,8 +201,29 @@ Se ha implementado un script de pruebas de carga (`backend/pagos/tests/test_perf
 *   **Prueba de Inserción Masiva:** Creación de 1000 pagos en < 2 segundos.
 *   **Prueba de Agregación:** Cálculo de balances con 5000 registros históricos en < 0.5 segundos.
 
+### Ejecución de Pruebas (Testing)
+
+El proyecto incluye una suite de pruebas automatizadas para validar tanto la funcionalidad como el rendimiento del módulo.
+
+#### Archivos de Prueba
+*   `backend/pagos/tests/test_functional_qa.py`: Contiene los casos de prueba funcionales (GP-01 a PR-01) descritos en la matriz de QA. Valida flujos de negocio, validaciones de entrada y cambios de estado.
+*   `backend/pagos/tests/test_performance.py`: Script de estrés que simula alta carga de datos para verificar tiempos de respuesta y estabilidad.
+
+#### Instrucciones de Ejecución
+Para ejecutar la suite completa de pruebas, utilice el siguiente comando desde el directorio `backend/`:
+
 ```bash
-# Comando para ejecutar pruebas de rendimiento
+# Ejecutar todas las pruebas del módulo de pagos
+python manage.py test pagos.tests
+```
+
+Para ejecutar pruebas específicas:
+
+```bash
+# Solo pruebas funcionales
+python manage.py test pagos.tests.test_functional_qa
+
+# Solo pruebas de rendimiento
 python manage.py test pagos.tests.test_performance
 ```
 

@@ -29,7 +29,7 @@ class PagoProveedorViewSet(viewsets.ModelViewSet):
     permission_classes = [IsAuthenticated]
     filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
     filterset_fields = ['prv_id', 'coc_id', 'usu_id']
-    search_fields = ['prv_id__prv_nombre_fantasia', 'prv_id__prv_rut', 'ppr_observacion']
+    search_fields = ['prv_id__prv_descripcion', 'ppr_observacion']
     ordering_fields = ['ppr_fecha', 'ppr_valor']
 
 class PagoPersonaViewSet(viewsets.ModelViewSet):
