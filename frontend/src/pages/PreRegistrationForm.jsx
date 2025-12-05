@@ -194,7 +194,6 @@ const PreRegistrationForm = () => {
             persona: personaId,
             curso: cursoId,
             estado: 'enviado',
-            observaciones: observ,
           });
 
           // Upload medical file if exists
@@ -350,10 +349,10 @@ const PreRegistrationForm = () => {
             <motion.div
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
-              className="bg-slate-900/10 border border-white/10 backdrop-blur-md rounded-2xl shadow-2xl overflow-hidden"
+              className="bg-transparent border border-white/10 rounded-2xl overflow-hidden"
             >
               {/* Step Header */}
-              <div className="px-6 py-4 border-b border-white/5 bg-white/5 flex items-center justify-between">
+              <div className="px-6 py-4 border-b border-white/5 bg-transparent flex items-center justify-between">
                 <h2 className="text-lg font-semibold text-white">
                   {steps[currentStep - 1].title}
                 </h2>
@@ -377,7 +376,7 @@ const PreRegistrationForm = () => {
               </div>
 
               {/* Navigation Buttons */}
-              <div className="px-6 py-4 bg-white/5 border-t border-white/5 flex justify-between items-center">
+              <div className="px-6 py-4 bg-transparent border-t border-white/5 flex justify-between items-center">
                 <Button
                   onClick={handlePrevious}
                   disabled={currentStep === 1}

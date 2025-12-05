@@ -14,6 +14,7 @@ import {
     FaCircleUser,
 } from 'react-icons/fa6';
 import { motion, AnimatePresence } from 'framer-motion';
+import scoutLogo from '@/assets/scout-logo.png';
 
 const ModernSidebar = ({ basePath = '/dashboard', collapsed, setCollapsed, isMobile }) => {
     const navigate = useNavigate();
@@ -62,38 +63,34 @@ const ModernSidebar = ({ basePath = '/dashboard', collapsed, setCollapsed, isMob
             }}
         >
             {/* Toggle Button - Top */}
-            <div className="flex items-center justify-between h-20 px-4">
-                <AnimatePresence mode="wait">
-                    {!collapsed && (
-                        <motion.div
-                            initial={{ opacity: 0, x: -20 }}
-                            animate={{ opacity: 1, x: 0 }}
-                            exit={{ opacity: 0, x: -20 }}
-                            transition={{ duration: 0.2 }}
-                            className="flex items-center gap-3"
-                        >
-                            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-emerald-500 to-teal-600 flex items-center justify-center shadow-lg">
-                                <FaAward className="text-white text-xl" />
-                            </div>
-                            <div>
+            <div className="flex items-center h-20 px-4 justify-center">
+                <div 
+                    onClick={() => setCollapsed(!collapsed)}
+                    className={`flex items-center gap-3 cursor-pointer transition-all duration-200 ${collapsed ? 'justify-center w-full' : ''}`}
+                    title={collapsed ? 'Expandir menú' : 'Contraer menú'}
+                >
+                    <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-emerald-500 to-teal-600 flex items-center justify-center shadow-lg flex-shrink-0 hover:scale-110 transition-transform duration-200 overflow-hidden">
+                        <img src={scoutLogo} alt="GIC Logo" className="w-full h-full object-cover" />
+                    </div>
+                    
+                    <AnimatePresence mode="wait">
+                        {!collapsed && (
+                            <motion.div
+                                initial={{ opacity: 0, x: -20 }}
+                                animate={{ opacity: 1, x: 0 }}
+                                exit={{ opacity: 0, x: -20 }}
+                                transition={{ duration: 0.2 }}
+                            >
                                 <h2 className="text-white font-bold text-lg tracking-tight" style={{ fontFamily: 'Inter, system-ui, sans-serif' }}>
                                     GIC Panel
                                 </h2>
                                 <p className="text-white/50 text-xs font-medium" style={{ fontFamily: 'Inter, system-ui, sans-serif' }}>
                                     Scout Chile
                                 </p>
-                            </div>
-                        </motion.div>
-                    )}
-                </AnimatePresence>
-
-                <button
-                    onClick={() => setCollapsed(!collapsed)}
-                    className="p-2.5 rounded-xl bg-white/5 hover:bg-white/10 text-white transition-all duration-200 hover:scale-110 active:scale-95 backdrop-blur-sm border border-white/10"
-                    title={collapsed ? 'Expandir menú' : 'Contraer menú'}
-                >
-                    {collapsed ? <FaChevronRight className="text-lg" /> : <FaChevronLeft className="text-lg" />}
-                </button>
+                            </motion.div>
+                        )}
+                    </AnimatePresence>
+                </div>
             </div>
 
             {/* Navigation Menu */}

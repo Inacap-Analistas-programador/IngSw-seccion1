@@ -24,6 +24,8 @@ const Step1PersonalData = ({ formData, updateFormData }) => {
   const [rutInput, setRutInput] = useState(formData.rut || '');
   const [previewFile, setPreviewFile] = useState(null);
   const [fotoCrop, setFotoCrop] = useState(formData.fotoCrop || 'center');
+  const [searchMessage, setSearchMessage] = useState(null);
+  const [searchStatus, setSearchStatus] = useState(null); // 'success', 'not-found', 'error'
   const fileInputRef = useRef(null);
 
   const handleChange = (field, value) => updateFormData({ [field]: value });
@@ -38,9 +40,17 @@ const Step1PersonalData = ({ formData, updateFormData }) => {
 
   const handleSearchByRut = async () => {
     const rutDigits = stripRutDigits(rutInput);
-    if (!rutDigits) return; // Silent return if empty, or maybe alert? User wants "lupa" to trigger.
+    if (!rutDigits) {
+      setSearchMessage('⚠ Por favor ingrese un RUT válido');
+      setSearchStatus('error');
+      setTimeout(() => setSearchMessage(null), 3000);
+      return;
+    }
 
     setSearching(true);
+    setSearchMessage(null);
+    setSearchStatus(null);
+
     try {
       const resp = await personasService.searchByRut(rutDigits);
 
@@ -74,12 +84,20 @@ const Step1PersonalData = ({ formData, updateFormData }) => {
           profesion: p.per_profesion || '',
           rut: rutDigits,
         });
+        setSearchMessage('✓ RUT encontrado - Datos cargados automáticamente');
+        setSearchStatus('success');
+        setTimeout(() => setSearchMessage(null), 5000);
       } else {
         updateFormData({ searchedRut: true, personaFound: false, rut: rutDigits });
-        // Optional: toast or small alert saying "Person not found, please fill details"
+        setSearchMessage('⚠ RUT no encontrado en la base de datos - Por favor complete los datos manualmente');
+        setSearchStatus('not-found');
+        setTimeout(() => setSearchMessage(null), 5000);
       }
     } catch (err) {
       console.error('Error buscando RUT:', err);
+      setSearchMessage('✖ Error al buscar RUT - Por favor intente nuevamente');
+      setSearchStatus('error');
+      setTimeout(() => setSearchMessage(null), 4000);
     } finally {
       setSearching(false);
     }
@@ -154,8 +172,8 @@ const Step1PersonalData = ({ formData, updateFormData }) => {
 
 
       <div className="grid md:grid-cols-4 gap-3">
-        <div className="space-y-1 md:col-span-2 flex items-end gap-2">
-          <div className="w-full relative">
+        <div className="space-y-1 md:col-span-4">
+          <div className="w-full md:w-1/2 relative">
             <Label htmlFor="rut" className="text-xs text-gray-400">RUT *</Label>
             <div className="relative">
               <Input
@@ -177,6 +195,7 @@ const Step1PersonalData = ({ formData, updateFormData }) => {
                 disabled={searching}
                 className="absolute right-0 top-0 h-full px-2 text-gray-400 hover:text-blue-500 transition-colors disabled:opacity-50"
                 aria-label="Buscar RUT"
+                title="Buscar en la base de datos"
               >
                 {searching ? (
                   <Loader2 className="w-3 h-3 animate-spin text-blue-500" />
@@ -185,6 +204,16 @@ const Step1PersonalData = ({ formData, updateFormData }) => {
                 )}
               </button>
             </div>
+            {searchMessage && (
+              <div className={`mt-2 text-xs px-3 py-2 rounded-lg flex items-center gap-2 ${searchStatus === 'success'
+                  ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20'
+                  : searchStatus === 'not-found'
+                    ? 'bg-amber-500/10 text-amber-400 border border-amber-500/20'
+                    : 'bg-red-500/10 text-red-400 border border-red-500/20'
+                }`}>
+                {searchMessage}
+              </div>
+            )}
           </div>
         </div>
 
