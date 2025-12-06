@@ -68,10 +68,10 @@ const RegistrarPagoMasivoModal = ({ isOpen, onClose, onSuccess }) => {
     const fetchData = async () => {
         try {
             const [cursosRes, personasRes, seccionesRes, inscripcionesRes, conceptosRes] = await Promise.all([
-                api.get('/cursos/cursos/'),
-                api.get('/personas/personas/'),
-                api.get('/cursos/cursosecciones/'),
-                api.get('/personas/personacursos/'),
+                api.get('/cursos/cursos/?all=true'),
+                api.get('/personas/personas/?all=true'),
+                api.get('/cursos/secciones/'),
+                api.get('/personas/cursos/'),
                 api.get('/maestros/conceptos-contables/')
             ]);
             setCursos(Array.isArray(cursosRes.data) ? cursosRes.data : cursosRes.data.results || []);
@@ -85,6 +85,12 @@ const RegistrarPagoMasivoModal = ({ isOpen, onClose, onSuccess }) => {
                 title: 'Error',
                 description: 'No se pudieron cargar los datos.',
                 variant: 'destructive',
+            });
+        } finally {
+            console.log('Loaded data:', {
+                cursos: cursosRes?.data,
+                personas: personasRes?.data,
+                conceptos: conceptosRes?.data
             });
         }
     };
@@ -133,7 +139,7 @@ const RegistrarPagoMasivoModal = ({ isOpen, onClose, onSuccess }) => {
             formData.append('cur_id', parseInt(grupoForm.cur_id));
             formData.append('pap_tipo', parseInt(grupoForm.pap_tipo));
             formData.append('usu_id', userId);
-            
+
             if (grupoForm.payer_id) {
                 formData.append('payer_id', parseInt(grupoForm.payer_id));
             }
@@ -250,7 +256,7 @@ const RegistrarPagoMasivoModal = ({ isOpen, onClose, onSuccess }) => {
                             <form onSubmit={handleGrupoSubmit} className="space-y-4 h-full flex flex-col">
                                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 flex-1 min-h-0">
                                     {/* Column 1: Configuration */}
-                                    <div className="space-y-4 overflow-y-auto pr-2">
+                                    <div className="space-y-4 pr-2">
                                         {/* Payer Selection (Optional) */}
                                         <div className="space-y-2 relative">
                                             <Label className="text-white">Pagador (Opcional)</Label>
@@ -277,16 +283,16 @@ const RegistrarPagoMasivoModal = ({ isOpen, onClose, onSuccess }) => {
                                                             setShowPayerResults(true);
                                                         }}
                                                         onFocus={() => setShowPayerResults(true)}
-                                                        className="!bg-slate-800 border-white/10 !text-white pl-8"
+                                                        className="!bg-slate-800 border-white/10 !text-white pl-8 placeholder:text-white/40"
                                                     />
                                                     <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 text-white/40" size={14} />
-                                                    
+
                                                     {showPayerResults && payerSearchTerm && (
                                                         <div className="absolute z-50 top-full left-0 right-0 mt-1 max-h-40 overflow-y-auto bg-slate-800 border border-white/10 rounded-lg shadow-xl">
                                                             {personas
-                                                                .filter(p => 
+                                                                .filter(p =>
                                                                     `${p.per_nombres} ${p.per_apelpat}`.toLowerCase().includes(payerSearchTerm.toLowerCase()) ||
-                                                                    p.per_run?.includes(payerSearchTerm)
+                                                                    p.per_run?.toString().includes(payerSearchTerm)
                                                                 )
                                                                 .slice(0, 10)
                                                                 .map(p => (
@@ -320,8 +326,12 @@ const RegistrarPagoMasivoModal = ({ isOpen, onClose, onSuccess }) => {
                                                 required
                                                 className="!bg-slate-800 border-white/10 !text-white"
                                             >
-                                                <option value="" className="bg-slate-800 text-white">Seleccione Curso</option>
-                                                {cursos.map(c => <option key={c.cur_id} value={c.cur_id} className="bg-slate-800 text-white">{c.cur_descripcion}</option>)}
+                                                <option value="" style={{ color: 'white', backgroundColor: '#1e293b' }}>Seleccione Curso</option>
+                                                {cursos.map(curso => (
+                                                    <option key={curso.cur_id} value={curso.cur_id} style={{ color: 'white', backgroundColor: '#1e293b' }}>
+                                                        {curso.cur_codigo} - {curso.cur_descripcion}
+                                                    </option>
+                                                ))}
                                             </Select>
                                         </div>
                                         <div className="space-y-2">
@@ -342,7 +352,7 @@ const RegistrarPagoMasivoModal = ({ isOpen, onClose, onSuccess }) => {
                                                 value={grupoForm.valor_total}
                                                 onChange={(e) => setGrupoForm({ ...grupoForm, valor_total: e.target.value })}
                                                 placeholder="Ej: 100000"
-                                                className="!bg-slate-800 border-white/10 !text-white text-lg font-medium"
+                                                className="!bg-slate-800 border-white/10 !text-white text-lg font-medium placeholder:text-white/40"
                                             />
                                             <p className="text-xs text-white/40">
                                                 Este monto se dividirá entre las personas seleccionadas.
@@ -405,12 +415,12 @@ const RegistrarPagoMasivoModal = ({ isOpen, onClose, onSuccess }) => {
                                                                 setShowConceptoResults(true);
                                                             }}
                                                             onFocus={() => setShowConceptoResults(true)}
-                                                            className="!bg-slate-800 border-white/10 !text-white"
+                                                            className="!bg-slate-800 border-white/10 !text-white placeholder:text-white/40"
                                                         />
                                                         {showConceptoResults && (
                                                             <div className="absolute z-50 top-full left-0 right-0 mt-1 max-h-40 overflow-y-auto bg-slate-800 border border-white/10 rounded-lg shadow-xl">
                                                                 {conceptos
-                                                                    .filter(c => 
+                                                                    .filter(c =>
                                                                         c.coc_descripcion.toLowerCase().includes(conceptoSearchTerm.toLowerCase())
                                                                     )
                                                                     .map(c => (
@@ -464,7 +474,7 @@ const RegistrarPagoMasivoModal = ({ isOpen, onClose, onSuccess }) => {
                                                 placeholder="Buscar por nombre o RUN..."
                                                 value={searchTerm}
                                                 onChange={(e) => setSearchTerm(e.target.value)}
-                                                className="!bg-slate-800 border-white/10 !text-white pl-10"
+                                                className="!bg-slate-800 border-white/10 !text-white pl-10 placeholder:text-white/40"
                                             />
                                             <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-white/40" size={16} />
                                         </div>
@@ -572,7 +582,7 @@ const RegistrarPagoMasivoModal = ({ isOpen, onClose, onSuccess }) => {
                             <form onSubmit={handleMultiSubmit} className="space-y-4 h-full flex flex-col">
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6 flex-1 min-h-0">
                                     {/* Left Column: Configuration */}
-                                    <div className="space-y-4 overflow-y-auto pr-2">
+                                    <div className="space-y-4 pr-2">
                                         <div className="space-y-2 relative">
                                             <Label className="text-white">Pagador (Quien realiza el pago)</Label>
                                             {multiForm.payer_id ? (
@@ -598,16 +608,16 @@ const RegistrarPagoMasivoModal = ({ isOpen, onClose, onSuccess }) => {
                                                             setShowPayerResults(true);
                                                         }}
                                                         onFocus={() => setShowPayerResults(true)}
-                                                        className="!bg-slate-800 border-white/10 !text-white pl-8"
+                                                        className="!bg-slate-800 border-white/10 !text-white pl-8 placeholder:text-white/40"
                                                     />
                                                     <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 text-white/40" size={14} />
-                                                    
+
                                                     {showPayerResults && payerSearchTerm && (
                                                         <div className="absolute z-50 top-full left-0 right-0 mt-1 max-h-40 overflow-y-auto bg-slate-800 border border-white/10 rounded-lg shadow-xl">
                                                             {personas
-                                                                .filter(p => 
+                                                                .filter(p =>
                                                                     `${p.per_nombres} ${p.per_apelpat}`.toLowerCase().includes(payerSearchTerm.toLowerCase()) ||
-                                                                    p.per_run?.includes(payerSearchTerm)
+                                                                    p.per_run?.toString().includes(payerSearchTerm)
                                                                 )
                                                                 .slice(0, 10)
                                                                 .map(p => (
@@ -637,10 +647,14 @@ const RegistrarPagoMasivoModal = ({ isOpen, onClose, onSuccess }) => {
                                             <Select
                                                 value={multiForm.cur_id}
                                                 onChange={(e) => setMultiForm({ ...multiForm, cur_id: e.target.value })}
-                                                className="!bg-slate-800 border-white/10 !text-white"
+                                                className="bg-slate-800 border-white/10 text-white"
                                             >
-                                                <option value="" className="bg-slate-800 text-white">Seleccione Curso</option>
-                                                {cursos.map(c => <option key={c.cur_id} value={c.cur_id} className="bg-slate-800 text-white">{c.cur_descripcion}</option>)}
+                                                <option value="" style={{ color: 'white', backgroundColor: '#1e293b' }}>Seleccione Curso</option>
+                                                {cursos.map(curso => (
+                                                    <option key={curso.cur_id} value={curso.cur_id} style={{ color: 'white', backgroundColor: '#1e293b' }}>
+                                                        {curso.cur_codigo} - {curso.cur_descripcion}
+                                                    </option>
+                                                ))}
                                             </Select>
                                         </div>
                                         <div className="space-y-2">
@@ -649,7 +663,7 @@ const RegistrarPagoMasivoModal = ({ isOpen, onClose, onSuccess }) => {
                                                 value={multiForm.observacion}
                                                 onChange={(e) => setMultiForm({ ...multiForm, observacion: e.target.value })}
                                                 placeholder="Detalle general..."
-                                                className="!bg-slate-800 border-white/10 !text-white min-h-[100px]"
+                                                className="!bg-slate-800 border-white/10 !text-white min-h-[100px] placeholder:text-white/40"
                                             />
                                         </div>
                                     </div>
@@ -662,7 +676,7 @@ const RegistrarPagoMasivoModal = ({ isOpen, onClose, onSuccess }) => {
                                                 <Plus size={12} className="mr-1" /> Agregar
                                             </Button>
                                         </Label>
-                                        <div className="space-y-2 overflow-y-auto custom-scrollbar pr-2 flex-1 bg-slate-800/30 rounded-lg p-2 border border-white/5">
+                                        <div className="space-y-2 pr-2 flex-1 bg-slate-800/30 rounded-lg p-2 border border-white/5">
                                             {beneficiaries.map((b, index) => (
                                                 <div key={index} className="flex gap-2 items-center">
                                                     <Select
@@ -680,7 +694,7 @@ const RegistrarPagoMasivoModal = ({ isOpen, onClose, onSuccess }) => {
                                                         onChange={(e) => updateBeneficiary(index, 'amount', e.target.value)}
                                                         placeholder="Monto"
                                                         required
-                                                        className="!bg-slate-800 border-white/10 !text-white w-24"
+                                                        className="!bg-slate-800 border-white/10 !text-white w-24 placeholder:text-white/40"
                                                     />
                                                     {beneficiaries.length > 1 && (
                                                         <button type="button" onClick={() => removeBeneficiary(index)} className="text-red-400 hover:text-red-300 p-2">

@@ -44,7 +44,11 @@ describe('GestionPagos', () => {
       },
     };
 
-    api.get.mockResolvedValueOnce(mockPaginatedResponse);
+    // Mock responses for all 3 calls: pagos, personas, cursos
+    api.get
+      .mockResolvedValueOnce(mockPaginatedResponse) // pagos
+      .mockResolvedValueOnce({ data: [] })          // personas
+      .mockResolvedValueOnce({ data: [] });         // cursos
 
     render(<GestionPagos />);
 
@@ -54,10 +58,10 @@ describe('GestionPagos', () => {
     });
 
     // Check that pagos are rendered
-    expect(screen.getByText('1')).toBeInTheDocument();
-    expect(screen.getByText('2')).toBeInTheDocument();
-    expect(screen.getByText('$50000')).toBeInTheDocument();
-    expect(screen.getByText('$30000')).toBeInTheDocument();
+    expect(screen.getByText('#1')).toBeInTheDocument(); // Component adds # prefix
+    expect(screen.getByText('#2')).toBeInTheDocument();
+    expect(screen.getByText('$50.000')).toBeInTheDocument(); // Formatted currency
+    expect(screen.getByText('$30.000')).toBeInTheDocument();
   });
 
   it('should handle array API response correctly', async () => {
@@ -75,7 +79,10 @@ describe('GestionPagos', () => {
       ],
     };
 
-    api.get.mockResolvedValueOnce(mockArrayResponse);
+    api.get
+      .mockResolvedValueOnce(mockArrayResponse)
+      .mockResolvedValueOnce({ data: [] })
+      .mockResolvedValueOnce({ data: [] });
 
     render(<GestionPagos />);
 
@@ -83,8 +90,8 @@ describe('GestionPagos', () => {
       expect(screen.queryByText(/Cargando pagos/i)).not.toBeInTheDocument();
     });
 
-    expect(screen.getByText('1')).toBeInTheDocument();
-    expect(screen.getByText('$50000')).toBeInTheDocument();
+    expect(screen.getByText('#1')).toBeInTheDocument();
+    expect(screen.getByText('$50.000')).toBeInTheDocument();
   });
 
   it('should handle empty paginated response', async () => {
@@ -97,7 +104,10 @@ describe('GestionPagos', () => {
       },
     };
 
-    api.get.mockResolvedValueOnce(mockEmptyResponse);
+    api.get
+      .mockResolvedValueOnce(mockEmptyResponse)
+      .mockResolvedValueOnce({ data: [] })
+      .mockResolvedValueOnce({ data: [] });
 
     render(<GestionPagos />);
 
@@ -105,7 +115,7 @@ describe('GestionPagos', () => {
       expect(screen.queryByText(/Cargando pagos/i)).not.toBeInTheDocument();
     });
 
-    expect(screen.getByText(/No hay pagos registrados/i)).toBeInTheDocument();
+    expect(screen.getByText(/No se encontraron pagos/i)).toBeInTheDocument();
   });
 
   it('should handle API errors gracefully', async () => {
@@ -121,7 +131,7 @@ describe('GestionPagos', () => {
   });
 
   it('should show loading state initially', () => {
-    api.get.mockImplementation(() => new Promise(() => {})); // Never resolves
+    api.get.mockImplementation(() => new Promise(() => { })); // Never resolves
 
     render(<GestionPagos />);
 

@@ -33,6 +33,14 @@ class CursoViewSet(viewsets.ModelViewSet):
             return [AllowAny()]
         return [IsAuthenticated()]
 
+    def list(self, request, *args, **kwargs):
+        if request.query_params.get('all') == 'true':
+            self.pagination_class = None
+        return super().list(request, *args, **kwargs)
+
+    def get_queryset(self):
+        return Curso.objects.all()
+
 
 class CursoSeccionViewSet(viewsets.ModelViewSet):
     queryset = CursoSeccion.objects.all()

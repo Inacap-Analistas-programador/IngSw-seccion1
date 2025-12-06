@@ -136,24 +136,31 @@ class SecurityLoggingMiddleware(MiddlewareMixin):
     ]
     
     def process_request(self, request):
-        """Registra requests a rutas sensibles"""
-        if any(request.path.startswith(path) for path in self.SENSITIVE_PATHS):
-            logger.info(
-                f'Access to sensitive path: {request.path} '
-                f'Method: {request.method} '
-                f'IP: {self._get_client_ip(request)} '
-                f'User: {request.user if request.user.is_authenticated else "Anonymous"}'
-            )
         return None
     
     def process_response(self, request, response):
-        """Registra responses de error de autenticación"""
+        """Registra eventos de seguridad"""
+        # Obtener usuario de forma segura
+        user = "Anonymous"
+        if hasattr(request, 'user') and request.user.is_authenticated:
+            user = str(request.user)
+
+        ip = self._get_client_ip(request)
+
         if response.status_code in [401, 403]:
             logger.warning(
                 f'Authentication/Authorization failure: {request.path} '
                 f'Status: {response.status_code} '
-                f'IP: {self._get_client_ip(request)} '
-                f'User: {request.user if request.user.is_authenticated else "Anonymous"}'
+                f'IP: {ip} '
+                f'User: {user}'
+            )
+        elif any(request.path.startswith(path) for path in self.SENSITIVE_PATHS):
+            logger.info(
+                f'Access to sensitive path: {request.path} '
+                f'Method: {request.method} '
+                f'Status: {response.status_code} '
+                f'IP: {ip} '
+                f'User: {user}'
             )
         return response
     

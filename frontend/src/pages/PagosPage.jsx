@@ -4,7 +4,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Select } from "@/components/ui/select";
 import { useToast } from "@/components/ui/use-toast";
 import pagosService from '../services/pagosService';
 import cursosService from '../services/cursosService'; // Asumiendo que existe
@@ -54,52 +54,54 @@ const PagosPage = () => {
 
       <div className="mb-6">
         <Label>Seleccionar Curso</Label>
-        <Select onValueChange={setSelectedCurso} value={selectedCurso}>
-          <SelectTrigger className="w-[300px]">
-            <SelectValue placeholder="Seleccione un curso..." />
-          </SelectTrigger>
-          <SelectContent>
-            {cursos.map(c => (
-              <SelectItem key={c.cur_id} value={c.cur_id.toString()}>
-                {c.cur_descripcion || c.cur_codigo}
-              </SelectItem>
-            ))}
-          </SelectContent>
+        <Select
+          value={selectedCurso}
+          onChange={(e) => setSelectedCurso(e.target.value)}
+          className="w-[300px]"
+        >
+          <option value="">Seleccione un curso...</option>
+          {cursos.map(c => (
+            <option key={c.cur_id} value={c.cur_id}>
+              {c.cur_descripcion || c.cur_codigo}
+            </option>
+          ))}
         </Select>
       </div>
 
-      {selectedCurso && (
-        <Tabs defaultValue="dashboard" className="w-full">
-          <TabsList className="grid w-full grid-cols-4">
-            <TabsTrigger value="dashboard">Dashboard</TabsTrigger>
-            <TabsTrigger value="pagos">Pagos</TabsTrigger>
-            <TabsTrigger value="comprobantes">Comprobantes</TabsTrigger>
-            <TabsTrigger value="proveedores">Proveedores</TabsTrigger>
-            <TabsTrigger value="prepagos">Prepagos (Gastos Previstos)</TabsTrigger>
-          </TabsList>
+{
+  selectedCurso && (
+    <Tabs defaultValue="dashboard" className="w-full">
+      <TabsList className="grid w-full grid-cols-4">
+        <TabsTrigger value="dashboard">Dashboard</TabsTrigger>
+        <TabsTrigger value="pagos">Pagos</TabsTrigger>
+        <TabsTrigger value="comprobantes">Comprobantes</TabsTrigger>
+        <TabsTrigger value="proveedores">Proveedores</TabsTrigger>
+        <TabsTrigger value="prepagos">Prepagos (Gastos Previstos)</TabsTrigger>
+      </TabsList>
 
-          <TabsContent value="dashboard">
-            <DashboardTab data={dashboardData} />
-          </TabsContent>
+      <TabsContent value="dashboard">
+        <DashboardTab data={dashboardData} />
+      </TabsContent>
 
-          <TabsContent value="pagos">
-            <PagosTab curId={selectedCurso} />
-          </TabsContent>
+      <TabsContent value="pagos">
+        <PagosTab curId={selectedCurso} />
+      </TabsContent>
 
-          <TabsContent value="comprobantes">
-            <ComprobantesPagos />
-          </TabsContent>
+      <TabsContent value="comprobantes">
+        <ComprobantesPagos />
+      </TabsContent>
 
-          <TabsContent value="proveedores">
-            <PagosProveedores />
-          </TabsContent>
+      <TabsContent value="proveedores">
+        <PagosProveedores />
+      </TabsContent>
 
-          <TabsContent value="prepagos">
-            <PrepagosTab curId={selectedCurso} />
-          </TabsContent>
-        </Tabs>
-      )}
-    </div>
+      <TabsContent value="prepagos">
+        <PrepagosTab curId={selectedCurso} />
+      </TabsContent>
+    </Tabs>
+  )
+}
+    </div >
   );
 };
 

@@ -30,6 +30,9 @@ const GestionPagos = () => {
   const [isMassModalOpen, setIsMassModalOpen] = useState(false);
   const [selectedPago, setSelectedPago] = useState(null);
   const [searchTerm, setSearchTerm] = useState('');
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage] = useState(10);
+  const [filterTipo, setFilterTipo] = useState('all'); // 'all', '1' (Ingreso), '2' (Egreso)
 
   useEffect(() => {
     fetchData();
@@ -40,7 +43,7 @@ const GestionPagos = () => {
       setLoading(true);
       const [pagosRes, personasRes, cursosRes] = await Promise.all([
         api.get('/pagos/pagopersonas/'),
-        api.get('/personas/personas/'),
+        api.get('/personas/personas/?all=true'),
         api.get('/cursos/cursos/')
       ]);
 
@@ -126,8 +129,8 @@ const GestionPagos = () => {
         // Fallback based on content-type if header is missing (e.g. CORS issues)
         const contentType = response.headers['content-type'];
         if (contentType && !contentType.includes('pdf')) {
-             if (contentType.includes('image/jpeg')) filename = `comprobante_pago_${pagoId}.jpg`;
-             else if (contentType.includes('image/png')) filename = `comprobante_pago_${pagoId}.png`;
+          if (contentType.includes('image/jpeg')) filename = `comprobante_pago_${pagoId}.jpg`;
+          else if (contentType.includes('image/png')) filename = `comprobante_pago_${pagoId}.png`;
         }
       }
 
@@ -150,7 +153,7 @@ const GestionPagos = () => {
 
   const handleSendReceiptEmail = async (pagoId) => {
     if (!window.confirm('¿Enviar comprobante por correo a la persona asociada?')) return;
-    
+
     try {
       await api.post(`/pagos/pagopersonas/${pagoId}/enviar-comprobante/`);
       toast({
@@ -205,13 +208,31 @@ const GestionPagos = () => {
     const curso = cursos[pago.cur_id] || {};
     const cursoName = (curso.cur_descripcion || '').toLowerCase();
     const search = searchTerm.toLowerCase();
-    return personaName.includes(search) || cursoName.includes(search) || pago.pap_id.toString().includes(search);
+
+    const matchesSearch = personaName.includes(search) || cursoName.includes(search) || pago.pap_id.toString().includes(search);
+    const matchesTipo = filterTipo === 'all' || pago.pap_tipo.toString() === filterTipo;
+
+    return matchesSearch && matchesTipo;
   });
+
+  // Pagination Logic
+  const indexOfLastItem = currentPage * itemsPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  const currentItems = filteredPagos.slice(indexOfFirstItem, indexOfLastItem);
+  const totalPages = Math.ceil(filteredPagos.length / itemsPerPage);
+
+  const paginate = (pageNumber) => setCurrentPage(pageNumber);
+
+  // Reset page when filters change
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [searchTerm, filterTipo]);
 
   if (loading) {
     return (
       <div className="flex items-center justify-center p-12">
         <div className="w-8 h-8 border-2 border-white/20 border-t-emerald-500 rounded-full animate-spin"></div>
+        <span className="sr-only">Cargando pagos...</span>
       </div>
     );
   }
@@ -243,6 +264,20 @@ const GestionPagos = () => {
             onChange={(e) => setSearchTerm(e.target.value)}
             className="w-full bg-slate-900/50 border border-white/10 rounded-xl py-2.5 pl-10 pr-4 text-sm text-white placeholder:text-white/40 focus:outline-none focus:border-emerald-500/50 focus:ring-1 focus:ring-emerald-500/50 transition-all"
           />
+        </div>
+
+        {/* Filter Dropdown */}
+        <div className="relative w-full sm:w-48 order-2 sm:order-1">
+          <Filter className="absolute left-3 top-1/2 -translate-y-1/2 text-white/40" size={18} />
+          <select
+            value={filterTipo}
+            onChange={(e) => setFilterTipo(e.target.value)}
+            className="w-full bg-slate-900/50 border border-white/10 rounded-xl py-2.5 pl-10 pr-4 text-sm text-white focus:outline-none focus:border-emerald-500/50 focus:ring-1 focus:ring-emerald-500/50 transition-all appearance-none cursor-pointer"
+          >
+            <option value="all" className="bg-slate-900 text-white">Todos los Tipos</option>
+            <option value="1" className="bg-slate-900 text-white">Ingresos</option>
+            <option value="2" className="bg-slate-900 text-white">Egresos</option>
+          </select>
         </div>
         <div className="flex gap-3 w-full sm:w-auto order-1 sm:order-2">
           <button
@@ -285,7 +320,8 @@ const GestionPagos = () => {
               </tr>
             </thead>
             <tbody className="divide-y divide-white/5">
-              {filteredPagos.map((pago) => {
+
+              {currentItems.map((pago) => {
                 const persona = personas[pago.per_id] || {};
                 const curso = cursos[pago.cur_id] || {};
                 const nombreCompleto = `${persona.per_nombres || ''} ${persona.per_apelpat || ''}`;
@@ -375,6 +411,57 @@ const GestionPagos = () => {
           </div>
         )}
       </div>
+
+      {/* Pagination Controls */}
+      {filteredPagos.length > 0 && (
+        <div className="flex justify-between items-center bg-white/5 p-4 rounded-2xl backdrop-blur-xl border border-white/10">
+          <div className="text-sm text-white/60">
+            Mostrando <span className="font-bold text-white">{indexOfFirstItem + 1}</span> a <span className="font-bold text-white">{Math.min(indexOfLastItem, filteredPagos.length)}</span> de <span className="font-bold text-white">{filteredPagos.length}</span> registros
+          </div>
+          <div className="flex gap-2">
+            <button
+              onClick={() => paginate(currentPage - 1)}
+              disabled={currentPage === 1}
+              className="px-4 py-2 bg-slate-700 hover:bg-slate-600 disabled:opacity-50 disabled:cursor-not-allowed rounded-lg text-sm text-white font-medium transition-colors"
+            >
+              Anterior
+            </button>
+            <div className="flex items-center gap-1">
+              {Array.from({ length: Math.min(5, totalPages) }, (_, i) => {
+                // Logic to show a window of pages around current page could go here
+                // For simplicity, just showing first 5 or logic to shift
+                let pageNum = i + 1;
+                if (totalPages > 5) {
+                  if (currentPage > 3) {
+                    pageNum = currentPage - 2 + i;
+                  }
+                  if (pageNum > totalPages) return null;
+                }
+
+                return (
+                  <button
+                    key={pageNum}
+                    onClick={() => paginate(pageNum)}
+                    className={`w-8 h-8 flex items-center justify-center rounded-lg text-sm font-medium transition-colors ${currentPage === pageNum
+                      ? 'bg-emerald-500 text-white'
+                      : 'bg-white/5 text-white/60 hover:bg-white/10 hover:text-white'
+                      }`}
+                  >
+                    {pageNum}
+                  </button>
+                );
+              })}
+            </div>
+            <button
+              onClick={() => paginate(currentPage + 1)}
+              disabled={currentPage === totalPages}
+              className="px-4 py-2 bg-slate-700 hover:bg-slate-600 disabled:opacity-50 disabled:cursor-not-allowed rounded-lg text-sm text-white font-medium transition-colors"
+            >
+              Siguiente
+            </button>
+          </div>
+        </div>
+      )}
 
       <RegistrarPagoModal
         isOpen={isModalOpen}

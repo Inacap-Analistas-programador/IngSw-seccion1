@@ -37,6 +37,12 @@ class PersonaViewSet(viewsets.ModelViewSet):
             return [AllowAny()]
         return [IsAuthenticated()]
 
+    def get_queryset(self):
+        queryset = Persona.objects.all()
+        if self.request.query_params.get('all') == 'true':
+            self.pagination_class = None
+        return queryset
+
     @action(detail=False, methods=['get'], url_path='search-by-rut')
     def search_by_rut(self, request):
         rut = request.query_params.get('rut')

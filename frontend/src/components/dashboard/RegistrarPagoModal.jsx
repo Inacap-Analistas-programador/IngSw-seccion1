@@ -87,7 +87,7 @@ const RegistrarPagoModal = ({ isOpen, onClose, onSuccess, initialData = null }) 
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        
+
         // Validations
         if (parseFloat(formData.pap_valor) <= 0) {
             toast({
@@ -99,7 +99,7 @@ const RegistrarPagoModal = ({ isOpen, onClose, onSuccess, initialData = null }) 
         }
 
         if (formData.file && formData.file.size > 5 * 1024 * 1024) { // 5MB limit
-             toast({
+            toast({
                 title: 'Error de Archivo',
                 description: 'El archivo no puede superar los 5MB.',
                 variant: 'destructive',
@@ -215,7 +215,7 @@ const RegistrarPagoModal = ({ isOpen, onClose, onSuccess, initialData = null }) 
                                                     setFormData(prev => ({ ...prev, per_id: '' }));
                                                 }
                                             }}
-                                            className="!bg-slate-800 border-white/10 !text-white pl-10"
+                                            className="!bg-slate-800 border-white/10 !text-white pl-10 placeholder:text-white/40"
                                         />
                                     </div>
 
@@ -311,7 +311,7 @@ const RegistrarPagoModal = ({ isOpen, onClose, onSuccess, initialData = null }) 
                                             onChange={handleChange}
                                             required
                                             min="0"
-                                            className="!bg-slate-800 border-white/10 !text-white"
+                                            className="!bg-slate-800 border-white/10 !text-white placeholder:text-white/40"
                                         />
                                     </div>
                                 </div>
@@ -364,7 +364,7 @@ const RegistrarPagoModal = ({ isOpen, onClose, onSuccess, initialData = null }) 
                                         placeholder="Detalles adicionales..."
                                         value={formData.pap_observacion}
                                         onChange={handleChange}
-                                        className="!bg-slate-800 border-white/10 !text-white min-h-[100px]"
+                                        className="!bg-slate-800 border-white/10 !text-white min-h-[100px] placeholder:text-white/40"
                                     />
                                 </div>
                             </div>
