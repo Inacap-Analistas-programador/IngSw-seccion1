@@ -54,47 +54,20 @@ export const getTipoCursoName = (tipoCurso) => {
   return tipos[tipoCurso] || 'Sin definir';
 };
 
-// Responsable helpers
-export const getResponsableName = (id) => {
-  const responsables = {
-    1: 'Juan Pérez',
-    2: 'María González',
-    3: 'Carlos López',
-  };
-  return responsables[id] || 'Sin asignar';
+// Responsable helpers — resolved from the real personas list fetched via API.
+// Note: per_apelpat is the abbreviated API field name for paternal surname (apellido paterno).
+export const getResponsableName = (id, personas = []) => {
+  const persona = personas.find((p) => String(p.per_id) === String(id));
+  if (persona) {
+    return `${persona.per_nombres} ${persona.per_apelpat}`.trim();
+  }
+  return 'Sin asignar';
 };
 
-// Cargo helpers
-export const getCargoName = (id) => {
-  const cargos = {
-    1: 'Coordinador',
-    2: 'Instructor',
-    3: 'Jefe de Grupo',
-    4: 'Dirigente',
-  };
-  return cargos[id] || 'Sin cargo';
-};
-
-// ID mapping helpers
-export const getIdFromName = (name, type) => {
-  if (type === 'responsable') {
-    const responsableMap = {
-      'Juan Pérez': '1',
-      'María González': '2',
-      'Carlos López': '3',
-    };
-    return responsableMap[name] || '1';
-  }
-  if (type === 'cargo') {
-    const cargoMap = {
-      Coordinador: '1',
-      Instructor: '2',
-      'Jefe de Grupo': '3',
-      Dirigente: '4',
-    };
-    return cargoMap[name] || '1';
-  }
-  return '1';
+// Cargo helpers — resolved from the real cargos list fetched via API
+export const getCargoName = (id, cargos = []) => {
+  const cargo = cargos.find((c) => String(c.car_id) === String(id));
+  return cargo?.car_descripcion || 'Sin cargo';
 };
 
 // Course statistics calculator
