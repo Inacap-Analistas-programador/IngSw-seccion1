@@ -256,22 +256,6 @@ const DashboardEjecutivo = () => {
             .map(([name, value]) => ({ name, value }))
             .sort((a, b) => b.value - a.value)
             .slice(0, 5);
-        
-        // FILLER DATA: If less than 5 comunas, add dummy data for visualization
-        if (comunaData.length < 5) {
-            const fillerComunas = [
-                { name: 'Santiago', value: 12 },
-                { name: 'Providencia', value: 8 },
-                { name: 'Las Condes', value: 15 },
-                { name: 'Maipú', value: 10 },
-                { name: 'La Florida', value: 7 }
-            ];
-            // Filter out existing names
-            const existingNames = comunaData.map(c => c.name);
-            const needed = 5 - comunaData.length;
-            const availableFillers = fillerComunas.filter(c => !existingNames.includes(c.name)).slice(0, needed);
-            comunaData = [...comunaData, ...availableFillers].sort((a, b) => b.value - a.value);
-        }
 
         // 7. Age Distribution
         const ageRanges = { '18-25': 0, '26-35': 0, '36-45': 0, '46-60': 0, '60+': 0 };
@@ -286,14 +270,6 @@ const DashboardEjecutivo = () => {
                 else if (age > 60) ageRanges['60+']++;
             }
         });
-        // FILLER DATA: Add some base values so the chart isn't empty
-        if (Object.values(ageRanges).every(v => v === 0)) {
-             ageRanges['18-25'] += 5;
-             ageRanges['26-35'] += 12;
-             ageRanges['36-45'] += 8;
-             ageRanges['46-60'] += 4;
-             ageRanges['60+'] += 2;
-        }
         const ageData = Object.entries(ageRanges).map(([name, value]) => ({ name, value }));
 
         // 8. Seasonality (Registrations by Month of Year)
@@ -302,12 +278,10 @@ const DashboardEjecutivo = () => {
             const month = new Date(p.per_fecha_hora).getMonth();
             seasonalityCounts[month]++;
         });
-        // FILLER DATA: Add some random seasonality if empty
-        if (seasonalityCounts.every(v => v === 0)) {
-            for(let i=0; i<12; i++) seasonalityCounts[i] = Math.floor(Math.random() * 10) + 2;
-        }
         const months = ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'];
-        const seasonalityData = months.map((m, i) => ({ subject: m, A: seasonalityCounts[i], fullMark: Math.max(...seasonalityCounts) }));
+        // Ensure fullMark is at least 1 so the radar chart renders correctly even when there is no data
+        const maxVal = Math.max(...seasonalityCounts, 1);
+        const seasonalityData = months.map((m, i) => ({ subject: m, A: seasonalityCounts[i], fullMark: maxVal }));
 
         return { trendData, topCoursesData, pieData, financialData, providerData, comunaData, ageData, seasonalityData };
     }, [stats, registrations, sections, courses, people, diets, payments, providers, comunas, selectedCourse]);
