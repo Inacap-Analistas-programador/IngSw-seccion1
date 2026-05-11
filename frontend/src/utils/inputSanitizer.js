@@ -277,7 +277,10 @@ export function containsXSS(input) {
     return false;
   }
 
-  return XSS_PATTERNS.some((pattern) => pattern.test(input));
+  return XSS_PATTERNS.some((pattern) => {
+    pattern.lastIndex = 0;
+    return pattern.test(input);
+  });
 }
 
 /**
