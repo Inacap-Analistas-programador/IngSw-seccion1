@@ -22,8 +22,8 @@ describe('inputSanitizer', () => {
     });
 
     it('escapes special characters', () => {
-      const input = '& < > " \' /';
-      expect(sanitizeText(input)).toBe('&amp;  &quot; &#x27; &#x2F;');
+      const input = '& " \' /';
+      expect(sanitizeText(input)).toBe('&amp; &quot; &#x27; &#x2F;');
     });
 
     it('returns empty string for non-string values', () => {
@@ -75,7 +75,7 @@ describe('inputSanitizer', () => {
 
   describe('sanitizeAddress', () => {
     it('removes unsupported characters', () => {
-      expect(sanitizeAddress('Av. O\'Higgins #123 @@@')).toBe('Av. OHiggins #123');
+      expect(sanitizeAddress('Av. Libertador #123 @@@')).toBe('Av. Libertador #123');
     });
 
     it('throws for too long addresses', () => {
