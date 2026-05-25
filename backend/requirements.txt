@@ -51,5 +51,5 @@ sqlparse==0.5.3
 typing_extensions==4.15.0
 reportlab==4.0.8
 python-docx==1.1.0
-markdown==3.5.1
+markdown==3.8.1
 beautifulsoup4==4.12.2
