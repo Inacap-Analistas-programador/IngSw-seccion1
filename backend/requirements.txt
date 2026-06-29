@@ -33,7 +33,7 @@ prompt_toolkit==3.0.52
 pycodestyle==2.11.1
 pycparser==2.23
 pyflakes==3.1.0
-PyJWT==2.8.0
+PyJWT==2.13.0
 PyMySQL==1.1.1
 pypng==0.20220715.0
 pytest==9.0.3
