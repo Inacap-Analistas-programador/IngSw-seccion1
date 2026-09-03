@@ -3,6 +3,7 @@ import sys
 import django
 import random
 from datetime import datetime, timedelta
+import calendar
 from django.utils import timezone
 
 # Setup Django environment
@@ -16,6 +17,85 @@ from pagos.models import PagoPersona
 from usuarios.models import Usuario
 from maestros.models import EstadoCivil, Rama, Nivel, Rol, Alimentacion, TipoCurso, Cargo
 from geografia.models import Comuna, Region, Provincia, Grupo
+
+
+def get_season_factor(month):
+    # Estacionalidad simple: picos en marzo, julio y diciembre
+    seasonality = {
+        1: 0.9,
+        2: 0.8,
+        3: 1.35,
+        4: 1.0,
+        5: 0.95,
+        6: 1.1,
+        7: 1.3,
+        8: 1.05,
+        9: 0.9,
+        10: 1.0,
+        11: 1.15,
+        12: 1.4,
+    }
+    return seasonality.get(month, 1.0)
+
+
+def random_payment_amount(is_income, month):
+    factor = get_season_factor(month)
+    if is_income:
+        base = random.randint(30000, 220000)
+    else:
+        base = random.randint(8000, 95000)
+
+    amount = int(base * factor)
+
+    # Eventos especiales con ticket alto
+    if random.random() < 0.08:
+        amount = int(amount * random.uniform(1.8, 3.2))
+
+    return max(amount, 5000)
+
+
+def assign_persona_flow_last_6_months(personas):
+    """Distribuye fechas de creación de personas en los últimos 6 meses con variación realista."""
+    if not personas:
+        return
+
+    now = timezone.now()
+
+    # Meses desde el más antiguo al actual (6 meses)
+    month_windows = []
+    for offset in range(5, -1, -1):
+        base = now - timedelta(days=offset * 30)
+        year = base.year
+        month = base.month
+        days_in_month = calendar.monthrange(year, month)[1]
+        month_windows.append((year, month, days_in_month))
+
+    # Peso por mes (más realista y no plano)
+    monthly_weights = [0.7, 0.9, 1.1, 1.45, 1.0, 1.3]
+
+    shuffled_personas = personas[:]
+    random.shuffle(shuffled_personas)
+
+    for person in shuffled_personas:
+        selected_index = random.choices(range(6), weights=monthly_weights, k=1)[0]
+        year, month, days_in_month = month_windows[selected_index]
+
+        day = random.randint(1, days_in_month)
+        hour = random.randint(8, 21)
+        minute = random.randint(0, 59)
+
+        created_at = now.replace(
+            year=year,
+            month=month,
+            day=day,
+            hour=hour,
+            minute=minute,
+            second=0,
+            microsecond=0,
+        )
+
+        person.per_fecha_hora = created_at
+        person.save(update_fields=['per_fecha_hora'])
 
 def populate_dashboard():
     print("Populating dashboard data...")
@@ -55,10 +135,10 @@ def populate_dashboard():
             per_apodo="Admin"
         )
 
-    # 1. Create/Get Courses (Past 6 months)
+    # 1. Create/Get Courses (Past 12 months)
     print("Creating courses...")
     courses = []
-    start_date = timezone.now() - timedelta(days=180)
+    start_date = timezone.now() - timedelta(days=365)
     
     course_names = [
         "Curso de Alta Montaña", "Primeros Auxilios Avanzados", "Liderazgo Scout", 
@@ -67,7 +147,7 @@ def populate_dashboard():
     ]
 
     for i, name in enumerate(course_names):
-        fecha_solicitud = start_date + timedelta(days=i*20)
+        fecha_solicitud = start_date + timedelta(days=i * 40)
         curso, created = Curso.objects.get_or_create(
             cur_codigo=f"CUR-{2024}-{i+1:03d}",
             defaults={
@@ -100,8 +180,9 @@ def populate_dashboard():
     # 2. Create Personas (if needed)
     print("Creating personas...")
     personas = list(Persona.objects.all())
-    if len(personas) < 50:
-        for i in range(50 - len(personas)):
+    target_personas = 80
+    if len(personas) < target_personas:
+        for i in range(target_personas - len(personas)):
             per = Persona.objects.create(
                 esc_id=EstadoCivil.objects.first(),
                 com_id=Comuna.objects.first(),
@@ -119,6 +200,9 @@ def populate_dashboard():
                 per_apodo=f"Scout{i}"
             )
             personas.append(per)
+
+    # Reasignar fechas de creación para mostrar flujo de personas (últimos 6 meses)
+    assign_persona_flow_last_6_months(personas)
 
     # 3. Create Enrollments (PersonaCurso)
     print("Creating enrollments...")
@@ -150,26 +234,56 @@ def populate_dashboard():
     # Clear existing payments to avoid duplicates/mess if re-running (optional, maybe just add)
     # PagoPersona.objects.all().delete() 
     
-    for i in range(100): # Generate 100 payments distributed over 6 months
-        days_ago = random.randint(0, 180)
-        payment_date = timezone.now() - timedelta(days=days_ago)
-        
-        person = random.choice(personas)
-        course_section = random.choice(courses)
-        
-        # 80% Income, 20% Expense
-        is_income = random.random() < 0.8
-        amount = random.randint(10000, 150000) if is_income else random.randint(5000, 50000)
-        
-        PagoPersona.objects.create(
-            per_id=person,
-            cur_id=course_section.cur_id,
-            usu_id=admin_user,
-            pap_fecha_hora=payment_date,
-            pap_tipo=1 if is_income else 2,
-            pap_valor=amount,
-            pap_observacion=f"Pago generado auto {i}"
-        )
+    now = timezone.now()
+    records_created = 0
+
+    # Generar pagos para los últimos 12 meses con volumen variable por mes
+    for offset in range(11, -1, -1):
+        month_cursor = now - timedelta(days=offset * 30)
+        year = month_cursor.year
+        month = month_cursor.month
+        days_in_month = calendar.monthrange(year, month)[1]
+
+        season_factor = get_season_factor(month)
+        monthly_count = int(random.randint(18, 35) * season_factor)
+
+        for _ in range(monthly_count):
+            day = random.randint(1, days_in_month)
+            hour = random.randint(8, 20)
+            minute = random.randint(0, 59)
+            payment_date = now.replace(
+                year=year,
+                month=month,
+                day=day,
+                hour=hour,
+                minute=minute,
+                second=0,
+                microsecond=0,
+            )
+
+            person = random.choice(personas)
+            course_section = random.choice(courses)
+
+            # Variar proporción por mes para que la serie no sea plana
+            base_income_ratio = 0.72 + (0.12 * random.random())
+            if month in (3, 7, 12):
+                base_income_ratio += 0.08
+            is_income = random.random() < min(base_income_ratio, 0.93)
+
+            amount = random_payment_amount(is_income, month)
+
+            PagoPersona.objects.create(
+                per_id=person,
+                cur_id=course_section.cur_id,
+                usu_id=admin_user,
+                pap_fecha_hora=payment_date,
+                pap_tipo=1 if is_income else 2,
+                pap_valor=amount,
+                pap_observacion=f"Pago estacional {year}-{month:02d}"
+            )
+            records_created += 1
+
+    print(f"Created {records_created} payments over 12 months.")
 
     print("Dashboard data populated successfully!")
 

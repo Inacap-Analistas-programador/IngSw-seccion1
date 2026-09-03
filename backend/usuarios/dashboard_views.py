@@ -3,6 +3,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from django.db.models import Count, Q, Sum
 from datetime import datetime, timedelta
+import calendar
 from personas.models import Persona, PersonaCurso, PersonaEstadoCurso
 from cursos.models import Curso, CursoSeccion
 from pagos.models import PagoPersona
@@ -55,26 +56,31 @@ def dashboard_payment_stats(request):
     # 3. Count of courses with payments
     cursos_pagados = PagoPersona.objects.values('cur_id').distinct().count()
 
-    # 4. Balance Stats (Income vs Expenses - Last 6 months)
+    # 4. Balance Stats (Income vs Expenses - Last 12 months)
     balance_stats = []
-    for i in range(5, -1, -1):
-        date = today - timedelta(days=i*30)
+    for i in range(11, -1, -1):
+        date = today - timedelta(days=i * 30)
         month_start = date.replace(day=1, hour=0, minute=0, second=0, microsecond=0)
-        if date.month == 12:
-            month_end = date.replace(year=date.year+1, month=1, day=1, hour=0, minute=0, second=0, microsecond=0)
-        else:
-            month_end = date.replace(month=date.month+1, day=1, hour=0, minute=0, second=0, microsecond=0)
+
+        last_day = calendar.monthrange(date.year, date.month)[1]
+        month_end = date.replace(
+            day=last_day,
+            hour=23,
+            minute=59,
+            second=59,
+            microsecond=999999
+        )
             
         ingresos = PagoPersona.objects.filter(
             pap_tipo=1, # Ingreso
             pap_fecha_hora__gte=month_start,
-            pap_fecha_hora__lt=month_end
+            pap_fecha_hora__lte=month_end
         ).aggregate(total=Sum('pap_valor'))['total'] or 0
         
         egresos = PagoPersona.objects.filter(
             pap_tipo=2, # Egreso
             pap_fecha_hora__gte=month_start,
-            pap_fecha_hora__lt=month_end
+            pap_fecha_hora__lte=month_end
         ).aggregate(total=Sum('pap_valor'))['total'] or 0
         
         balance_stats.append({
