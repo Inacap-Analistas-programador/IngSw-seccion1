@@ -7,7 +7,6 @@ import {
   filterCourses,
   getResponsableName,
   getCargoName,
-  getIdFromName,
 } from '@/utils/courseHelpers';
 
 /**
@@ -175,8 +174,8 @@ export const useCourses = () => {
       ...courseData,
       cuotaConAlmuerzo: parseFloat(courseData.cuotaConAlmuerzo) || 0,
       cuotaSinAlmuerzo: parseFloat(courseData.cuotaSinAlmuerzo) || 0,
-      responsable: getResponsableName(courseData.responsableId),
-      cargo: getCargoName(courseData.cargoResponsableId),
+      responsable: getResponsableName(courseData.responsableId, masterData.personas),
+      cargo: getCargoName(courseData.cargoResponsableId, masterData.cargos),
     };
 
     setCourses((prev) => [...prev, newCourse]);
@@ -196,8 +195,8 @@ export const useCourses = () => {
       ...course,
       cuotaConAlmuerzo: course.cuotaConAlmuerzo.toString(),
       cuotaSinAlmuerzo: course.cuotaSinAlmuerzo.toString(),
-      responsableId: getIdFromName(course.responsable, 'responsable'),
-      cargoResponsableId: getIdFromName(course.cargo, 'cargo'),
+      responsableId: course.responsableId || '',
+      cargoResponsableId: course.cargoResponsableId || '',
       fechas: course.fechas || [],
       secciones: course.secciones || [],
       coordinadores: course.coordinadores || [],
@@ -225,8 +224,8 @@ export const useCourses = () => {
       ...courseData,
       cuotaConAlmuerzo: parseFloat(courseData.cuotaConAlmuerzo) || 0,
       cuotaSinAlmuerzo: parseFloat(courseData.cuotaSinAlmuerzo) || 0,
-      responsable: getResponsableName(courseData.responsableId),
-      cargo: getCargoName(courseData.cargoResponsableId),
+      responsable: getResponsableName(courseData.responsableId, masterData.personas),
+      cargo: getCargoName(courseData.cargoResponsableId, masterData.cargos),
     };
 
     setCourses((prev) =>
